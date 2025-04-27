@@ -5,7 +5,8 @@ import { ThemeProvider } from "@/components/theme-provider"
 import ScrollObserver from "@/components/scroll-observer"
 import FontLoader from "@/components/font-loader"
 import ThemeTransitionOverlay from "@/components/theme-transition-overlay"
-import Script from "next/script";
+import Script from "next/script"
+import { Suspense } from "react"
 
 export const metadata: Metadata = {
   title: "Rushir Bhavsar - Portfolio",
@@ -21,10 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-5W5MC5TFE6"
-          strategy="afterInteractive"
-        />
+        <Script src="https://www.googletagmanager.com/gtag/js?id=G-5W5MC5TFE6" strategy="afterInteractive" />
         <Script id="google-analytics" strategy="afterInteractive">
           {`
             window.dataLayer = window.dataLayer || [];
@@ -43,7 +41,7 @@ export default function RootLayout({
       <body>
         <FontLoader />
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
-          {children}
+          <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
           <ScrollObserver />
           <ThemeTransitionOverlay />
         </ThemeProvider>
