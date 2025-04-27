@@ -1,30 +1,65 @@
-# Personal portfolio website
-
-*Automatically synced with your [v0.dev](https://v0.dev) deployments*
+# 🚀 Rushir Bhavsar — Personal Portfolio
 
 [![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/bhavsarrushir-gmailcoms-projects/v0-personal-portfolio-website)
-[![Built with v0](https://img.shields.io/badge/Built%20with-v0.dev-black?style=for-the-badge)](https://v0.dev/chat/projects/sX9593PZtrs)
+[![Built with v0.dev](https://img.shields.io/badge/Built%20with-v0.dev-black?style=for-the-badge)](https://v0.dev/chat/projects/sX9593PZtrs)
 
-## Overview
+Welcome to my personal portfolio repository!  
+This site showcases my journey as a Machine Learning Engineer, including my projects, skills, and professional experiences.
 
-This repository will stay in sync with your deployed chats on [v0.dev](https://v0.dev).
-Any changes you make to your deployed app will be automatically pushed to this repository from [v0.dev](https://v0.dev).
+**🌐 Live Site:** [rushirbhavsar.vercel.app](https://rushirbhavsar.vercel.app/)
 
-## Deployment
+---
 
-Your project is live at:
+## 🧑‍💻 About
 
-**[https://vercel.com/bhavsarrushir-gmailcoms-projects/v0-personal-portfolio-website](https://vercel.com/bhavsarrushir-gmailcoms-projects/v0-personal-portfolio-website)**
+Hi, I’m Rushir Bhavsar — I build scalable, intelligent systems and love solving real-world problems with data and AI.  
+You’ll find details of my work, education, and open-source projects here.
 
-## Build your app
+---
 
-Continue building your app on:
+## 🛠️ Tech Stack
 
-**[https://v0.dev/chat/projects/sX9593PZtrs](https://v0.dev/chat/projects/sX9593PZtrs)**
+- **Languages:** Python, C++, MATLAB
+- **Frameworks/Libraries:** PyTorch, TensorFlow, scikit-learn, Hugging Face
+- **Cloud/Tools:** AWS, Azure, Docker, Kubernetes, Jenkins, Kubeflow
+- **Specialties:** Computer Vision, NLP, Deep Learning, Data Engineering
 
-## How It Works
+---
 
-1. Create and modify your project using [v0.dev](https://v0.dev)
-2. Deploy your chats from the v0 interface
-3. Changes are automatically pushed to this repository
-4. Vercel deploys the latest version from this repository
+## 📚 Education
+
+- **Arizona State University** — M.S., Data Science (2023–2025)
+- **Nirma University** — B.Tech, Computer Science (2019–2023)
+
+---
+
+## 💼 Experience
+
+- **GenAI Engineering Intern** @ Talin Labs Inc (May 2024 – Sep 2024)
+- **AI Research Intern** @ GIOSTAR.AI (Nov 2023 – May 2024)
+- **AI/SoW Engineer** @ Nirma University (Aug 2022 – Aug 2023)
+
+---
+
+## 📄 Publications
+
+Research papers and technical publications are featured on my [portfolio website](https://rushirbhavsar.vercel.app/).
+
+---
+
+## 🚀 Deployment & Workflow
+
+This portfolio is built with [v0.dev](https://v0.dev), auto-synced to this GitHub repo, and deployed on Vercel.  
+Any updates published on v0.dev are reflected here and on the live site.
+
+---
+
+## 📬 Contact
+
+- **LinkedIn:** [linkedin.com/in/rushirbhavsar](https://linkedin.com/in/rushirbhavsar)
+- **GitHub:** [github.com/rushirbhavsar](https://github.com/rushirbhavsar)
+- **Email:** rushirbhavsar [at] gmail.com
+
+---
+
+Thanks for visiting! ⭐️
