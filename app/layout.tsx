@@ -7,6 +7,8 @@ import FontLoader from "@/components/font-loader"
 import ThemeTransitionOverlay from "@/components/theme-transition-overlay"
 import Script from "next/script"
 import { Suspense } from "react"
+import { Analytics } from "@vercel/analytics/react"
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 export const metadata: Metadata = {
   title: "Rushir Bhavsar - Portfolio",
@@ -44,6 +46,8 @@ export default function RootLayout({
           <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
           <ScrollObserver />
           <ThemeTransitionOverlay />
+          <Analytics/>
+          <SpeedInsights/>
         </ThemeProvider>
       </body>
     </html>

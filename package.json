@@ -59,10 +59,17 @@
     "vaul": "^0.9.6",
     "zod": "latest",
     "@emotion/is-prop-valid": "latest",
+    "@remix-run/react": "latest",
+    "@sveltejs/kit": "latest",
+    "svelte": "latest",
+    "vue": "latest",
+    "vue-router": "latest",
     "framer-motion": "latest",
     "nodemailer": "latest",
     "react-intersection-observer": "latest",
-    "@emailjs/browser": "latest"
+    "@emailjs/browser": "latest",
+    "@vercel/analytics": "latest",
+    "@vercel/speed-insights": "latest"
   },
   "devDependencies": {
     "@types/node": "^22",
