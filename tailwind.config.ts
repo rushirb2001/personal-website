@@ -19,23 +19,14 @@ const config = {
       },
     },
     extend: {
-      fontFamily: {
-        funnel: ["Funnel Display", "Fira Sans", "sans-serif"],
-      },
       colors: {
-        "navy-blue": "#0A192F",
-        "navy-dark": "#060F20", // Updated to Rich black from palette
-        "royal-blue": "#002366", // Added Royal blue from palette
-        "columbia-blue": "#B9D9EB", // Added Columbia blue from palette
-        "light-blue": "#C6E2E9", // Added Light blue from palette
-        "delft-blue": "#1F305E", // Added Delft Blue from palette
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         primary: {
-          DEFAULT: "#0A192F",
+          DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
         },
         secondary: {
@@ -62,6 +53,25 @@ const config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        navy: {
+          DEFAULT: "#0a192f",
+          light: "#112240",
+          dark: "#020c1b",
+        },
+        // Enhanced eerie color palette
+        eerie: {
+          white: "#ececec", // More muted white
+          offwhite: "#e0e0e0", // More sterile off-white
+          gray: "#9a9a9a", // More sterile gray
+          darkgray: "#484848", // More sterile dark gray
+          black: "#161616", // More matte black
+          deepblack: "#0e0e0e", // Deeper matte black
+        },
+      },
+      borderRadius: {
+        lg: "var(--radius)",
+        md: "calc(var(--radius) - 2px)",
+        sm: "calc(var(--radius) - 4px)",
       },
       keyframes: {
         "accordion-down": {
@@ -72,15 +82,10 @@ const config = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
-        blink: {
-          "0%, 100%": { opacity: "1" },
-          "50%": { opacity: "0" },
-        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-        blink: "blink 1s step-end infinite",
       },
     },
   },

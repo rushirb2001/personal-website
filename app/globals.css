@@ -2,288 +2,83 @@
 @tailwind components;
 @tailwind utilities;
 
-html,
-body {
-  transition: color 0.5s, border-color 0.5s;
-}
-
-/* Add a class to apply the Funnel Display font */
-body {
-  font-family: "Funnel Display", "Fira Sans", sans-serif;
-  @apply bg-background text-foreground;
+/* San Francisco Font */
+@font-face {
+  font-family: "San Francisco";
+  font-weight: 400;
+  src: url("https://applesocial.s3.amazonaws.com/assets/styles/fonts/sanfrancisco/sanfranciscodisplay-regular-webfont.woff");
 }
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Shifted light mode colors slightly towards gray */
+    --background: 0 0% 96%; /* Changed from 92% to 96% - slightly grayer */
+    --foreground: 0 0% 12%; /* Darker matte black */
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card: 0 0% 96%;
+    --card-foreground: 0 0% 12%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 96%;
+    --popover-foreground: 0 0% 12%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 0 0% 12%;
+    --primary-foreground: 0 0% 96%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 0 0% 88%; /* Slightly grayer secondary */
+    --secondary-foreground: 0 0% 12%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 0 0% 88%;
+    --muted-foreground: 0 0% 45%; /* Darker sterile gray */
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 0 0% 88%;
+    --accent-foreground: 0 0% 12%;
 
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 0 0% 98%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 0 0% 78%; /* Slightly grayer border */
+    --input: 0 0% 78%;
+    --ring: 0 0% 12%;
 
     --radius: 0.5rem;
+
+    /* Subtle blur effect */
+    --subtle-blur: 1px;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    /* More sterile dark mode colors */
+    --background: 0 0% 6%; /* Deeper matte black */
+    --foreground: 0 0% 90%; /* More muted white */
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    --card: 0 0% 6%;
+    --card-foreground: 0 0% 90%;
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 0 0% 6%;
+    --popover-foreground: 0 0% 90%;
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary: 0 0% 90%;
+    --primary-foreground: 0 0% 6%;
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 0 0% 10%; /* More sterile dark gray */
+    --secondary-foreground: 0 0% 90%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: 0 0% 10%;
+    --muted-foreground: 0 0% 60%; /* More sterile medium gray */
 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 0 0% 10%;
+    --accent-foreground: 0 0% 90%;
 
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 0 0% 90%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+    --border: 0 0% 13%; /* More sterile dark gray border */
+    --input: 0 0% 13%;
+    --ring: 0 0% 80%;
+
+    /* Subtle blur effect */
+    --subtle-blur: 1px;
   }
-}
-
-/* Custom colors for the blue theme */
-.text-royal-blue {
-  color: #002366;
-}
-
-.text-columbia-blue {
-  color: #b9d9eb;
-}
-
-.text-light-blue {
-  color: #c6e2e9;
-}
-
-.text-delft-blue {
-  color: #1f305e;
-}
-
-.text-rich-black {
-  color: #060f20;
-}
-
-.border-royal-blue {
-  border-color: #002366;
-}
-
-.border-columbia-blue {
-  border-color: #b9d9eb;
-}
-
-.border-light-blue {
-  border-color: #c6e2e9;
-}
-
-.border-delft-blue {
-  border-color: #1f305e;
-}
-
-.bg-royal-blue {
-  background-color: #002366;
-}
-
-.bg-columbia-blue {
-  background-color: #b9d9eb;
-}
-
-.bg-light-blue {
-  background-color: #c6e2e9;
-}
-
-.bg-delft-blue {
-  background-color: #1f305e;
-}
-
-.bg-rich-black {
-  background-color: #060f20;
-}
-
-/* Dotted background patterns for skills section */
-.dotted-bg-light {
-  background-image: radial-gradient(circle, rgba(0, 35, 102, 0.12) 2px, transparent 2px);
-  background-size: 20px 20px;
-  background-position: 0 0;
-}
-
-.dotted-bg-light::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image: radial-gradient(circle, rgba(0, 35, 102, 0.09) 1.5px, transparent 1.5px);
-  background-size: 15px 15px;
-  background-position: 7.5px 7.5px;
-  opacity: 0.7;
-  pointer-events: none;
-}
-
-.dotted-bg-dark {
-  background-image: radial-gradient(circle, rgba(185, 217, 235, 0.15) 2px, transparent 2px);
-  background-size: 20px 20px;
-  background-position: 0 0;
-}
-
-.dotted-bg-dark::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image: radial-gradient(circle, rgba(185, 217, 235, 0.12) 1.5px, transparent 1.5px);
-  background-size: 15px 15px;
-  background-position: 7.5px 7.5px;
-  opacity: 0.7;
-  pointer-events: none;
-}
-
-/* Add these simplified static classes for the skills section background */
-.skills-bg-light {
-  background-color: #f9fafb;
-  background-image: radial-gradient(circle, rgba(0, 35, 102, 0.12) 2px, transparent 2px);
-  background-size: 20px 20px;
-  background-position: 0 0;
-}
-
-.skills-bg-light::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image: radial-gradient(circle, rgba(0, 35, 102, 0.09) 1.5px, transparent 1.5px);
-  background-size: 15px 15px;
-  background-position: 7.5px 7.5px;
-  opacity: 0.7;
-  pointer-events: none;
-}
-
-.skills-bg-dark {
-  background-color: #060f20;
-  background-image: radial-gradient(circle, rgba(185, 217, 235, 0.15) 2px, transparent 2px);
-  background-size: 20px 20px;
-  background-position: 0 0;
-}
-
-.skills-bg-dark::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image: radial-gradient(circle, rgba(185, 217, 235, 0.12) 1.5px, transparent 1.5px);
-  background-size: 15px 15px;
-  background-position: 7.5px 7.5px;
-  opacity: 0.7;
-  pointer-events: none;
-}
-
-/* Education section dot pattern */
-.education-dot-pattern {
-  background-image: radial-gradient(circle, rgba(0, 35, 102, 0.08) 1px, transparent 1px);
-  background-size: 24px 24px;
-  background-position: 0 0;
-}
-
-.dark .education-dot-pattern {
-  background-image: radial-gradient(circle, rgba(185, 217, 235, 0.08) 1px, transparent 1px);
-}
-
-.education-grid-pattern {
-  background-image: linear-gradient(to right, rgba(0, 35, 102, 0.1) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(0, 35, 102, 0.1) 1px, transparent 1px);
-  background-size: 40px 40px;
-}
-
-.dark .education-grid-pattern {
-  background-image: linear-gradient(to right, rgba(185, 217, 235, 0.1) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(185, 217, 235, 0.1) 1px, transparent 1px);
-}
-
-/* Subtle paper texture for education section */
-.education-paper-texture {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%23002366' fill-opacity='0.03'%3E%3Cpath opacity='.5' d='M96 95h4v1h-4v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9zm-1 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-}
-
-/* Update the energy flow animation to ensure it works consistently */
-@keyframes energyFlow {
-  0% {
-    stroke-dashoffset: 16;
-  }
-  100% {
-    stroke-dashoffset: 0;
-  }
-}
-
-.energy-flow {
-  animation: energyFlow 1s linear infinite;
-  will-change: stroke-dashoffset;
-  stroke-linecap: butt;
-}
-
-/* Add this new style for the base connection lines */
-svg line {
-  stroke-linecap: butt;
-}
-
-/* Enhanced skill node animations */
-@keyframes pulse-glow {
-  0%,
-  100% {
-    box-shadow: 0 0 5px 0 rgba(0, 35, 102, 0.3);
-  }
-  50% {
-    box-shadow: 0 0 15px 2px rgba(0, 35, 102, 0.5);
-  }
-}
-
-.pulse-glow {
-  animation: pulse-glow 2s ease-in-out infinite;
-}
-
-/* Skill container zoom effect */
-@keyframes zoom-border {
-  0%,
-  100% {
-    transform: scale(1);
-    opacity: 0.3;
-  }
-  50% {
-    transform: scale(1.05);
-    opacity: 0.6;
-  }
-}
-
-.zoom-border {
-  animation: zoom-border 2s ease-in-out infinite;
 }
 
 @layer base {
@@ -293,2690 +88,608 @@ svg line {
   body {
     @apply bg-background text-foreground;
   }
-  html {
-    @apply scroll-smooth;
+
+  html,
+  body {
+    height: 100%;
+    overflow-x: hidden;
   }
 }
 
-/* Add scroll margin to all sections */
-section[id] {
-  scroll-margin-top: 70px;
+/* Apply subtle blur to card elements */
+.card,
+.modal-content,
+.folder-card {
+  backdrop-filter: blur(var(--subtle-blur));
+  -webkit-backdrop-filter: blur(var(--subtle-blur));
 }
 
-.theme-fading *:not(.theme-overlay) {
-  transition-property: color, background, background-color, border-color, box-shadow !important;
-  transition-duration: 0ms !important;
-  transition-delay: 0ms !important;
-}
-
-/* Banner image filters */
-.banner-image {
-  filter: blur(1px);
-}
-
-.dark .banner-image {
-  filter: blur(1px) brightness(0.5) hue-rotate(215deg);
-}
-
-/* Custom styles for card flipping */
-.education-timeline {
-  position: relative;
-  width: 100%;
-  max-width: 920px;
-  margin: 0 auto;
-  padding: 40px 0;
-  min-height: 60vh;
-}
-
-.education-timeline-line {
-  position: absolute;
-  left: 50%;
-  top: 60px;
-  bottom: 60px;
-  width: 4px;
-  background: linear-gradient(to bottom, #002366 0%, #b9d9eb 100%);
-  border-radius: 2px;
-  transform: translateX(-50%);
-  z-index: 0;
-  overflow: hidden;
-}
-
-/* NEW: Timeline flowing light animation */
-/* Timeline line glow animation - Ported from Experience section */
-.timeline-line-glow {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(to top, transparent, #002366, #b9d9eb, transparent);
-  animation: timeline-flow 4s linear infinite;
-  transform: translateY(-100%);
-}
-
-.dark .timeline-line-glow {
-  background: linear-gradient(to top, transparent, #002366, #b9d9eb, transparent);
-  opacity: 0.8;
-}
-
-/* NEW: Timeline pulse nodes */
-.timeline-pulse-node {
-  animation: pulse-node 3s ease-in-out infinite;
-  box-shadow: 0 0 0 rgba(0, 35, 102, 0.4);
-}
-
-@keyframes pulse-node {
-  0% {
-    box-shadow: 0 0 0 0 rgba(0, 35, 102, 0.4);
+@layer components {
+  /* Mobile-first responsive styles */
+  .section-title {
+    @apply relative pb-2 text-xl md:text-2xl font-medium tracking-tight;
   }
-  70% {
-    box-shadow: 0 0 0 6px rgba(0, 35, 102, 0);
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgba(0, 35, 102, 0);
-  }
-}
 
-.dark .timeline-pulse-node {
-  animation: pulse-node-dark 3s ease-in-out infinite;
-}
+  .section-title::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 6rem; /* w-24 equivalent for mobile */
+    height: 2px;
+    background-color: hsl(var(--primary));
+    opacity: 0.7;
+  }
 
-@keyframes pulse-node-dark {
-  0% {
-    box-shadow: 0 0 0 0 rgba(185, 217, 235, 0.4);
+  @screen md {
+    .section-title::before {
+      width: 8rem; /* w-32 equivalent for desktop */
+    }
   }
-  70% {
-    box-shadow: 0 0 0 6px rgba(185, 217, 235, 0);
+
+  /* Custom scrollbar */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
   }
-  100% {
-    box-shadow: 0 0 0 0 rgba(185, 217, 235, 0);
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: rgba(var(--primary), 0.2);
+    border-radius: 0;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(var(--primary), 0.4);
+  }
+
+  /* ID label styling */
+  .id-label {
+    @apply absolute -top-2 -left-2 text-xs font-sf-mono text-primary/70 bg-background dark:bg-navy px-1.5 py-0.5;
+    border-left: 1px solid rgba(var(--primary), 0.2);
+    border-top: 1px solid rgba(var(--primary), 0.2);
+  }
+
+  /* Mobile optimized modal */
+  .mobile-optimized-modal {
+    @apply w-[95%] max-w-md mx-auto p-3 md:p-4;
+  }
+
+  /* Mobile optimized content container */
+  .mobile-content-container {
+    @apply px-3 md:px-6 w-full max-w-full;
+  }
+
+  /* Mobile optimized text */
+  .mobile-text-sm {
+    @apply text-xs md:text-sm;
+  }
+
+  .mobile-text-xs {
+    @apply text-[10px] md:text-xs;
   }
 }
 
-/* NEW: Floating particles animation */
-/* NEW: Light beam animation */
-.education-event {
-  position: relative;
-  width: 50%;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  padding: 0 32px 60px 0;
-  z-index: 2;
-  min-height: 220px;
-  opacity: 0;
+/* Custom font classes */
+.font-sf-pro {
+  font-family: "San Francisco", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
-.education-event.right {
-  left: 50%;
-  align-items: flex-start;
-  padding: 0 0 60px 32px;
+.font-sf-mono {
+  font-family: "SF Mono", SFMono-Regular, ui-monospace, "Cascadia Mono", "Segoe UI Mono", "Liberation Mono", Menlo,
+    monospace;
 }
 
-/* NEW: Enhanced education dot with glow */
-.education-dot-container {
-  position: absolute;
-  right: -12px;
-  top: 40px;
-  width: 24px;
-  height: 24px;
-  z-index: 5;
+/* Extended eerie color palette */
+.bg-eerie-white {
+  background-color: #ececec; /* More muted white */
+}
+.bg-eerie-offwhite {
+  background-color: #e0e0e0; /* More sterile off-white */
+}
+.bg-eerie-gray {
+  background-color: #9a9a9a; /* More sterile gray */
+}
+.bg-eerie-darkgray {
+  background-color: #484848; /* More sterile dark gray */
+}
+.bg-eerie-black {
+  background-color: #161616; /* More matte black */
+}
+.bg-eerie-deepblack {
+  background-color: #0e0e0e; /* Deeper matte black */
 }
 
-.education-event.right .education-dot-container {
-  left: -12px;
-  right: auto;
-}
-
-.education-dot-glow {
-  position: absolute;
-  inset: -4px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(0, 35, 102, 0.3) 0%, rgba(0, 35, 102, 0) 70%);
-  animation: dot-glow 4s ease-in-out infinite;
-}
-
-.dark .education-dot-glow {
-  background: radial-gradient(circle, rgba(185, 217, 235, 0.3) 0%, rgba(185, 217, 235, 0) 70%);
-}
-
-@keyframes dot-glow {
+/* Pulse animation for timeline dots */
+@keyframes pulse {
   0%,
   100% {
-    opacity: 0.3;
+    opacity: 0.8;
     transform: scale(1);
   }
   50% {
-    opacity: 0.5;
-    transform: scale(1.2);
+    opacity: 1;
+    transform: scale(1.1);
   }
 }
 
-.education-dot {
-  position: absolute;
-  inset: 0;
-  background: #fff;
-  border: 4px solid #002366;
-  border-radius: 50%;
-  z-index: 5;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+/* Unsettling text selection */
+::selection {
+  background-color: rgba(var(--primary), 0.5);
+  color: rgba(var(--primary-foreground), 0.9);
+  text-shadow: 0 0 2px rgba(var(--primary-foreground), 0.5);
 }
 
-.dark .education-dot {
-  background: #060f20;
-  border-color: #b9d9eb;
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
 }
 
-.education-date {
-  position: absolute;
-  top: 48px;
-  right: -84px;
-  width: 70px;
-  text-align: center;
-  color: #002366;
-  font-weight: bold;
-  background: #fff;
-  border-radius: 8px;
-  z-index: 5;
-  font-size: 1rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
-  padding: 2px 0;
+::-webkit-scrollbar-track {
+  background: transparent;
 }
 
-.education-event.right .education-date {
-  left: -84px;
-  right: auto;
+::-webkit-scrollbar-thumb {
+  background-color: rgba(var(--primary), 0.2);
+  border-radius: 0;
 }
 
-/* NEW: Logo glow effect */
-.education-logo-glow {
-  animation: logo-glow 3s ease-in-out infinite;
-  opacity: 0;
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(var(--primary), 0.3);
 }
 
-@keyframes logo-glow {
+/* Blink animation for status indicators */
+@keyframes statusBlink {
   0%,
   100% {
-    opacity: 0;
-    box-shadow: 0 0 0 rgba(0, 35, 102, 0);
-  }
-  50% {
-    opacity: 0.3;
-    box-shadow: 0 0 10px rgba(0, 35, 102, 0.3);
-  }
-}
-
-.dark .education-logo-glow {
-  animation: logo-glow-dark 3s ease-in-out infinite;
-}
-
-@keyframes logo-glow-dark {
-  0%,
-  100% {
-    opacity: 0;
-    box-shadow: 0 0 0 rgba(185, 217, 235, 0);
-  }
-  50% {
-    opacity: 0.3;
-    box-shadow: 0 0 10px rgba(185, 217, 235, 0.3);
-  }
-}
-
-/* Flip card effect (enhanced) */
-.flip-card {
-  perspective: 1200px;
-  height: 220px;
-}
-
-.flip-card-inner {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  transition: transform 0.7s cubic-bezier(0.44, 1.14, 0.6, 1.01);
-  transform-style: preserve-3d;
-}
-
-.group:hover .flip-card-inner,
-.group:focus-within .flip-card-inner {
-  transform: rotateY(180deg);
-}
-
-.flip-card-front,
-.flip-card-back {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  backface-visibility: hidden;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.flip-card-back {
-  transform: rotateY(180deg);
-  align-items: center;
-  justify-content: center;
-}
-
-.bubble {
-  box-shadow: 0 2px 10px 0 rgba(0, 35, 102, 0.07);
-}
-
-/* Mobile Education Timeline Styles */
-.mobile-education-timeline {
-  position: relative;
-  padding: 10px 0;
-  margin-bottom: 20px;
-}
-
-/* Ensure timeline is behind cards in dark mode */
-.dark .absolute.h-full.w-0\.5.bg-gradient-to-b {
-  z-index: 1;
-}
-
-/* Ensure cards are above timeline */
-.dark .bg-navy-blue\/30.rounded-lg {
-  position: relative;
-  z-index: 5;
-}
-
-/* Connector line styles */
-.education-connector {
-  position: absolute;
-  width: 2px;
-  background: linear-gradient(to bottom, #002366, #b9d9eb);
-  z-index: 2;
-  overflow: hidden;
-}
-
-/* NEW: Connector glow effect */
-.education-connector-glow {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to bottom, rgba(0, 35, 102, 0) 0%, rgba(0, 35, 102, 0.7) 50%, rgba(0, 35, 102, 0) 100%);
-  animation: connector-glow 2s ease-in-out infinite;
-}
-
-.dark .education-connector-glow {
-  background: linear-gradient(
-    to bottom,
-    rgba(185, 217, 235, 0) 0%,
-    rgba(185, 217, 235, 0.7) 50%,
-    rgba(185, 217, 235, 0) 100%
-  );
-}
-
-@keyframes connector-glow {
-  0%,
-  100% {
-    opacity: 0.3;
-    transform: translateY(-100%);
+    opacity: 1;
   }
   50% {
     opacity: 0.7;
-    transform: translateY(100%);
   }
 }
 
-.dark .education-connector {
-  background: linear-gradient(to bottom, #002366, #b9d9eb);
-  z-index: 2;
+.status-active {
+  animation: statusBlink 4s infinite;
 }
 
-/* NEW: Icon glow effect */
-.education-icon-glow {
+/* Hover tracking effect */
+.tracking-hover:hover {
+  letter-spacing: 0.05em;
+  transition: letter-spacing 0.5s ease;
+}
+
+/* Recording indicator dot */
+.recording-dot {
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(0, 35, 102, 0.3) 0%, rgba(0, 35, 102, 0) 70%);
-  animation: icon-glow 4s ease-in-out infinite;
+  background-color: #ff3b30;
+  animation: pulse-recording 2s infinite;
 }
 
-.dark .education-icon-glow {
-  background: radial-gradient(circle, rgba(185, 217, 235, 0.3) 0%, rgba(185, 217, 235, 0) 70%);
-}
-
-@keyframes icon-glow {
-  0%,
-  100% {
-    opacity: 0.2;
-    transform: scale(1);
-  }
-  50% {
+@keyframes pulse-recording {
+  0% {
     opacity: 0.4;
-    transform: scale(1.3);
-  }
-}
-
-/* Card accent animation */
-.education-card-accent {
-  background: linear-gradient(to right, #002366, #1f305e, #002366);
-  background-size: 200% 100%;
-  animation: card-accent 3s ease-in-out infinite;
-}
-
-.dark .education-card-accent {
-  background: linear-gradient(to right, #b9d9eb, #1f305e, #b9d9eb);
-  background-size: 200% 100%;
-}
-
-@keyframes card-accent {
-  0%,
-  100% {
-    background-position: 0% 0%;
+    transform: scale(0.95);
   }
   50% {
-    background-position: 100% 0%;
-  }
-}
-
-/* Add this media query for extra small devices */
-@media (max-width: 360px) {
-  .mobile-education-timeline .pl-8 {
-    padding-left: 6px;
-  }
-
-  .mobile-education-timeline .pl-10 {
-    padding-left: 6px;
-  }
-
-  .mobile-education-timeline .w-8,
-  .mobile-education-timeline .h-8 {
-    width: 1.5rem;
-    height: 1.5rem;
-  }
-
-  .mobile-education-timeline .text-[10px] {
-    font-size: 8px;
-  }
-}
-
-/* Animation classes */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes slideInLeft {
-  from {
-    opacity: 0;
-    transform: translateX(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes slideInRight {
-  from {
-    opacity: 0;
-    transform: translateX(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-/* NEW ENHANCED ANIMATIONS */
-@keyframes slide-up {
-  0% {
-    opacity: 0;
-    transform: translateY(80px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes slide-down {
-  0% {
-    opacity: 0;
-    transform: translateY(-80px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* NEW REVERSE ANIMATIONS */
-@keyframes slide-up-reverse {
-  0% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  100% {
-    opacity: 0;
-    transform: translateY(80px);
-  }
-}
-
-@keyframes slide-down-reverse {
-  0% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  100% {
-    opacity: 0;
-    transform: translateY(-80px);
-  }
-}
-
-@keyframes hop {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-8px);
-  }
-}
-
-.animate-slide-up {
-  animation: slide-up 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-}
-
-.animate-slide-down {
-  animation: slide-down 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-}
-
-.animate-slide-up-reverse {
-  animation: slide-up-reverse 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-}
-
-.animate-slide-down-reverse {
-  animation: slide-down-reverse 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-}
-
-.animate-hop {
-  animation: hop 3s ease-in-out infinite;
-}
-
-.animate-fadeIn {
-  animation: fadeIn 0.8s ease-in-out forwards;
-}
-
-.animate-slideUp {
-  animation: slideUp 0.8s ease-in-out forwards;
-}
-
-.animate-slideInLeft {
-  animation: slideInLeft 0.8s ease-in-out forwards;
-}
-
-.animate-slideInRight {
-  animation: slideInRight 0.8s ease-in-out forwards;
-}
-
-/* Scroll animations */
-.animate-on-scroll {
-  opacity: 0;
-  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-}
-
-.animate-on-scroll.fade-in {
-  opacity: 1;
-}
-
-.animate-on-scroll.slide-up {
-  transform: translateY(0);
-}
-
-@keyframes blob-float {
-  0%,
-  100% {
-    transform: translate(0%, 0%);
-    opacity: 0.7;
-    filter: blur(48px);
-  }
-  12.5% {
-    transform: translate(42.43%, 42.43%);
-    opacity: 0.8;
-    filter: blur(50px);
-  }
-  25% {
-    transform: translate(0%, 0%);
-    opacity: 0.85;
-    filter: blur(52px);
-  }
-  37.5% {
-    transform: translate(-42.43%, -42.43%);
-    opacity: 0.8;
-    filter: blur(50px);
-  }
-  50% {
-    transform: translate(0%, 0%);
-    opacity: 0.7;
-    filter: blur(48px);
-  }
-  62.5% {
-    transform: translate(42.43%, -42.43%);
-    opacity: 0.8;
-    filter: blur(50px);
-  }
-  75% {
-    transform: translate(0%, 0%);
-    opacity: 0.85;
-    filter: blur(52px);
-  }
-  87.5% {
-    transform: translate(-42.43%, 42.43%);
-    opacity: 0.8;
-    filter: blur(50px);
-  }
-}
-
-.animate-blob-float {
-  animation: blob-float 5s ease-in-out infinite;
-}
-
-/* Skill bubble styles */
-.skill-bubble {
-  background: rgba(255, 255, 255, 0.95);
-  color: #1e3a8a;
-  padding: 7px 18px 7px 12px;
-  border-radius: 9999px;
-  display: flex;
-  align-items: center;
-  font-weight: 500;
-  font-size: 0.875rem;
-  white-space: nowrap;
-  box-shadow: 0 4px 20px 0 rgba(0, 35, 102, 0.15);
-  border: 1.5px solid rgba(0, 35, 102, 0.3);
-  transition: box-shadow 0.25s, background 0.2s, color 0.2s, transform 0.2s;
-  z-index: 60;
-  min-width: 82px;
-  min-height: 38px;
-  transform-origin: center center;
-  will-change: transform, opacity;
-}
-
-.skill-bubble:hover {
-  box-shadow: 0 6px 25px 0 rgba(0, 35, 102, 0.25);
-  transform: translateY(-2px) scale(1.03);
-}
-
-.dark .skill-bubble {
-  background: rgba(6, 15, 32, 0.95);
-  color: #f1f5f9;
-  border: 1.5px solid rgba(0, 35, 102, 0.4);
-}
-
-/* Add a subtle pulse animation for the skill nodes */
-@keyframes subtle-pulse {
-  0% {
-    transform: scale(1);
-    box-shadow: 0 4px 12px 0 rgba(0, 35, 102, 0.15);
-  }
-  50% {
-    transform: scale(1.05);
-    box-shadow: 0 6px 16px 0 rgba(0, 35, 102, 0.25);
-  }
-  100% {
-    transform: scale(1);
-    box-shadow: 0 4px 12px 0 rgba(0, 35, 102, 0.15);
-  }
-}
-
-.skill-node {
-  animation: subtle-pulse 3s infinite ease-in-out;
-  animation-delay: var(--delay, 0s);
-}
-
-/* Improve the connection lines */
-.skill-connection {
-  stroke-dasharray: 5, 4;
-  stroke-width: 1.5;
-  transition: opacity 0.3s, stroke-width 0.3s;
-}
-
-.skill-connection.active {
-  stroke-width: 2.5;
-  stroke-dasharray: 6, 3;
-  opacity: 0.8 !important;
-}
-
-.skill-bubble-label {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 130px;
-  white-space: nowrap;
-  display: inline-block;
-}
-
-.dark .skill-bubble {
-  background: #060f20;
-  color: #f1f5f9;
-  border: 1.5px solid #002366;
-}
-
-/* Add this to your existing globals.css animations */
-@keyframes pulse-border {
-  0%,
-  100% {
-    border-color: rgba(0, 35, 102, 0.5);
-  }
-  50% {
-    border-color: rgba(0, 35, 102, 1);
-  }
-}
-
-.animate-pulse-border {
-  animation: pulse-border 2s infinite;
-}
-
-/* Modern Experience Timeline Styles */
-.experience-timeline-modern {
-  position: relative;
-  height: 100%;
-  width: 100%;
-}
-
-.timeline-line-modern {
-  position: absolute;
-  left: 50%;
-  top: 0;
-  bottom: 0;
-  width: 3px;
-  background: linear-gradient(to bottom, #060f20 0%, #002366 100%);
-  z-index: 1;
-  transform: translateX(-50%);
-  overflow: hidden;
-}
-
-/* Timeline line glow animation */
-.timeline-line-glow {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(to top, transparent, #002366, #b9d9eb, transparent);
-  animation: timeline-flow 4s linear infinite;
-  transform: translateY(-100%);
-}
-
-@keyframes timeline-flow {
-  0% {
-    transform: translateY(100%);
-  }
-  100% {
-    transform: translateY(-100%);
-  }
-}
-
-.timeline-item-modern {
-  position: absolute;
-  width: 100%;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  z-index: 5;
-}
-
-.timeline-item-modern.left {
-  padding-right: 50%;
-  text-align: right;
-}
-
-.timeline-item-modern.right {
-  padding-left: 50%;
-  text-align: left;
-}
-
-/* Active and inactive card styles */
-.timeline-card-modern {
-  background: white;
-  border-radius: 12px;
-  padding: 12px 16px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  border: 1px solid rgba(226, 232, 240, 1);
-  transition: all 0.3s ease;
-  max-width: 90%;
-  position: relative;
-}
-
-.timeline-item-modern.left .timeline-card-modern {
-  margin-left: auto;
-  margin-right: 20px;
-}
-
-.timeline-item-modern.right .timeline-card-modern {
-  margin-right: auto;
-  margin-left: 20px;
-}
-
-/* Active card - zoomed but not bouncing */
-.active-card {
-  border-color: #002366;
-  box-shadow: 0 6px 16px rgba(0, 35, 102, 0.15);
-  transform: scale(1.1);
-}
-
-/* Inactive card - smaller and bouncing */
-.inactive-card {
-  transform: scale(0.95);
-  animation: bounce-subtle 2s ease-in-out infinite;
-}
-
-@keyframes bounce-subtle {
-  0%,
-  100% {
-    transform: scale(0.95) translateY(0);
-  }
-  50% {
-    transform: scale(0.95) translateY(-5px);
-  }
-}
-
-.timeline-item-modern.active .timeline-card-modern {
-  border-color: #002366;
-  box-shadow: 0 6px 16px rgba(0, 35, 102, 0.15);
-}
-
-/* Timeline dot with glow effect */
-.timeline-dot-modern {
-  position: absolute;
-  top: 50%;
-  width: 36px;
-  height: 36px;
-  background: #060f20;
-  border: 3px solid white;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 10;
-  transition: all 0.3s ease;
-  transform: translateY(-50%);
-  box-shadow: 0 0 0 4px rgba(226, 232, 240, 0.5);
-}
-
-.timeline-item-modern.left .timeline-dot-modern {
-  right: calc(50% - 18px);
-}
-
-.timeline-item-modern.right .timeline-dot-modern {
-  left: calc(50% - 18px);
-}
-
-.timeline-item-modern:hover .timeline-dot-modern {
-  transform: translateY(-50%) scale(1.1);
-  background: #002366;
-}
-
-/* Active dot with glow effect */
-.timeline-dot-modern.active {
-  background: #002366;
-  transform: translateY(-50%) scale(1.15);
-  box-shadow: 0 0 15px rgba(0, 35, 102, 0.7), 0 0 5px rgba(0, 35, 102, 0.5);
-}
-
-/* Dark theme active dot */
-.dark .timeline-dot-modern.active {
-  background: #b9d9eb;
-  box-shadow: 0 0 15px rgba(185, 217, 235, 0.7), 0 0 5px rgba(185, 217, 235, 0.5);
-}
-
-.timeline-date-modern {
-  font-size: 0.9rem;
-  color: #002366;
-  font-weight: 600;
-  margin-bottom: 4px;
-}
-
-.timeline-company-modern {
-  font-size: 1rem;
-  font-weight: 700;
-  color: #060f20;
-  margin-bottom: 2px;
-}
-
-.timeline-position-modern {
-  font-size: 0.85rem;
-  color: #64748b;
-}
-
-.dark .timeline-card-modern {
-  background: #1f305e;
-  border-color: #002366;
-}
-
-.dark .timeline-dot-modern {
-  background: #002366;
-  border-color: #1f305e;
-  box-shadow: 0 0 0 4px rgba(0, 35, 102, 0.5);
-}
-
-.dark .timeline-company-modern {
-  color: white;
-}
-
-.dark .timeline-position-modern {
-  color: #b9d9eb;
-}
-
-.dark .timeline-date-modern {
-  color: #b9d9eb;
-}
-
-/* Technology pill styles */
-.tech-pill {
-  background: linear-gradient(to right, #eef2ff, #e0e7ff);
-  color: #4f46e5;
-  padding: 3px 10px;
-  border-radius: 9999px;
-  font-size: 0.65rem;
-  font-weight: 500;
-  display: inline-block;
-  margin-bottom: 4px;
-  margin-right: 4px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-  transition: all 0.2s ease;
-}
-
-.tech-pill:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.dark .tech-pill {
-  background: linear-gradient(to right, rgba(79, 70, 229, 0.2), rgba(99, 102, 241, 0.3));
-  color: #a5b4fc;
-}
-
-/* Responsibility card styles */
-.responsibility-card {
-  background-color: #f8fafc;
-  border-radius: 8px;
-  padding: 10px 12px;
-  margin-bottom: 8px;
-  position: relative;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  transition: all 0.2s ease;
-}
-
-.responsibility-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.dark .responsibility-card {
-  background-color: rgba(31, 48, 94, 0.3);
-}
-
-/* Metric badge styles */
-.metric-badge {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  background: linear-gradient(to right, #3b82f6, #60a5fa);
-  color: white;
-  font-size: 0.6rem;
-  font-weight: 600;
-  padding: 2px 6px;
-  border-radius: 4px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-}
-
-.dark .metric-badge {
-  background: linear-gradient(to right, #60a5fa, #93c5fd);
-  color: #1e293b;
-}
-
-/* Mobile responsibility card styles */
-.responsibility-card-mobile {
-  background-color: #f8fafc;
-  border-radius: 6px;
-  padding: 8px 10px;
-  margin-bottom: 6px;
-  position: relative;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-}
-
-.dark .responsibility-card-mobile {
-  background-color: rgba(31, 48, 94, 0.3);
-}
-
-.metric-badge-mobile {
-  position: absolute;
-  top: 6px;
-  right: 6px;
-  background: linear-gradient(to right, #3b82f6, #60a5fa);
-  color: white;
-  font-size: 0.55rem;
-  font-weight: 600;
-  padding: 1px 5px;
-  border-radius: 3px;
-}
-
-.dark .metric-badge-mobile {
-  background: linear-gradient(to right, #60a5fa, #93c5fd);
-  color: #1e293b;
-}
-
-/* Mobile adjustments */
-@media (max-width: 768px) {
-  .experience-timeline-modern {
-    display: flex;
-    flex-direction: column;
-    padding: 20px 0;
-    min-height: auto;
-  }
-
-  .timeline-line-modern {
-    left: 20px;
-    transform: none;
-  }
-
-  .timeline-item-modern {
-    position: relative;
-    top: auto !important;
-    margin-bottom: 20px;
-  }
-
-  .timeline-item-modern.left,
-  .timeline-item-modern.right {
-    width: 100%;
-    padding-left: 50px;
-    padding-right: 0;
-    text-align: left;
-  }
-
-  .timeline-dot-modern,
-  .timeline-item-modern.left .timeline-dot-modern,
-  .timeline-item-modern.right .timeline-dot-modern {
-    left: 2px;
-    right: auto;
-  }
-
-  .timeline-card-modern,
-  .timeline-item-modern.left .timeline-card-modern,
-  .timeline-item-modern.right .timeline-card-modern {
-    margin-left: 0;
-    margin-right: 0;
-    max-width: 100%;
-  }
-}
-
-/* Experience section improvements */
-.experience-content-container {
-  position: relative;
-  height: calc(100vh - 300px);
-  width: 100%;
-}
-
-.experience-content-item {
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.4s ease-in-out;
-}
-
-.experience-content-item.active {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-/* Ensure timeline has fixed structure */
-.timeline-item-modern {
-  position: absolute;
-  width: 100%;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  z-index: 5;
-  transform: none !important; /* Prevent transform changes */
-}
-
-/* Ensure smooth transitions between content panels */
-.experience-content-transition {
-  transition: opacity 0.4s ease-in-out;
-}
-
-/* Add these smooth animation properties to the globals.css file */
-
-/* Smooth blob animation */
-@keyframes subtle-glow {
-  0%,
-  100% {
-    opacity: 0.5;
-    filter: blur(40px);
-  }
-  50% {
-    opacity: 0.7;
-    filter: blur(35px);
-  }
-}
-
-.smooth-blob {
-  animation: subtle-glow 4s ease-in-out infinite;
-  will-change: transform, opacity, filter;
-}
-
-/* Mobile education carousel styles */
-.education-carousel {
-  position: relative;
-  overflow: hidden;
-}
-
-.education-carousel-item {
-  transition: transform 0.5s ease, opacity 0.5s ease;
-}
-
-.education-carousel-dots {
-  display: flex;
-  justify-content: center;
-  margin-top: 1rem;
-}
-
-.education-carousel-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  margin: 0 4px;
-  background-color: #cbd5e1;
-  transition: transform 0.3s ease, background-color 0.3s ease;
-}
-
-.education-carousel-dot.active {
-  background-color: #002366;
-  transform: scale(1.5);
-}
-
-.education-nav-button {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background-color: rgba(255, 255, 255, 0.8);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  z-index: 10;
-  transition: all 0.2s ease;
-}
-
-.education-nav-button:hover {
-  background-color: rgba(255, 255, 255, 0.9);
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-.education-nav-button:active {
-  transform: translateY(-50%) scale(0.95);
-}
-
-.education-nav-prev {
-  left: 10px;
-}
-
-.education-nav-next {
-  right: 10px;
-}
-
-.dark .education-nav-button {
-  background-color: rgba(31, 48, 94, 0.8);
-}
-
-.dark .education-nav-button:hover {
-  background-color: rgba(31, 48, 94, 0.9);
-}
-
-.dark .education-carousel-dot {
-  background-color: #1f305e;
-}
-
-.dark .education-carousel-dot.active {
-  background-color: #b9d9eb;
-}
-
-/* Wavy timeline styles */
-.wavy-timeline {
-  stroke-dasharray: 1000;
-  stroke-dashoffset: 1000;
-  animation: dash 2s ease-in-out forwards;
-}
-
-/* NEW: Wavy timeline flow animation */
-.wavy-timeline-flow {
-  stroke: rgba(185, 217, 235, 0.4);
-  stroke-dasharray: 30, 200;
-  stroke-dashoffset: 0;
-  animation: wavy-flow 8s linear infinite;
-}
-
-.dark .wavy-timeline-flow {
-  stroke: rgba(185, 217, 235, 0.4);
-}
-
-@keyframes wavy-flow {
-  0% {
-    stroke-dashoffset: 1000;
-  }
-  100% {
-    stroke-dashoffset: 0;
-  }
-}
-
-/* NEW: Timeline particle animation */
-.timeline-particle {
-  animation: timeline-particle 8s ease-in-out infinite;
-}
-
-@keyframes timeline-particle {
-  0% {
-    top: 100%;
-    left: 50%;
-    transform: translate(-50%, 0) scale(0.5);
-    opacity: 0;
-  }
-  10% {
-    opacity: 0.5;
-  }
-  40% {
-    left: calc(50% + 3px);
-  }
-  60% {
-    left: calc(50% - 3px);
-  }
-  90% {
-    opacity: 0.5;
-  }
-  100% {
-    top: 0%;
-    left: 50%;
-    transform: translate(-50%, 0) scale(0.5);
-    opacity: 0;
-  }
-}
-
-@keyframes dash {
-  to {
-    stroke-dashoffset: 0;
-  }
-}
-
-/* Add these new styles for the education section */
-
-/* Section entrance animation */
-.section-entered .education-card {
-  animation: card-entrance 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-}
-
-@keyframes card-entrance {
-  0% {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Fix dark mode timeline issues */
-.dark .timeline-svg {
-  z-index: 0; /* Lower z-index in dark mode */
-}
-
-.dark .education-card {
-  background-color: rgba(6, 15, 32, 0.8);
-  border-color: rgba(0, 35, 102, 0.6);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-  z-index: 10; /* Higher z-index to stay above timeline */
-}
-
-.dark .education-icon-container {
-  z-index: 20; /* Keep icons above everything */
-}
-
-/* Timeline container in dark mode */
-.dark .timeline-container {
-  z-index: 0;
-}
-
-/* Wavy timeline animation improvements */
-.wavy-timeline {
-  stroke-dasharray: 1000;
-  stroke-dashoffset: 1000;
-  animation: dash 2s ease-in-out forwards;
-  filter: drop-shadow(0 0 3px rgba(0, 35, 102, 0.3));
-}
-
-.section-entered .wavy-timeline {
-  animation: dash 1.5s ease-in-out forwards, glow 3s infinite alternate;
-}
-
-@keyframes glow {
-  from {
-    filter: drop-shadow(0 0 2px rgba(0, 35, 102, 0.3));
-  }
-  to {
-    filter: drop-shadow(0 0 5px rgba(0, 35, 102, 0.6));
-  }
-}
-
-/* Improve mobile education section */
-@media (max-width: 768px) {
-  .education-card {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-  }
-
-  .education-card:active {
-    transform: scale(0.98);
-  }
-
-  /* Ensure timeline is behind cards in dark mode */
-  .dark .timeline-svg {
-    opacity: 0.5;
-    z-index: 1;
-  }
-
-  .dark .education-card {
-    z-index: 10;
-  }
-}
-
-/* Enhance the education section scrolling experience */
-#education {
-  scroll-behavior: smooth;
-  transition: background-color 0.5s ease;
-}
-
-/* Add a subtle highlight effect when the section is entered */
-.section-entered#education {
-  background-color: rgba(241, 245, 249, 0.5);
-}
-
-.dark .section-entered#education {
-  background-color: rgba(6, 15, 32, 0.8);
-}
-
-/* Enhanced timeline in dark mode */
-.dark .wavy-timeline {
-  stroke: url(#timeline-gradient);
-  stroke-width: 4;
-  filter: drop-shadow(0 0 8px rgba(185, 217, 235, 0.6));
-}
-
-/* Timeline flow animation */
-@keyframes timeline-flow {
-  0% {
-    transform: translateY(100%);
-  }
-  100% {
-    transform: translateY(-100%);
-  }
-}
-
-/* Mobile section adjustments for proper viewport fitting */
-@media (max-width: 768px) {
-  section[id] {
-    min-height: calc(100vh - 56px); /* Adjust for navbar height */
-    scroll-margin-top: 56px;
-  }
-
-  /* Ensure content doesn't overflow */
-  .overflow-y-auto {
-    max-height: calc(100vh - 120px);
-  }
-
-  /* Adjust vertical spacing for mobile */
-  #about,
-  #skills,
-  #education,
-  #experience,
-  #publications,
-  #contact {
-    padding-top: 60px;
-  }
-}
-
-/* Mobile-specific styles for reduced whitespace */
-@media (max-width: 768px) {
-  /* Reduce whitespace between navbar and section titles */
-  section[id] {
-    padding-top: 0 !important;
-    margin-top: 0 !important;
-  }
-
-  /* Section title adjustments */
-  h2.text-3xl,
-  h2.text-2xl {
-    margin-top: 0 !important;
-    margin-bottom: 0.5rem !important;
-  }
-
-  /* Adjust scroll margin to account for navbar */
-  section[id] {
-    scroll-margin-top: 56px;
-  }
-
-  /* Ensure content doesn't overflow */
-  .overflow-y-auto {
-    max-height: calc(100vh - 100px);
-  }
-}
-
-/* Journey path animation for experience section */
-.journey-path {
-  stroke-dasharray: 1000;
-  stroke-dashoffset: 1000;
-  animation: journey-dash 3s ease-in-out forwards;
-}
-
-@keyframes journey-dash {
-  to {
-    stroke-dashoffset: 0;
-  }
-}
-
-/* Experience journey card styles */
-.experience-journey-card {
-  background: rgba(6, 15, 32, 0.8);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(0, 35, 102, 0.2);
-  transition: all 0.3s ease;
-}
-
-.experience-journey-card:hover {
-  border-color: rgba(0, 35, 102, 0.4);
-  box-shadow: 0 0 20px rgba(0, 35, 102, 0.3);
-}
-
-/* Experience section expandable sections */
-.experience-expandable {
-  overflow: hidden;
-  transition: height 0.3s ease, opacity 0.3s ease;
-}
-
-.experience-expandable.expanded {
-  height: auto;
-}
-
-.experience-expandable.collapsed {
-  height: 0;
-  opacity: 0;
-}
-
-/* Experience navigation indicators */
-.experience-indicator {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background-color: rgba(0, 35, 102, 0.3);
-  transition: all 0.3s ease;
-}
-
-.experience-indicator.active {
-  width: 24px;
-  background-color: rgba(0, 35, 102, 1);
-}
-
-/* Update the experience journey card styles to use solid backgrounds */
-.experience-journey-card {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
-  transition: all 0.3s ease;
-}
-
-.dark .experience-journey-card {
-  background: #060f20;
-  border: 1px solid #002366;
-}
-
-.experience-journey-card:hover {
-  border-color: #002366;
-  box-shadow: 0 0 20px rgba(0, 35, 102, 0.3);
-}
-
-/* Remove backdrop-blur and transparency from all experience section elements */
-.experience-section-mobile .bg-white\/10 {
-  background-color: #ffffff;
-}
-
-.dark .experience-section-mobile .bg-white\/10 {
-  background-color: #060f20;
-}
-
-.experience-section-mobile .bg-white\/5 {
-  background-color: #f1f5f9;
-}
-
-.dark .experience-section-mobile .bg-white\/5 {
-  background-color: #1f305e;
-}
-
-/* Update expandable section backgrounds */
-.experience-expandable-section {
-  background-color: #f1f5f9;
-  border: 1px solid #e2e8f0;
-}
-
-.dark .experience-expandable-section {
-  background-color: #1f305e;
-  border: 1px solid #002366;
-}
-
-.experience-expandable-section.active {
-  border-color: #002366;
-}
-
-/* Add these animations to your existing globals.css file */
-
-@keyframes pulse-subtle {
-  0%,
-  100% {
     opacity: 0.9;
     transform: scale(1);
   }
-  50% {
-    opacity: 1;
-    transform: scale(1.05);
-  }
-}
-
-.animate-pulse-subtle {
-  animation: pulse-subtle 3s infinite ease-in-out;
-}
-
-@keyframes ripple {
-  0% {
-    transform: scale(0);
+  100% {
     opacity: 0.4;
-  }
-  100% {
-    transform: scale(2.5);
-    opacity: 0;
+    transform: scale(0.95);
   }
 }
 
-.animate-ripple {
-  animation: ripple 1s ease-out;
+/* Last accessed timestamp */
+.last-accessed {
+  font-family: "SF Mono", SFMono-Regular, ui-monospace, monospace;
+  font-size: 0.55rem;
+  color: rgba(var(--primary), 0.4);
+  letter-spacing: 0.02em;
 }
 
-/* Add this to ensure smooth transitions */
-.theme-transition-mobile {
-  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+/* Theme transition */
+html {
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Update the journey path gradient in experience section */
-#journey-gradient stop:nth-child(2) {
-  stop-color: #002366;
+html.dark {
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
 }
 
-/* Update the wavy timeline gradient */
-#timeline-gradient stop {
-  stop-color: #002366;
-}
-#timeline-gradient stop:nth-child(2) {
-  stop-color: #b9d9eb;
-}
-
-/* Update blob colors in contact section */
-.absolute.z-0.w-40.h-40.rounded-full.bg-gradient-to-tr {
-  background: linear-gradient(to right top, #002366, #b9d9eb);
+/* Ensure fixed elements transition smoothly */
+header,
+footer,
+.fixed-element {
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
-/* Add these styles to improve the mobile skills wheel animation */
-
-/* 1. Add smooth wheel scrolling styles */
-/* Mobile skills wheel styles */
-.wheel-container {
-  -webkit-overflow-scrolling: touch;
-  scroll-behavior: smooth;
-  overscroll-behavior: contain;
+/* Ensure content transitions smoothly */
+* {
+  transition: background-color 0.5s ease, border-color 0.5s ease, color 0.5s ease;
 }
 
-.wheel-item {
-  transition: transform 0.3s ease, opacity 0.3s ease, scale 0.3s ease;
-  will-change: transform, opacity, scale;
+/* Z-index hierarchy */
+.z-10 {
+  z-index: 10;
+} /* Base content */
+.z-20 {
+  z-index: 20;
+} /* Enhanced content */
+.z-30 {
+  z-index: 30;
+} /* Page transition overlay */
+.z-35 {
+  z-index: 35;
+} /* Last accessed indicator */
+.z-40 {
+  z-index: 40;
+} /* Mid-level elements */
+.z-50 {
+  z-index: 50;
+} /* Modal elements */
+.z-60 {
+  z-index: 60;
+} /* Header and footer */
+.z-70 {
+  z-index: 70;
+} /* Boot animation - highest level */
+
+.z-60 {
+  z-index: 60;
 }
 
-.wheel-item.selected {
-  transform: scale(1.05);
+.z-70 {
+  z-index: 70;
 }
 
-/* Improve mobile touch interactions */
+/* Transition durations */
+.transition-slow {
+  transition-duration: 800ms;
+}
+
+.transition-medium {
+  transition-duration: 500ms;
+}
+
+.transition-fast {
+  transition-duration: 300ms;
+}
+
+/* Ensure no gaps between elements */
+.flex-col > * {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+/* Ensure footer touches content */
+footer {
+  margin-top: 0;
+}
+
+main {
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
+
+/* Fixed header and footer for mobile */
 @media (max-width: 768px) {
-  .skill-wheel-container {
-    touch-action: pan-y;
-    user-select: none;
+  header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 60;
+    backdrop-filter: blur(var(--subtle-blur));
+    -webkit-backdrop-filter: blur(var(--subtle-blur));
   }
 
-  .skill-wheel-item {
-    transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 60;
+    backdrop-filter: blur(var(--subtle-blur));
+    -webkit-backdrop-filter: blur(var(--subtle-blur));
   }
 
-  .skill-wheel-highlight {
-    box-shadow: 0 0 0 2px rgba(0, 35, 102, 0.21, 0.36, 1);
-  }
-
-  .skill-wheel-highlight {
-    box-shadow: 0 0 0 2px rgba(0, 35, 102, 0.2) inset;
-  }
-}
-
-/* Skill card animations for mobile */
-@keyframes skill-card-entrance {
-  0% {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.skill-card-animate {
-  animation: skill-card-entrance 0.3s ease forwards;
-}
-
-/* iOS-style wheel optimizations */
-@media (max-width: 768px) {
-  /* Optimize performance for mobile devices */
-  #skills {
-    will-change: transform;
-    backface-visibility: hidden;
-    perspective: 1000;
-    -webkit-font-smoothing: subpixel-antialiased;
-  }
-
-  /* Ensure smooth animations */
-  .wheel-item {
-    will-change: transform, opacity;
-    backface-visibility: hidden;
-  }
-
-  /* Prevent layout shifts */
-  .wheel-container {
-    contain: layout;
-  }
-
-  /* Optimize touch handling */
-  .wheel-container {
-    touch-action: pan-y;
+  main {
+    margin-top: 60px; /* Adjust based on your header height */
+    margin-bottom: 40px; /* Adjust based on your footer height */
+    min-height: calc(100vh - 100px); /* Adjust based on header + footer height */
+    overflow-y: auto;
     -webkit-overflow-scrolling: touch;
   }
 }
 
-/* Add this class for the theme transition overlay - updated for slower animation */
-.transition-transform-opacity {
-  transition: transform 0.7s cubic-bezier(0.67, 0, 0.2, 1), opacity 0.3s cubic-bezier(0.75, 0, 0.2, 1);
+/* Content container for mobile */
+.mobile-container {
+  padding-left: 16px;
+  padding-right: 16px;
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
 }
 
-.will-change-transform-opacity {
-  will-change: transform, opacity;
+/* Scan lines background - updated for better light mode visibility */
+.bg-scan-lines {
+  background-image: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.15),
+    rgba(0, 0, 0, 0.15) 1px,
+    transparent 1px,
+    transparent 2px
+  );
 }
 
-.origin-center-top {
-  transform-origin: center top;
+/* Light mode specific scan lines */
+.light .bg-scan-lines {
+  background-image: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.1),
+    rgba(0, 0, 0, 0.1) 1px,
+    transparent 1px,
+    transparent 2px
+  );
 }
 
-/* Add these specific utility classes for the theme transition overlay - updated for slower animation */
-.transition-transform-opacity {
-  transition-property: transform, opacity;
-  transition-duration: 0.7s, 0.3s;
-  transition-timing-function: cubic-bezier(0.67, 0, 0.2, 1), cubic-bezier(0.75, 0, 0.2, 1);
-}
-
-/* Mobile section adjustments for proper viewport fitting */
-@media (max-width: 768px) {
-  section[id] {
-    min-height: calc(100vh - 56px); /* Adjust for navbar height */
-    scroll-margin-top: 56px;
-  }
-
-  /* Ensure content doesn't overflow */
-  .overflow-y-auto {
-    max-height: calc(100vh - 120px);
-  }
-
-  /* Adjust vertical spacing for mobile */
-  #about,
-  #skills,
-  #education,
-  #experience,
-  #publications,
-  #contact {
-    padding-top: 60px;
-  }
-}
-
-/* Mobile-specific styles for reduced whitespace */
-@media (max-width: 768px) {
-  /* Reduce whitespace between navbar and section titles */
-  section[id] {
-    padding-top: 0 !important;
-    margin-top: 0 !important;
-  }
-
-  /* Section title adjustments */
-  h2.text-3xl,
-  h2.text-2xl {
-    margin-top: 0 !important;
-    margin-bottom: 0.5rem !important;
-  }
-
-  /* Adjust scroll margin to account for navbar */
-  section[id] {
-    scroll-margin-top: 56px;
-  }
-
-  /* Ensure content doesn't overflow */
-  .overflow-y-auto {
-    max-height: calc(100vh - 100px);
-  }
-}
-
-/* Tech grid styles */
-.tech-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-  gap: 8px;
-}
-
-.tech-grid .tech-pill {
-  margin: 0;
-  text-align: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 28px;
-}
-
-/* Responsibility text truncation */
-.responsibility-text {
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.responsibility-text.expanded {
-  -webkit-line-clamp: unset;
-}
-
-/* Update the timeline-flow animation to flow from bottom to top */
-@keyframes timeline-flow {
+/* Glitch animation */
+@keyframes glitch {
   0% {
-    transform: translateY(100%);
+    transform: translate(0);
+  }
+  20% {
+    transform: translate(-2px, 2px);
+  }
+  40% {
+    transform: translate(-2px, -2px);
+  }
+  60% {
+    transform: translate(2px, 2px);
+  }
+  80% {
+    transform: translate(2px, -2px);
   }
   100% {
-    transform: translateY(-100%);
+    transform: translate(0);
   }
 }
 
-/* Add these new styles for the experience section enhancements */
-
-/* Responsibility text truncation with improved styling */
-.responsibility-text {
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  position: relative;
+.animate-glitch {
+  animation: glitch 0.2s ease-in-out;
 }
 
-.responsibility-text.expanded {
-  -webkit-line-clamp: unset;
-}
-
-/* Enhanced tech grid styles with hover effects */
-.tech-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-  gap: 8px;
-}
-
-.tech-grid .tech-pill {
-  margin: 0;
-  text-align: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 28px;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
-}
-
-.tech-grid .tech-pill:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 6px rgba(0, 35, 102, 0.15);
-}
-
-.dark .tech-grid .tech-pill:hover {
-  background: rgba(99, 102, 241, 0.4);
-}
-
-/* Enhanced card animations */
-.responsibility-card {
-  background-color: #f8fafc;
-  border-radius: 8px;
-  padding: 10px 12px;
-  margin-bottom: 8px;
-  position: relative;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  transition: all 0.3s ease;
-  cursor: pointer;
-}
-
-.responsibility-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-}
-
-.dark .responsibility-card {
-  background-color: rgba(31, 48, 94, 0.3);
-}
-
-.dark .responsibility-card:hover {
-  background-color: rgba(31, 48, 94, 0.5);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-}
-
-/* Page load animations for experience section */
-@keyframes fadeSlideUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
+/* Cold boot text flicker */
+@keyframes textFlicker {
+  0% {
+    opacity: 0.8;
   }
-  to {
+  10% {
+    opacity: 0.1;
+  }
+  20% {
+    opacity: 0.9;
+  }
+  30% {
+    opacity: 0.7;
+  }
+  40% {
     opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.fade-slide-up {
-  animation: fadeSlideUp 0.6s ease-out forwards;
-  opacity: 0;
-}
-
-.fade-slide-up-delay-1 {
-  animation-delay: 0.2s;
-}
-
-.fade-slide-up-delay-2 {
-  animation-delay: 0.4s;
-}
-
-.fade-slide-up-delay-3 {
-  animation-delay: 0.6s;
-}
-
-/* Dot grid pattern for decorative elements */
-.dot-grid {
-  position: relative;
-}
-
-.dot-grid::before {
-  content: "";
-  position: absolute;
-  top: -10px;
-  left: 0;
-  width: 60px;
-  height: 10px;
-  background-image: radial-gradient(circle, currentColor 1px, transparent 1px);
-  background-size: 6px 6px;
-  opacity: 0.5;
-}
-
-/* Vertical divider with gradient and dots */
-.vertical-divider {
-  position: absolute;
-  left: 50%;
-  top: 10%;
-  height: 80%;
-  width: 1px;
-  background: linear-gradient(to bottom, transparent, rgba(59, 130, 246, 0.3), transparent);
-}
-
-.vertical-divider::before,
-.vertical-divider::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background-color: rgba(59, 130, 246, 0.5);
-}
-
-.vertical-divider::before {
-  top: 20%;
-}
-
-.vertical-divider::after {
-  bottom: 20%;
-}
-
-/* Update the timeline-flow animation to flow from bottom to top */
-@keyframes timeline-flow {
-  0% {
-    transform: translateY(100%);
-  }
-  100% {
-    transform: translateY(-100%);
-  }
-}
-
-/* Enhanced experience card with hover effects */
-.experience-content-item {
-  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.experience-content-item:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 30px rgba(0, 35, 102, 0.1);
-}
-
-.dark .experience-content-item:hover {
-  box-shadow: 0 8px 30px rgba(0, 35, 102, 0.2);
-}
-
-/* Enhanced technology section styling */
-.tech-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 8px;
-}
-
-/* Updated tech pill styles for a more attractive look */
-.tech-pill {
-  background: linear-gradient(to right, #f0f4ff, #e0e7ff);
-  color: #4338ca;
-  padding: 6px 12px;
-  border-radius: 6px;
-  font-size: 0.7rem;
-  font-weight: 500;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-  transition: all 0.2s ease;
-  border: 1px solid rgba(79, 70, 229, 0.1);
-}
-
-.tech-pill:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  background: linear-gradient(to right, #e0e7ff, #c7d2fe);
-}
-
-.dark .tech-pill {
-  background: linear-gradient(to right, rgba(30, 41, 59, 0.8), rgba(30, 41, 59, 0.6));
-  color: #93c5fd;
-  border: 1px solid rgba(147, 197, 253, 0.2);
-}
-
-.dark .tech-pill:hover {
-  background: linear-gradient(to right, rgba(30, 41, 59, 0.9), rgba(30, 41, 59, 0.7));
-  border-color: rgba(147, 197, 253, 0.3);
-}
-
-/* Experience title area styling */
-.experience-title-area {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  padding: 16px;
-  background: linear-gradient(to right, #002366, #1f305e);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.dark .experience-title-area {
-  background: linear-gradient(to right, #1f305e, #060f20);
-}
-
-.experience-meta-item {
-  display: flex;
-  align-items: center;
-  font-size: 0.875rem;
-  color: #b9d9eb;
-  margin-bottom: 4px;
-}
-
-.experience-meta-item svg {
-  margin-left: 6px;
-}
-
-/* Tech section container */
-.tech-section-container {
-  background-color: rgba(248, 250, 252, 0.8);
-  border-radius: 8px;
-  padding: 16px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  transition: all 0.3s ease;
-}
-
-.tech-section-container:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  transform: translateY(-2px);
-}
-
-.dark .tech-section-container {
-  background-color: rgba(15, 23, 42, 0.6);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-}
-
-.dark .tech-section-container:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-}
-
-/* Tech section header */
-.tech-section-header {
-  display: flex;
-  align-items: center;
-  margin-bottom: 12px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid rgba(203, 213, 225, 0.5);
-}
-
-.dark .tech-section-header {
-  border-bottom-color: rgba(51, 65, 85, 0.5);
-}
-
-.tech-section-header svg {
-  margin-right: 8px;
-  color: #3b82f6;
-}
-
-.dark .tech-section-header svg {
-  color: #60a5fa;
-}
-
-/* Add shine animation for nav links */
-@keyframes shine {
-  0% {
-    transform: translateX(-100%);
-  }
-  100% {
-    transform: translateX(100%);
-  }
-}
-
-.animate-shine {
-  animation: shine 1.5s ease-in-out infinite;
-}
-
-/* Add these animations to your globals.css */
-@keyframes float {
-  0%,
-  100% {
-    transform: translateY(0) translateX(0);
-  }
-  25% {
-    transform: translateY(-10px) translateX(10px);
   }
   50% {
-    transform: translateY(0) translateX(20px);
-  }
-  75% {
-    transform: translateY(10px) translateX(10px);
-  }
-}
-
-/* Skill card hover effect */
-.skill-card-hover {
-  transition: all 0.3s ease;
-}
-
-.skill-card-hover:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-}
-
-/* Skill category tab animations */
-.category-tab {
-  position: relative;
-  overflow: hidden;
-}
-
-.category-tab::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background-color: currentColor;
-  transform: scaleX(0);
-  transform-origin: right;
-  transition: transform 0.3s ease;
-}
-
-.category-tab:hover::after {
-  transform: scaleX(1);
-  transform-origin: left;
-}
-
-.category-tab.active::after {
-  transform: scaleX(1);
-}
-
-/* Card flip styles for skills section */
-.flip-card {
-  perspective: 1000px;
-  cursor: pointer;
-}
-
-.flip-card-inner {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  transition: transform 0.6s;
-  transform-style: preserve-3d;
-}
-
-.flip-card-inner.flipped {
-  transform: rotateY(180deg);
-}
-
-.flip-card-front,
-.flip-card-back {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
-  display: flex;
-  flex-direction: column;
-}
-
-.flip-card-front {
-  transform: rotateY(0deg);
-}
-
-.flip-card-back {
-  transform: rotateY(180deg);
-}
-
-/* Mobile flip card styles */
-.flip-card-mobile {
-  perspective: 1000px;
-  cursor: pointer;
-}
-
-.flip-card-inner-mobile {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  transition: transform 0.6s;
-  transform-style: preserve-3d;
-}
-
-.flip-card-inner-mobile.flipped {
-  transform: rotateY(180deg);
-}
-
-.flip-card-front-mobile,
-.flip-card-back-mobile {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
-}
-
-.flip-card-front-mobile {
-  transform: rotateY(0deg);
-}
-
-.flip-card-back-mobile {
-  transform: rotateY(180deg);
-}
-
-/* Add these new animation keyframes for the education section */
-@keyframes slide-in-left {
-  from {
-    opacity: 0;
-    transform: translateX(-50px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes slide-in-right {
-  from {
-    opacity: 0;
-    transform: translateX(50px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-.animate-slide-in-left {
-  animation: slide-in-left 0.8s ease-out forwards;
-}
-
-.animate-slide-in-right {
-  animation: slide-in-right 0.8s ease-out forwards;
-}
-
-/* Fix the education-event class to ensure proper visibility */
-.education-event {
-  position: relative;
-  width: 50%;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  padding: 0 32px 60px 0;
-  z-index: 2;
-  min-height: 220px;
-}
-
-/* Add these new animation keyframes for slide-out animations */
-@keyframes slide-out-left {
-  from {
-    opacity: 1;
-    transform: translateX(0);
-  }
-  to {
-    opacity: 0;
-    transform: translateX(-50px);
-  }
-}
-
-@keyframes slide-out-right {
-  from {
-    opacity: 1;
-    transform: translateX(0);
-  }
-  to {
-    opacity: 0;
-    transform: translateX(50px);
-  }
-}
-
-.animate-slide-out-left {
-  animation: slide-out-left 0.8s ease-out forwards;
-}
-
-.animate-slide-out-right {
-  animation: slide-out-right 0.8s ease-out forwards;
-}
-
-/* Add these styles for section exit animations */
-.section-exited .education-card {
-  animation: card-exit 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-}
-
-@keyframes card-exit {
-  0% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  100% {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-}
-
-/* Experience section exit animations */
-.experience-timeline-item-exit {
-  animation: experience-item-exit 0.6s ease-out forwards;
-}
-
-@keyframes experience-item-exit {
-  0% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  100% {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-}
-
-/* Add these styles to ensure smooth transitions between sections */
-.section-transition {
-  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
-}
-
-/* Enhance the timeline animations */
-.timeline-line-glow {
-  transition: opacity 0.5s ease-out;
-}
-
-.section-exited .timeline-line-glow {
-  opacity: 0;
-}
-
-/* Enhance the wavy timeline exit animation */
-.section-exited .wavy-timeline {
-  animation: wavy-timeline-exit 0.8s ease-out forwards;
-}
-
-@keyframes wavy-timeline-exit {
-  0% {
-    opacity: 1;
-    stroke-dashoffset: 0;
-  }
-  100% {
-    opacity: 0;
-    stroke-dashoffset: 1000;
-  }
-}
-
-/* Timeline particle exit animation */
-.section-exited .timeline-particle {
-  animation: timeline-particle-exit 0.5s ease-out forwards;
-}
-
-@keyframes timeline-particle-exit {
-  0% {
     opacity: 0.5;
   }
-  100% {
-    opacity: 0;
+  60% {
+    opacity: 0.8;
   }
-}
-
-/* Add these refined exit animation styles */
-
-/* Direction-specific exit animations */
-.exiting-right .education-event {
-  animation-name: slide-out-right !important;
-}
-
-.exiting-left .timeline-item-modern {
-  animation-name: slide-out-left !important;
-}
-
-/* Refined slide-out animations with improved timing */
-@keyframes slide-out-right {
-  0% {
+  70% {
+    opacity: 0.7;
+  }
+  80% {
+    opacity: 0.9;
+  }
+  90% {
+    opacity: 0.8;
+  }
+  100% {
     opacity: 1;
-    transform: translateX(0);
-  }
-  100% {
-    opacity: 0;
-    transform: translateX(80px);
   }
 }
 
-@keyframes slide-out-left {
-  0% {
-    opacity: 1;
-    transform: translateX(0);
-  }
-  100% {
-    opacity: 0;
-    transform: translateX(-80px);
-  }
+.animate-flicker {
+  animation: textFlicker 2s linear;
 }
 
-/* Ensure animations only run when explicitly triggered */
-.animate-slide-out-left {
-  animation: slide-out-left 0.8s cubic-bezier(0.5, 0, 0.75, 0) forwards;
-  pointer-events: none;
-}
-
-.animate-slide-out-right {
-  animation: slide-out-right 0.8s cubic-bezier(0.5, 0, 0.75, 0) forwards;
-  pointer-events: none;
-}
-
-/* Improve the intersection observer trigger threshold */
-.section-transition-threshold {
-  position: absolute;
-  height: 10px;
-  left: 0;
-  right: 0;
-  opacity: 0;
-  pointer-events: none;
-}
-
-.section-transition-threshold-top {
-  top: 10%;
-}
-
-.section-transition-threshold-bottom {
-  bottom: 10%;
-}
-
-/* Ensure smooth transitions between sections */
-.section-transition {
-  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
-}
-
-/* Prevent animations during normal scrolling */
-.scrolling-within {
-  animation: none !important;
-}
-
-/* Float animation for particles */
-@keyframes float-particle {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-}
-
-/* Add these new animation styles for the skills section */
-
-/* Add float animation for the skills section background elements */
-@keyframes float {
-  0%,
-  100% {
-    transform: translate(0, 0);
-  }
-  25% {
-    transform: translate(5px, -5px);
-  }
-  50% {
-    transform: translate(10px, 5px);
-  }
-  75% {
-    transform: translate(5px, 10px);
-  }
-}
-
-/* Enhanced skill card hover effect */
-.skill-card-hover {
-  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.skill-card-hover:hover {
-  transform: translateY(-5px) scale(1.02);
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-}
-
-/* Skill bar animation */
-@keyframes skill-bar-fill {
+/* System boot progress bar */
+@keyframes bootProgress {
   from {
     width: 0;
   }
   to {
-    width: var(--skill-width);
+    width: 100%;
   }
 }
 
-/* Skill category tab animations */
-.category-tab {
-  position: relative;
-  overflow: hidden;
+.animate-boot-progress {
+  animation: bootProgress 5s linear forwards;
 }
 
-.category-tab::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background-color: currentColor;
-  transform: scaleX(0);
-  transform-origin: right;
-  transition: transform 0.3s ease;
-}
-
-.category-tab:hover::after {
-  transform: scaleX(1);
-  transform-origin: left;
-}
-
-.category-tab.active::after {
-  transform: scaleX(1);
-}
-
-/* Gradient text animation */
-@keyframes gradient-text {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
-
-.gradient-text {
-  background: linear-gradient(90deg, #002366, #1f305e, #b9d9eb, #1f305e, #002366);
-  background-size: 200% auto;
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: gradient-text 5s ease infinite;
-}
-
-/* Skill section background animation */
-.skills-bg-animate {
-  position: relative;
-  overflow: hidden;
-}
-
-.skills-bg-animate::before {
-  content: "";
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: radial-gradient(circle, rgba(0, 35, 102, 0.1) 0%, rgba(0, 35, 102, 0) 70%);
-  animation: rotate 20s linear infinite;
-  z-index: -1;
-}
-
-.dark .skills-bg-animate::before {
-  background: radial-gradient(circle, rgba(185, 217, 235, 0.1) 0%, rgba(185, 217, 235, 0) 70%);
-}
-
-@keyframes rotate {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-/* Add these new animations for the education section background */
-@keyframes float {
+/* Terminal typing cursor animation */
+@keyframes cursorBlink {
   0%,
   100% {
-    transform: translate(0, 0);
-  }
-  25% {
-    transform: translate(5px, -5px);
+    opacity: 1;
   }
   50% {
-    transform: translate(10px, 5px);
+    opacity: 0;
+  }
+}
+
+.animate-cursor-blink::after {
+  content: "|";
+  animation: cursorBlink 1s infinite;
+  margin-left: 2px;
+}
+
+/* Subtle data transfer animation */
+@keyframes dataTransfer {
+  0% {
+    background-position: 0% 0%;
+  }
+  100% {
+    background-position: 100% 0%;
+  }
+}
+
+.animate-data-transfer {
+  background: linear-gradient(
+    90deg,
+    rgba(var(--primary), 0.1) 0%,
+    rgba(var(--primary), 0.3) 50%,
+    rgba(var(--primary), 0.1) 100%
+  );
+  background-size: 200% 100%;
+  animation: dataTransfer 2s linear infinite;
+}
+
+/* Systemic, abrupt animations */
+
+/* Mechanical glitch animation - more abrupt */
+@keyframes systemicGlitch {
+  0% {
+    transform: translate(0);
+  }
+  25% {
+    transform: translate(-3px, 0);
+  }
+  50% {
+    transform: translate(3px, 0);
   }
   75% {
-    transform: translate(5px, 10px);
-  }
-}
-
-/* Education section background patterns */
-.education-bg-pattern {
-  background-image: radial-gradient(circle, rgba(0, 35, 102, 0.08) 1px, transparent 1px);
-  background-size: 24px 24px;
-  background-position: 0 0;
-}
-
-.dark .education-bg-pattern {
-  background-image: radial-gradient(circle, rgba(185, 217, 235, 0.08) 1px, transparent 1px);
-}
-
-/* Experience section background patterns */
-.experience-bg-pattern {
-  background-image: radial-gradient(circle, rgba(0, 35, 102, 0.08) 1px, transparent 1px);
-  background-size: 24px 24px;
-  background-position: 0 0;
-}
-
-.dark .experience-bg-pattern {
-  background-image: radial-gradient(circle, rgba(185, 217, 235, 0.08) 1px, transparent 1px);
-}
-
-/* Experience section grid pattern */
-.experience-grid-pattern {
-  background-image: linear-gradient(to right, rgba(0, 35, 102, 0.05) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(0, 35, 102, 0.05) 1px, transparent 1px);
-  background-size: 40px 40px;
-}
-
-.dark .experience-grid-pattern {
-  background-image: linear-gradient(to right, rgba(185, 217, 235, 0.05) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(185, 217, 235, 0.05) 1px, transparent 1px);
-}
-
-/* Enhanced timeline animations */
-.timeline-line-modern {
-  position: absolute;
-  left: 50%;
-  top: 0;
-  bottom: 0;
-  width: 3px;
-  background: linear-gradient(to bottom, #060f20 0%, #002366 100%);
-  z-index: 1;
-  transform: translateX(-50%);
-  overflow: hidden;
-  box-shadow: 0 0 10px rgba(0, 35, 102, 0.2);
-}
-
-.dark .timeline-line-modern {
-  background: linear-gradient(to bottom, #1f305e 0%, #b9d9eb 100%);
-  box-shadow: 0 0 10px rgba(185, 217, 235, 0.2);
-}
-
-/* Enhanced timeline dot animation */
-.timeline-dot-modern {
-  position: absolute;
-  top: 50%;
-  width: 36px;
-  height: 36px;
-  background: #060f20;
-  border: 3px solid white;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 10;
-  transition: all 0.3s ease;
-  transform: translateY(-50%);
-  box-shadow: 0 0 0 4px rgba(226, 232, 240, 0.5);
-  animation: pulse-dot 2s infinite;
-}
-
-@keyframes pulse-dot {
-  0% {
-    box-shadow: 0 0 0 0 rgba(0, 35, 102, 0.4);
-  }
-  70% {
-    box-shadow: 0 0 0 10px rgba(0, 35, 102, 0);
+    transform: translate(-3px, 0);
   }
   100% {
-    box-shadow: 0 0 0 0 rgba(0, 35, 102, 0);
+    transform: translate(0);
   }
 }
 
-.dark .timeline-dot-modern {
-  animation: pulse-dot-dark 2s infinite;
+.animate-systemic-glitch {
+  animation: systemicGlitch 0.15s steps(2) 1; /* Using steps for abrupt movement */
 }
 
-@keyframes pulse-dot-dark {
+/* Mechanical text flicker - more abrupt */
+@keyframes mechanicalFlicker {
   0% {
-    box-shadow: 0 0 0 0 rgba(185, 217, 235, 0.4);
+    opacity: 1;
   }
-  70% {
-    box-shadow: 0 0 0 10px rgba(185, 217, 235, 0);
+  10% {
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  30% {
+    opacity: 0;
+  }
+  40% {
+    opacity: 1;
   }
   100% {
-    box-shadow: 0 0 0 0 rgba(185, 217, 235, 0);
+    opacity: 1;
   }
 }
 
-/* Enhanced content slate animations */
-.responsibility-card {
-  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
-  border-left: 3px solid transparent;
+.animate-mechanical-flicker {
+  animation: mechanicalFlicker 1s steps(1) 1; /* Using steps for abrupt changes */
 }
 
-.responsibility-card:hover {
-  border-left-color: #002366;
-  padding-left: 10px;
+/* Mechanical pulse - more abrupt */
+@keyframes mechanicalPulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
 }
 
-.dark .responsibility-card:hover {
-  border-left-color: #b9d9eb;
+.animate-mechanical-pulse {
+  animation: mechanicalPulse 1s steps(1) infinite; /* Using steps for abrupt changes */
 }
 
-/* Enhanced tech pill animations */
-.tech-pill {
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
+/* System boot progress bar - linear */
+@keyframes systemicProgress {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
 }
 
-.tech-pill::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-  transition: left 0.5s ease;
+.animate-systemic-progress {
+  animation: systemicProgress 5s linear forwards; /* Linear, no easing */
 }
 
-.tech-pill:hover::after {
-  left: 100%;
+/* Folder hover effect */
+@keyframes folderHover {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-2px);
+  }
 }
 
-/* Enhanced timeline card animations */
-.timeline-card-modern {
-  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
-  border-left: 3px solid transparent;
+.folder-hover:hover {
+  animation: folderHover 0.2s forwards;
 }
 
-.timeline-card-modern:hover {
-  transform: translateX(5px);
+/* Folder shadow effect */
+.folder-shadow {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.timeline-item-modern.right .timeline-card-modern:hover {
-  transform: translateX(-5px);
+.folder-shadow:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
-.active-card {
-  border-left-color: #002366;
-  box-shadow: 0 6px 16px rgba(0, 35, 102, 0.15);
+@keyframes pulseBorder {
+  0%,
+  100% {
+    border-color: rgba(var(--primary), 0.2);
+  }
+  50% {
+    border-color: rgba(var(--primary), 0.4);
+  }
 }
 
-.dark .active-card {
-  border-left-color: #b9d9eb;
+.pulse-animation {
+  animation: pulseBorder 2s infinite;
+}
+
+/* Terminal-specific styles */
+.terminal-text {
+  font-family: "SF Mono", SFMono-Regular, ui-monospace, "Cascadia Mono", "Segoe UI Mono", "Liberation Mono", Menlo,
+    monospace;
+  font-size: 0.75rem;
+  color: rgba(var(--primary), 0.7);
+}
+
+.terminal-cursor {
+  display: inline-block;
+  width: 0.5rem;
+  height: 1rem;
+  background-color: rgba(var(--primary), 0.7);
+  animation: blink 1s step-end infinite;
 }
 
 @keyframes blink {
@@ -2989,47 +702,292 @@ section[id] {
   }
 }
 
-.animate-blink {
-  animation: blink 0.8s step-end infinite;
+.terminal-history::-webkit-scrollbar {
+  width: 4px;
 }
 
-/* 3D tilt effect for elements */
-.tilt-effect {
-  transform-style: preserve-3d;
-  transition: transform 0.3s ease;
+.terminal-history::-webkit-scrollbar-track {
+  background: transparent;
 }
 
-.tilt-effect:hover {
-  transform: perspective(1000px) rotateX(5deg) rotateY(5deg);
+.terminal-history::-webkit-scrollbar-thumb {
+  background-color: rgba(var(--primary), 0.2);
+  border-radius: 0;
 }
 
-/* Gradient background animation */
-@keyframes gradient-shift {
+.terminal-history::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(var(--primary), 0.4);
+}
+
+/* Easter egg styles */
+@keyframes easterEggReveal {
   0% {
-    background-position: 0% 50%;
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.05;
+  }
+  20% {
+    opacity: 0.2;
+  }
+  30% {
+    opacity: 0.05;
+  }
+  40% {
+    opacity: 0.15;
   }
   50% {
-    background-position: 100% 50%;
+    opacity: 0.05;
+  }
+  60% {
+    opacity: 0.2;
+  }
+  70% {
+    opacity: 0.05;
+  }
+  80% {
+    opacity: 0.1;
+  }
+  90% {
+    opacity: 0.15;
   }
   100% {
-    background-position: 0% 50%;
+    opacity: 0;
   }
 }
 
-.animate-gradient {
-  background-size: 200% 200%;
-  animation: gradient-shift 8s ease infinite;
+.easter-egg-reveal {
+  animation: easterEggReveal 0.5s steps(10) forwards;
 }
 
-/* Grid patterns for background */
-.bg-grid-pattern {
-  background-image: linear-gradient(to right, rgba(0, 35, 102, 0.1) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(0, 35, 102, 0.1) 1px, transparent 1px);
-  background-size: 30px 30px;
+.easter-egg-text {
+  text-shadow: 0 0 2px rgba(255, 0, 0, 0.5);
+  letter-spacing: 0.05em;
 }
 
-.bg-grid-pattern-dark {
-  background-image: linear-gradient(to right, rgba(185, 217, 235, 0.1) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(185, 217, 235, 0.1) 1px, transparent 1px);
-  background-size: 30px 30px;
+/* Add a subtle glitch effect to the easter egg text */
+@keyframes textDistortion {
+  0% {
+    transform: skew(0deg, 0deg);
+    letter-spacing: 0.05em;
+  }
+  25% {
+    transform: skew(1deg, 0.5deg);
+    letter-spacing: 0.07em;
+  }
+  50% {
+    transform: skew(-1deg, -0.5deg);
+    letter-spacing: 0.03em;
+  }
+  75% {
+    transform: skew(0.5deg, 1deg);
+    letter-spacing: 0.06em;
+  }
+  100% {
+    transform: skew(0deg, 0deg);
+    letter-spacing: 0.05em;
+  }
+}
+
+.easter-egg-text {
+  animation: textDistortion 0.3s infinite;
+}
+
+/* Mobile-specific styles */
+@media (max-width: 640px) {
+  .section-title {
+    font-size: 1.5rem;
+  }
+
+  .section-title::before {
+    width: 5rem;
+  }
+
+  .last-accessed {
+    font-size: 0.5rem;
+  }
+
+  .recording-dot {
+    width: 4px;
+    height: 4px;
+  }
+
+  /* Mobile-specific modal adjustments */
+  .modal-content {
+    width: 95%;
+    max-width: 95%;
+    margin: 0 auto;
+    padding: 0.75rem;
+  }
+
+  /* Reduce padding for mobile */
+  .p-4 {
+    padding: 0.75rem;
+  }
+
+  /* Adjust font sizes for mobile */
+  .text-base {
+    font-size: 0.875rem;
+  }
+
+  .text-sm {
+    font-size: 0.75rem;
+  }
+
+  .text-xs {
+    font-size: 0.7rem;
+  }
+}
+
+/* Blinking cursor animation for terminal */
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+.animate-\[blink_0\.5s_ease-in-out_infinite\] {
+  animation: blink 0.5s ease-in-out infinite;
+}
+
+/* Responsive modal adjustments */
+@media (max-width: 640px) {
+  .modal-content {
+    width: 95%;
+    max-height: 80vh;
+    padding: 1rem;
+  }
+
+  .modal-header {
+    padding: 0.5rem 1rem;
+  }
+
+  .modal-footer {
+    padding: 0.5rem 1rem;
+  }
+}
+
+/* Responsive text adjustments */
+@media (max-width: 640px) {
+  .text-xs {
+    font-size: 0.65rem;
+  }
+
+  .text-sm {
+    font-size: 0.75rem;
+  }
+}
+
+/* Hide native cursor when our custom cursor is active */
+.hide-cursor {
+  cursor: none !important;
+}
+
+.hide-cursor * {
+  cursor: none !important;
+}
+
+/* Optimize animations for better performance */
+@media (prefers-reduced-motion: reduce) {
+  .cursor-target-ring,
+  .cursor-crosshair-h,
+  .cursor-crosshair-v,
+  .cursor-text-highlight {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+/* Ensure hardware acceleration for cursor elements */
+.fixed.pointer-events-none {
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+}
+
+/* Performance optimizations */
+.transform-gpu {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  will-change: transform;
+}
+
+.will-change-opacity {
+  will-change: opacity;
+}
+
+.will-change-transform {
+  will-change: transform;
+}
+
+/* Reduce layout shifts */
+.content-visibility-auto {
+  content-visibility: auto;
+}
+
+/* Optimize animations for reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Optimize paint performance */
+.paint-optimization {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* Optimize for touch devices */
+@media (hover: none) {
+  .hover-effect {
+    display: none;
+  }
+}
+
+/* Optimize images */
+img {
+  content-visibility: auto;
+}
+
+/* Optimize scrolling */
+.optimize-scroll {
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+
+/* Optimize font loading */
+.font-display {
+  font-display: swap;
+}
+
+/* Exclude transforms and opacity from transitions to prevent animation flashes */
+.transform-transition-exclude {
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+  transition-property: background-color, border-color, color;
+}
+
+/* Ensure animations don't cause theme flashes */
+.animation-no-theme-flash {
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+}
+
+/* Modal backdrop with subtle blur */
+.modal-backdrop {
+  backdrop-filter: blur(calc(var(--subtle-blur) * 2));
+  -webkit-backdrop-filter: blur(calc(var(--subtle-blur) * 2));
 }
