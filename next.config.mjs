@@ -24,7 +24,7 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   experimental: {
-    optimizeCss: true,
+    optimizeCss: false, // Disable optimizeCss which requires critters
     legacyBrowsers: false,
     browsersListForSwc: true,
     gzipSize: true,
