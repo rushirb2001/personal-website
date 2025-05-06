@@ -12,29 +12,12 @@ export const metadata: Metadata = {
     maximumScale: 1,
   },
   icons: {
-    icon: [
-      { url: "/favicon.ico", sizes: "any" },
-      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
-      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
-      { url: "/favicon.png", type: "image/svg+xml" },
-    ],
-    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
-    other: [
-      {
-        rel: "mask-icon",
-        url: "/favicon.png",
-        color: "#00ff00",
-      },
-      {
-        rel: "manifest",
-        url: "/site.webmanifest",
-      },
-    ],
+    icon: "https://v9fl0vq2qbxv8yrh.public.blob.vercel-storage.com/favicon-iZp2vAIsQyqsrMC97HCq9KOcfFFtgt.ico",
+    shortcut: "https://v9fl0vq2qbxv8yrh.public.blob.vercel-storage.com/favicon-iZp2vAIsQyqsrMC97HCq9KOcfFFtgt.ico",
+    apple: "https://v9fl0vq2qbxv8yrh.public.blob.vercel-storage.com/apple-touch-icon-i2OMEl4KJIHzWPGval5Fmnx2KxDqhQ.png",
   },
   other: {
     appleWebAppCapable: "yes",
-    themeColor: "#000000",
-    msapplicationTileColor: "#000000",
   },
     generator: 'v0.dev'
 }
