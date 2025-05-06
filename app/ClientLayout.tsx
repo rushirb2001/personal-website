@@ -13,6 +13,8 @@ import { ClientOnly } from "@/components/ui/client-only"
 import { CustomCursor } from "@/components/ui/custom-cursor"
 import { TouchFeedback } from "@/components/ui/touch-feedback"
 import { motion, AnimatePresence } from "framer-motion"
+import { Analytics } from "@vercel/analytics/react"
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 export default function ClientLayout({
   children,
@@ -216,6 +218,8 @@ export default function ClientLayout({
               </AnimatePresence>
             </div>
           </NavigationProvider>
+          <Analytics />
+          <SpeedInsights />
         </ThemeProvider>
       </body>
     </html>
