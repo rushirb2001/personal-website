@@ -1,0 +1,179 @@
+"use client"
+
+import { useState, useEffect } from "react"
+import { motion } from "framer-motion"
+import { getPublishedPosts } from "@/lib/blog-data"
+import { formatDate } from "@/lib/utils"
+import { ArrowRight, Calendar, Tag, Terminal } from "lucide-react"
+import Link from "next/link"
+import { Button } from "@/components/ui/button"
+import { PageLayout } from "@/components/layout/page-layout"
+import { useRouter } from "next/navigation"
+
+export default function UpdatesPage() {
+  const posts = getPublishedPosts()
+  const [selectedTags, setSelectedTags] = useState<string[]>([])
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+  const router = useRouter()
+  const [mounted, setMounted] = useState(false)
+
+  // Get all unique tags
+  const allTags = Array.from(new Set(posts.flatMap((post) => post.tags)))
+
+  // Filter posts by selected tags
+  const filteredPosts =
+    selectedTags.length > 0 ? posts.filter((post) => post.tags.some((tag) => selectedTags.includes(tag))) : posts
+
+  // Toggle tag selection
+  const toggleTag = (tag: string) => {
+    setSelectedTags((prev) => (prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]))
+  }
+
+  // Use useEffect to ensure we're mounted before trying to use context
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  // Function to navigate without using the context
+  const handleReturnToMain = () => {
+    router.push("/")
+  }
+
+  return (
+    <PageLayout title="Updates" subtitle="SYSTEM LOGS AND USER ACTIVITY">
+      <div className="container max-w-4xl mx-auto">
+        <div className="mb-8 border border-primary/20 p-4 bg-background dark:bg-eerie-black/50">
+          <div className="flex flex-col mb-4">
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center">
+                <Terminal className="h-4 w-4 mr-2 text-primary/70" />
+                <h1 className="text-lg font-sf-mono">USER UPDATES</h1>
+              </div>
+              <div className="text-xs font-sf-mono text-primary/70">
+                DISPLAYING {filteredPosts.length} RECORD{filteredPosts.length !== 1 ? "S" : ""}
+              </div>
+            </div>
+
+            {/* Tags filter dropdown */}
+            <div className="relative w-full border border-primary/20 mb-4 mt-2 bg-eerie-gray/10">
+              <button
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                className="w-full flex items-center justify-between px-3 py-2 text-xs font-sf-mono bg-eerie-gray/20"
+              >
+                <span className="text-primary/70">
+                  {selectedTags.length > 0
+                    ? `FILTER: ${selectedTags.length} TAG${selectedTags.length !== 1 ? "S" : ""} SELECTED`
+                    : "FILTER BY TAG"}
+                </span>
+                <span className="text-primary/70">{isDropdownOpen ? "▲" : "▼"}</span>
+              </button>
+
+              {isDropdownOpen && (
+                <div className="absolute z-10 w-full bg-background dark:bg-eerie-black/90 border border-primary/20 border-t-0 max-h-60 overflow-y-auto">
+                  <div className="p-2 grid grid-cols-2 gap-1">
+                    {allTags.map((tag) => (
+                      <div key={tag} className="flex items-center">
+                        <input
+                          type="checkbox"
+                          id={`tag-${tag}`}
+                          checked={selectedTags.includes(tag)}
+                          onChange={() => {
+                            toggleTag(tag)
+                            setIsDropdownOpen(false) // Auto-collapse after selection
+                          }}
+                          className="mr-2 accent-primary"
+                        />
+                        <label htmlFor={`tag-${tag}`} className="text-xs font-sf-mono cursor-pointer">
+                          {tag.toUpperCase()}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                  {selectedTags.length > 0 && (
+                    <div className="border-t border-primary/20 p-2 flex justify-between bg-eerie-gray/20">
+                      <span className="text-xs font-sf-mono text-primary/70">{selectedTags.length} SELECTED</span>
+                      <button
+                        onClick={() => {
+                          setSelectedTags([])
+                          setIsDropdownOpen(false) // Auto-collapse after clearing
+                        }}
+                        className="text-xs font-sf-mono text-primary/70 hover:text-primary"
+                      >
+                        CLEAR ALL
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Posts list */}
+          <div className="space-y-4">
+            {filteredPosts.map((post, index) => (
+              <motion.div
+                key={post.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1, duration: 0.5 }}
+                className="border border-primary/20 hover:border-primary/40 transition-colors"
+              >
+                <Link href={`/updates/${post.id}`} className="block">
+                  <div className="p-4 cursor-pointer hover:bg-primary/5 transition-colors">
+                    <div className="flex justify-between items-start mb-2">
+                      <h2 className="text-sm font-sf-mono font-medium">{post.title}</h2>
+                      <div className="flex items-center text-xs text-primary/60 font-sf-mono">
+                        <Calendar className="h-3 w-3 mr-1" />
+                        {formatDate(new Date(post.date))}
+                      </div>
+                    </div>
+
+                    <p className="text-xs text-primary/70 mb-3 font-sf-mono">{post.summary}</p>
+
+                    <div className="flex justify-between items-center">
+                      <div className="flex items-center gap-1">
+                        <Tag className="h-3 w-3 text-primary/50" />
+                        <div className="flex gap-1">
+                          {post.tags.slice(0, 3).map((tag) => (
+                            <span key={tag} className="text-xs text-primary/50 font-sf-mono">
+                              {tag}
+                            </span>
+                          ))}
+                          {post.tags.length > 3 && (
+                            <span className="text-xs text-primary/50 font-sf-mono">+{post.tags.length - 3}</span>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="text-xs font-sf-mono text-primary/70 flex items-center">
+                        READ ENTRY
+                        <ArrowRight className="ml-1 h-3 w-3" />
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              </motion.div>
+            ))}
+          </div>
+
+          {filteredPosts.length === 0 && (
+            <div className="text-center py-8 border border-primary/10 mt-4">
+              <div className="text-sm font-sf-mono text-primary/50 mb-2">NO RECORDS FOUND</div>
+              <div className="text-xs font-sf-mono text-primary/40">Try adjusting your filter criteria</div>
+            </div>
+          )}
+        </div>
+
+        <div className="flex justify-center mt-8">
+          <Button
+            variant="outline"
+            className="rounded-none border-primary/20 text-xs font-sf-mono"
+            onClick={handleReturnToMain}
+          >
+            RETURN TO MAIN SYSTEM
+          </Button>
+        </div>
+      </div>
+    </PageLayout>
+  )
+}

@@ -12,11 +12,12 @@ export function cn(...inputs: ClassValue[]) {
 
 /**
  * Formats a date as YYYY.MM.DD
- * @param date Date to format
+ * @param date Date to format (Date object or string)
  * @returns Formatted date string
  */
-export function formatDate(date: Date): string {
-  return date.toISOString().split("T")[0].replace(/-/g, ".")
+export function formatDate(date: Date | string): string {
+  const dateObj = typeof date === "string" ? new Date(date) : date
+  return dateObj.toISOString().split("T")[0].replace(/-/g, ".")
 }
 
 /**

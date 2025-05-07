@@ -8,6 +8,7 @@ import { useEffect, useState, useRef } from "react"
 import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
 import { SeveranceLogo } from "@/components/ui/severance-logo"
+import { UpdatesBanner } from "@/components/features/updates/updates-banner"
 
 // Systemic transitions
 const systemicTransition = {
@@ -316,7 +317,7 @@ export default function Home() {
               </motion.div>
 
               <motion.h1
-                className="text-3xl md:text-4xl lg:text-6xl font-medium tracking-tight mb-4 md:mb-6 relative"
+                className="text-3xl md:text-4xl lg:text-6xl font-medium tracking-tight mb-2 relative"
                 initial={{ opacity: 0, letterSpacing: "0.08em" }}
                 animate={{ opacity: 1, letterSpacing: "0.03em" }}
                 transition={{
@@ -345,13 +346,89 @@ export default function Home() {
                 ></motion.div>
               </motion.h1>
 
-              <motion.p
-                className="text-base md:text-lg lg:text-xl font-sf-mono text-primary/70 max-w-md mx-auto mb-8 md:mb-12"
+              {/* Updates Banner - New Component */}
+              <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 0.8, duration: 0.8 }}
+                transition={{ delay: 0.8, duration: 0.5 }}
+                className="mb-4"
               >
-                DATA SCIENTIST • AI ENGINEER • ML RESEARCHER
+                <UpdatesBanner />
+              </motion.div>
+
+              <motion.p
+                className="text-base md:text-lg lg:text-xl font-sf-mono text-primary/70 whitespace-nowrap mx-auto mb-8 md:mb-12"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{
+                  opacity: 1,
+                  y: 0,
+                  transition: {
+                    duration: 0.8,
+                    delay: 0.8,
+                    ease: [0.4, 0, 0.2, 1],
+                  },
+                }}
+              >
+                <motion.span
+                  initial={{ opacity: 0 }}
+                  animate={{
+                    opacity: 1,
+                    transition: {
+                      duration: 0.3,
+                      delay: 0.9,
+                    },
+                  }}
+                >
+                  DATA SCIENTIST
+                </motion.span>
+                <motion.span
+                  initial={{ opacity: 0 }}
+                  animate={{
+                    opacity: 1,
+                    transition: {
+                      duration: 0.3,
+                      delay: 1.1,
+                    },
+                  }}
+                >
+                  {" • "}
+                </motion.span>
+                <motion.span
+                  initial={{ opacity: 0 }}
+                  animate={{
+                    opacity: 1,
+                    transition: {
+                      duration: 0.3,
+                      delay: 1.3,
+                    },
+                  }}
+                >
+                  AI ENGINEER
+                </motion.span>
+                <motion.span
+                  initial={{ opacity: 0 }}
+                  animate={{
+                    opacity: 1,
+                    transition: {
+                      duration: 0.3,
+                      delay: 1.5,
+                    },
+                  }}
+                >
+                  {" • "}
+                </motion.span>
+                <motion.span
+                  initial={{ opacity: 0 }}
+                  animate={{
+                    opacity: 1,
+                    transition: {
+                      duration: 0.3,
+                      delay: 1.7,
+                    },
+                  }}
+                >
+                  ML RESEARCHER
+                </motion.span>
               </motion.p>
 
               <motion.div

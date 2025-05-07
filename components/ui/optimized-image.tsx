@@ -121,7 +121,7 @@ export function OptimizedImage({
           width={!fill ? width : undefined}
           height={!fill ? height : undefined}
           className={cn(
-            "transition-opacity duration-300",
+            "transition-opacity duration-300 filter grayscale",
             isLoaded ? "opacity-100" : "opacity-0",
             fill ? "object-cover" : "",
           )}

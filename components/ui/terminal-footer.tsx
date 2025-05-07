@@ -3,28 +3,27 @@
 import type React from "react"
 import { useState, useEffect, useRef, memo } from "react"
 import { useNavigation } from "@/contexts/navigation-context"
-import { Terminal, X, HelpCircle } from "lucide-react"
+import { Terminal, X, HelpCircle, NotebookTabsIcon as TabIcon } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import { useTheme } from "@/contexts/theme-context"
 import { TERMINAL_COMMANDS } from "@/lib/constants"
 import { NAV_ITEMS } from "@/lib/constants"
 
-type CommandResponse = {
-  text: string
-  isTyping: boolean
-}
-
 // Use React.memo to prevent unnecessary re-renders
 const TerminalFooter = memo(function TerminalFooter() {
   const [isActive, setIsActive] = useState(false)
   const [input, setInput] = useState("")
-  const [response, setResponse] = useState<CommandResponse | null>(null)
   const [showHelpModal, setShowHelpModal] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
   const { navigateTo } = useNavigation()
-  const [notification, setNotification] = useState<string | null>(null)
   const themeContext = useTheme()
   const [isMobile, setIsMobile] = useState(false)
+  const [currentSuggestion, setCurrentSuggestion] = useState<string>("")
+  const [isTyping, setIsTyping] = useState(false)
+  const [targetText, setTargetText] = useState("")
+  const [displayedText, setDisplayedText] = useState("")
+  const typingSpeedRef = useRef(30) // milliseconds per character
+  const completedTextRef = useRef("") // Store the completed text for form submission
 
   useEffect(() => {
     // Check if mobile
@@ -60,46 +59,38 @@ const TerminalFooter = memo(function TerminalFooter() {
     if (isActive && inputRef.current) {
       inputRef.current.focus()
     }
-  }, [isActive, response])
+  }, [isActive])
 
-  // Typewriter effect for response
+  // Add new effect for typing animation in the input field
   useEffect(() => {
-    if (!response || !response.isTyping) return
+    if (!isTyping || displayedText === targetText) return
 
-    const text = response.text
-    let currentIndex = 0
-    let currentText = ""
+    let currentIndex = displayedText.length
     let typingInterval: NodeJS.Timeout
 
     const typeNextChar = () => {
-      if (currentIndex < text.length) {
-        currentText += text[currentIndex]
+      if (currentIndex < targetText.length) {
+        setDisplayedText(targetText.substring(0, currentIndex + 1))
         currentIndex++
-
-        // Update with a new object to avoid reference issues
-        setResponse({
-          text: currentText,
-          isTyping: currentIndex < text.length,
-        })
       } else {
         // Typing complete
         clearInterval(typingInterval)
-
-        // Auto-clear response after delay (shorter timeout)
-        const clearTimeout = setTimeout(() => {
-          setResponse(null)
-        }, 1200)
-
-        return () => clearTimeout(clearTimeout)
+        setIsTyping(false)
+        // Ensure we set the full target text at the end
+        setDisplayedText(targetText)
+        setInput(targetText)
+        completedTextRef.current = targetText // Store the completed text
+        // Clear suggestion after typing
+        setCurrentSuggestion("")
       }
     }
 
-    typingInterval = setInterval(typeNextChar, 30)
+    typingInterval = setInterval(typeNextChar, typingSpeedRef.current)
 
     return () => {
       clearInterval(typingInterval)
     }
-  }, [response])
+  }, [isTyping, displayedText, targetText])
 
   useEffect(() => {
     const handleEscKey = (e: KeyboardEvent) => {
@@ -126,35 +117,124 @@ const TerminalFooter = memo(function TerminalFooter() {
     return () => clearInterval(cursorInterval)
   }, [isActive, input])
 
+  // Function to start typing animation
+  const startTypingAnimation = (suggestion: string) => {
+    // Only animate the part that's being autocompleted
+    if (suggestion.startsWith(input) && input.length < suggestion.length) {
+      setIsTyping(true)
+      setTargetText(suggestion)
+      setDisplayedText(input)
+      completedTextRef.current = suggestion // Store the suggestion for form submission
+      setCurrentSuggestion("")
+    } else {
+      // If the suggestion doesn't extend the current input, just set it directly
+      setInput(suggestion)
+      completedTextRef.current = suggestion // Store the suggestion for form submission
+      setCurrentSuggestion("")
+    }
+  }
+
+  // Generate suggestions based on input
+  const generateSuggestion = (value: string) => {
+    if (!value.trim()) {
+      setCurrentSuggestion("")
+      return
+    }
+
+    const lowerValue = value.toLowerCase()
+
+    // Check if input starts with "run "
+    if (lowerValue.startsWith(`${TERMINAL_COMMANDS.run} `)) {
+      const pageQuery = lowerValue.substring(4).trim()
+      if (!pageQuery) {
+        setCurrentSuggestion("")
+        return
+      }
+
+      // Find the first matching nav item
+      const matchingPage = NAV_ITEMS.find(
+        (item) =>
+          item.name.toLowerCase().startsWith(pageQuery) || item.path.substring(1).toLowerCase().startsWith(pageQuery),
+      )
+
+      if (matchingPage) {
+        const suggestion = `${TERMINAL_COMMANDS.run} ${matchingPage.path.substring(1) || "home"}`
+        if (suggestion.toLowerCase() !== lowerValue) {
+          setCurrentSuggestion(suggestion)
+        } else {
+          setCurrentSuggestion("")
+        }
+      } else {
+        setCurrentSuggestion("")
+      }
+    } else {
+      // Suggest commands
+      const commands = [
+        TERMINAL_COMMANDS.help,
+        TERMINAL_COMMANDS.darkMode,
+        TERMINAL_COMMANDS.lightMode,
+        `${TERMINAL_COMMANDS.run}`,
+      ]
+
+      const matchingCommand = commands.find((cmd) => cmd.startsWith(lowerValue) && cmd !== lowerValue)
+      setCurrentSuggestion(matchingCommand || "")
+    }
+  }
+
+  // Update the handleInputChange function
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value
+    // If we're currently in a typing animation, cancel it
+    if (isTyping) {
+      setIsTyping(false)
+      setTargetText("")
+    }
+    setInput(newValue)
+    completedTextRef.current = newValue // Update the completed text reference
+    generateSuggestion(newValue)
+  }
+
+  // Update keyboard navigation to use typing animation
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    // Tab to accept suggestion
+    if (e.key === "Tab" && currentSuggestion) {
+      e.preventDefault()
+      startTypingAnimation(currentSuggestion)
+    }
+
+    // Escape to clear suggestion
+    if (e.key === "Escape") {
+      setCurrentSuggestion("")
+    }
+  }
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (!input.trim()) return
+    // If we're currently in a typing animation, complete it immediately
+    if (isTyping) {
+      setIsTyping(false)
+      setInput(targetText)
+      setDisplayedText(targetText)
+    }
 
-    const command = input.trim().toLowerCase()
+    // Use the completed text (from tab completion) or current input
+    const commandToRun = completedTextRef.current || input
+
+    if (!commandToRun.trim()) return
+
+    const command = commandToRun.trim().toLowerCase()
     setInput("") // Clear input immediately
+    completedTextRef.current = "" // Clear completed text reference
+    setCurrentSuggestion("") // Clear suggestion
 
     // Process commands
     if (command === TERMINAL_COMMANDS.help) {
       setShowHelpModal(true)
-      setNotification(`Ran command: ${command}`)
-      setTimeout(() => setNotification(null), 2000)
     } else if (command === TERMINAL_COMMANDS.darkMode) {
       setThemeFallback("dark")
-      setResponse({
-        text: "status: dark mode activated",
-        isTyping: true,
-      })
-      setNotification(`Ran command: ${command}`)
-      setTimeout(() => setNotification(null), 2000)
     } else if (command === TERMINAL_COMMANDS.lightMode) {
       setThemeFallback("light")
-      setResponse({
-        text: "status: light mode activated",
-        isTyping: true,
-      })
-      setNotification(`Ran command: ${command}`)
-      setTimeout(() => setNotification(null), 2000)
     } else if (command.startsWith(`${TERMINAL_COMMANDS.run} `)) {
       const page = command.substring(4).trim()
 
@@ -162,15 +242,9 @@ const TerminalFooter = memo(function TerminalFooter() {
         // Add a slight delay before navigation
         setTimeout(() => {
           try {
-            // Clear the response right before navigation
-            setResponse(null)
             navigateTo(path)
           } catch (error) {
             console.error("Navigation error:", error)
-            setResponse({
-              text: `error: navigation failed to ${path}`,
-              isTyping: true,
-            })
           }
         }, 800)
       }
@@ -181,51 +255,19 @@ const TerminalFooter = memo(function TerminalFooter() {
       )
 
       if (navItem) {
-        setResponse({
-          text: `status: transmission initiated to ${navItem.path}`,
-          isTyping: true,
-        })
-        setNotification(`Ran command: ${command}`)
-        setTimeout(() => setNotification(null), 2000)
         handleNavigation(navItem.path)
       } else if (page === "home") {
-        setResponse({
-          text: `status: transmission initiated to /`,
-          isTyping: true,
-        })
-        setNotification(`Ran command: ${command}`)
-        setTimeout(() => setNotification(null), 2000)
         handleNavigation("/")
-      } else {
-        setResponse({
-          text: `error: unknown destination '${page}'`,
-          isTyping: true,
-        })
-        setNotification(`Ran command: ${command}`)
-        setTimeout(() => setNotification(null), 2000)
+      } else if (page === "updates") {
+        // Add specific handling for updates page
+        handleNavigation("/updates")
       }
-    } else {
-      setResponse({
-        text: `error: unknown command '${command}'`,
-        isTyping: true,
-      })
-      setNotification(`Ran command: ${command}`)
-      setTimeout(() => setNotification(null), 2000)
     }
-  }
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInput(e.target.value)
   }
 
   return (
     <>
       <div className="flex items-center">
-        {notification && (
-          <div className="absolute -top-6 left-2 md:left-6 text-xs font-sf-mono bg-background dark:bg-eerie-black border border-primary/20 px-2 py-0.5 rounded-sm shadow-sm animate-in fade-in slide-in-from-bottom-2 z-70">
-            {notification}
-          </div>
-        )}
         <div className="flex items-center w-full">
           <form onSubmit={handleSubmit} className="flex items-center w-full">
             <Terminal className="h-4 w-4 mr-2 text-primary/50 flex-shrink-0" />
@@ -233,16 +275,35 @@ const TerminalFooter = memo(function TerminalFooter() {
               <input
                 ref={inputRef}
                 type="text"
-                value={input}
+                value={isTyping ? displayedText : input}
                 onChange={handleInputChange}
+                onKeyDown={handleKeyDown}
                 className="w-full bg-transparent border-none outline-none font-sf-mono text-xs text-primary truncate pr-16 md:pr-24"
                 placeholder=""
                 autoCapitalize="none"
                 autoComplete="off"
                 onFocus={() => setIsActive(true)}
-                onBlur={() => setIsActive(false)}
+                onBlur={() => {
+                  setIsActive(false)
+                  // Clear suggestion when input loses focus
+                  setTimeout(() => setCurrentSuggestion(""), 200)
+                }}
               />
-              {!isActive && !input && (
+
+              {/* Inline suggestion */}
+              {currentSuggestion && !isTyping && (
+                <div className="absolute inset-0 pointer-events-none flex items-center">
+                  <div className="invisible">{input}</div>
+                  <div className="flex items-center">
+                    <span className="font-sf-mono text-xs text-primary/30">
+                      {currentSuggestion.substring(input.length)}
+                    </span>
+                    <TabIcon className="h-3 w-3 ml-1 text-primary/30" />
+                  </div>
+                </div>
+              )}
+
+              {!isActive && !input && !isTyping && (
                 <div className="absolute inset-0 pointer-events-none flex items-center">
                   <span className="font-sf-mono text-xs text-primary/50 flex items-center whitespace-nowrap truncate">
                     {isMobile ? "help" : 'type "help" to start'}
@@ -255,12 +316,6 @@ const TerminalFooter = memo(function TerminalFooter() {
               </div>
             </div>
           </form>
-          {response && (
-            <div className="absolute -top-6 left-2 md:left-6 text-xs font-sf-mono bg-background dark:bg-eerie-black border border-primary/20 px-2 py-0.5 rounded-sm shadow-sm animate-in fade-in slide-in-from-bottom-2 z-70">
-              {response.text}
-              {response.isTyping && <span className="animate-[blink_0.5s_ease-in-out_infinite]">_</span>}
-            </div>
-          )}
           <div className="h-4 border-r border-primary/20 mx-2 md:mx-4 hidden md:block"></div>
         </div>
       </div>
@@ -311,6 +366,9 @@ const TerminalFooter = memo(function TerminalFooter() {
                       </div>
                       <div>
                         <span className="text-primary/50">run publications</span> - navigate to publications page
+                      </div>
+                      <div>
+                        <span className="text-primary/50">run updates</span> - navigate to system updates
                       </div>
                       <div>
                         <span className="text-primary/50">run contact</span> - navigate to contact page
