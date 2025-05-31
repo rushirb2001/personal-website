@@ -24,7 +24,7 @@ export default function EducationPage() {
         { name: "Statistical Machine Learning" },
       ],
       location: "ARIZONA, USA",
-      status: "IN PROGRESS",
+      status: "GRADUATED",
       validationId: "VLD-" + Math.floor(Math.random() * 10000),
       indexCode: "AC-" + Math.floor(Math.random() * 1000) + "-" + "110",
     },
@@ -42,7 +42,7 @@ export default function EducationPage() {
         { name: "Scientific Computing" },
       ],
       location: "AHMEDABAD, INDIA",
-      status: "VALIDATED",
+      status: "GRADUATED",
       validationId: "VLD-" + Math.floor(Math.random() * 10000),
       indexCode: "AC-" + Math.floor(Math.random() * 1000) + "-" + "219",
     },
@@ -85,7 +85,7 @@ export default function EducationPage() {
                   <div className="flex justify-between items-center mb-3">
                     <div className="text-xs font-sf-mono text-primary/70">FILE ID: {edu.id}</div>
                     <div className="flex items-center">
-                      {edu.status === "VALIDATED" ? (
+                      {edu.status === "GRADUATED" ? (
                         <>
                           <CheckCircle className="h-3.5 w-3.5 mr-1.5 text-green-500" />
                           <span className="text-xs font-sf-mono text-green-500">{edu.status}</span>

@@ -64,7 +64,7 @@ export default function PublicationsPage() {
       projectRef: "QC-AST-2213",
       reviewedBy: "IEEE EDITORIAL BOARD",
       dataSize: "7.3MB",
-      pdfLink: "#",
+      pdfLink: "https://ieeexplore.ieee.org/document/10188662",
     },
     {
       id: "PUB-8Q-655",
@@ -82,7 +82,7 @@ export default function PublicationsPage() {
       projectRef: "NLP-META-3341",
       reviewedBy: "WILEY EDITORIAL BOARD",
       dataSize: "5.2MB",
-      pdfLink: "#",
+      pdfLink: "https://onlinelibrary.wiley.com/doi/abs/10.1002/spy2.343",
     },
     {
       id: "PUB-9R-764",
@@ -99,7 +99,7 @@ export default function PublicationsPage() {
       projectRef: "AI-PDE-4127",
       reviewedBy: "DISSERTATION COMMITTEE",
       dataSize: "18.6MB",
-      pdfLink: "#",
+      pdfLink: "https://keep.lib.asu.edu/items/201211",
     },
   ]
 
