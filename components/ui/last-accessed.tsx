@@ -42,9 +42,6 @@ export function LastAccessed() {
   if (isMobile) return null
 
   return (
-    <div className="fixed top-[4.5rem] right-4 z-35 flex flex-col items-end">
-      <div className="recording-dot"></div>
-      <div className="last-accessed mt-1 text-[0.55rem] md:text-xs">LAST ACCESS: {timestamp}</div>
-    </div>
+    null
   )
 }

@@ -24,7 +24,7 @@ export default function EducationPage() {
         { name: "Statistical Machine Learning" },
       ],
       location: "ARIZONA, USA",
-      status: "GRADUATED",
+      status: "COMPLETED",
       validationId: "VLD-" + Math.floor(Math.random() * 10000),
       indexCode: "AC-" + Math.floor(Math.random() * 1000) + "-" + "110",
     },
@@ -42,7 +42,7 @@ export default function EducationPage() {
         { name: "Scientific Computing" },
       ],
       location: "AHMEDABAD, INDIA",
-      status: "GRADUATED",
+      status: "COMPLETED",
       validationId: "VLD-" + Math.floor(Math.random() * 10000),
       indexCode: "AC-" + Math.floor(Math.random() * 1000) + "-" + "219",
     },
@@ -64,11 +64,11 @@ export default function EducationPage() {
           <div className="mb-4 md:mb-6 border-b border-primary/20 pb-2 flex justify-between items-center">
             <div className="text-xs font-sf-mono flex items-center">
               <FileText className="h-3.5 w-3.5 mr-2 text-primary/70" />
-              <span>CREDENTIAL VERIFICATION FILES</span>
+              <span>{"UNDERGRADUATE AND GRADUATE STUDIES"}</span>
             </div>
             <div className="text-xs font-sf-mono flex items-center">
               <Lock className="h-3.5 w-3.5 mr-2 text-primary/70" />
-              <span>SECURITY LEVEL: AUTHORIZED</span>
+              <span>{"VERFIED"}</span>
             </div>
           </div>
 
@@ -83,9 +83,8 @@ export default function EducationPage() {
                 <div className="p-4 relative">
                   {/* File ID and status */}
                   <div className="flex justify-between items-center mb-3">
-                    <div className="text-xs font-sf-mono text-primary/70">FILE ID: {edu.id}</div>
                     <div className="flex items-center">
-                      {edu.status === "GRADUATED" ? (
+                      {edu.status === "COMPLETED" ? (
                         <>
                           <CheckCircle className="h-3.5 w-3.5 mr-1.5 text-green-500" />
                           <span className="text-xs font-sf-mono text-green-500">{edu.status}</span>
@@ -133,7 +132,7 @@ export default function EducationPage() {
 
           {/* Section footer */}
           <div className="mt-6 pt-2 border-t border-primary/20 text-xs text-primary/30 font-sf-mono text-center">
-            ACADEMIC VERIFICATION SYSTEM • LAST UPDATED: 05/01/2025
+            ACADEMIC CREDENTIALS • LAST UPDATED: 05/01/2025
           </div>
         </div>
 

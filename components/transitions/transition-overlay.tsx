@@ -107,7 +107,7 @@ export function TransitionOverlay() {
           >
             {/* Header */}
             <div className="border-b border-primary/20 pb-2 mb-4 flex justify-between items-center">
-              <div className="text-xs">NAVIGATION PROTOCOL</div>
+              <div className="text-xs">NAVIGATING, PLEASE WAIT...</div>
               <div className="text-xs">ID: NAV-{Math.floor(Math.random() * 1000)}</div>
             </div>
 
@@ -118,7 +118,7 @@ export function TransitionOverlay() {
                   <div className="flex justify-center mb-3">
                     <SeveranceLogo size={40} glitch={glitch} />
                   </div>
-                  <div className="text-sm mb-2 text-primary/70">SECURE TRANSFER IN PROGRESS</div>
+                  <div className="text-sm mb-2 text-primary/70">NOW PERFORMING...</div>
                   <div className="text-lg animate-mechanical-flicker">{text}</div>
                   <div className="h-0.5 bg-primary/20 mt-4 relative">
                     <div
@@ -135,7 +135,7 @@ export function TransitionOverlay() {
 
             {/* Footer */}
             <div className="border-t border-primary/20 pt-2 mt-4 flex justify-between items-center text-xs">
-              <div>STATUS: TRANSFERRING</div>
+              <div>WEBVIEW IN GENERATION</div>
               <div className="flex items-center">
                 <div className="w-2 h-2 rounded-full bg-yellow-500 mr-2 animate-mechanical-pulse"></div>
                 <span>PLEASE WAIT</span>

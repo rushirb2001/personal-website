@@ -110,7 +110,7 @@ export function AcademicRecordModal({ isOpen, onClose, record }: AcademicRecordM
 
                     <div className="border-b border-primary/10 pb-2">
                       <div className="text-[10px] md:text-xs text-primary/50 mb-1">STATUS:</div>
-                      <div className="text-xs md:text-sm text-green-500">{record.status || "VALIDATED"}</div>
+                      <div className="text-xs md:text-sm text-green-500">{record.status || "COMPLETED"}</div>
                     </div>
                   </div>
 

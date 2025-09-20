@@ -37,11 +37,11 @@ export default function Home() {
 
   // Boot sequence text content
   const bootSequence = [
-    "INITIALIZING PORTFOLIO SYSTEM...",
-    "ESTABLISHING SECURE CONNECTION...",
-    "VERIFYING USER IDENTITY...",
-    "ACCESSING PERSONNEL FILE...",
-    "AUTHORIZATION GRANTED",
+    "INITIALIZING PORTFOLIO...",
+    "CONNECTING TO BACKEND...",
+    "VERIFYING SECURITY PROTOCOL...",
+    "ACCESSING WEBVIEW...",
+    "WEBVIEW GENERATED",
     "DISPLAYING PORTFOLIO",
   ]
 
@@ -106,7 +106,7 @@ export default function Home() {
           // Move to next stage after precise delay
           animationRef.current = setTimeout(() => {
             setBootStage((prev) => prev + 1)
-          }, 150) // More precise timing
+          }, 600) // More precise timing
         }
       }, 40) // Consistent typing speed
 
@@ -274,24 +274,6 @@ export default function Home() {
                 transition={{ delay: 0.2, duration: 0.8 }}
               >
                 <motion.div
-                  className="absolute top-2 md:top-4 left-2 md:left-4 text-xs font-sf-mono text-primary/30 flex items-center"
-                  initial={{ x: -20, opacity: 0 }}
-                  animate={{ x: 0, opacity: 1 }}
-                  transition={{ delay: 0.3, duration: 0.4 }}
-                >
-                  <div className="w-1 h-1 bg-green-500/70 rounded-full mr-1.5 animate-mechanical-pulse"></div>
-                  SESSION ACTIVE
-                </motion.div>
-                <motion.div
-                  className="absolute bottom-2 md:bottom-4 right-2 md:right-4 text-xs font-sf-mono text-primary/30 flex items-center"
-                  initial={{ x: 20, opacity: 0 }}
-                  animate={{ x: 0, opacity: 1 }}
-                  transition={{ delay: 0.3, duration: 0.4 }}
-                >
-                  <span className="mr-1.5">SUBJECT MONITORED</span>
-                  <div className="w-1 h-1 bg-red-500/70 rounded-full animate-mechanical-pulse"></div>
-                </motion.div>
-                <motion.div
                   className="absolute top-1/4 left-4 md:left-8 h-px w-8 md:w-16 bg-primary/20"
                   initial={{ scaleX: 0 }}
                   animate={{ scaleX: 1 }}
@@ -307,17 +289,9 @@ export default function Home() {
               </motion.div>
 
               {/* Terminal-style ID */}
-              <motion.div
-                className="inline-block mb-6 md:mb-8 px-2 md:px-3 py-1 border border-primary/20 bg-primary/5 text-xs font-sf-mono text-primary/60"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5, duration: 0.5 }}
-              >
-                ID: RMB-SUBJECT-7J-1801
-              </motion.div>
 
               <motion.h1
-                className="text-3xl md:text-4xl lg:text-6xl font-medium tracking-tight mb-2 relative"
+                className="text-3xl md:text-4xl lg:text-6xl font-bold tracking-tight mb-2 relative"
                 initial={{ opacity: 0, letterSpacing: "0.08em" }}
                 animate={{ opacity: 1, letterSpacing: "0.03em" }}
                 transition={{
@@ -438,14 +412,14 @@ export default function Home() {
                 transition={{ delay: 0.9, duration: 0.8 }}
               >
                 <Button
-                  className="group rounded-none border border-primary/20 bg-transparent text-primary hover:bg-primary/5"
+                  className="group rounded-none border border-primary/20 bg-transparent text-primary hover:bg-primary/5 font-bold"
                   onClick={() => navigateTo("/about")}
                 >
                   EXPLORE
                   <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                 </Button>
                 <Button
-                  className="group rounded-none border border-primary/20 bg-transparent text-primary hover:bg-primary/5"
+                  className="group rounded-none border border-primary/20 bg-transparent text-primary hover:bg-primary/5 font-bold"
                   onClick={() => navigateTo("/contact")}
                 >
                   CONTACT
@@ -453,7 +427,7 @@ export default function Home() {
                 </Button>
               </motion.div>
 
-              {/* Status indicators */}
+              {/* Professional Status Indicators */}
               <motion.div
                 className="grid grid-cols-2 sm:grid-cols-4 gap-2 max-w-2xl mx-auto text-xs font-sf-mono text-primary/40"
                 initial={{ opacity: 0, y: 20 }}
@@ -461,23 +435,26 @@ export default function Home() {
                 transition={{ delay: 1.0, duration: 0.8 }}
               >
                 <div className="border border-primary/10 p-2">
-                  <div className="text-primary/30 mb-1">STATUS</div>
+                  <div className="text-primary/30 mb-1">EXPERIENCE</div>
                   <div className="flex items-center justify-center">
-                    <div className="w-1.5 h-1.5 rounded-full bg-green-500 mr-1.5 animate-mechanical-pulse"></div>
-                    OPERATIONAL
+                    <div className="w-1.5 h-1.5 rounded-full bg-blue-500 mr-1.5 animate-mechanical-pulse"></div>
+                    2+ YEARS
                   </div>
                 </div>
                 <div className="border border-primary/10 p-2">
-                  <div className="text-primary/30 mb-1">SECURITY</div>
-                  <div>CLEARANCE VERIFIED</div>
+                  <div className="text-primary/30 mb-1">AVAILABILITY</div>
+                  <div className="flex items-center justify-center">
+                    <div className="w-1.5 h-1.5 rounded-full bg-green-500 mr-1.5 animate-mechanical-pulse"></div>
+                    OPEN TO WORK
+                  </div>
                 </div>
                 <div className="border border-primary/10 p-2">
-                  <div className="text-primary/30 mb-1">ACCESS LEVEL</div>
-                  <div>UNRESTRICTED</div>
+                  <div className="text-primary/30 mb-1">LOCATION</div>
+                  <div>ARIZONA, USA</div>
                 </div>
                 <div className="border border-primary/10 p-2">
-                  <div className="text-primary/30 mb-1">LAST UPDATE</div>
-                  <div>05/01/2025</div>
+                  <div className="text-primary/30 mb-1">TECH STACK</div>
+                  <div>PYTHON • PYTORCH</div>
                 </div>
               </motion.div>
             </div>
