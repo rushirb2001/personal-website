@@ -3,6 +3,7 @@
   "dependencies": {
     "@emailjs/browser": "^3.11.0",
     "@emotion/is-prop-valid": "latest",
+    "@radix-ui/react-slot": "^1.0.2",
     "@vercel/analytics": "latest",
     "@vercel/speed-insights": "latest",
     "class-variance-authority": "^0.7.1",

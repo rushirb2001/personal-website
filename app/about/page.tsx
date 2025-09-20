@@ -23,7 +23,7 @@ export default function AboutPage() {
             {/* Profile image */}
             <div className="relative border border-primary/10 bg-secondary/20 p-1">
               <Image
-                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/design-mode-images/personal_photo%281%29-mgf1Njoz344mlORVjsGUgUgJUHG8VA.png"
+                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/design-mode-images/personal_photo%281%29%281%29-IbXQZAmRPpGEueVV0NgLg3JpO9Qzr3.png"
                 alt="Profile"
                 width={400}
                 height={400}
