@@ -20,13 +20,13 @@ const nextConfig = {
       },
     ],
   },
-  optimizeFonts: true,
+  // optimizeFonts: true,
   reactStrictMode: true,
-  swcMinify: true,
+  // swcMinify: true,
   experimental: {
     optimizeCss: false, // Disable optimizeCss which requires critters
-    legacyBrowsers: false,
-    browsersListForSwc: true,
+    // legacyBrowsers: false,
+    // browsersListForSwc: true,
     gzipSize: true,
     scrollRestoration: true,
   },
