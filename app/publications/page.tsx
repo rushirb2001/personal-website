@@ -53,7 +53,7 @@ export default function PublicationsPage() {
       id: "PUB-7P-546",
       title: "CLASSIFICATION OF POTENTIALLY HAZARDOUS ASTEROIDS USING SUPERVISED QUANTUM MACHINE LEARNING",
       venue: "IEEE ACCESS",
-      authors: "R. BHAVSAR, ET AL.",
+      authors: "R. BHAVSAR, N. K. JADAV, U. BODKHE, R. GUPTA, S. TANWAR, G. SHARMA, P. N. BOKORO, R. SHARMA",
       abstract:
         "Quantum computing (QC) and quantum machine learning (QML) are emerging technologies with the potential to revolutionize the way we approach complex problems in mathematics, physics, and other fields. The increasing availability of data and computing power has led to a rise in using Artificial Intelligence (AI) to solve real-time problems. In space science, employing AI-based approaches to address various challenges, including the potential risks posed by asteroids, is becoming increasingly necessary. This research explores the application of Quantum Machine Learning (QML) for asteroid hazard classification, achieving significant improvements in computational efficiency and classification accuracy.",
       year: "2023",
@@ -64,14 +64,14 @@ export default function PublicationsPage() {
       projectRef: "QC-AST-2213",
       reviewedBy: "IEEE EDITORIAL BOARD",
       dataSize: "7.3MB",
-      pdfLink: "https://ieeexplore.ieee.org/abstract/document/10188662",
+      pdfLink: "https://ieeexplore.ieee.org/document/10188662",
     },
     {
       id: "PUB-8Q-655",
       title: "METAHATE: AI-BASED HATE SPEECH DETECTION FOR SECURED ONLINE GAMING IN METAVERSE USING BLOCKCHAIN",
       venue: "SECURITY AND PRIVACY",
       authors:
-        "H. SANGHVI, R. BHAVSAR, V. HUNDLANI, ET AL.",
+        "H. SANGHVI, R. BHAVSAR, V. HUNDLANI, L. GOHIL, T. VYAS, A. NAIR, S. DESAI, N. K. JADAV, S. TANWAR, R. SHARMA, N. YAMSANI",
       abstract:
         "The emergence of Web 3.0, blockchain technology (BC), and artificial intelligence (AI) are transforming multiplayer online gaming in the metaverse. This development has its concerns about safety and inclusivity. Hate speech, in particular, poses a significant threat to the harmony of these online communities. This article proposes a novel framework, MetaHate, that employs AI and BC to detect and combat hate speech in online gaming environments within the metaverse. Various machine learning (ML) models are applied to analyze Hindi–English code mixed datasets, with gradient boosting proving the most effective, achieving 86.01% accuracy.",
       year: "2024",
@@ -93,13 +93,13 @@ export default function PublicationsPage() {
         "Physics-Informed Neural Networks (PINNs) provide an innovative framework for solving complex nonlinear Partial Differential Equations (PDEs) by embedding the governing equations directly into neural networks. To address challenges with standard PINNs, the Multi-network Architecture for Coupled Equations Physics-Informed Neural Networks (MACE-PINNs) is introduced. This approach employs parallel subnetworks to independently approximate coupled variables, interconnected via iterative residual constraints. Experimental results demonstrate robust pattern reproduction spanning 5 parametric variations for each RDS, with L2 errors ranging from 10−3 to 10−2.",
       year: "2025",
       month: "01",
-      status: "RELEASED",
+      status: "PENDING",
       classification: "PUBLIC",
       doi: "10.48550/DISSERTATION.31994438",
       projectRef: "AI-PDE-4127",
       reviewedBy: "DISSERTATION COMMITTEE",
       dataSize: "18.6MB",
-      pdfLink: "https://www.proquest.com/docview/3198864566/648F1EAD45D84ACAPQ/1?accountid=4485&sourcetype=Dissertations%20&%20Theses",
+      pdfLink: "https://keep.lib.asu.edu/items/201211",
     },
   ]
 
@@ -206,7 +206,9 @@ export default function PublicationsPage() {
           ))}
         </div>
 
-        
+        <div className="text-xs text-primary/30 font-sf-mono text-center mt-8">
+          DOSSIER ACCESS LEVEL: AUTHORIZED PERSONNEL ONLY
+        </div>
       </div>
 
       {/* Full dossier modal - Desktop version */}

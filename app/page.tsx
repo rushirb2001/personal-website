@@ -37,11 +37,11 @@ export default function Home() {
 
   // Boot sequence text content
   const bootSequence = [
-    "INITIALIZING PORTFOLIO...",
-    "CONNECTING TO BACKEND...",
-    "VERIFYING SECURITY PROTOCOL...",
-    "ACCESSING WEBVIEW...",
-    "WEBVIEW GENERATED",
+    "INITIALIZING PORTFOLIO SYSTEM...",
+    "ESTABLISHING SECURE CONNECTION...",
+    "VERIFYING USER IDENTITY...",
+    "ACCESSING PERSONNEL FILE...",
+    "AUTHORIZATION GRANTED",
     "DISPLAYING PORTFOLIO",
   ]
 
@@ -106,7 +106,7 @@ export default function Home() {
           // Move to next stage after precise delay
           animationRef.current = setTimeout(() => {
             setBootStage((prev) => prev + 1)
-          }, 600) // More precise timing
+          }, 150) // More precise timing
         }
       }, 40) // Consistent typing speed
 
@@ -289,9 +289,8 @@ export default function Home() {
               </motion.div>
 
               {/* Terminal-style ID */}
-
               <motion.h1
-                className="text-3xl md:text-4xl lg:text-6xl font-bold tracking-tight mb-2 relative"
+                className="text-3xl md:text-4xl lg:text-6xl tracking-tight mb-2 relative font-black"
                 initial={{ opacity: 0, letterSpacing: "0.08em" }}
                 animate={{ opacity: 1, letterSpacing: "0.03em" }}
                 transition={{
@@ -412,14 +411,14 @@ export default function Home() {
                 transition={{ delay: 0.9, duration: 0.8 }}
               >
                 <Button
-                  className="group rounded-none border border-primary/20 bg-transparent text-primary hover:bg-primary/5 font-bold"
+                  className="group rounded-none border border-primary/20 bg-transparent text-primary hover:bg-primary/5 font-black"
                   onClick={() => navigateTo("/about")}
                 >
                   EXPLORE
                   <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                 </Button>
                 <Button
-                  className="group rounded-none border border-primary/20 bg-transparent text-primary hover:bg-primary/5 font-bold"
+                  className="group rounded-none border border-primary/20 bg-transparent text-primary hover:bg-primary/5 font-black"
                   onClick={() => navigateTo("/contact")}
                 >
                   CONTACT
@@ -427,34 +426,31 @@ export default function Home() {
                 </Button>
               </motion.div>
 
-              {/* Professional Status Indicators */}
+              {/* Status indicators */}
               <motion.div
                 className="grid grid-cols-2 sm:grid-cols-4 gap-2 max-w-2xl mx-auto text-xs font-sf-mono text-primary/40"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 1.0, duration: 0.8 }}
               >
-                <div className="border border-primary/10 p-2">
+                <div className="border border-primary/10 p-2 text-center">
+                  <div className="text-primary/30 mb-1">PROJECTS</div>
+                  <div>15+ COMPLETED</div>
+                </div>
+                <div className="border border-primary/10 p-2 text-center">
+                  <div className="text-primary/30 mb-1">PUBLICATIONS</div>
+                  <div>3+ RESEARCH PAPERS</div>
+                </div>
+                <div className="border border-primary/10 p-2 text-center">
                   <div className="text-primary/30 mb-1">EXPERIENCE</div>
                   <div className="flex items-center justify-center">
-                    <div className="w-1.5 h-1.5 rounded-full bg-blue-500 mr-1.5 animate-mechanical-pulse"></div>
+                    <div className="w-1.5 h-1.5 rounded-full bg-green-500 mr-1.5 animate-[blink_0.5s_ease-in-out_infinite]"></div>
                     2+ YEARS
                   </div>
                 </div>
-                <div className="border border-primary/10 p-2">
-                  <div className="text-primary/30 mb-1">AVAILABILITY</div>
-                  <div className="flex items-center justify-center">
-                    <div className="w-1.5 h-1.5 rounded-full bg-green-500 mr-1.5 animate-mechanical-pulse"></div>
-                    OPEN TO WORK
-                  </div>
-                </div>
-                <div className="border border-primary/10 p-2">
-                  <div className="text-primary/30 mb-1">LOCATION</div>
-                  <div>ARIZONA, USA</div>
-                </div>
-                <div className="border border-primary/10 p-2">
-                  <div className="text-primary/30 mb-1">TECH STACK</div>
-                  <div>PYTHON • PYTORCH</div>
+                <div className="border border-primary/10 p-2 text-center">
+                  <div className="text-primary/30 mb-1">SPECIALIZATION</div>
+                  <div>LLM • CV • MLOps</div>
                 </div>
               </motion.div>
             </div>

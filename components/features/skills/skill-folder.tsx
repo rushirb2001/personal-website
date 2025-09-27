@@ -48,7 +48,7 @@ export function SkillFolder({ group }: SkillFolderProps) {
                 {topSkills.map((skill, idx) => (
                   <div key={idx} className="flex items-center text-xs">
                     <FileText className="h-3 w-3 mr-2 text-primary/50" />
-                    <span>{skill.name}</span>
+                    <span className="font-mono">{skill.name}</span>
                   </div>
                 ))}
               </div>
@@ -57,12 +57,12 @@ export function SkillFolder({ group }: SkillFolderProps) {
               <div className="border-t border-primary/20 pt-2 mt-auto">
                 <div className="text-xs flex items-center text-primary/60 group-hover:text-primary/80 transition-colors animate-mechanical-pulse">
                   <ChevronRight className="h-3 w-3 mr-1" />
-                  <span className="font-sf-mono tracking-wide text-[0.65rem]">ACCESS COMPLETE RECORD</span>
+                  <span className="font-sf-mono tracking-wide text-[0.65rem]">ACCESS SKILLS... </span>
                 </div>
 
                 <div className="flex justify-between items-center mt-1">
                   <div className="text-[0.6rem] font-sf-mono text-primary/30">{group.skills.length} ENTRIES</div>
-                  <div className="text-[0.6rem] font-sf-mono text-primary/30">ID: {group.id}</div>
+                  
                 </div>
               </div>
             </div>

@@ -181,7 +181,7 @@ export default function ExperiencePage() {
   }, [])
 
   return (
-    <PageLayout title="EXPERIENCE" subtitle="PERSONNEL ACTIVITY LOGS">
+    <PageLayout title="EXPERIENCE" subtitle="CORPORATE INDUSTRY WORK">
       <div className="h-full flex flex-col">
         {/* Status bar */}
         <div className="flex justify-between items-center mb-4 md:mb-6 border-b border-primary/20 pb-2">

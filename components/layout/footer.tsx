@@ -21,7 +21,7 @@ export function Footer() {
                 rel="noopener noreferrer"
                 className="text-primary/50 hover:text-primary transition-colors"
               >
-                <Linkedin className="h-4 w-4" />
+                <Linkedin className="h-4 w-4 text-blue-700" />
                 <span className="sr-only">LinkedIn</span>
               </Link>
               <Link
@@ -30,14 +30,14 @@ export function Footer() {
                 rel="noopener noreferrer"
                 className="text-primary/50 hover:text-primary transition-colors"
               >
-                <Github className="h-4 w-4" />
+                <Github className="h-4 w-4 text-purple-800" />
                 <span className="sr-only">Website</span>
               </Link>
               <Link
                 href="mailto:bhavsarrushir@gmail.com"
                 className="text-primary/50 hover:text-primary transition-colors"
               >
-                <Mail className="h-4 w-4" />
+                <Mail className="h-4 w-4 text-amber-900" />
                 <span className="sr-only">Email</span>
               </Link>
             </div>
