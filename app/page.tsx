@@ -9,6 +9,7 @@ import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
 import { SeveranceLogo } from "@/components/ui/severance-logo"
 import { UpdatesBanner } from "@/components/features/updates/updates-banner"
+import { Slot } from '@radix-ui/react-slot';
 import Link from "next/link"
 
 // Systemic transitions
