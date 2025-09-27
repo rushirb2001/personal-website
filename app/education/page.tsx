@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { MapPin } from "lucide-react"
 import { PageLayout } from "@/components/layout/page-layout"
 import { AcademicRecordModal } from "@/components/features/education/academic-record-modal"
 import { FileText, Lock, CheckCircle, Clock } from "lucide-react"
@@ -14,7 +15,7 @@ export default function EducationPage() {
       field: "DATA SCIENCE, ANALYTICS AND ENGINEERING",
       institution: "ARIZONA STATE UNIVERSITY",
       period: "AUG 2023 - JUN 2025",
-      id: "EDU-3L-110",
+      id: "UNITED STATES",
       description:
         "Pursuing advanced studies in data science and AI, focusing on machine learning techniques, data mining, and statistical analysis.",
       courses: [
@@ -33,7 +34,7 @@ export default function EducationPage() {
       field: "COMPUTER SCIENCE",
       institution: "INSTITUTE OF TECHNOLOGY, NIRMA UNIVERSITY",
       period: "JUL 2019 - JUN 2023",
-      id: "EDU-4M-219",
+      id: "INDIA",
       description: "Completed undergraduate studies in computer science with a focus on AI and machine learning.",
       courses: [
         { name: "Deep Learning" },
@@ -64,11 +65,11 @@ export default function EducationPage() {
           <div className="mb-4 md:mb-6 border-b border-primary/20 pb-2 flex justify-between items-center">
             <div className="text-xs font-sf-mono flex items-center">
               <FileText className="h-3.5 w-3.5 mr-2 text-primary/70" />
-              <span>CREDENTIAL VERIFICATION FILES</span>
+              <span>UNIVERSITY ACADEMICS </span>
             </div>
             <div className="text-xs font-sf-mono flex items-center">
               <Lock className="h-3.5 w-3.5 mr-2 text-primary/70" />
-              <span>SECURITY LEVEL: AUTHORIZED</span>
+              <span>VERIFIED</span>
             </div>
           </div>
 
@@ -83,7 +84,7 @@ export default function EducationPage() {
                 <div className="p-4 relative">
                   {/* File ID and status */}
                   <div className="flex justify-between items-center mb-3">
-                    <div className="text-xs font-sf-mono text-primary/70">FILE ID: {edu.id}</div>
+                    <div className="flex justify-between text-xs font-sf-mono text-primary/70"><MapPin className="mr-2 h-4 w-4 align" />{edu.id}</div>
                     <div className="flex items-center">
                       {edu.status === "GRADUATED" ? (
                         <>
@@ -133,7 +134,7 @@ export default function EducationPage() {
 
           {/* Section footer */}
           <div className="mt-6 pt-2 border-t border-primary/20 text-xs text-primary/30 font-sf-mono text-center">
-            ACADEMIC VERIFICATION SYSTEM • LAST UPDATED: 05/01/2025
+            ACADEMICS • LAST UPDATED: 05/01/2025
           </div>
         </div>
 

@@ -1,6 +1,6 @@
 "use client"
 
-import { ArrowRight } from "lucide-react"
+import { ArrowRight, Linkedin, Github, Mail } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { motion, AnimatePresence } from "framer-motion"
 import { useNavigation } from "@/contexts/navigation-context"
@@ -9,6 +9,7 @@ import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
 import { SeveranceLogo } from "@/components/ui/severance-logo"
 import { UpdatesBanner } from "@/components/features/updates/updates-banner"
+import Link from "next/link"
 
 // Systemic transitions
 const systemicTransition = {
@@ -417,6 +418,27 @@ export default function Home() {
                   EXPLORE
                   <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                 </Button>
+
+                <Button
+                  className="group rounded-none border border-primary/20 bg-transparent text-primary hover:bg-primary/5 font-black"
+                  asChild
+                >
+                  <Link href="https://linkedin.com/in/rushir-bhavsar/" target="_blank" rel="noopener noreferrer">
+                    <Linkedin className="h-4 w-4 text-blue-700" />
+                    <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                  </Link>
+                </Button>
+
+                <Button
+                  className="group rounded-none border border-primary/20 bg-transparent text-primary hover:bg-primary/5 font-black"
+                  asChild
+                >
+                  <Link href="https://github.com/rushirbhavsar" target="_blank" rel="noopener noreferrer">
+                    <Github className="h-4 w-4 text-purple-800" />
+                    <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                  </Link>
+                </Button>
+
                 <Button
                   className="group rounded-none border border-primary/20 bg-transparent text-primary hover:bg-primary/5 font-black"
                   onClick={() => navigateTo("/contact")}

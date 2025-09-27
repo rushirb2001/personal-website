@@ -58,7 +58,7 @@ importers:
         version: 2.5.5
       tailwindcss-animate:
         specifier: ^1.0.7
-        version: 1.0.7(tailwindcss@4.1.13)
+        version: 1.0.7
       vue-router:
         specifier: latest
         version: 4.5.1(vue@3.5.16(typescript@5.0.2))
@@ -78,9 +78,6 @@ importers:
       postcss:
         specifier: ^8.5
         version: 8.5.4
-      tailwindcss:
-        specifier: 4.1.13
-        version: 4.1.13
       typescript:
         specifier: ^5
         version: 5.0.2
@@ -1691,9 +1688,6 @@ packages:
     resolution: {integrity: sha512-bl6mpH3T7I3UFxuvDEXLxy/VuFxBk5bbzplh7tXI68mwMokNYd1t9qPBHlnyTwfa4JGC4zP516I1hYYtQ/vspA==}
     peerDependencies:
       tailwindcss: '>=3.0.0 || insiders'
-
-  tailwindcss@4.1.13:
-    resolution: {integrity: sha512-i+zidfmTqtwquj4hMEwdjshYYgMbOrPzb9a0M3ZgNa0JMoZeFC6bxZvO8yr8ozS6ix2SDz0+mvryPeBs2TFE+w==}
 
   tinyexec@1.0.1:
     resolution: {integrity: sha512-5uC6DDlmeqiOwCPmK9jMSdOuZTh8bU39Ys6yidB+UTt5hfZUPGAypSgFRiEp+jbi9qH40BLDvy85jIU88wKSqw==}
@@ -3701,11 +3695,7 @@ snapshots:
 
   tailwind-merge@2.5.5: {}
 
-  tailwindcss-animate@1.0.7(tailwindcss@4.1.13):
-    dependencies:
-      tailwindcss: 4.1.13
-
-  tailwindcss@4.1.13: {}
+  tailwindcss-animate@1.0.7: {}
 
   tinyexec@1.0.1: {}
 

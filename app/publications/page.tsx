@@ -33,7 +33,7 @@ export default function PublicationsPage() {
   // Publications data
   const publications: Publication[] = [
     {
-      id: "PRJ-6O-437",
+      id: "CV | MEDICINE",
       title: "DEEP ENSEMBLE MAMMOGRAM CLASSIFICATION USING ONE-SHOT SEGMENTATION",
       venue: "NIRMA UNIVERSITY CONFERENCE",
       authors: "R. BHAVSAR, S. PATEL, A. SHAH",
@@ -50,7 +50,7 @@ export default function PublicationsPage() {
       pdfLink: "#",
     },
     {
-      id: "PUB-7P-546",
+      id: "QML | ASTROPHYSICS",
       title: "CLASSIFICATION OF POTENTIALLY HAZARDOUS ASTEROIDS USING SUPERVISED QUANTUM MACHINE LEARNING",
       venue: "IEEE ACCESS",
       authors: "R. BHAVSAR, N. K. JADAV, U. BODKHE, R. GUPTA, S. TANWAR, G. SHARMA, P. N. BOKORO, R. SHARMA",
@@ -67,7 +67,7 @@ export default function PublicationsPage() {
       pdfLink: "https://ieeexplore.ieee.org/document/10188662",
     },
     {
-      id: "PUB-8Q-655",
+      id: "NLP | BLOCKCHAIN",
       title: "METAHATE: AI-BASED HATE SPEECH DETECTION FOR SECURED ONLINE GAMING IN METAVERSE USING BLOCKCHAIN",
       venue: "SECURITY AND PRIVACY",
       authors:
@@ -85,7 +85,7 @@ export default function PublicationsPage() {
       pdfLink: "https://onlinelibrary.wiley.com/doi/abs/10.1002/spy2.343",
     },
     {
-      id: "PUB-9R-764",
+      id: "PINNS | DL",
       title: "MACE-PINNS: MULTI-NETWORK DRIVEN DECOUPLING OF INTERDEPENDENT PHYSICS IN COUPLED PDE SYSTEMS",
       venue: "ARIZONA STATE UNIVERSITY DISSERTATIONS & THESES",
       authors: "R. BHAVSAR",
@@ -93,7 +93,7 @@ export default function PublicationsPage() {
         "Physics-Informed Neural Networks (PINNs) provide an innovative framework for solving complex nonlinear Partial Differential Equations (PDEs) by embedding the governing equations directly into neural networks. To address challenges with standard PINNs, the Multi-network Architecture for Coupled Equations Physics-Informed Neural Networks (MACE-PINNs) is introduced. This approach employs parallel subnetworks to independently approximate coupled variables, interconnected via iterative residual constraints. Experimental results demonstrate robust pattern reproduction spanning 5 parametric variations for each RDS, with L2 errors ranging from 10−3 to 10−2.",
       year: "2025",
       month: "01",
-      status: "PENDING",
+      status: "RELEASED",
       classification: "PUBLIC",
       doi: "10.48550/DISSERTATION.31994438",
       projectRef: "AI-PDE-4127",
@@ -153,7 +153,7 @@ export default function PublicationsPage() {
   }
 
   return (
-    <PageLayout title="CASE DOSSIERS" subtitle="RESEARCH PUBLICATIONS">
+    <PageLayout title="PUBLICATIONS" subtitle="RESEARCH AND THESIS">
       <div className="space-y-6">
         {/* Dossier index cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -165,7 +165,7 @@ export default function PublicationsPage() {
             >
               {/* Folder tab */}
               <div className="absolute top-0 left-[10%] right-[10%] h-8 bg-secondary dark:bg-eerie-darkgray border-t border-l border-r border-primary/40 rounded-t-md z-10 flex items-center justify-center shadow-sm">
-                <div className="text-xs font-sf-mono text-primary/70">[ CASE: {pub.id} ]</div>
+                <div className="text-xs font-sf-mono text-primary/70">[ DOMAIN: {pub.id} ]</div>
               </div>
 
               {/* Folder body */}
@@ -190,7 +190,7 @@ export default function PublicationsPage() {
                   <div className="border-t border-primary/20 pt-2 mt-auto">
                     <div className="text-xs flex items-center text-primary/60 group-hover:text-primary/80 transition-colors animate-mechanical-pulse">
                       <ChevronRight className="h-3 w-3 mr-1" />
-                      <span className="font-sf-mono tracking-wide text-[0.65rem]">VIEW DOSSIER</span>
+                      <span className="font-sf-mono tracking-wide text-[0.65rem]">VIEW PUBLICATION DETAILS</span>
                     </div>
 
                     <div className="flex justify-between items-center mt-1">

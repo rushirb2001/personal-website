@@ -11,24 +11,19 @@ export default function ContactPage() {
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   return (
-    <PageLayout title="CONTACT" subtitle="COMMUNICATION PROTOCOL">
+    <PageLayout title="CONTACT" subtitle="Contact me whenever, whatever :)">
       <div className="grid gap-4 md:gap-8 h-full">
         {/* Button to open contact form modal */}
         <div className="border border-primary/20 p-4 md:p-6 relative bg-background/80 backdrop-blur-sm flex flex-col items-center justify-center">
           {/* ID Label */}
-          <div className="absolute -top-2 -left-2 text-xs font-sf-mono text-primary/50 bg-background dark:bg-eerie-deepblack px-1.5 py-0.5">
-            FORM-7G-893
-          </div>
+          
 
           {/* Status indicator */}
-          <div className="absolute -bottom-2 -right-2 text-xs font-sf-mono text-primary/50 bg-background dark:bg-eerie-deepblack px-1.5 py-0.5 flex items-center">
-            <span className="w-1.5 h-1.5 rounded-full bg-green-500 mr-1.5 animate-pulse"></span>
-            SECURE CHANNEL
-          </div>
+          
 
           <div className="text-center mb-6">
-            <h2 className="text-lg font-medium mb-2">DIRECT COMMUNICATION</h2>
-            <p className="text-sm text-primary/70 mb-4">Initiate a secure transmission to establish direct contact</p>
+            <h2 className="text-lg font-medium mb-2">CONNECT WITH ME DIRECTLY </h2>
+            <p className="text-sm text-primary/70 mb-4">Help yourself to writing me an elaborate email, or feel free to drop a call on the number below!            </p>
           </div>
 
           <Button
@@ -41,28 +36,26 @@ export default function ContactPage() {
 
         {/* Contact information */}
         <div className="border border-primary/10 p-4 md:p-6 relative">
-          <div className="absolute -top-2 -left-2 text-xs font-sf-mono text-primary/50 bg-background dark:bg-eerie-deepblack px-1.5 py-0.5">
-            DIRECT CHANNELS
-          </div>
+          
 
           <div className="space-y-4 md:space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
               <div className="flex items-center text-sm group border border-primary/10 p-3">
-                <Mail className="h-4 w-4 mr-3 text-primary/70 group-hover:text-primary transition-colors flex-shrink-0" />
+                <Mail className="h-4 w-4 mr-3 group-hover:text-primary transition-colors flex-shrink-0 text-destructive" />
                 <span className="font-sf-mono tracking-wider group-hover:tracking-widest transition-all duration-700 text-xs truncate">
                   {CONTACT_INFO.email}
                 </span>
               </div>
 
               <div className="flex items-center text-sm group border border-primary/10 p-3">
-                <Phone className="h-4 w-4 mr-3 text-primary/70 group-hover:text-primary transition-colors flex-shrink-0" />
+                <Phone className="h-4 w-4 mr-3 group-hover:text-primary transition-colors flex-shrink-0 text-lime-700" />
                 <span className="font-sf-mono tracking-wider group-hover:tracking-widest transition-all duration-700 text-xs">
                   {CONTACT_INFO.phone}
                 </span>
               </div>
 
               <div className="flex items-center text-sm group border border-primary/10 p-3 md:col-span-2">
-                <MapPin className="h-4 w-4 mr-3 text-primary/70 group-hover:text-primary transition-colors flex-shrink-0" />
+                <MapPin className="h-4 w-4 mr-3 group-hover:text-primary transition-colors flex-shrink-0 text-sky-800" />
                 <span className="font-sf-mono tracking-wider group-hover:tracking-widest transition-all duration-700 text-xs">
                   LOCATION: {CONTACT_INFO.location}
                 </span>
@@ -70,7 +63,7 @@ export default function ContactPage() {
             </div>
 
             <div className="pt-3 md:pt-4 border-t border-primary/10">
-              <p className="text-xs font-medium mb-3 text-primary/50 font-sf-mono">EXTERNAL NETWORKS:</p>
+              
               <div className="flex space-x-4 md:space-x-6">
                 <a
                   href={CONTACT_INFO.linkedin}
@@ -104,7 +97,7 @@ export default function ContactPage() {
 
         {/* Warning message */}
         <div className="text-xs text-primary/40 font-sf-mono text-center mt-2 border-t border-primary/10 pt-4">
-          NOTICE: ALL COMMUNICATIONS ARE SUBJECT TO REVIEW
+          WILL REPLY BACK SOON :)   
         </div>
       </div>
 

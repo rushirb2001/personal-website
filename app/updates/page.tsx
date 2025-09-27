@@ -40,17 +40,17 @@ export default function UpdatesPage() {
   }
 
   return (
-    <PageLayout title="Updates" subtitle="SYSTEM LOGS AND USER ACTIVITY">
+    <PageLayout title="BLOG" subtitle="ARTICLES, DAILY BLOGS AND LIFE UPDATES">
       <div className="container max-w-4xl mx-auto">
         <div className="mb-8 border border-primary/20 p-4 bg-background dark:bg-eerie-black/50">
           <div className="flex flex-col mb-4">
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center">
                 <Terminal className="h-4 w-4 mr-2 text-primary/70" />
-                <h1 className="text-lg font-sf-mono">USER UPDATES</h1>
+                <h1 className="text-lg font-sf-mono">BLOG ARTICLES </h1>
               </div>
               <div className="text-xs font-sf-mono text-primary/70">
-                DISPLAYING {filteredPosts.length} RECORD{filteredPosts.length !== 1 ? "S" : ""}
+                DISPLAYING {filteredPosts.length} ARTICLE{filteredPosts.length !== 1 ? "S" : ""}
               </div>
             </div>
 
@@ -170,7 +170,7 @@ export default function UpdatesPage() {
             className="rounded-none border-primary/20 text-xs font-sf-mono"
             onClick={handleReturnToMain}
           >
-            RETURN TO MAIN SYSTEM
+            RETURN TO MAIN PAGE 
           </Button>
         </div>
       </div>

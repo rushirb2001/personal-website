@@ -78,7 +78,7 @@ export function ContactFormModal({ isOpen, onClose }: ContactFormModalProps) {
           >
             {/* Header */}
             <div className="flex justify-between items-center p-3 md:p-4 border-b border-primary/20">
-              <div className="text-xs md:text-sm font-sf-mono">COMMUNICATION PROTOCOL</div>
+              <div className="text-xs md:text-sm font-sf-mono">COMPOSE EMAIL </div>
               <button onClick={onClose} className="text-primary/70 hover:text-primary font-sf-mono text-xs">
                 [ CLOSE ]
               </button>
@@ -120,14 +120,14 @@ export function ContactFormModal({ isOpen, onClose }: ContactFormModalProps) {
                     <div className="absolute inset-0 bg-background/80 dark:bg-eerie-black/80 backdrop-blur-sm z-10 flex items-center justify-center">
                       <div className="flex flex-col items-center">
                         <div className="w-6 h-6 border-2 border-primary/20 border-t-primary/60 rounded-full animate-spin"></div>
-                        <p className="text-xs font-sf-mono mt-2 animate-mechanical-pulse">TRANSMITTING...</p>
+                        <p className="text-xs font-sf-mono mt-2 animate-mechanical-pulse">SENDING...</p>
                       </div>
                     </div>
                   )}
                   <div className="space-y-1 md:space-y-2">
                     <label htmlFor="name" className="text-[10px] md:text-xs font-sf-mono flex items-center">
                       <span className="w-1.5 h-1.5 md:w-2 md:h-2 bg-primary/50 mr-1 md:mr-2"></span>
-                      SUBJECT NAME
+                      YOUR NAME
                     </label>
                     <input
                       id="name"
@@ -145,7 +145,7 @@ export function ContactFormModal({ isOpen, onClose }: ContactFormModalProps) {
                   <div className="space-y-1 md:space-y-2">
                     <label htmlFor="email" className="text-[10px] md:text-xs font-sf-mono flex items-center">
                       <span className="w-1.5 h-1.5 md:w-2 md:h-2 bg-primary/50 mr-1 md:mr-2"></span>
-                      COMMUNICATION CHANNEL
+                      YOUR EMAIL ADDRESS  
                     </label>
                     <input
                       id="email"
@@ -163,7 +163,7 @@ export function ContactFormModal({ isOpen, onClose }: ContactFormModalProps) {
                   <div className="space-y-1 md:space-y-2">
                     <label htmlFor="message" className="text-[10px] md:text-xs font-sf-mono flex items-center">
                       <span className="w-1.5 h-1.5 md:w-2 md:h-2 bg-primary/50 mr-1 md:mr-2"></span>
-                      MESSAGE CONTENT
+                      YOUR MESSAGE FOR ME  
                     </label>
                     <textarea
                       id="message"
@@ -195,7 +195,7 @@ export function ContactFormModal({ isOpen, onClose }: ContactFormModalProps) {
                     {isSubmitting ? (
                       <span className="flex items-center justify-center">
                         <span className="w-4 h-4 border-2 border-primary/20 border-t-primary/60 rounded-full animate-spin mr-2"></span>
-                        TRANSMITTING...
+                        SENDING...
                       </span>
                     ) : (
                       <span className="group-hover:scale-110 transition-transform duration-200 flex items-center justify-center">
