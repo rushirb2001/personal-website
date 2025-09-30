@@ -30,7 +30,7 @@ export default function ContactPage() {
             onClick={() => setIsModalOpen(true)}
             className="rounded-none bg-transparent border border-primary/20 text-primary hover:bg-primary/5 font-sf-mono text-sm group px-8 py-6"
           >
-            <span className="group-hover:tracking-widest transition-all duration-500">OPEN COMMUNICATION CHANNEL</span>
+            <span className="group-hover:tracking-widest transition-all duration-500">{"SEND AN EMAIL!"} </span>
           </Button>
         </div>
 
@@ -71,14 +71,14 @@ export default function ContactPage() {
                   rel="noopener noreferrer"
                   className="text-primary/70 hover:text-primary transition-colors group border border-primary/10 p-2"
                 >
-                  <Linkedin className="h-5 w-5 group-hover:scale-110 transition-transform" />
+                  <Linkedin className="h-5 w-5 group-hover:scale-110 transition-transform text-blue-500" />
                   <span className="sr-only">LinkedIn</span>
                 </a>
                 <a
                   href={`mailto:${CONTACT_INFO.email}`}
                   className="text-primary/70 hover:text-primary transition-colors group border border-primary/10 p-2"
                 >
-                  <Mail className="h-5 w-5 group-hover:scale-110 transition-transform" />
+                  <Mail className="h-5 w-5 group-hover:scale-110 transition-transform text-amber-900" />
                   <span className="sr-only">Email</span>
                 </a>
                 <a
@@ -87,7 +87,7 @@ export default function ContactPage() {
                   rel="noopener noreferrer"
                   className="text-primary/70 hover:text-primary transition-colors group border border-primary/10 p-2"
                 >
-                  <Github className="h-5 w-5 group-hover:scale-110 transition-transform" />
+                  <Github className="h-5 w-5 group-hover:scale-110 transition-transform text-purple-700" />
                   <span className="sr-only">Website</span>
                 </a>
               </div>
