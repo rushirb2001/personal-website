@@ -406,7 +406,7 @@ export default function Home() {
                 </div>
 
                 <motion.div
-                  className="relative px-0 py-4"
+                  className="relative px-6 md:px-5 py-4"
                   initial={{ opacity: 0, x: 30 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.6, duration: 0.8 }}
