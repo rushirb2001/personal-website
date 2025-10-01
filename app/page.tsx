@@ -246,12 +246,12 @@ export default function Home() {
       <AnimatePresence>
         {showContent && (
           <motion.div
-            className="flex items-center justify-center min-h-[calc(100vh)] px-4 md:px-8 -translate-y-16"
+            className="flex items-center justify-center min-h-[calc(100vh)] px-4 md:px-8 -translate-y-16 opacity-0"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.7, ease: [0.4, 0, 0.2, 1] }}
           >
-            <div className="w-full max-w-6xl py-4 md:py-16 relative bg-background/50 backdrop-blur-sm border border-primary/20">
+            <div className="w-full max-w-full py-4 md:py-16 relative opacity-100">
               <motion.div
                 className="absolute top-0 left-0 w-full h-full pointer-events-none"
                 initial={{ opacity: 0 }}
@@ -288,7 +288,7 @@ export default function Home() {
               <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-6 relative">
                 <div className="px-6 md:px-12">
                   <motion.div
-                    className="relative text-center"
+                    className="relative text-center py-12"
                     initial={{ opacity: 0, x: -30 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.6, duration: 0.8 }}
