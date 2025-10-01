@@ -63,12 +63,12 @@ export function UpdatesBanner() {
   }
 
   return (
-    <div className="relative">
+    <>
       {/* Banner */}
       <div
         ref={bannerRef}
         onClick={handleBannerClick}
-        className="fixed top-14 md:top-16 left-0 z-40 flex items-center justify-center space-x-2 py-1 px-2 border-r border-b border-primary/20 bg-background/95 backdrop-blur-sm text-xs font-sf-mono text-primary/70 cursor-pointer hover:bg-primary/10 transition-colors rounded-br-md"
+        className="fixed top-14 md:top-16 left-0 z-40 flex items-center justify-start space-x-2 py-1 px-2 border-r border-b border-primary/20 bg-background/95 backdrop-blur-sm text-xs font-sf-mono text-primary/70 cursor-pointer hover:bg-primary/10 transition-colors rounded-br-md"
       >
         <div className="w-1.5 h-1.5 rounded-full bg-primary animate-[blink_1s_ease-in-out_infinite]"></div>
         <AnimatePresence mode="wait">
@@ -141,6 +141,6 @@ export function UpdatesBanner() {
           </motion.div>
         )}
       </AnimatePresence>
-    </div>
+    </>
   )
 }
