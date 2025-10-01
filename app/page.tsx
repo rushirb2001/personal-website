@@ -221,6 +221,14 @@ export default function Home() {
         )}
       </AnimatePresence>
 
+      <AnimatePresence>
+        {showContent && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.9, duration: 0.5 }}>
+            <UpdatesBanner />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Footer with fade-in */}
       <AnimatePresence>
         {showFooter && (
@@ -363,16 +371,6 @@ export default function Home() {
                       transition={{ delay: 0.8, duration: 0.6 }}
                     ></motion.div>
                   </motion.h1>
-
-                  {/* Updates Banner */}
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.9, duration: 0.5 }}
-                    className="mb-4"
-                  >
-                    <UpdatesBanner />
-                  </motion.div>
 
                   {/* Role titles */}
                   <motion.p
