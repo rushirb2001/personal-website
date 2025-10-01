@@ -1,6 +1,6 @@
 "use client"
 
-import { ArrowRight, Linkedin, Github, User, Calendar, MapPin, FileText } from "lucide-react"
+import { ArrowRight, Linkedin, Github, FileText } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { motion, AnimatePresence } from "framer-motion"
 import { useNavigation } from "@/contexts/navigation-context"
@@ -285,59 +285,10 @@ export default function Home() {
                 <div className="absolute inset-0 bg-scan-lines opacity-10"></div>
               </motion.div>
 
-              <div className="grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-6 relative">
+              <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-6 relative">
                 <motion.div
-                  className="border border-primary/30 p-4 bg-background/50 backdrop-blur-sm relative"
+                  className="relative"
                   initial={{ opacity: 0, x: -30 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.6, duration: 0.8 }}
-                >
-                  {/* Profile Image */}
-                  <div className="relative border border-primary/20 bg-secondary/20 p-1 mb-4">
-                    <Image
-                      src="/images/personal_photo.png"
-                      alt="Profile"
-                      width={300}
-                      height={300}
-                      className="w-full grayscale"
-                    />
-                    <div className="absolute bottom-2 right-2 text-xs font-sf-mono text-primary/50 bg-background/90 px-2 py-1">
-                      VERIFIED
-                    </div>
-                  </div>
-
-                  {/* Metadata */}
-                  <div className="space-y-3 font-sf-mono text-xs mb-4">
-                    <div className="flex items-center space-x-2 border-b border-primary/10 pb-2">
-                      <User className="h-3 w-3 text-primary/50" />
-                      <span className="text-primary/70">DATA SCIENTIST</span>
-                    </div>
-                    <div className="flex items-center space-x-2 border-b border-primary/10 pb-2">
-                      <Calendar className="h-3 w-3 text-primary/50" />
-                      <span className="text-primary/70">ACTIVE SINCE 2018</span>
-                    </div>
-                    <div className="flex items-center space-x-2 border-b border-primary/10 pb-2">
-                      <MapPin className="h-3 w-3 text-primary/50" />
-                      <span className="text-primary/70">ARIZONA, USA</span>
-                    </div>
-                  </div>
-
-                  {/* Resume Button */}
-                  <Button
-                    variant="outline"
-                    className="w-full rounded-none border-primary/20 text-xs font-sf-mono group bg-transparent hover:bg-primary/10"
-                    onClick={() => setIsResumeModalOpen(true)}
-                  >
-                    <span className="group-hover:tracking-widest transition-all duration-500 flex items-center">
-                      <FileText className="h-3 w-3 mr-2" />
-                      VIEW RESUME
-                    </span>
-                  </Button>
-                </motion.div>
-
-                <motion.div
-                  className="border border-primary/30 p-6 md:p-8 bg-background/50 backdrop-blur-sm relative"
-                  initial={{ opacity: 0, x: 30 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.6, duration: 0.8 }}
                 >
@@ -419,31 +370,21 @@ export default function Home() {
                   </motion.p>
 
                   <motion.div
-                    className="space-y-4 mb-6 text-sm"
+                    className="mb-6 text-sm leading-relaxed"
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 1.1, duration: 0.8 }}
                   >
-                    <div className="border-l-2 border-primary/30 pl-4">
-                      <h3 className="text-xs font-sf-mono text-primary/50 mb-2">PROFILE OVERVIEW</h3>
-                      <p className="leading-relaxed">
-                        Data Scientist and AI Engineer specializing in machine learning, deep learning, and AI systems
-                        development. Creating innovative solutions using cutting-edge AI technologies.
-                      </p>
-                    </div>
-
-                    <div className="border-l-2 border-primary/30 pl-4">
-                      <h3 className="text-xs font-sf-mono text-primary/50 mb-2">EXPERTISE</h3>
-                      <p className="leading-relaxed">
-                        Experience across healthcare, astronomy, and enterprise AI domains. Expertise in
-                        transformer-based models, retrieval-augmented generation, and production AI system optimization.
-                      </p>
-                    </div>
+                    <p>
+                      Data Scientist and AI Engineer specializing in machine learning, deep learning, and AI systems
+                      development. Creating innovative solutions using cutting-edge AI technologies with experience
+                      across healthcare, astronomy, and enterprise AI domains. Expertise in transformer-based models,
+                      retrieval-augmented generation, and production AI system optimization.
+                    </p>
                   </motion.div>
 
-                  {/* Action buttons */}
                   <motion.div
-                    className="flex flex-wrap gap-3 mb-6"
+                    className="flex flex-wrap gap-3"
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 1.2, duration: 0.8 }}
@@ -484,35 +425,68 @@ export default function Home() {
                       <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                     </Button>
                   </motion.div>
+                </motion.div>
 
-                  <motion.div
-                    className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs font-sf-mono text-primary/40"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 1.3, duration: 0.8 }}
+                <motion.div
+                  className="relative"
+                  initial={{ opacity: 0, x: 30 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.6, duration: 0.8 }}
+                >
+                  {/* Profile Image */}
+                  <div className="relative border border-primary/20 bg-secondary/20 p-1 mb-4">
+                    <Image
+                      src="/images/personal_photo.png"
+                      alt="Profile"
+                      width={300}
+                      height={300}
+                      className="w-full grayscale"
+                    />
+                    <div className="absolute bottom-2 right-2 text-xs font-sf-mono text-primary/50 bg-background/90 px-2 py-1">
+                      VERIFIED
+                    </div>
+                  </div>
+
+                  {/* Resume Button */}
+                  <Button
+                    variant="outline"
+                    className="w-full rounded-none border-primary/20 text-xs font-sf-mono group bg-transparent hover:bg-primary/10"
+                    onClick={() => setIsResumeModalOpen(true)}
                   >
-                    <div className="border border-primary/20 p-3 text-center hover:border-primary/40 transition-colors">
-                      <div className="text-primary/30 mb-1">PROJECTS</div>
-                      <div className="font-bold">15+ COMPLETED</div>
-                    </div>
-                    <div className="border border-primary/20 p-3 text-center hover:border-primary/40 transition-colors">
-                      <div className="text-primary/30 mb-1">PUBLICATIONS</div>
-                      <div className="font-bold">3+ RESEARCH PAPERS</div>
-                    </div>
-                    <div className="border border-primary/20 p-3 text-center hover:border-primary/40 transition-colors">
-                      <div className="text-primary/30 mb-1">EXPERIENCE</div>
-                      <div className="flex items-center justify-center font-bold">
-                        <div className="w-1.5 h-1.5 rounded-full bg-green-500 mr-1.5 animate-[blink_0.5s_ease-in-out_infinite]"></div>
-                        2+ YEARS
-                      </div>
-                    </div>
-                    <div className="border border-primary/20 p-3 text-center hover:border-primary/40 transition-colors">
-                      <div className="text-primary/30 mb-1">SPECIALIZATION</div>
-                      <div className="font-bold">LLM • CV • MLOps</div>
-                    </div>
-                  </motion.div>
+                    <span className="group-hover:tracking-widest transition-all duration-500 flex items-center">
+                      <FileText className="h-3 w-3 mr-2" />
+                      VIEW RESUME
+                    </span>
+                  </Button>
                 </motion.div>
               </div>
+
+              <motion.div
+                className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs font-sf-mono text-primary/40 mt-6"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1.3, duration: 0.8 }}
+              >
+                <div className="border border-primary/20 p-3 text-center hover:border-primary/40 transition-colors">
+                  <div className="text-primary/30 mb-1">PROJECTS</div>
+                  <div className="font-bold">15+ COMPLETED</div>
+                </div>
+                <div className="border border-primary/20 p-3 text-center hover:border-primary/40 transition-colors">
+                  <div className="text-primary/30 mb-1">PUBLICATIONS</div>
+                  <div className="font-bold">3+ RESEARCH PAPERS</div>
+                </div>
+                <div className="border border-primary/20 p-3 text-center hover:border-primary/40 transition-colors">
+                  <div className="text-primary/30 mb-1">EXPERIENCE</div>
+                  <div className="flex items-center justify-center font-bold">
+                    <div className="w-1.5 h-1.5 rounded-full bg-green-500 mr-1.5 animate-[blink_0.5s_ease-in-out_infinite]"></div>
+                    2+ YEARS
+                  </div>
+                </div>
+                <div className="border border-primary/20 p-3 text-center hover:border-primary/40 transition-colors">
+                  <div className="text-primary/30 mb-1">SPECIALIZATION</div>
+                  <div className="font-bold">LLM • CV • MLOps</div>
+                </div>
+              </motion.div>
             </div>
           </motion.div>
         )}
