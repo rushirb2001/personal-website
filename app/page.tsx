@@ -448,7 +448,7 @@ export default function Home() {
             </div>
 
             {/* Desktop Layout - Original grid layout */}
-            <div className="hidden lg:block w-full max-w-7xl ">
+            <div className="hidden lg:block w-full max-w-7xl">
               <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-6 py-16">
                 {/* Left Column - Name, Description, Buttons */}
                 <div className="px-6 md:px-5">
