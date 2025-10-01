@@ -449,7 +449,7 @@ export default function Home() {
 
             {/* Desktop Layout - Original grid layout */}
             <div className="hidden lg:block w-full max-w-7xl">
-              <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-6">
+              <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-6 py-16">
                 {/* Left Column - Name, Description, Buttons */}
                 <div className="px-6 md:px-5">
                   <motion.div
@@ -631,7 +631,7 @@ export default function Home() {
 
               {/* Stats Section - Below the grid */}
               <motion.div
-                className="max-w-3xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-2 text-xs font-sf-mono text-primary/40 mt-6"
+                className="max-w-3xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-2 text-xs font-sf-mono text-primary/40 mt-6 py-0"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 1.3, duration: 0.8 }}
