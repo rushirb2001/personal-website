@@ -464,7 +464,7 @@ export default function Home() {
               </div>
 
               <motion.div
-                className=" max-w-3xlgrid grid-cols-2 md:grid-cols-4 gap-2 text-xs font-sf-mono text-primary/40 mt-6"
+                className=" max-w-3xl justify-center grid grid-cols-2 md:grid-cols-4 gap-2 text-xs font-sf-mono text-primary/40 mt-6"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 1.3, duration: 0.8 }}
