@@ -251,7 +251,7 @@ export default function Home() {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.7, ease: [0.4, 0, 0.2, 1] }}
           >
-            <div className="w-full max-w-6xl py-4 md:py-16 relative">
+            <div className="w-full max-w-6xl py-4 md:py-16 relative bg-background/50 backdrop-blur-sm border border-primary/20">
               <motion.div
                 className="absolute top-0 left-0 w-full h-full pointer-events-none"
                 initial={{ opacity: 0 }}
