@@ -258,30 +258,6 @@ export default function Home() {
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.2, duration: 0.8 }}
               >
-                <motion.div
-                  className="absolute top-1/4 left-0 h-px w-24 bg-primary/30"
-                  initial={{ scaleX: 0 }}
-                  animate={{ scaleX: 1 }}
-                  transition={{ delay: 0.4, duration: 0.5 }}
-                ></motion.div>
-                <motion.div
-                  className="absolute top-1/3 left-8 h-16 w-px bg-primary/20"
-                  initial={{ scaleY: 0 }}
-                  animate={{ scaleY: 1 }}
-                  transition={{ delay: 0.5, duration: 0.5 }}
-                ></motion.div>
-                <motion.div
-                  className="absolute bottom-1/4 right-0 h-px w-24 bg-primary/30"
-                  initial={{ scaleX: 0 }}
-                  animate={{ scaleX: 1 }}
-                  transition={{ delay: 0.4, duration: 0.5 }}
-                ></motion.div>
-                <motion.div
-                  className="absolute bottom-1/3 right-8 h-16 w-px bg-primary/20"
-                  initial={{ scaleY: 0 }}
-                  animate={{ scaleY: 1 }}
-                  transition={{ delay: 0.5, duration: 0.5 }}
-                ></motion.div>
                 <div className="absolute inset-0 bg-scan-lines opacity-10"></div>
               </motion.div>
 
