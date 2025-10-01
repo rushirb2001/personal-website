@@ -262,7 +262,7 @@ export default function Home() {
               </motion.div>
 
               <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-6 relative py-14">
-                <div className="px-6 md:px-12">
+                <div className="px-6 md:px-2">
                   <motion.div
                     className="relative text-center py-14"
                     initial={{ opacity: 0, x: -30 }}
