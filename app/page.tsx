@@ -252,7 +252,7 @@ export default function Home() {
             transition={{ duration: 0.7, ease: [0.4, 0, 0.2, 1] }}
           >
             {/* Mobile Layout - Fixed vertical structure */}
-            <div className="lg:hidden w-full h-[calc(100vh-10rem)] overflow-hidden flex flex-col justify-center items-center gap-4 relative px-6 pt-8">
+            <div className="lg:hidden w-full h-[calc(100vh-10rem)] overflow-hidden flex flex-col justify-center items-center gap-4 relative px-6 pl-0 pr-0 pt-0">
               {/* Name Effect - shifted down */}
               <motion.div
                 className="relative text-center w-full mt-8"
@@ -348,8 +348,8 @@ export default function Home() {
                   <Image
                     src="/images/personal_photo.png"
                     alt="Profile"
-                    width={240}
-                    height={240}
+                    width={300}
+                    height={300}
                     className="w-full grayscale"
                   />
                   <div className="absolute top-2 right-2 bg-background/80 border border-primary/30 px-2 py-1 text-[10px] font-sf-mono">
