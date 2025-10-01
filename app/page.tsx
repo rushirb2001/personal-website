@@ -1,6 +1,6 @@
 "use client"
 
-import { ArrowRight, Linkedin, Github } from "lucide-react"
+import { Mail, Linkedin, Github } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { motion, AnimatePresence } from "framer-motion"
 import { useNavigation } from "@/contexts/navigation-context"
@@ -8,7 +8,7 @@ import { useEffect, useState, useRef } from "react"
 import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
 import { SeveranceLogo } from "@/components/ui/severance-logo"
-import { UpdatesBanner } from "@/components/features/updates/updates-banner"
+import Image from "next/image"
 import Link from "next/link"
 
 // Systemic transitions
@@ -31,6 +31,11 @@ export default function Home() {
   const [showHeader, setShowHeader] = useState(false)
   const [showFooter, setShowFooter] = useState(false)
   const [showContent, setShowContent] = useState(false)
+
+  // Typewriter effect for role
+  const [roleText, setRoleText] = useState("")
+  const [showCursor, setShowCursor] = useState(true)
+  const fullRole = "Data Scientist"
 
   // Animation refs
   const animationRef = useRef<NodeJS.Timeout | null>(null)
@@ -58,21 +63,17 @@ export default function Home() {
   // Check if this is the first visit
   useEffect(() => {
     if (typeof window !== "undefined") {
-      // Check if already booted before (using localStorage for persistence across sessions)
       const hasBooted = localStorage.getItem("portfolio-system-booted")
       if (hasBooted === "true") {
-        // Skip boot animation completely
         setShowBoot(false)
         setShowHeader(true)
         setShowFooter(true)
         setShowContent(true)
       } else {
-        // First visit - set the flag for future visits
         localStorage.setItem("portfolio-system-booted", "true")
       }
     }
 
-    // Cleanup function to clear any remaining timeouts
     return () => {
       if (animationRef.current) clearTimeout(animationRef.current)
       if (typeIntervalRef.current) clearInterval(typeIntervalRef.current)
@@ -96,40 +97,34 @@ export default function Home() {
         } else {
           if (typeIntervalRef.current) clearInterval(typeIntervalRef.current)
 
-          // Abrupt glitch effect
           if (Math.random() > 0.5) {
             setTimeout(() => {
               setBootGlitch(true)
-              setTimeout(() => setBootGlitch(false), 100) // Shorter glitch duration
+              setTimeout(() => setBootGlitch(false), 100)
             }, 200)
           }
 
-          // Move to next stage after precise delay
           animationRef.current = setTimeout(() => {
             setBootStage((prev) => prev + 1)
-          }, 100) // More precise timing
+          }, 100)
         }
-      }, 40) // Consistent typing speed
+      }, 40)
 
       return () => {
         if (typeIntervalRef.current) clearInterval(typeIntervalRef.current)
         if (animationRef.current) clearTimeout(animationRef.current)
       }
     } else {
-      // Final stage - transition to main content
       animationRef.current = setTimeout(() => {
         setBootScanLines(true)
 
-        // Start transition sequence
         animationRef.current = setTimeout(() => {
           setShowBoot(false)
 
-          // Show header and footer first
           animationRef.current = setTimeout(() => {
             setShowHeader(true)
             setShowFooter(true)
 
-            // Then show main content
             animationRef.current = setTimeout(() => {
               setShowContent(true)
             }, 300)
@@ -139,25 +134,29 @@ export default function Home() {
     }
   }, [bootStage, showBoot])
 
-  // Preload critical pages from the homepage
   useEffect(() => {
-    const preloadPages = async () => {
-      // Use dynamic imports to preload key pages
-      const paths = ["/about", "/skills", "/experience"]
+    if (!showContent) return
 
-      // Create a slight delay to prioritize current page render first
-      setTimeout(() => {
-        paths.forEach((path) => {
-          const link = document.createElement("link")
-          link.rel = "prefetch"
-          link.href = path
-          document.head.appendChild(link)
-        })
-      }, 1000)
+    let charIndex = 0
+    const typeInterval = setInterval(() => {
+      if (charIndex < fullRole.length) {
+        setRoleText(fullRole.slice(0, charIndex + 1))
+        charIndex++
+      } else {
+        clearInterval(typeInterval)
+      }
+    }, 100)
+
+    // Cursor blink
+    const cursorInterval = setInterval(() => {
+      setShowCursor((prev) => !prev)
+    }, 530)
+
+    return () => {
+      clearInterval(typeInterval)
+      clearInterval(cursorInterval)
     }
-
-    preloadPages()
-  }, [])
+  }, [showContent])
 
   return (
     <>
@@ -170,7 +169,6 @@ export default function Home() {
             exit={{ opacity: 0 }}
             transition={systemicTransition}
           >
-            {/* Terminal window */}
             <motion.div
               className={`w-full max-w-lg border border-primary/30 bg-background text-foreground p-6 font-sf-mono relative overflow-hidden ${bootGlitch ? "animate-systemic-glitch" : ""}`}
               initial={{ height: 0, opacity: 0 }}
@@ -180,7 +178,6 @@ export default function Home() {
                 opacity: systemicTransition,
               }}
             >
-              {/* Header */}
               <div className="border-b border-primary/20 pb-2 mb-4 flex justify-between items-center">
                 <div className="text-xs">TERMINAL ACCESS</div>
                 <div className="text-xs">
@@ -188,7 +185,6 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Content */}
               <div className="space-y-4">
                 <div className="h-40 flex flex-col justify-center">
                   <div className="text-center">
@@ -202,7 +198,7 @@ export default function Home() {
                         className="absolute top-0 left-0 h-full bg-primary/50"
                         style={{
                           width: `${(bootStage / bootSequence.length) * 100}%`,
-                          transition: "width 0.1s linear", // Linear, abrupt progress bar
+                          transition: "width 0.1s linear",
                         }}
                       ></div>
                     </div>
@@ -210,7 +206,6 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Footer */}
               <div className="border-t border-primary/20 pt-2 mt-4 flex justify-between items-center text-xs">
                 <div>SECURITY PROTOCOL: ACTIVE</div>
                 <div className="flex items-center">
@@ -219,11 +214,9 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Scan lines overlay */}
               {bootScanLines && <div className="absolute inset-0 bg-scan-lines opacity-30 pointer-events-none"></div>}
             </motion.div>
 
-            {/* Background scan lines */}
             <div className="absolute inset-0 bg-scan-lines opacity-20 pointer-events-none"></div>
           </motion.div>
         )}
@@ -257,16 +250,15 @@ export default function Home() {
         )}
       </AnimatePresence>
 
-      {/* Main Content with staggered animations */}
       <AnimatePresence>
         {showContent && (
           <motion.div
-            className="flex items-center justify-center min-h-[calc(100vh)] md:min-h-[calc(100vh)] px-4 md:px-0 -translate-y-16"
+            className="flex items-center justify-center min-h-screen px-4 md:px-8 lg:px-16"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.7, ease: [0.4, 0, 0.2, 1] }}
           >
-            <div className="w-full max-w-full px-0 py-4 md:px-4 md:py-16 lg:py-24 text-center relative">
+            <div className="w-full max-w-7xl py-20 md:py-24 relative">
               {/* Eerie decorative elements */}
               <motion.div
                 className="absolute top-0 left-0 w-full h-full pointer-events-none"
@@ -275,13 +267,13 @@ export default function Home() {
                 transition={{ delay: 0.2, duration: 0.8 }}
               >
                 <motion.div
-                  className="absolute top-1/4 left-4 md:left-8 h-px w-8 md:w-16 bg-primary/20"
+                  className="absolute top-1/4 left-0 h-px w-16 bg-primary/20"
                   initial={{ scaleX: 0 }}
                   animate={{ scaleX: 1 }}
                   transition={{ delay: 0.4, duration: 0.5 }}
                 ></motion.div>
                 <motion.div
-                  className="absolute bottom-1/4 right-4 md:right-8 h-px w-8 md:w-16 bg-primary/20"
+                  className="absolute bottom-1/4 right-0 h-px w-16 bg-primary/20"
                   initial={{ scaleX: 0 }}
                   animate={{ scaleX: 1 }}
                   transition={{ delay: 0.4, duration: 0.5 }}
@@ -289,191 +281,176 @@ export default function Home() {
                 <div className="absolute inset-0 bg-scan-lines opacity-10"></div>
               </motion.div>
 
-              {/* Terminal-style ID */}
-              <motion.h1
-                className="text-3xl md:text-4xl lg:text-6xl tracking-tight mb-2 relative font-black"
-                initial={{ opacity: 0, letterSpacing: "0.08em" }}
-                animate={{ opacity: 1, letterSpacing: "0.03em" }}
-                transition={{
-                  opacity: { delay: 0.6, duration: 0.8 },
-                  letterSpacing: {
-                    delay: 0.6,
-                    repeat: Number.POSITIVE_INFINITY,
-                    repeatType: "mirror",
-                    duration: 6,
-                    ease: "easeInOut",
-                  },
-                }}
-              >
-                RUSHIR BHAVSAR
+              {/* Two-column layout */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
+                {/* Left column - Text content */}
                 <motion.div
-                  className="absolute -top-1 left-0 w-full h-px bg-primary/20"
-                  initial={{ scaleX: 0 }}
-                  animate={{ scaleX: 1 }}
-                  transition={{ delay: 0.7, duration: 0.6 }}
-                ></motion.div>
+                  className="space-y-6"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.3, duration: 0.8 }}
+                >
+                  {/* Greeting */}
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.4, duration: 0.6 }}
+                  >
+                    <h2 className="text-2xl md:text-3xl font-medium mb-2">Hi, I am</h2>
+                  </motion.div>
+
+                  {/* Name with gradient effect */}
+                  <motion.h1
+                    className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tight relative"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.5, duration: 0.8 }}
+                  >
+                    <span className="bg-gradient-to-r from-purple-600 via-violet-600 to-purple-700 bg-clip-text text-transparent">
+                      Rushir Bhavsar
+                    </span>
+                    <motion.div
+                      className="absolute -bottom-2 left-0 w-full h-px bg-gradient-to-r from-purple-600/50 via-violet-600/50 to-transparent"
+                      initial={{ scaleX: 0 }}
+                      animate={{ scaleX: 1 }}
+                      transition={{ delay: 0.7, duration: 0.6 }}
+                    ></motion.div>
+                  </motion.h1>
+
+                  {/* Role with typewriter effect */}
+                  <motion.div
+                    className="text-xl md:text-2xl font-medium"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.8, duration: 0.6 }}
+                  >
+                    <span>I am a </span>
+                    <span className="text-purple-600 font-bold">
+                      {roleText}
+                      {showCursor && <span className="animate-[blink_0.5s_ease-in-out_infinite]">|</span>}
+                    </span>
+                  </motion.div>
+
+                  {/* Description */}
+                  <motion.p
+                    className="text-base md:text-lg leading-relaxed max-w-xl"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 1.0, duration: 0.8 }}
+                  >
+                    I specialize in machine learning, big data analytics, and AI-driven solutions across finance,
+                    retail, and customer analytics. Skilled in developing scalable models and leveraging predictive
+                    analytics to optimize decision-making and drive business impact.
+                  </motion.p>
+
+                  {/* Social icons */}
+                  <motion.div
+                    className="flex items-center gap-4"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 1.2, duration: 0.8 }}
+                  >
+                    <Link
+                      href="mailto:rushir.bhavsar@example.com"
+                      className="p-3 border border-primary/20 hover:bg-primary/5 transition-colors"
+                    >
+                      <Mail className="h-5 w-5" />
+                    </Link>
+                    <Link
+                      href="https://linkedin.com/in/rushir-bhavsar/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-3 border border-primary/20 hover:bg-primary/5 transition-colors"
+                    >
+                      <Linkedin className="h-5 w-5" />
+                    </Link>
+                    <Link
+                      href="https://github.com/rushirbhavsar"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-3 border border-primary/20 hover:bg-primary/5 transition-colors"
+                    >
+                      <Github className="h-5 w-5" />
+                    </Link>
+                  </motion.div>
+
+                  {/* Resume button */}
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 1.4, duration: 0.8 }}
+                  >
+                    <Button
+                      className="rounded-none border border-primary/20 bg-purple-600 hover:bg-purple-700 text-white font-bold px-8 py-6 text-base"
+                      asChild
+                    >
+                      <Link href="/resume.pdf" target="_blank">
+                        Resume
+                      </Link>
+                    </Button>
+                  </motion.div>
+                </motion.div>
+
+                {/* Right column - Profile image */}
                 <motion.div
-                  className="absolute -bottom-1 left-0 w-full h-px bg-primary/20"
-                  initial={{ scaleX: 0 }}
-                  animate={{ scaleX: 1 }}
-                  transition={{ delay: 0.7, duration: 0.6 }}
-                ></motion.div>
-              </motion.h1>
+                  className="relative"
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.5, duration: 0.8 }}
+                >
+                  <div className="relative border border-primary/20 p-2 bg-secondary/10">
+                    <Image
+                      src="/images/personal_photo.png"
+                      alt="Rushir Bhavsar"
+                      width={600}
+                      height={600}
+                      className="w-full h-auto"
+                      priority
+                    />
+                    {/* Decorative corner elements */}
+                    <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-purple-600"></div>
+                    <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-purple-600"></div>
+                    <div className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-purple-600"></div>
+                    <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-purple-600"></div>
+                  </div>
 
-              {/* Updates Banner - New Component */}
+                  {/* Status indicator */}
+                  <motion.div
+                    className="absolute -bottom-4 -right-4 border border-primary/20 bg-background px-4 py-2 font-sf-mono text-xs"
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 1.6, duration: 0.6 }}
+                  >
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 rounded-full bg-green-500 animate-mechanical-pulse"></div>
+                      <span className="text-primary/70">ACTIVE • 2+ YEARS EXP</span>
+                    </div>
+                  </motion.div>
+                </motion.div>
+              </div>
+
+              {/* Bottom stats grid */}
               <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.8, duration: 0.5 }}
-                className="mb-4"
-              >
-                <UpdatesBanner />
-              </motion.div>
-
-              <motion.p
-                className="text-base md:text-lg lg:text-xl font-sf-mono text-primary/70 whitespace-nowrap mx-auto mb-8 md:mb-12"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{
-                  opacity: 1,
-                  y: 0,
-                  transition: {
-                    duration: 0.8,
-                    delay: 0.8,
-                    ease: [0.4, 0, 0.2, 1],
-                  },
-                }}
-              >
-                <motion.span
-                  initial={{ opacity: 0 }}
-                  animate={{
-                    opacity: 1,
-                    transition: {
-                      duration: 0.3,
-                      delay: 0.9,
-                    },
-                  }}
-                >
-                  DATA SCIENTIST
-                </motion.span>
-                <motion.span
-                  initial={{ opacity: 0 }}
-                  animate={{
-                    opacity: 1,
-                    transition: {
-                      duration: 0.3,
-                      delay: 1.1,
-                    },
-                  }}
-                >
-                  {" • "}
-                </motion.span>
-                <motion.span
-                  initial={{ opacity: 0 }}
-                  animate={{
-                    opacity: 1,
-                    transition: {
-                      duration: 0.3,
-                      delay: 1.3,
-                    },
-                  }}
-                >
-                  AI ENGINEER
-                </motion.span>
-                <motion.span
-                  initial={{ opacity: 0 }}
-                  animate={{
-                    opacity: 1,
-                    transition: {
-                      duration: 0.3,
-                      delay: 1.5,
-                    },
-                  }}
-                >
-                  {" • "}
-                </motion.span>
-                <motion.span
-                  initial={{ opacity: 0 }}
-                  animate={{
-                    opacity: 1,
-                    transition: {
-                      duration: 0.3,
-                      delay: 1.7,
-                    },
-                  }}
-                >
-                  ML RESEARCHER
-                </motion.span>
-              </motion.p>
-
-              {/* Mobile-optimized button container */}
-              <motion.div
-                className="flex flex-row gap-2 sm:gap-4 justify-center mb-8 md:mb-16 w-full max-w-full"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.9, duration: 0.8 }}
-              >
-                <Button
-                  className="flex-1 sm:flex-none group rounded-none border border-primary/20 bg-transparent text-primary hover:bg-primary/5 font-black text-xs sm:text-sm px-2 sm:px-4"
-                  onClick={() => navigateTo("/about")}
-                >
-                  EXPLORE
-                  <ArrowRight className="ml-1 sm:ml-2 h-3 w-3 sm:h-4 sm:w-4 group-hover:translate-x-1 transition-transform" />
-                </Button>
-
-                <Button
-                  className="w-auto sm:flex-none group rounded-none border border-primary/20 bg-transparent text-primary hover:bg-primary/5 font-black px-2 sm:px-4"
-                  asChild
-                >
-                  <Link href="https://linkedin.com/in/rushir-bhavsar/" target="_blank" rel="noopener noreferrer">
-                    <Linkedin className="h-3 w-3 sm:h-4 sm:w-4 text-blue-700" />
-                    <ArrowRight className="ml-1 sm:ml-2 h-3 w-3 sm:h-4 sm:w-4 group-hover:translate-x-1 transition-transform hidden sm:inline-block" />
-                  </Link>
-                </Button>
-
-                <Button
-                  className="w-auto sm:flex-none group rounded-none border border-primary/20 bg-transparent text-primary hover:bg-primary/5 font-black px-2 sm:px-4"
-                  asChild
-                >
-                  <Link href="https://github.com/rushirbhavsar" target="_blank" rel="noopener noreferrer">
-                    <Github className="h-3 w-3 sm:h-4 sm:w-4 text-purple-800" />
-                    <ArrowRight className="ml-1 sm:ml-2 h-3 w-3 sm:h-4 sm:w-4 group-hover:translate-x-1 transition-transform hidden sm:inline-block" />
-                  </Link>
-                </Button>
-
-                <Button
-                  className="flex-1 sm:flex-none group rounded-none border border-primary/20 bg-transparent text-primary hover:bg-primary/5 font-black text-xs sm:text-sm px-2 sm:px-4"
-                  onClick={() => navigateTo("/contact")}
-                >
-                  CONTACT
-                  <ArrowRight className="ml-1 sm:ml-2 h-3 w-3 sm:h-4 sm:w-4 group-hover:translate-x-1 transition-transform" />
-                </Button>
-              </motion.div>
-
-              {/* Status indicators */}
-              <motion.div
-                className="grid grid-cols-2 sm:grid-cols-4 gap-2 max-w-2xl mx-auto text-xs font-sf-mono text-primary/40"
+                className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-16 max-w-4xl mx-auto"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 1.0, duration: 0.8 }}
+                transition={{ delay: 1.8, duration: 0.8 }}
               >
-                <div className="border border-primary/10 p-2 text-center">
-                  <div className="text-primary/30 mb-1">PROJECTS</div>
-                  <div>15+ COMPLETED</div>
+                <div className="border border-primary/10 p-4 text-center font-sf-mono">
+                  <div className="text-xs text-primary/30 mb-1">PROJECTS</div>
+                  <div className="text-sm">15+ COMPLETED</div>
                 </div>
-                <div className="border border-primary/10 p-2 text-center">
-                  <div className="text-primary/30 mb-1">PUBLICATIONS</div>
-                  <div>3+ RESEARCH PAPERS</div>
+                <div className="border border-primary/10 p-4 text-center font-sf-mono">
+                  <div className="text-xs text-primary/30 mb-1">PUBLICATIONS</div>
+                  <div className="text-sm">3+ RESEARCH</div>
                 </div>
-                <div className="border border-primary/10 p-2 text-center">
-                  <div className="text-primary/30 mb-1">EXPERIENCE</div>
-                  <div className="flex items-center justify-center">
-                    <div className="w-1.5 h-1.5 rounded-full bg-green-500 mr-1.5 animate-[blink_0.5s_ease-in-out_infinite]"></div>
-                    2+ YEARS
-                  </div>
+                <div className="border border-primary/10 p-4 text-center font-sf-mono">
+                  <div className="text-xs text-primary/30 mb-1">EXPERIENCE</div>
+                  <div className="text-sm">2+ YEARS</div>
                 </div>
-                <div className="border border-primary/10 p-2 text-center">
-                  <div className="text-primary/30 mb-1">SPECIALIZATION</div>
-                  <div>LLM • CV • MLOps</div>
+                <div className="border border-primary/10 p-4 text-center font-sf-mono">
+                  <div className="text-xs text-primary/30 mb-1">SPECIALIZATION</div>
+                  <div className="text-sm">LLM • CV • MLOps</div>
                 </div>
               </motion.div>
             </div>
