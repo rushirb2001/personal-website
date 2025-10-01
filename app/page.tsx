@@ -286,146 +286,148 @@ export default function Home() {
               </motion.div>
 
               <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-6 relative">
-                <motion.div
-                  className="relative"
-                  initial={{ opacity: 0, x: -30 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.6, duration: 0.8 }}
-                >
-                  {/* Terminal-style ID */}
-                  <motion.h1
-                    className="text-4xl md:text-5xl lg:text-6xl tracking-tight mb-3 relative font-black"
-                    initial={{ opacity: 0, letterSpacing: "0.08em" }}
-                    animate={{ opacity: 1, letterSpacing: "0.03em" }}
-                    transition={{
-                      opacity: { delay: 0.7, duration: 0.8 },
-                      letterSpacing: {
-                        delay: 0.7,
-                        repeat: Number.POSITIVE_INFINITY,
-                        repeatType: "mirror",
-                        duration: 6,
-                        ease: "easeInOut",
-                      },
-                    }}
-                  >
-                    RUSHIR BHAVSAR
-                    <motion.div
-                      className="absolute -top-1 left-0 w-full h-px bg-primary/30"
-                      initial={{ scaleX: 0 }}
-                      animate={{ scaleX: 1 }}
-                      transition={{ delay: 0.8, duration: 0.6 }}
-                    ></motion.div>
-                    <motion.div
-                      className="absolute -bottom-1 left-0 w-full h-px bg-primary/30"
-                      initial={{ scaleX: 0 }}
-                      animate={{ scaleX: 1 }}
-                      transition={{ delay: 0.8, duration: 0.6 }}
-                    ></motion.div>
-                  </motion.h1>
-
-                  {/* Role titles */}
-                  <motion.p
-                    className="text-base md:text-lg font-sf-mono text-primary/70 mb-6"
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{
-                      opacity: 1,
-                      y: 0,
-                      transition: {
-                        duration: 0.8,
-                        delay: 0.9,
-                        ease: [0.4, 0, 0.2, 1],
-                      },
-                    }}
-                  >
-                    <motion.span
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1, transition: { duration: 0.3, delay: 1.0 } }}
-                    >
-                      DATA SCIENTIST
-                    </motion.span>
-                    <motion.span
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1, transition: { duration: 0.3, delay: 1.2 } }}
-                    >
-                      {" • "}
-                    </motion.span>
-                    <motion.span
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1, transition: { duration: 0.3, delay: 1.4 } }}
-                    >
-                      AI ENGINEER
-                    </motion.span>
-                    <motion.span
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1, transition: { duration: 0.3, delay: 1.6 } }}
-                    >
-                      {" • "}
-                    </motion.span>
-                    <motion.span
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1, transition: { duration: 0.3, delay: 1.8 } }}
-                    >
-                      ML RESEARCHER
-                    </motion.span>
-                  </motion.p>
-
+                <div className="px-6 md:px-12">
                   <motion.div
-                    className="mb-6 text-sm leading-relaxed"
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 1.1, duration: 0.8 }}
+                    className="relative text-center"
+                    initial={{ opacity: 0, x: -30 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.6, duration: 0.8 }}
                   >
-                    <p>
-                      Data Scientist and AI Engineer specializing in machine learning, deep learning, and AI systems
-                      development. Creating innovative solutions using cutting-edge AI technologies with experience
-                      across healthcare, astronomy, and enterprise AI domains. Expertise in transformer-based models,
-                      retrieval-augmented generation, and production AI system optimization.
-                    </p>
-                  </motion.div>
-
-                  <motion.div
-                    className="flex flex-wrap gap-3"
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 1.2, duration: 0.8 }}
-                  >
-                    <Button
-                      className="group rounded-none border border-primary/20 bg-transparent text-primary hover:bg-primary/10 font-black text-sm px-4"
-                      onClick={() => navigateTo("/skills")}
+                    {/* Terminal-style ID */}
+                    <motion.h1
+                      className="text-4xl md:text-5xl lg:text-6xl tracking-tight mb-3 relative font-black"
+                      initial={{ opacity: 0, letterSpacing: "0.08em" }}
+                      animate={{ opacity: 1, letterSpacing: "0.03em" }}
+                      transition={{
+                        opacity: { delay: 0.7, duration: 0.8 },
+                        letterSpacing: {
+                          delay: 0.7,
+                          repeat: Number.POSITIVE_INFINITY,
+                          repeatType: "mirror",
+                          duration: 6,
+                          ease: "easeInOut",
+                        },
+                      }}
                     >
-                      EXPLORE SKILLS
-                      <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                    </Button>
+                      RUSHIR BHAVSAR
+                      <motion.div
+                        className="absolute -top-1 left-0 w-full h-px bg-primary/30"
+                        initial={{ scaleX: 0 }}
+                        animate={{ scaleX: 1 }}
+                        transition={{ delay: 0.8, duration: 0.6 }}
+                      ></motion.div>
+                      <motion.div
+                        className="absolute -bottom-1 left-0 w-full h-px bg-primary/30"
+                        initial={{ scaleX: 0 }}
+                        animate={{ scaleX: 1 }}
+                        transition={{ delay: 0.8, duration: 0.6 }}
+                      ></motion.div>
+                    </motion.h1>
 
-                    <Button
-                      className="group rounded-none border border-primary/20 bg-transparent text-primary hover:bg-primary/10 font-black px-4"
-                      asChild
+                    {/* Role titles */}
+                    <motion.p
+                      className="text-base md:text-lg font-sf-mono text-primary/70 mb-6"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{
+                        opacity: 1,
+                        y: 0,
+                        transition: {
+                          duration: 0.8,
+                          delay: 0.9,
+                          ease: [0.4, 0, 0.2, 1],
+                        },
+                      }}
                     >
-                      <Link href="https://linkedin.com/in/rushir-bhavsar/" target="_blank" rel="noopener noreferrer">
-                        <Linkedin className="h-4 w-4 text-blue-700" />
+                      <motion.span
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1, transition: { duration: 0.3, delay: 1.0 } }}
+                      >
+                        DATA SCIENTIST
+                      </motion.span>
+                      <motion.span
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1, transition: { duration: 0.3, delay: 1.2 } }}
+                      >
+                        {" • "}
+                      </motion.span>
+                      <motion.span
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1, transition: { duration: 0.3, delay: 1.4 } }}
+                      >
+                        AI ENGINEER
+                      </motion.span>
+                      <motion.span
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1, transition: { duration: 0.3, delay: 1.6 } }}
+                      >
+                        {" • "}
+                      </motion.span>
+                      <motion.span
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1, transition: { duration: 0.3, delay: 1.8 } }}
+                      >
+                        ML RESEARCHER
+                      </motion.span>
+                    </motion.p>
+
+                    <motion.div
+                      className="mb-6 text-sm leading-relaxed text-justify"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 1.1, duration: 0.8 }}
+                    >
+                      <p>
+                        Data Scientist and AI Engineer specializing in machine learning, deep learning, and AI systems
+                        development. Creating innovative solutions using cutting-edge AI technologies with experience
+                        across healthcare, astronomy, and enterprise AI domains. Expertise in transformer-based models,
+                        retrieval-augmented generation, and production AI system optimization.
+                      </p>
+                    </motion.div>
+
+                    <motion.div
+                      className="flex flex-wrap gap-3 justify-center"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 1.2, duration: 0.8 }}
+                    >
+                      <Button
+                        className="group rounded-none border border-primary/20 bg-transparent text-primary hover:bg-primary/10 font-black text-sm px-4"
+                        onClick={() => navigateTo("/skills")}
+                      >
+                        EXPLORE SKILLS
                         <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                      </Link>
-                    </Button>
+                      </Button>
 
-                    <Button
-                      className="group rounded-none border border-primary/20 bg-transparent text-primary hover:bg-primary/10 font-black px-4"
-                      asChild
-                    >
-                      <Link href="https://github.com/rushirbhavsar" target="_blank" rel="noopener noreferrer">
-                        <Github className="h-4 w-4 text-purple-800" />
+                      <Button
+                        className="group rounded-none border border-primary/20 bg-transparent text-primary hover:bg-primary/10 font-black px-4"
+                        asChild
+                      >
+                        <Link href="https://linkedin.com/in/rushir-bhavsar/" target="_blank" rel="noopener noreferrer">
+                          <Linkedin className="h-4 w-4 text-blue-700" />
+                          <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                        </Link>
+                      </Button>
+
+                      <Button
+                        className="group rounded-none border border-primary/20 bg-transparent text-primary hover:bg-primary/10 font-black px-4"
+                        asChild
+                      >
+                        <Link href="https://github.com/rushirbhavsar" target="_blank" rel="noopener noreferrer">
+                          <Github className="h-4 w-4 text-purple-800" />
+                          <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                        </Link>
+                      </Button>
+
+                      <Button
+                        className="group rounded-none border border-primary/20 bg-transparent text-primary hover:bg-primary/10 font-black text-sm px-4"
+                        onClick={() => navigateTo("/contact")}
+                      >
+                        CONTACT
                         <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                      </Link>
-                    </Button>
-
-                    <Button
-                      className="group rounded-none border border-primary/20 bg-transparent text-primary hover:bg-primary/10 font-black text-sm px-4"
-                      onClick={() => navigateTo("/contact")}
-                    >
-                      CONTACT
-                      <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                    </Button>
+                      </Button>
+                    </motion.div>
                   </motion.div>
-                </motion.div>
+                </div>
 
                 <motion.div
                   className="relative"
