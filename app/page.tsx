@@ -252,16 +252,16 @@ export default function Home() {
             transition={{ duration: 0.7, ease: [0.4, 0, 0.2, 1] }}
           >
             {/* Mobile Layout - Fixed vertical structure */}
-            <div className="lg:hidden flex flex-col items-center gap-6 relative py-8 px-6">
-              {/* Name Effect */}
+            <div className="lg:hidden h-screen overflow-hidden flex flex-col justify-center items-center gap-4 relative px-6 pt-8">
+              {/* Name Effect - shifted down */}
               <motion.div
-                className="relative text-center w-full"
+                className="relative text-center w-full mt-8"
                 initial={{ opacity: 0, x: -30 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.6, duration: 0.8 }}
               >
                 <motion.h1
-                  className="text-3xl tracking-tight mb-3 relative font-black"
+                  className="text-3xl tracking-tight mb-2 relative font-black"
                   initial={{ opacity: 0, letterSpacing: "0.08em" }}
                   animate={{ opacity: 1, letterSpacing: "0.03em" }}
                   transition={{
@@ -292,7 +292,7 @@ export default function Home() {
 
                 {/* Position/Roles */}
                 <motion.p
-                  className="text-sm font-sf-mono text-primary/70 mb-6"
+                  className="text-xs font-sf-mono text-primary/70 mb-4"
                   initial={{ opacity: 0, y: 10 }}
                   animate={{
                     opacity: 1,
@@ -339,7 +339,7 @@ export default function Home() {
 
               {/* Dynamic Photo */}
               <motion.div
-                className="relative w-full max-w-[280px]"
+                className="relative w-full max-w-[240px]"
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.8, duration: 0.8 }}
@@ -348,8 +348,8 @@ export default function Home() {
                   <Image
                     src="/images/personal_photo.png"
                     alt="Profile"
-                    width={280}
-                    height={280}
+                    width={240}
+                    height={240}
                     className="w-full grayscale"
                   />
                   <div className="absolute top-2 right-2 bg-background/80 border border-primary/30 px-2 py-1 text-[10px] font-sf-mono">
@@ -360,30 +360,30 @@ export default function Home() {
 
               {/* EXPLORE | CONTACT Buttons */}
               <motion.div
-                className="flex gap-3 w-full"
+                className="flex gap-2 w-full"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 1.0, duration: 0.8 }}
               >
                 <Button
-                  className="flex-1 group rounded-none border border-primary/20 bg-transparent text-primary hover:bg-primary/10 font-black text-sm"
+                  className="flex-1 group rounded-none border border-primary/20 bg-transparent text-primary hover:bg-primary/10 font-black text-xs py-2"
                   onClick={() => navigateTo("/projects")}
                 >
                   EXPLORE
-                  <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                  <ArrowRight className="ml-2 h-3 w-3 group-hover:translate-x-1 transition-transform" />
                 </Button>
                 <Button
-                  className="flex-1 group rounded-none border border-primary/20 bg-transparent text-primary hover:bg-primary/10 font-black text-sm"
+                  className="flex-1 group rounded-none border border-primary/20 bg-transparent text-primary hover:bg-primary/10 font-black text-xs py-2"
                   onClick={() => navigateTo("/contact")}
                 >
                   CONTACT
-                  <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                  <ArrowRight className="ml-2 h-3 w-3 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </motion.div>
 
               {/* GitHub, LinkedIn (left half) | Resume (right half) */}
               <motion.div
-                className="flex gap-3 w-full"
+                className="flex gap-2 w-full"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 1.1, duration: 0.8 }}
@@ -410,7 +410,7 @@ export default function Home() {
 
                 {/* Right half - Resume button */}
                 <Button
-                  className="flex-1 group rounded-none border border-primary/20 bg-transparent text-primary hover:bg-primary/10 font-black text-xs"
+                  className="flex-1 group rounded-none border border-primary/20 bg-transparent text-primary hover:bg-primary/10 font-black text-xs py-2"
                   onClick={() => setIsResumeModalOpen(true)}
                 >
                   <FileText className="h-3 w-3 mr-1" />
@@ -420,27 +420,27 @@ export default function Home() {
 
               {/* Stats Section */}
               <motion.div
-                className="w-full grid grid-cols-2 gap-2 text-xs font-sf-mono text-primary/40 mt-4"
+                className="w-full grid grid-cols-2 gap-2 text-[10px] font-sf-mono text-primary/40"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 1.2, duration: 0.8 }}
               >
-                <div className="border border-primary/20 p-3 text-center hover:border-primary/40 transition-colors">
+                <div className="border border-primary/20 p-2 text-center hover:border-primary/40 transition-colors">
                   <div className="text-primary/30 mb-1 font-mono">PROJECTS</div>
                   <div className="font-bold">15+ COMPLETED</div>
                 </div>
-                <div className="border border-primary/20 p-3 text-center hover:border-primary/40 transition-colors">
+                <div className="border border-primary/20 p-2 text-center hover:border-primary/40 transition-colors">
                   <div className="text-primary/30 mb-1">PUBLICATIONS</div>
                   <div className="font-bold">3+ RESEARCH PAPERS</div>
                 </div>
-                <div className="border border-primary/20 p-3 text-center hover:border-primary/40 transition-colors">
+                <div className="border border-primary/20 p-2 text-center hover:border-primary/40 transition-colors">
                   <div className="text-primary/30 mb-1">EXPERIENCE</div>
                   <div className="flex items-center justify-center font-bold">
                     <div className="w-1.5 h-1.5 rounded-full bg-green-500 mr-1.5 animate-[blink_0.5s_ease-in-out_infinite]"></div>
                     2+ YEARS
                   </div>
                 </div>
-                <div className="border border-primary/20 p-3 text-center hover:border-primary/40 transition-colors">
+                <div className="border border-primary/20 p-2 text-center hover:border-primary/40 transition-colors">
                   <div className="text-primary/30 mb-1">SPECIALIZATION</div>
                   <div className="font-bold">LLM • CV • MLOps</div>
                 </div>
