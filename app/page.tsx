@@ -246,7 +246,7 @@ export default function Home() {
       <AnimatePresence>
         {showContent && (
           <motion.div
-            className="flex items-center justify-center min-h-[calc(100vh)] px-4 md:px-8 -translate-y-16 light bg-scan-lines"
+            className="flex items-center justify-center min-h-[calc(100vh)] px-4 md:px-8 -translate-y-16 bg-scan-lines"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.7, ease: [0.4, 0, 0.2, 1] }}
