@@ -128,7 +128,7 @@ export default function Home() {
   // Preload critical pages
   useEffect(() => {
     const preloadPages = async () => {
-      const paths = ["/about", "/skills", "/experience"]
+      const paths = ["/skills", "/experience"]
 
       setTimeout(() => {
         paths.forEach((path) => {
@@ -420,7 +420,6 @@ export default function Home() {
                       height={300}
                       className="w-full grayscale"
                     />
-                    
                   </div>
 
                   {/* Resume Button */}

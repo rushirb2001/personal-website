@@ -82,7 +82,7 @@ export function NavigationProvider({ children, isReady = true }: NavigationProvi
 
   // Prefetch all pages for smoother navigation
   useEffect(() => {
-    const pagesToPrefetch = ["/", "/about", "/skills", "/experience", "/education", "/publications", "/contact"]
+    const pagesToPrefetch = ["/", "/skills", "/experience", "/education", "/publications", "/contact"]
 
     const prefetchPages = async () => {
       try {

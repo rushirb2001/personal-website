@@ -353,9 +353,6 @@ const TerminalFooter = memo(function TerminalFooter() {
                     <div className="text-primary/70 mb-1">Navigation:</div>
                     <div className="ml-4">
                       <div>
-                        <span className="text-primary/50">run about</span> - navigate to about page
-                      </div>
-                      <div>
                         <span className="text-primary/50">run skills</span> - navigate to skills page
                       </div>
                       <div>
