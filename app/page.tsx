@@ -246,12 +246,12 @@ export default function Home() {
       <AnimatePresence>
         {showContent && (
           <motion.div
-            className="flex items-center justify-center min-h-[calc(100vh)] px-4 md:px-8 -translate-y-16 opacity-0"
+            className="flex items-center justify-center min-h-[calc(100vh)] px-4 md:px-8 -translate-y-16"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.7, ease: [0.4, 0, 0.2, 1] }}
           >
-            <div className="h-[70%] w-full max-w-full py-4 md:py-16 relative opacity-100">
+            <div className="min-h-[70vh] w-full max-w-full py-4 md:py-16 relative">
               <motion.div
                 className="absolute top-0 left-0 w-full h-full pointer-events-none"
                 initial={{ opacity: 0 }}
