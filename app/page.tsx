@@ -261,7 +261,7 @@ export default function Home() {
                 transition={{ delay: 0.6, duration: 0.8 }}
               >
                 <motion.h1
-                  className="text-3xl tracking-tight mb-2 relative font-black"
+                  className="tracking-tight mb-2 relative font-black text-4xl"
                   initial={{ opacity: 0, letterSpacing: "0.08em" }}
                   animate={{ opacity: 1, letterSpacing: "0.03em" }}
                   transition={{
