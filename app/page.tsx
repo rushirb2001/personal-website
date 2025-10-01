@@ -128,7 +128,7 @@ export default function Home() {
   // Preload critical pages
   useEffect(() => {
     const preloadPages = async () => {
-      const paths = ["/skills", "/experience"]
+      const paths = ["/projects", "/skills", "/experience"]
 
       setTimeout(() => {
         paths.forEach((path) => {
@@ -368,9 +368,9 @@ export default function Home() {
                     >
                       <Button
                         className="group rounded-none border border-primary/20 bg-transparent text-primary hover:bg-primary/10 font-black text-sm px-4"
-                        onClick={() => navigateTo("/skills")}
+                        onClick={() => navigateTo("/projects")}
                       >
-                        EXPLORE SKILLS
+                        EXPLORE
                         <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                       </Button>
 

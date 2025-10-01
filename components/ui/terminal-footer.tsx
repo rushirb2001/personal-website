@@ -261,6 +261,9 @@ const TerminalFooter = memo(function TerminalFooter() {
       } else if (page === "updates") {
         // Add specific handling for updates page
         handleNavigation("/updates")
+      } else if (page === "projects") {
+        // Add specific handling for projects page
+        handleNavigation("/projects")
       }
     }
   }
@@ -352,6 +355,9 @@ const TerminalFooter = memo(function TerminalFooter() {
                   <div>
                     <div className="text-primary/70 mb-1">Navigation:</div>
                     <div className="ml-4">
+                      <div>
+                        <span className="text-primary/50">run projects</span> - navigate to projects page
+                      </div>
                       <div>
                         <span className="text-primary/50">run skills</span> - navigate to skills page
                       </div>
