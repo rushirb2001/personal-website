@@ -252,7 +252,7 @@ export default function Home() {
             transition={{ duration: 0.7, ease: [0.4, 0, 0.2, 1] }}
           >
             {/* Mobile Layout - Fixed vertical structure */}
-            <div className="lg:hidden h-screen overflow-hidden flex flex-col justify-center items-center gap-4 relative px-6 pt-8">
+            <div className="lg:hidden h-[calc(100vh-14rem)] overflow-hidden flex flex-col justify-center items-center gap-4 relative px-6 pt-8">
               {/* Name Effect - shifted down */}
               <motion.div
                 className="relative text-center w-full mt-8"
