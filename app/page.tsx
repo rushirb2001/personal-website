@@ -251,7 +251,7 @@ export default function Home() {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.7, ease: [0.4, 0, 0.2, 1] }}
           >
-            <div className="min-h-[70vh] w-full max-w-full py-4 md:py-16 relative flex items-center">
+            <div className="min-h-[70vh] w-full max-w-full py-4 md:py-16 relative flex flex-col items-center justify-center">
               <motion.div
                 className="absolute top-0 left-0 w-full h-full pointer-events-none"
                 initial={{ opacity: 0 }}
