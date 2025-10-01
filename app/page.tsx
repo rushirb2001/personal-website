@@ -261,10 +261,10 @@ export default function Home() {
                 <div className="absolute inset-0 bg-scan-lines opacity-10"></div>
               </motion.div>
 
-              <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-6 relative py-14">
+              <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-6 relative py-16">
                 <div className="px-6 md:px-5">
                   <motion.div
-                    className="relative text-center py-14"
+                    className="relative text-center py-5"
                     initial={{ opacity: 0, x: -30 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.6, duration: 0.8 }}
@@ -352,7 +352,7 @@ export default function Home() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 1.1, duration: 0.8 }}
                     >
-                      <p className="font-mono">
+                      <p className="font-mono px-28">
                         Data Scientist and AI Engineer specializing in machine learning, deep learning, and AI systems
                         development. Creating innovative solutions using cutting-edge AI technologies with experience
                         across healthcare, astronomy, and enterprise AI domains. Expertise in transformer-based models,
