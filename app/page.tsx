@@ -107,7 +107,7 @@ export default function Home() {
           // Move to next stage after precise delay
           animationRef.current = setTimeout(() => {
             setBootStage((prev) => prev + 1)
-          }, 150) // More precise timing
+          }, 100) // More precise timing
         }
       }, 40) // Consistent typing speed
 
@@ -132,10 +132,10 @@ export default function Home() {
             // Then show main content
             animationRef.current = setTimeout(() => {
               setShowContent(true)
-            }, 400)
-          }, 300)
-        }, 800)
-      }, 800)
+            }, 300)
+          }, 200)
+        }, 600)
+      }, 600)
     }
   }, [bootStage, showBoot])
 
