@@ -41,8 +41,8 @@ export default function UpdatesPage() {
 
   return (
     <PageLayout title="BLOG" subtitle="ARTICLES, DAILY BLOGS AND LIFE UPDATES">
-      <div className="container max-w-4xl mx-auto">
-        <div className="mb-8 border border-primary/20 p-4 bg-background dark:bg-eerie-black/50">
+      <div className="container max-w-4xl mx-auto px-2 md:px-4">
+        <div className="mb-8 border border-primary/20 p-2 md:p-4 bg-background dark:bg-eerie-black/50 -mx-2 md:mx-0">
           <div className="flex flex-col mb-4">
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center">
@@ -167,10 +167,10 @@ export default function UpdatesPage() {
         <div className="flex justify-center mt-8">
           <Button
             variant="outline"
-            className="rounded-none border-primary/20 text-xs font-sf-mono"
+            className="rounded-none border-primary/20 text-xs font-sf-mono bg-transparent"
             onClick={handleReturnToMain}
           >
-            RETURN TO MAIN PAGE 
+            RETURN TO MAIN PAGE
           </Button>
         </div>
       </div>

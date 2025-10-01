@@ -68,7 +68,7 @@ export function UpdatesBanner() {
       <div
         ref={bannerRef}
         onClick={handleBannerClick}
-        className="fixed top-16 left-0 z-40 inline-flex items-center justify-center space-x-2 py-1 px-2 border-r border-b border-primary/20 bg-background/95 backdrop-blur-sm text-xs font-sf-mono text-primary/70 cursor-pointer hover:bg-primary/10 transition-colors rounded-br-md"
+        className="fixed top-14 md:top-16 left-0 z-40 inline-flex items-center justify-center space-x-2 py-1 px-2 border-r border-b border-primary/20 bg-background/95 backdrop-blur-sm text-xs font-sf-mono text-primary/70 cursor-pointer hover:bg-primary/10 transition-colors rounded-br-md"
       >
         <div className="w-1.5 h-1.5 rounded-full bg-primary animate-[blink_1s_ease-in-out_infinite]"></div>
         <AnimatePresence mode="wait">
@@ -107,7 +107,7 @@ export function UpdatesBanner() {
             animate={{ opacity: 1, y: 0, height: "auto" }}
             exit={{ opacity: 0, y: -10, height: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed top-[calc(4rem+1.75rem)] left-0 z-50 w-64 border border-primary/30 bg-background/95 backdrop-blur-sm shadow-sm rounded-b-md"
+            className="fixed top-[calc(3.5rem+1.75rem)] md:top-[calc(4rem+1.75rem)] left-0 z-50 w-64 border border-primary/30 bg-background/95 backdrop-blur-sm shadow-sm rounded-b-md"
           >
             <div className="p-2 border-b border-primary/20 flex items-center justify-between">
               <div className="text-xs font-sf-mono text-primary/70">RECENT UPDATES</div>

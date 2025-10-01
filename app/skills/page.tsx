@@ -267,18 +267,15 @@ export default function SkillsPage() {
 
   return (
     <PageLayout title="SKILLS" subtitle="TECHNICAL EXPERTISE">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 h-full overflow-y-auto pt-4 md:pt-8 pb-4">
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-2 md:gap-8 h-full overflow-y-auto pt-4 md:pt-8 pb-4">
         {skillGroups.map((group, index) => (
-          <div key={index} className="h-48 md:h-52">
+          <div key={index} className="md:h-52 mb-0 h-[186px]">
             <SkillFolder group={group} />
           </div>
         ))}
-      </div>
-      <div className="text-xs text-primary/30 font-sf-mono text-center mt-6 md:mt-8">
-        SKILL ASSESSMENT LAST UPDATED: 05/01/2025
-      </div>
-      <div className="text-xs text-primary/30 font-sf-mono text-center mt-1 animate-mechanical-pulse">
-        CLICK ANY FOLDER TO ACCESS COMPLETE SKILL RECORDS
+        <div className="col-span-2 lg:col-span-3 text-xs text-primary/30 font-sf-mono text-center md:mt-8 mt-0">
+          CLICK ON ANY CARD TO VIEW FULL LIST OF MY SKILLS
+        </div>
       </div>
     </PageLayout>
   )

@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { ChevronDown, ChevronUp, AlertCircle, FileText } from "lucide-react"
+import { ChevronDown, ChevronUp, FileText } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import type { SkillGroup } from "./skill-folder"
 
@@ -125,14 +125,6 @@ export function SkillExplorer({ group, isOpen, onClose }: SkillExplorerProps) {
               >
                 [ CLOSE ]
               </button>
-            </div>
-
-            {/* Warning banner */}
-            <div className="bg-yellow-500/10 border-b border-yellow-500/30 p-1 md:p-2 flex items-center text-[10px] md:text-xs">
-              <AlertCircle className="h-2 w-2 md:h-3 md:w-3 mr-1 md:mr-2 text-yellow-500/70" />
-              <span className="font-sf-mono text-primary/80 animate-mechanical-pulse truncate">
-                NOTICE: ACCESSING RESTRICTED SKILL DATA - ACTIVITY LOGGED
-              </span>
             </div>
 
             {/* Table header */}

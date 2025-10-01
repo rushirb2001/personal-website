@@ -1,6 +1,6 @@
 "use client"
 
-import { ArrowRight, Linkedin, Github, Mail } from "lucide-react"
+import { ArrowRight, Linkedin, Github } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { motion, AnimatePresence } from "framer-motion"
 import { useNavigation } from "@/contexts/navigation-context"
@@ -9,7 +9,6 @@ import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
 import { SeveranceLogo } from "@/components/ui/severance-logo"
 import { UpdatesBanner } from "@/components/features/updates/updates-banner"
-import { Slot } from '@radix-ui/react-slot';
 import Link from "next/link"
 
 // Systemic transitions
@@ -262,12 +261,12 @@ export default function Home() {
       <AnimatePresence>
         {showContent && (
           <motion.div
-            className="flex items-center justify-center min-h-[calc(100vh-8rem)]"
+            className="flex items-center justify-center min-h-[calc(100vh)] md:min-h-[calc(100vh)] px-4 md:px-0 -translate-y-16"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.7, ease: [0.4, 0, 0.2, 1] }}
           >
-            <div className="w-full px-4 py-8 md:py-16 lg:py-24 text-center relative">
+            <div className="w-full max-w-full px-0 py-4 md:px-4 md:py-16 lg:py-24 text-center relative">
               {/* Eerie decorative elements */}
               <motion.div
                 className="absolute top-0 left-0 w-full h-full pointer-events-none"
@@ -406,46 +405,47 @@ export default function Home() {
                 </motion.span>
               </motion.p>
 
+              {/* Mobile-optimized button container */}
               <motion.div
-                className="flex flex-col sm:flex-row gap-4 justify-center mb-8 md:mb-16"
+                className="flex flex-row gap-2 sm:gap-4 justify-center mb-8 md:mb-16 w-full max-w-full"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.9, duration: 0.8 }}
               >
                 <Button
-                  className="group rounded-none border border-primary/20 bg-transparent text-primary hover:bg-primary/5 font-black"
+                  className="flex-1 sm:flex-none group rounded-none border border-primary/20 bg-transparent text-primary hover:bg-primary/5 font-black text-xs sm:text-sm px-2 sm:px-4"
                   onClick={() => navigateTo("/about")}
                 >
                   EXPLORE
-                  <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                  <ArrowRight className="ml-1 sm:ml-2 h-3 w-3 sm:h-4 sm:w-4 group-hover:translate-x-1 transition-transform" />
                 </Button>
 
                 <Button
-                  className="group rounded-none border border-primary/20 bg-transparent text-primary hover:bg-primary/5 font-black"
+                  className="w-auto sm:flex-none group rounded-none border border-primary/20 bg-transparent text-primary hover:bg-primary/5 font-black px-2 sm:px-4"
                   asChild
                 >
                   <Link href="https://linkedin.com/in/rushir-bhavsar/" target="_blank" rel="noopener noreferrer">
-                    <Linkedin className="h-4 w-4 text-blue-700" />
-                    <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                    <Linkedin className="h-3 w-3 sm:h-4 sm:w-4 text-blue-700" />
+                    <ArrowRight className="ml-1 sm:ml-2 h-3 w-3 sm:h-4 sm:w-4 group-hover:translate-x-1 transition-transform hidden sm:inline-block" />
                   </Link>
                 </Button>
 
                 <Button
-                  className="group rounded-none border border-primary/20 bg-transparent text-primary hover:bg-primary/5 font-black"
+                  className="w-auto sm:flex-none group rounded-none border border-primary/20 bg-transparent text-primary hover:bg-primary/5 font-black px-2 sm:px-4"
                   asChild
                 >
                   <Link href="https://github.com/rushirbhavsar" target="_blank" rel="noopener noreferrer">
-                    <Github className="h-4 w-4 text-purple-800" />
-                    <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                    <Github className="h-3 w-3 sm:h-4 sm:w-4 text-purple-800" />
+                    <ArrowRight className="ml-1 sm:ml-2 h-3 w-3 sm:h-4 sm:w-4 group-hover:translate-x-1 transition-transform hidden sm:inline-block" />
                   </Link>
                 </Button>
 
                 <Button
-                  className="group rounded-none border border-primary/20 bg-transparent text-primary hover:bg-primary/5 font-black"
+                  className="flex-1 sm:flex-none group rounded-none border border-primary/20 bg-transparent text-primary hover:bg-primary/5 font-black text-xs sm:text-sm px-2 sm:px-4"
                   onClick={() => navigateTo("/contact")}
                 >
                   CONTACT
-                  <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                  <ArrowRight className="ml-1 sm:ml-2 h-3 w-3 sm:h-4 sm:w-4 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </motion.div>
 

@@ -76,59 +76,118 @@ export function AcademicRecordModal({ isOpen, onClose, record }: AcademicRecordM
             {/* Content */}
             <div className="p-3 md:p-6 font-sf-mono">
               <div className="space-y-3 md:space-y-4">
-                {/* Main record data - Two column layout */}
-                <div className="grid grid-cols-1 md:grid-cols-[60%_40%] gap-x-6 gap-y-3 md:gap-y-4">
+                {/* Mobile optimized layout */}
+                <div className="md:hidden space-y-3">
+                  {/* First section - Main info */}
+                  <div className="space-y-2">
+                    <div className="flex flex-col">
+                      <div className="text-[10px] text-primary/50">
+                        DEGREE: <span className="text-primary font-bold ml-1">{record.degree}</span>
+                      </div>
+                    </div>
+                    <div className="flex flex-col">
+                      <div className="text-[10px] text-primary/50">
+                        FIELD OF STUDY: <span className="text-primary font-bold ml-1">{record.field}</span>
+                      </div>
+                    </div>
+                    <div className="flex flex-col">
+                      <div className="text-[10px] text-primary/50">
+                        INSTITUTION: <span className="text-primary font-bold ml-1">{record.institution}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Horizontal divider */}
+                  <div className="border-t border-primary/20"></div>
+
+                  {/* Second section - Meta info */}
+                  <div className="space-y-2">
+                    <div className="flex flex-col">
+                      <div className="text-[10px] text-primary/50">
+                        TIMEFRAME: <span className="text-primary font-bold ml-1">{record.period}</span>
+                      </div>
+                    </div>
+                    <div className="flex flex-col">
+                      <div className="text-[10px] text-primary/50">
+                        LOCATION:{" "}
+                        <span className="text-primary font-bold ml-1">{record.location || "UNDISCLOSED"}</span>
+                      </div>
+                    </div>
+                    <div className="flex flex-col">
+                      <div className="text-[10px] text-primary/50">
+                        STATUS: <span className="text-green-500 font-bold ml-1">{record.status || "VALIDATED"}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Courses section for mobile */}
+                  <div className="border-t border-primary/10 pt-2">
+                    <div className="text-[10px] text-primary/50 mb-1">COURSES:</div>
+                    <div className="space-y-1">
+                      {record.courses.slice(0, 6).map((course, idx) => (
+                        <div key={idx} className="flex items-start">
+                          <span className="text-primary/50 mr-1.5">•</span>
+                          <span className="text-xs">{course.name}</span>
+                        </div>
+                      ))}
+                    </div>
+                    {record.courses.length > 6 && (
+                      <div className="text-xs text-primary/50 mt-1">+{record.courses.length - 6} more courses</div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Desktop layout - keep existing two column layout */}
+                <div className="hidden md:grid md:grid-cols-[60%_40%] gap-x-6 gap-y-4">
                   {/* Left column - Degree, Field of Study, Institution */}
-                  <div className="space-y-3 md:space-y-4">
+                  <div className="space-y-4">
                     <div className="border-b border-primary/10 pb-2">
-                      <div className="text-[10px] md:text-xs text-primary/50 mb-1">DEGREE:</div>
-                      <div className="text-sm md:text-base">{record.degree}</div>
+                      <div className="text-xs text-primary/50 mb-1">DEGREE:</div>
+                      <div className="text-base">{record.degree}</div>
                     </div>
 
                     <div className="border-b border-primary/10 pb-2">
-                      <div className="text-[10px] md:text-xs text-primary/50 mb-1">FIELD OF STUDY:</div>
-                      <div className="text-sm md:text-base">{record.field}</div>
+                      <div className="text-xs text-primary/50 mb-1">FIELD OF STUDY:</div>
+                      <div className="text-base">{record.field}</div>
                     </div>
 
                     <div className="border-b border-primary/10 pb-2">
-                      <div className="text-[10px] md:text-xs text-primary/50 mb-1">INSTITUTION:</div>
-                      <div className="text-sm md:text-base">{record.institution}</div>
+                      <div className="text-xs text-primary/50 mb-1">INSTITUTION:</div>
+                      <div className="text-base">{record.institution}</div>
                     </div>
                   </div>
 
                   {/* Right column - Timeframe, Location, Status */}
-                  <div className="space-y-3 md:space-y-4">
+                  <div className="space-y-4">
                     <div className="border-b border-primary/10 pb-2">
-                      <div className="text-[10px] md:text-xs text-primary/50 mb-1">TIMEFRAME:</div>
-                      <div className="text-xs md:text-sm">{record.period}</div>
+                      <div className="text-xs text-primary/50 mb-1">TIMEFRAME:</div>
+                      <div className="text-sm">{record.period}</div>
                     </div>
 
                     <div className="border-b border-primary/10 pb-2">
-                      <div className="text-[10px] md:text-xs text-primary/50 mb-1">LOCATION:</div>
-                      <div className="text-xs md:text-sm">{record.location || "UNDISCLOSED"}</div>
+                      <div className="text-xs text-primary/50 mb-1">LOCATION:</div>
+                      <div className="text-sm">{record.location || "UNDISCLOSED"}</div>
                     </div>
 
                     <div className="border-b border-primary/10 pb-2">
-                      <div className="text-[10px] md:text-xs text-primary/50 mb-1">STATUS:</div>
-                      <div className="text-xs md:text-sm text-green-500">{record.status || "VALIDATED"}</div>
+                      <div className="text-xs text-primary/50 mb-1">STATUS:</div>
+                      <div className="text-sm text-green-500">{record.status || "VALIDATED"}</div>
                     </div>
                   </div>
 
                   {/* Courses section - spans both columns */}
                   <div className="border-b border-primary/10 pb-2 md:col-span-2">
-                    <div className="text-[10px] md:text-xs text-primary/50 mb-1">COURSES:</div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-1">
+                    <div className="text-xs text-primary/50 mb-1">COURSES:</div>
+                    <div className="grid grid-cols-2 gap-x-4 gap-y-1">
                       {record.courses.slice(0, 6).map((course, idx) => (
                         <div key={idx} className="flex items-start">
                           <span className="text-primary/50 mr-1.5">•</span>
-                          <span className="text-xs md:text-sm truncate">{course.name}</span>
+                          <span className="text-sm truncate">{course.name}</span>
                         </div>
                       ))}
                     </div>
                     {record.courses.length > 6 && (
-                      <div className="text-xs md:text-sm text-primary/50 mt-1">
-                        +{record.courses.length - 6} more courses
-                      </div>
+                      <div className="text-sm text-primary/50 mt-1">+{record.courses.length - 6} more courses</div>
                     )}
                   </div>
                 </div>

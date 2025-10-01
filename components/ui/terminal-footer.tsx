@@ -3,7 +3,7 @@
 import type React from "react"
 import { useState, useEffect, useRef, memo } from "react"
 import { useNavigation } from "@/contexts/navigation-context"
-import { Terminal, X, HelpCircle, NotebookTabsIcon as TabIcon } from "lucide-react"
+import { Terminal, X, HelpCircle, TagIcon as TabIcon } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import { useTheme } from "@/contexts/theme-context"
 import { TERMINAL_COMMANDS } from "@/lib/constants"
@@ -306,7 +306,7 @@ const TerminalFooter = memo(function TerminalFooter() {
               {!isActive && !input && !isTyping && (
                 <div className="absolute inset-0 pointer-events-none flex items-center">
                   <span className="font-sf-mono text-xs text-primary/50 flex items-center whitespace-nowrap truncate">
-                    {isMobile ? "help" : 'type "help" to start'}
+                    {isMobile ? 'type "help" to start' : 'type "help" to start'}
                   </span>
                 </div>
               )}
@@ -335,7 +335,7 @@ const TerminalFooter = memo(function TerminalFooter() {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="w-full max-w-md bg-background dark:bg-eerie-black border border-primary/30 shadow-lg"
+              className="w-[80%] md:w-full max-w-xl bg-background dark:bg-eerie-black border border-primary/30 shadow-lg"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex justify-between items-center p-4 border-b border-primary/20">
