@@ -285,7 +285,7 @@ export default function Home() {
                 <div className="absolute inset-0 bg-scan-lines opacity-10"></div>
               </motion.div>
 
-              <div className="flex center grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-6 relative">
+              <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-6 relative">
                 <div className="px-6 md:px-12">
                   <motion.div
                     className="relative text-center py-12"
