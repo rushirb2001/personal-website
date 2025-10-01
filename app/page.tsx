@@ -420,9 +420,7 @@ export default function Home() {
                       height={300}
                       className="w-full grayscale"
                     />
-                    <div className="absolute bottom-2 right-2 text-xs font-sf-mono text-primary/50 bg-background/90 px-2 py-1">
-                      VERIFIED
-                    </div>
+                    
                   </div>
 
                   {/* Resume Button */}
