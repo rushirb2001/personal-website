@@ -251,7 +251,7 @@ export default function Home() {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.7, ease: [0.4, 0, 0.2, 1] }}
           >
-            <div className="min-h-[70vh] w-full max-w-full py-4 md:py-16 relative flex flex-col items-center justify-center">
+            <div className="min-h-[70vh] w-full max-w-full py-4 md:py-16 relative flex flex-col justify-center">
               <motion.div
                 className="absolute top-0 left-0 w-full h-full pointer-events-none"
                 initial={{ opacity: 0 }}
@@ -285,7 +285,7 @@ export default function Home() {
                 <div className="absolute inset-0 bg-scan-lines opacity-10"></div>
               </motion.div>
 
-              <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-6 relative w-full">
+              <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-6 relative">
                 <div className="px-6 md:px-12">
                   <motion.div
                     className="relative text-center py-12"
