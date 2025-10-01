@@ -285,7 +285,7 @@ export default function Home() {
                 <div className="absolute inset-0 bg-scan-lines opacity-10"></div>
               </motion.div>
 
-              <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-6 relative">
+              <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-6 relative py-14">
                 <div className="px-6 md:px-12">
                   <motion.div
                     className="relative text-center py-12"
@@ -430,7 +430,7 @@ export default function Home() {
                 </div>
 
                 <motion.div
-                  className="relative"
+                  className="relative px-0"
                   initial={{ opacity: 0, x: 30 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.6, duration: 0.8 }}
@@ -464,7 +464,7 @@ export default function Home() {
               </div>
 
               <motion.div
-                className="max-w-3xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-2 text-xs font-sf-mono text-primary/40 mt-6"
+                className="max-w-3xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-2 text-xs font-sf-mono text-primary/40 mt-6 py-0"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 1.3, duration: 0.8 }}
