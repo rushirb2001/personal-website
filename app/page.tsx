@@ -288,7 +288,7 @@ export default function Home() {
               <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-6 relative py-14">
                 <div className="px-6 md:px-12">
                   <motion.div
-                    className="relative text-center py-12"
+                    className="relative text-center py-14"
                     initial={{ opacity: 0, x: -30 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.6, duration: 0.8 }}
@@ -376,7 +376,7 @@ export default function Home() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 1.1, duration: 0.8 }}
                     >
-                      <p>
+                      <p className="font-mono">
                         Data Scientist and AI Engineer specializing in machine learning, deep learning, and AI systems
                         development. Creating innovative solutions using cutting-edge AI technologies with experience
                         across healthcare, astronomy, and enterprise AI domains. Expertise in transformer-based models,
@@ -470,7 +470,7 @@ export default function Home() {
                 transition={{ delay: 1.3, duration: 0.8 }}
               >
                 <div className="border border-primary/20 p-3 text-center hover:border-primary/40 transition-colors">
-                  <div className="text-primary/30 mb-1">PROJECTS</div>
+                  <div className="text-primary/30 mb-1 font-mono">PROJECTS</div>
                   <div className="font-bold">15+ COMPLETED</div>
                 </div>
                 <div className="border border-primary/20 p-3 text-center hover:border-primary/40 transition-colors">
