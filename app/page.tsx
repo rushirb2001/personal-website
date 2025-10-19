@@ -604,7 +604,7 @@ export default function Home() {
                   {/* Profile Image */}
                   <div className="relative border border-primary/20 bg-secondary/20 p-1 mb-4">
                     <Image
-                      src="/images/new_personal_photo.png"
+                      src="/images/design-mode/new_personal_photo.png"
                       alt="Profile"
                       width={300}
                       height={300}
