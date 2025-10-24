@@ -40,18 +40,14 @@ export default function Home() {
   const bootSequence = [
     "INITIALIZING PORTFOLIO SYSTEM...",
     "ESTABLISHING SECURE CONNECTION...",
-    "VERIFYING USER IDENTITY...",
     "ACCESSING PERSONNEL FILE...",
-    "AUTHORIZATION GRANTED",
     "DISPLAYING PORTFOLIO",
   ]
 
   const bootSequencePrefix = [
     "SPI", // System Peripheral Init
     "ESP", // Encrypted Secure Protocol
-    "VID", // Verify ID
     "ACF", // Access File
-    "AUT", // Authorization
     "DSP", // Display
   ]
 
@@ -107,9 +103,9 @@ export default function Home() {
           // Move to next stage after precise delay
           animationRef.current = setTimeout(() => {
             setBootStage((prev) => prev + 1)
-          }, 100) // More precise timing
+          }, 20) // More precise timing
         }
-      }, 40) // Consistent typing speed
+      }, 80) // Consistent typing speed
 
       return () => {
         if (typeIntervalRef.current) clearInterval(typeIntervalRef.current)
@@ -132,10 +128,10 @@ export default function Home() {
             // Then show main content
             animationRef.current = setTimeout(() => {
               setShowContent(true)
-            }, 300)
-          }, 200)
-        }, 600)
-      }, 600)
+            }, 200)
+          }, 100)
+        }, 300)
+      }, 300)
     }
   }, [bootStage, showBoot])
 
