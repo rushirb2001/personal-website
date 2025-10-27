@@ -27,6 +27,27 @@ interface Experience {
 export default function ExperiencePage() {
   const experiences: Experience[] = [
     {
+      title: "SCIENTIFIC DEVELOPMENT- AI/ML",
+      company: "CADENCE DESIGN SYSTEMS",
+      location: "SANTA FE, NM",
+      period: "JULY 2025 - OCT 2025",
+      id: "EXP-9I-787",
+      assignmentId: "COMS-2025-07",
+      status: "COMPLETED",
+      description:
+        "Developed and deployed ETL pipelines and systems for scientific modelling, focusing on generalizability, scalability, and efficiency optimization.",
+      responsibilities: [
+        "Built end-to-end ML pipeline orchestrator with PyTorch Lightning, processing 1M sequences (5120 embedding size),reducing preprocessing time by 60% across 20+ production experiments.",
+        "Engineered distributed clustering system with scikit-learn and CUDA-RAPIDS, improving cluster quality by 35% and reducing computational overhead by 45% for downstream ML teams.",
+        "Developed multi-modal deep learning framework with PyTorch Lightning and custom CUDA kernels, achieving 80% faster training convergence and 6x speedup in hyperparameter optimization.",
+      ],
+      metrics: [
+        { label: "PREPROCESSING TIME", value: "60%", isIncrease: false },
+        { label: "CLUSTERING QUALITY", value: "35%", isIncrease: true },
+        { label: "MODEL CONVERGENCE", value: "80%", isIncrease: true },
+      ],
+    },
+    {
       title: "GENAI ENGINEERING INTERN",
       company: "TALIN LABS INC",
       location: "REMOTE",
@@ -42,9 +63,9 @@ export default function ExperiencePage() {
         "Accelerated supply-chain query handling by 12%, achieving sub-second latencies and an 86% increase in data throughput by applying Retrieval-Augmented Generation (RAG) techniques",
       ],
       metrics: [
-        { label: "RELIABILITY", value: "42%", isIncrease: true },
-        { label: "ACCESSIBILITY", value: "63%", isIncrease: true },
-        { label: "THROUGHPUT", value: "86%", isIncrease: true },
+        { label: "SYSTEM RELIABILITY", value: "42%", isIncrease: true },
+        { label: "PLATFORM ACCESSIBILITY", value: "63%", isIncrease: true },
+        { label: "DATA THROUGHPUT", value: "86%", isIncrease: true },
       ],
     },
     {
