@@ -26,23 +26,18 @@ export default function Home() {
   const [bootScanLines, setBootScanLines] = useState(false)
   const [bootGlitch, setBootGlitch] = useState(false)
 
-  // Animation sequence states
-  const [showBoot, setShowBoot] = useState(true)
-  const [showHeader, setShowHeader] = useState(false)
-  const [showFooter, setShowFooter] = useState(false)
-  const [showContent, setShowContent] = useState(false)
+  // Animation sequence states - show content immediately
+  const [showBoot, setShowBoot] = useState(false) // Changed from true to false
+  const [showHeader, setShowHeader] = useState(true) // Changed from false to true
+  const [showFooter, setShowFooter] = useState(true) // Changed from false to true
+  const [showContent, setShowContent] = useState(true) // Changed from false to true
 
   // Animation refs
   const animationRef = useRef<NodeJS.Timeout | null>(null)
   const typeIntervalRef = useRef<NodeJS.Timeout | null>(null)
 
   // Boot sequence text content
-  const bootSequence = [
-    "LOADING PORTFOLIO...",
-    "AI/ML-CV SPECIALISATION...",
-    "2+ PUBLISHED RESEARCHER...",
-    "WELCOME",
-  ]
+  const bootSequence = ["LOADING PORTFOLIO...", "AI/ML-CV SPECIALISATION...", "2+ PUBLISHED RESEARCHER...", "WELCOME"]
 
   const bootSequencePrefix = [
     "PRF", // System Peripheral Init
@@ -51,6 +46,7 @@ export default function Home() {
     "WLC", // Display
   ]
 
+  /*
   // Check if this is the first visit
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -74,7 +70,9 @@ export default function Home() {
       if (typeIntervalRef.current) clearInterval(typeIntervalRef.current)
     }
   }, [])
+  */
 
+  /*
   // Typewriter effect for boot text
   useEffect(() => {
     if (!showBoot) return
@@ -134,6 +132,7 @@ export default function Home() {
       }, 150)
     }
   }, [bootStage, showBoot])
+  */
 
   // Preload critical pages from the homepage
   useEffect(() => {
@@ -141,7 +140,6 @@ export default function Home() {
       // Use dynamic imports to preload key pages
       const paths = ["/about", "/skills", "/experience"]
 
-      // Create a slight delay to prioritize current page render first
       setTimeout(() => {
         paths.forEach((path) => {
           const link = document.createElement("link")
@@ -149,7 +147,7 @@ export default function Home() {
           link.href = path
           document.head.appendChild(link)
         })
-      }, 1000)
+      }, 100)
     }
 
     preloadPages()
@@ -157,7 +155,7 @@ export default function Home() {
 
   return (
     <>
-      {/* Boot Animation */}
+      {/* Boot Animation - Now disabled by default */}
       <AnimatePresence>
         {showBoot && (
           <motion.div
@@ -218,9 +216,6 @@ export default function Home() {
               {/* Scan lines overlay */}
               {bootScanLines && <div className="absolute inset-0 bg-scan-lines opacity-30 pointer-events-none"></div>}
             </motion.div>
-
-            {/* Background scan lines */}
-            <div className="absolute inset-0 bg-scan-lines opacity-20 pointer-events-none"></div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -232,7 +227,7 @@ export default function Home() {
             className="fixed top-0 left-0 right-0 z-60"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+            transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
           >
             <Header />
           </motion.div>
@@ -246,7 +241,7 @@ export default function Home() {
             className="fixed bottom-0 left-0 right-0 z-60"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+            transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
           >
             <Footer />
           </motion.div>
@@ -260,7 +255,7 @@ export default function Home() {
             className="flex items-center justify-center min-h-[calc(100vh)] md:min-h-[calc(100vh)] px-4 md:px-0 -translate-y-16"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.7, ease: [0.4, 0, 0.2, 1] }}
+            transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
           >
             <div className="w-full max-w-full px-0 py-4 md:px-4 md:py-16 lg:py-24 text-center relative">
               {/* Eerie decorative elements */}
@@ -268,19 +263,19 @@ export default function Home() {
                 className="absolute top-0 left-0 w-full h-full pointer-events-none"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 0.2, duration: 0.8 }}
+                transition={{ delay: 0.1, duration: 0.5 }}
               >
                 <motion.div
                   className="absolute top-1/4 left-4 md:left-8 h-px w-8 md:w-16 bg-primary/20"
                   initial={{ scaleX: 0 }}
                   animate={{ scaleX: 1 }}
-                  transition={{ delay: 0.4, duration: 0.5 }}
+                  transition={{ delay: 0.2, duration: 0.3 }}
                 ></motion.div>
                 <motion.div
                   className="absolute bottom-1/4 right-4 md:right-8 h-px w-8 md:w-16 bg-primary/20"
                   initial={{ scaleX: 0 }}
                   animate={{ scaleX: 1 }}
-                  transition={{ delay: 0.4, duration: 0.5 }}
+                  transition={{ delay: 0.2, duration: 0.3 }}
                 ></motion.div>
                 <div className="absolute inset-0 bg-scan-lines opacity-10"></div>
               </motion.div>
@@ -290,29 +285,20 @@ export default function Home() {
                 className="text-3xl md:text-4xl lg:text-6xl tracking-tight mb-2 relative font-black"
                 initial={{ opacity: 0, letterSpacing: "0.08em" }}
                 animate={{ opacity: 1, letterSpacing: "0.03em" }}
-                transition={{
-                  opacity: { delay: 0.6, duration: 0.8 },
-                  letterSpacing: {
-                    delay: 0.6,
-                    repeat: Number.POSITIVE_INFINITY,
-                    repeatType: "mirror",
-                    duration: 6,
-                    ease: "easeInOut",
-                  },
-                }}
+                transition={{ opacity: { delay: 0.1, duration: 0.5 } }}
               >
                 RUSHIR BHAVSAR
                 <motion.div
                   className="absolute -top-1 left-0 w-full h-px bg-primary/20"
                   initial={{ scaleX: 0 }}
                   animate={{ scaleX: 1 }}
-                  transition={{ delay: 0.7, duration: 0.6 }}
+                  transition={{ delay: 0.2, duration: 0.4 }}
                 ></motion.div>
                 <motion.div
                   className="absolute -bottom-1 left-0 w-full h-px bg-primary/20"
                   initial={{ scaleX: 0 }}
                   animate={{ scaleX: 1 }}
-                  transition={{ delay: 0.7, duration: 0.6 }}
+                  transition={{ delay: 0.2, duration: 0.4 }}
                 ></motion.div>
               </motion.h1>
 
@@ -320,7 +306,7 @@ export default function Home() {
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 0.8, duration: 0.5 }}
+                transition={{ delay: 0.2, duration: 0.4 }}
                 className="mb-4"
               >
                 <UpdatesBanner />
@@ -333,8 +319,8 @@ export default function Home() {
                   opacity: 1,
                   y: 0,
                   transition: {
-                    duration: 0.8,
-                    delay: 0.8,
+                    duration: 0.5,
+                    delay: 0.3,
                     ease: [0.4, 0, 0.2, 1],
                   },
                 }}
@@ -344,8 +330,8 @@ export default function Home() {
                   animate={{
                     opacity: 1,
                     transition: {
-                      duration: 0.3,
-                      delay: 0.9,
+                      duration: 0.2,
+                      delay: 0.35,
                     },
                   }}
                 >
@@ -356,8 +342,8 @@ export default function Home() {
                   animate={{
                     opacity: 1,
                     transition: {
-                      duration: 0.3,
-                      delay: 1.1,
+                      duration: 0.2,
+                      delay: 0.4,
                     },
                   }}
                 >
@@ -368,8 +354,8 @@ export default function Home() {
                   animate={{
                     opacity: 1,
                     transition: {
-                      duration: 0.3,
-                      delay: 1.3,
+                      duration: 0.2,
+                      delay: 0.45,
                     },
                   }}
                 >
@@ -380,8 +366,8 @@ export default function Home() {
                   animate={{
                     opacity: 1,
                     transition: {
-                      duration: 0.3,
-                      delay: 1.5,
+                      duration: 0.2,
+                      delay: 0.5,
                     },
                   }}
                 >
@@ -392,8 +378,8 @@ export default function Home() {
                   animate={{
                     opacity: 1,
                     transition: {
-                      duration: 0.3,
-                      delay: 1.7,
+                      duration: 0.2,
+                      delay: 0.55,
                     },
                   }}
                 >
@@ -406,7 +392,7 @@ export default function Home() {
                 className="flex flex-row gap-2 sm:gap-4 justify-center mb-8 md:mb-16 w-full max-w-full"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.9, duration: 0.8 }}
+                transition={{ delay: 0.4, duration: 0.5 }}
               >
                 <Button
                   className="flex-1 sm:flex-none group rounded-none border border-primary/20 bg-transparent text-primary hover:bg-primary/5 font-black text-xs sm:text-sm px-2 sm:px-4"
@@ -450,7 +436,7 @@ export default function Home() {
                 className="grid grid-cols-2 sm:grid-cols-4 gap-2 max-w-2xl mx-auto text-xs font-sf-mono text-primary/40"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 1.0, duration: 0.8 }}
+                transition={{ delay: 0.5, duration: 0.5 }}
               >
                 <div className="border border-primary/10 p-2 text-center">
                   <div className="text-primary/30 mb-1">PROJECTS</div>
