@@ -153,10 +153,10 @@ export function ContactFormModal({ isOpen, onClose }: ContactFormModalProps) {
                 <div className="w-12 h-12 rounded-full bg-green-500/10 flex items-center justify-center mx-auto mb-4">
                   <Send className="h-6 w-6 text-green-500" />
                 </div>
-                <h3 className="text-lg font-medium mb-2">MESSAGE TRANSMITTED</h3>
-                <p className="text-sm text-primary/70 mb-4">Your communication has been successfully received.</p>
+                <h3 className="text-lg font-medium mb-2">MESSAGE SENT</h3>
+                <p className="text-sm text-primary/70 mb-4">Your message has been successfully received.</p>
                 <div className="text-xs font-sf-mono text-primary/50 animate-mechanical-pulse">
-                  CLOSING TRANSMISSION IN 3 SECONDS
+                  CLOSING WINDOW IN 3 SECONDS
                 </div>
               </div>
             ) : (
