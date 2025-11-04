@@ -38,17 +38,17 @@ export default function Home() {
 
   // Boot sequence text content
   const bootSequence = [
-    "INITIALIZING PORTFOLIO SYSTEM...",
-    "ESTABLISHING SECURE CONNECTION...",
-    "ACCESSING PERSONNEL FILE...",
-    "DISPLAYING PORTFOLIO",
+    "LOADING PORTFOLIO...",
+    "AI/ML-CV SPECIALISATION...",
+    "2+ PUBLISHED RESEARCHER...",
+    "WELCOME",
   ]
 
   const bootSequencePrefix = [
-    "SPI", // System Peripheral Init
-    "ESP", // Encrypted Secure Protocol
-    "ACF", // Access File
-    "DSP", // Display
+    "PRF", // System Peripheral Init
+    "AMC", // Encrypted Secure Protocol
+    "TPR", // Access File
+    "WLC", // Display
   ]
 
   // Check if this is the first visit
@@ -103,9 +103,9 @@ export default function Home() {
           // Move to next stage after precise delay
           animationRef.current = setTimeout(() => {
             setBootStage((prev) => prev + 1)
-          }, 5) // More precise timing
+          }, 25) // More precise timing
         }
-      }, 20) // Consistent typing speed
+      }, 40) // Consistent typing speed
 
       return () => {
         if (typeIntervalRef.current) clearInterval(typeIntervalRef.current)
@@ -161,7 +161,7 @@ export default function Home() {
       <AnimatePresence>
         {showBoot && (
           <motion.div
-            className="fixed inset-0 z-70 flex flex-col items-center justify-center bg-background"
+            className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-background -translate-y-12"
             initial={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={systemicTransition}
@@ -198,7 +198,7 @@ export default function Home() {
                         className="absolute top-0 left-0 h-full bg-primary/50"
                         style={{
                           width: `${(bootStage / bootSequence.length) * 100}%`,
-                          transition: "width 0.1s linear", // Linear, abrupt progress bar
+                          transition: "width 0.5s ease-out",
                         }}
                       ></div>
                     </div>
