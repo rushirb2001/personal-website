@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-// Update the import paths to match our new structure
 import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
 import { LastAccessed } from "@/components/ui/last-accessed"
@@ -55,19 +54,6 @@ export default function ClientLayout({
     }, 300)
 
     return () => clearTimeout(initialRenderTimer)
-  }, [])
-
-  // Apply initial theme before hydration
-  useEffect(() => {
-    // This runs on the client side after hydration
-    const theme =
-      localStorage.getItem("theme") || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
-
-    if (theme === "dark") {
-      document.documentElement.classList.add("dark")
-    } else {
-      document.documentElement.classList.remove("dark")
-    }
   }, [])
 
   useEffect(() => {
@@ -141,37 +127,20 @@ export default function ClientLayout({
             })();
           `}
         </script>
-        {/* Apply theme directly with inline script */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
               (function() {
                 try {
-                  // Check for stored theme preference
-                  let theme = localStorage.getItem('theme');
-                  
-                  // If no theme is set, use system preference
-                  if (!theme) {
-                    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                    theme = prefersDark ? 'dark' : 'light';
-                    localStorage.setItem('theme', theme);
-                  }
-                  
-                  // Apply the theme immediately before any rendering
-                  if (theme === 'dark') {
-                    document.documentElement.classList.add('dark');
-                  } else {
-                    document.documentElement.classList.remove('dark');
-                  }
-                } catch (e) {
-                  console.error('Error applying theme:', e);
-                }
+                  var theme = localStorage.getItem('theme') || 'light';
+                  document.documentElement.classList.toggle('dark', theme === 'dark');
+                } catch (e) {}
               })();
             `,
           }}
         />
       </head>
-      <body className="font-sf-pro">
+      <body className="font-sf-pro bg-background text-foreground transition-colors duration-200">
         <ThemeProvider>
           <NavigationProvider isReady={isTransitionReady}>
             <div className="flex flex-col min-h-screen overflow-hidden">

@@ -5,7 +5,7 @@ import { useState, useEffect, useRef, memo } from "react"
 import { useNavigation } from "@/contexts/navigation-context"
 import { Terminal, X, HelpCircle, TagIcon as TabIcon } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
-import { useTheme } from "@/contexts/theme-context"
+import { useTheme } from "next-themes"
 import { TERMINAL_COMMANDS } from "@/lib/constants"
 import { NAV_ITEMS } from "@/lib/constants"
 
@@ -16,7 +16,7 @@ const TerminalFooter = memo(function TerminalFooter() {
   const [showHelpModal, setShowHelpModal] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
   const { navigateTo } = useNavigation()
-  const themeContext = useTheme()
+  const { setTheme } = useTheme()
   const [isMobile, setIsMobile] = useState(false)
   const [currentSuggestion, setCurrentSuggestion] = useState<string>("")
   const [isTyping, setIsTyping] = useState(false)
@@ -38,21 +38,6 @@ const TerminalFooter = memo(function TerminalFooter() {
       window.removeEventListener("resize", checkMobile)
     }
   }, [])
-
-  // Fallback function if context is not available
-  const setThemeFallback = (theme: "light" | "dark") => {
-    if (themeContext && themeContext.setTheme) {
-      themeContext.setTheme(theme)
-    } else {
-      // Direct DOM manipulation as fallback
-      if (theme === "dark") {
-        document.documentElement.classList.add("dark")
-      } else {
-        document.documentElement.classList.remove("dark")
-      }
-      localStorage.setItem("theme", theme)
-    }
-  }
 
   // Focus input when terminal is activated
   useEffect(() => {
@@ -232,9 +217,9 @@ const TerminalFooter = memo(function TerminalFooter() {
     if (command === TERMINAL_COMMANDS.help) {
       setShowHelpModal(true)
     } else if (command === TERMINAL_COMMANDS.darkMode) {
-      setThemeFallback("dark")
+      setTheme("dark")
     } else if (command === TERMINAL_COMMANDS.lightMode) {
-      setThemeFallback("light")
+      setTheme("light")
     } else if (command.startsWith(`${TERMINAL_COMMANDS.run} `)) {
       const page = command.substring(4).trim()
 
@@ -315,7 +300,7 @@ const TerminalFooter = memo(function TerminalFooter() {
               )}
               <div className="absolute right-0 top-0 bottom-0 flex items-center pointer-events-none">
                 <span className="text-xs font-sf-mono text-primary/40 mr-1">[terminal]</span>
-                <span className="inline-block w-1.5 h-1.5 rounded-full bg-black dark:bg-white animate-[blink_0.5s_ease-in-out_infinite]"></span>
+                <span className="inline-block w-1.5 h-1.5 rounded-full bg-primary animate-[blink_0.5s_ease-in-out_infinite]"></span>
               </div>
             </div>
           </form>
@@ -338,7 +323,7 @@ const TerminalFooter = memo(function TerminalFooter() {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="w-[80%] md:w-full max-w-xl bg-background dark:bg-eerie-black border border-primary/30 shadow-lg"
+              className="w-[80%] md:w-full max-w-xl bg-background border border-primary/30 shadow-lg"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex justify-between items-center p-4 border-b border-primary/20">
