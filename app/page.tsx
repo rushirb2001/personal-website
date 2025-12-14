@@ -396,7 +396,7 @@ export default function Home() {
 
                       <Button
                         variant="ghost"
-                        className="rounded-sm border border-primary/20 text-sm font-sf-mono group bg-primary/5 hover:bg-primary/15 font-normal tracking-wide transition-all duration-300 ease-out hover:scale-105 hover:shadow-lg hover:shadow-primary/10"
+                        className="border border-primary/20 text-sm font-sf-mono group bg-primary/5 hover:bg-primary/15 font-normal tracking-wide transition-all duration-300 ease-out hover:scale-105 hover:shadow-lg hover:shadow-primary/10 rounded-none shadow-none"
                         onClick={() => setIsResumeModalOpen(true)}
                       >
                         <span className="flex items-center justify-center gap-3">
