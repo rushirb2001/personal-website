@@ -14,7 +14,7 @@ import Image from "next/image"
 
 const systemicTransition = {
   duration: 0.25,
-  ease: [0.5, 0, 0.2, 1],
+  ease: [0.5, 0, 0, 1],
 }
 
 export default function Home() {
@@ -286,45 +286,44 @@ export default function Home() {
               </motion.div>
             </div>
 
-            {/* Desktop Layout - New structure with 800x800 photo on left */}
+            {/* Desktop Layout - Refactored with new structure */}
             <div className="hidden lg:block w-full max-w-7xl">
-              <div className="grid grid-cols-1 lg:grid-cols-[800px_1fr] gap-12 py-16 items-start">
+              <div className="grid grid-cols-[400px_1fr] gap-8 py-16 items-start">
                 <motion.div
                   className="relative"
                   initial={{ opacity: 0, x: -30 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.2, duration: 0.8 }}
                 >
-                  {/* Profile Image - Fixed 800x800 */}
-                  <div className="relative border border-primary/20 bg-secondary/20 p-2">
+                  <div className="relative border border-primary/20 bg-secondary/20 p-1">
                     <Image
-                      src="/images/design-mode/new_personal_photo(1).png"
+                      src="/images/personal_photo.png"
                       alt="Profile"
-                      width={800}
-                      height={800}
-                      className="w-full h-full grayscale object-cover"
+                      width={400}
+                      height={400}
+                      className="w-full grayscale"
                     />
-                    <div className="absolute top-4 right-4 bg-background/80 border border-primary/30 px-3 py-2 text-xs font-sf-mono">
+                    <div className="absolute top-2 right-2 bg-background/80 border border-primary/30 px-2 py-1 text-[10px] font-sf-mono">
                       VERIFIED
                     </div>
                   </div>
                 </motion.div>
 
                 <motion.div
-                  className="flex flex-col justify-start pt-8"
+                  className="flex flex-col"
                   initial={{ opacity: 0, x: 30 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.3, duration: 0.8 }}
+                  transition={{ delay: 0.2, duration: 0.8 }}
                 >
-                  <div className="flex items-start justify-between mb-4 gap-4">
+                  <div className="flex items-center justify-between mb-4">
                     <motion.h1
-                      className="tracking-tight relative font-black text-5xl flex-1 text-left"
+                      className="tracking-tight relative font-black text-5xl"
                       initial={{ opacity: 0, letterSpacing: "0.08em" }}
                       animate={{ opacity: 1, letterSpacing: "0.03em" }}
                       transition={{
-                        opacity: { delay: 0.4, duration: 0.8 },
+                        opacity: { delay: 0.3, duration: 0.8 },
                         letterSpacing: {
-                          delay: 0.4,
+                          delay: 0.3,
                           repeat: Number.POSITIVE_INFINITY,
                           repeatType: "mirror",
                           duration: 6,
@@ -337,24 +336,19 @@ export default function Home() {
                         className="absolute -top-1 left-0 w-full h-px bg-primary/30"
                         initial={{ scaleX: 0 }}
                         animate={{ scaleX: 1 }}
-                        transition={{ delay: 0.5, duration: 0.6 }}
+                        transition={{ delay: 0.4, duration: 0.6 }}
                       ></motion.div>
                       <motion.div
                         className="absolute -bottom-1 left-0 w-full h-px bg-primary/30"
                         initial={{ scaleX: 0 }}
                         animate={{ scaleX: 1 }}
-                        transition={{ delay: 0.5, duration: 0.6 }}
+                        transition={{ delay: 0.4, duration: 0.6 }}
                       ></motion.div>
                     </motion.h1>
 
-                    <motion.div
-                      className="flex gap-2"
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.6, duration: 0.8 }}
-                    >
+                    <div className="flex gap-2">
                       <Button
-                        className="group rounded-none border border-primary/20 bg-transparent text-primary hover:bg-primary/10 font-black p-0 h-[3.5rem] w-[3.5rem] flex items-center justify-center"
+                        className="group rounded-none border border-primary/20 bg-transparent text-primary hover:bg-primary/10 font-black p-3 h-[60px] w-[60px] flex items-center justify-center"
                         asChild
                       >
                         <Link href="https://github.com/rushirb2001" target="_blank" rel="noopener noreferrer">
@@ -362,87 +356,78 @@ export default function Home() {
                         </Link>
                       </Button>
                       <Button
-                        className="group rounded-none border border-primary/20 bg-transparent text-primary hover:bg-primary/10 font-black p-0 h-[3.5rem] w-[3.5rem] flex items-center justify-center"
+                        className="group rounded-none border border-primary/20 bg-transparent text-primary hover:bg-primary/10 font-black p-3 h-[60px] w-[60px] flex items-center justify-center"
                         asChild
                       >
                         <Link href="https://linkedin.com/in/rushir-bhavsar/" target="_blank" rel="noopener noreferrer">
                           <Linkedin className="h-6 w-6 text-blue-700" />
                         </Link>
                       </Button>
-                    </motion.div>
+                    </div>
                   </div>
 
-                  <div className="flex items-center justify-between mb-8 gap-4">
+                  <div className="flex items-center justify-between mb-6">
                     <motion.p
-                      className="text-base font-sf-mono text-primary/70 text-left flex-1"
+                      className="text-base md:text-lg font-sf-mono text-primary/70"
                       initial={{ opacity: 0, y: 10 }}
                       animate={{
                         opacity: 1,
                         y: 0,
                         transition: {
                           duration: 0.8,
-                          delay: 0.6,
+                          delay: 0.5,
                           ease: [0.4, 0, 0.2, 1],
                         },
                       }}
                     >
                       <motion.span
                         initial={{ opacity: 0 }}
-                        animate={{ opacity: 1, transition: { duration: 0.3, delay: 0.7 } }}
+                        animate={{ opacity: 1, transition: { duration: 0.3, delay: 0.6 } }}
                       >
                         DATA SCIENTIST
                       </motion.span>
                       <motion.span
                         initial={{ opacity: 0 }}
-                        animate={{ opacity: 1, transition: { duration: 0.3, delay: 0.8 } }}
+                        animate={{ opacity: 1, transition: { duration: 0.3, delay: 0.7 } }}
                       >
                         {" • "}
                       </motion.span>
                       <motion.span
                         initial={{ opacity: 0 }}
-                        animate={{ opacity: 1, transition: { duration: 0.3, delay: 0.9 } }}
+                        animate={{ opacity: 1, transition: { duration: 0.3, delay: 0.8 } }}
                       >
                         AI ENGINEER
                       </motion.span>
                       <motion.span
                         initial={{ opacity: 0 }}
-                        animate={{ opacity: 1, transition: { duration: 0.3, delay: 1.0 } }}
+                        animate={{ opacity: 1, transition: { duration: 0.3, delay: 0.9 } }}
                       >
                         {" • "}
                       </motion.span>
                       <motion.span
                         initial={{ opacity: 0 }}
-                        animate={{ opacity: 1, transition: { duration: 0.3, delay: 1.1 } }}
+                        animate={{ opacity: 1, transition: { duration: 0.3, delay: 1.0 } }}
                       >
                         ML RESEARCHER
                       </motion.span>
                     </motion.p>
 
-                    <motion.div
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.7, duration: 0.8 }}
+                    <Button
+                      variant="outline"
+                      className="rounded-none border-primary/20 text-xs font-sf-mono group bg-transparent hover:bg-primary/10 font-black px-6"
+                      onClick={() => setIsResumeModalOpen(true)}
                     >
-                      <Button
-                        variant="outline"
-                        className="rounded-none border-primary/20 text-xs font-sf-mono group bg-transparent hover:bg-primary/10 font-black h-[2.5rem]"
-                        onClick={() => setIsResumeModalOpen(true)}
-                      >
-                        <span className="flex items-center justify-center">
-                          <FileText className="h-3 w-3 mr-2" />
-                          VIEW RESUME
-                          <ArrowRight className="ml-2 h-3 w-3 group-hover:translate-x-1 transition-transform" />
-                        </span>
-                      </Button>
-                    </motion.div>
+                      <FileText className="h-3 w-3 mr-2" />
+                      VIEW RESUME
+                      <ArrowRight className="ml-2 h-3 w-3 group-hover:translate-x-1 transition-transform" />
+                    </Button>
                   </div>
 
-                  {/* Description content */}
                   <motion.div
-                    className="mb-8 text-sm leading-relaxed text-justify"
+                    className="mb-6 text-sm leading-relaxed text-left"
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.8, duration: 0.8 }}
+                    transition={{ delay: 0.7, duration: 0.8 }}
                   >
                     <p className="font-mono">
                       Data Scientist and AI Engineer specializing in machine learning, deep learning, and AI systems
@@ -452,12 +437,11 @@ export default function Home() {
                     </p>
                   </motion.div>
 
-                  {/* Stats Section */}
                   <motion.div
-                    className="grid grid-cols-4 gap-3 text-xs font-sf-mono text-primary/40 mb-8"
+                    className="grid grid-cols-4 gap-2 text-xs font-sf-mono text-primary/40 mb-6"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.9, duration: 0.8 }}
+                    transition={{ delay: 0.75, duration: 0.8 }}
                   >
                     <div className="border border-primary/20 p-3 text-center hover:border-primary/40 transition-colors">
                       <div className="text-primary/30 mb-1 font-mono">PROJECTS</div>
@@ -481,10 +465,10 @@ export default function Home() {
                   </motion.div>
 
                   <motion.div
-                    className="hidden flex-wrap gap-3"
+                    className="flex flex-wrap gap-3 hidden"
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 1.0, duration: 0.8 }}
+                    transition={{ delay: 0.8, duration: 0.8 }}
                   >
                     <Button
                       className="group rounded-none border border-primary/20 bg-transparent text-primary hover:bg-primary/10 font-black text-sm px-4"
