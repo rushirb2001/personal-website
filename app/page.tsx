@@ -187,8 +187,8 @@ export default function Home() {
                   <Image
                     src="/images/personal_photo.png"
                     alt="Profile"
-                    width={300}
-                    height={300}
+                    width={400}
+                    height={400}
                     className="w-full grayscale"
                   />
                   <div className="absolute top-2 right-2 bg-background/80 border border-primary/30 px-2 py-1 text-[10px] font-sf-mono">
@@ -300,8 +300,8 @@ export default function Home() {
                     <Image
                       src="/images/design-mode/new_personal_photo(1).png"
                       alt="Profile"
-                      width={300}
-                      height={300}
+                      width={400}
+                      height={400}
                       className="w-full grayscale"
                     />
                     <div className="absolute top-2 right-2 bg-background/80 border border-primary/30 px-2 py-1 text-[10px] font-sf-mono">
