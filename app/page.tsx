@@ -236,7 +236,7 @@ export default function Home() {
                 >
                   <Button
                     variant="ghost"
-                    className="flex-1 group rounded-sm border-0 text-sm font-sf-mono bg-primary/5 hover:bg-primary/15 font-normal tracking-wide transition-all duration-300 ease-out hover:scale-105 hover:shadow-lg hover:shadow-primary/10"
+                    className="rounded-none border-2 border-primary/30 hover:border-primary/60 text-sm font-sf-mono group bg-transparent hover:bg-primary/5 hover:scale-105 hover:shadow-lg hover:shadow-primary/10 transition-all duration-300"
                     onClick={() => setIsResumeModalOpen(true)}
                   >
                     <span className="flex items-center justify-center gap-3">
@@ -396,7 +396,7 @@ export default function Home() {
 
                       <Button
                         variant="ghost"
-                        className="rounded-sm border-0 text-sm font-sf-mono group bg-primary/5 hover:bg-primary/15 font-normal tracking-wide transition-all duration-300 ease-out hover:scale-105 hover:shadow-lg hover:shadow-primary/10"
+                        className="rounded-none border-2 border-primary/30 hover:border-primary/60 text-sm font-sf-mono group bg-transparent hover:bg-primary/5 hover:scale-105 hover:shadow-lg hover:shadow-primary/10 transition-all duration-300"
                         onClick={() => setIsResumeModalOpen(true)}
                       >
                         <span className="flex items-center justify-center gap-3">
