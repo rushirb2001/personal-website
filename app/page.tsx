@@ -216,7 +216,7 @@ export default function Home() {
                     rel="noopener noreferrer"
                     className="w-14 h-14 flex items-center justify-center rounded-none group"
                   >
-                    <Github className="h-8 w-8 stroke-[2.5] text-purple-800 group-hover:fill-purple-800 transition-all" />
+                    <Github className="h-8 w-8 stroke-[2.5] text-purple-800 fill-purple-800/0 group-hover:fill-purple-800/100 group-hover:scale-115 transition-all duration-300 ease-out" />
                   </Link>
                   <Link
                     href="https://linkedin.com/in/rushir-bhavsar/"
@@ -224,7 +224,7 @@ export default function Home() {
                     rel="noopener noreferrer"
                     className="w-14 h-14 flex items-center justify-center rounded-none group"
                   >
-                    <Linkedin className="h-8 w-8 stroke-[2.5] text-blue-700 group-hover:fill-blue-700 transition-all" />
+                    <Linkedin className="h-8 w-8 stroke-[2.5] text-blue-700 fill-blue-700/0 group-hover:fill-blue-700/100 group-hover:scale-115 transition-all duration-300 ease-out" />
                   </Link>
                 </div>
 
@@ -319,7 +319,7 @@ export default function Home() {
                           rel="noopener noreferrer"
                           className="w-14 h-14 flex items-center justify-center rounded-none group"
                         >
-                          <Github className="h-8 w-8 stroke-[2.5] text-purple-800 group-hover:fill-purple-800 transition-all" />
+                          <Github className="h-8 w-8 stroke-[2.5] text-purple-800 fill-purple-800/0 group-hover:fill-purple-800/100 group-hover:scale-115 transition-all duration-300 ease-out" />
                         </Link>
                         <Link
                           href="https://linkedin.com/in/rushir-bhavsar/"
@@ -327,7 +327,7 @@ export default function Home() {
                           rel="noopener noreferrer"
                           className="w-14 h-14 flex items-center justify-center rounded-none group"
                         >
-                          <Linkedin className="h-8 w-8 stroke-[2.5] text-blue-700 group-hover:fill-blue-700 transition-all" />
+                          <Linkedin className="h-8 w-8 stroke-[2.5] text-blue-700 fill-blue-700/0 group-hover:fill-blue-700/100 group-hover:scale-115 transition-all duration-300 ease-out" />
                         </Link>
                       </div>
                     </div>
