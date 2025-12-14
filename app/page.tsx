@@ -101,32 +101,13 @@ export default function Home() {
               >
                 <motion.h1
                   className="tracking-tight mb-2 relative font-black text-4xl"
-                  initial={{ opacity: 0, letterSpacing: "0.08em" }}
-                  animate={{ opacity: 1, letterSpacing: "0.03em" }}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
                   transition={{
                     opacity: { delay: 0.3, duration: 0.8 },
-                    letterSpacing: {
-                      delay: 0.3,
-                      repeat: Number.POSITIVE_INFINITY,
-                      repeatType: "mirror",
-                      duration: 6,
-                      ease: "easeInOut",
-                    },
                   }}
                 >
                   RUSHIR BHAVSAR
-                  <motion.div
-                    className="absolute -top-1 left-0 w-full h-px bg-primary/30"
-                    initial={{ scaleX: 0 }}
-                    animate={{ scaleX: 1 }}
-                    transition={{ delay: 0.4, duration: 0.6 }}
-                  ></motion.div>
-                  <motion.div
-                    className="absolute -bottom-1 left-0 w-full h-px bg-primary/30"
-                    initial={{ scaleX: 0 }}
-                    animate={{ scaleX: 1 }}
-                    transition={{ delay: 0.4, duration: 0.6 }}
-                  ></motion.div>
                 </motion.h1>
 
                 {/* Position/Roles */}
@@ -322,32 +303,13 @@ export default function Home() {
                       {/* Title - left aligned */}
                       <motion.h1
                         className="tracking-tight relative font-black text-5xl"
-                        initial={{ opacity: 0, letterSpacing: "0.08em" }}
-                        animate={{ opacity: 1, letterSpacing: "0.03em" }}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
                         transition={{
                           opacity: { delay: 0.3, duration: 0.8 },
-                          letterSpacing: {
-                            delay: 0.3,
-                            repeat: Number.POSITIVE_INFINITY,
-                            repeatType: "mirror",
-                            duration: 6,
-                            ease: "easeInOut",
-                          },
                         }}
                       >
                         RUSHIR BHAVSAR
-                        <motion.div
-                          className="absolute -top-1 left-0 w-full h-px bg-primary/30"
-                          initial={{ scaleX: 0 }}
-                          animate={{ scaleX: 1 }}
-                          transition={{ delay: 0.4, duration: 0.6 }}
-                        ></motion.div>
-                        <motion.div
-                          className="absolute -bottom-1 left-0 w-full h-px bg-primary/30"
-                          initial={{ scaleX: 0 }}
-                          animate={{ scaleX: 1 }}
-                          transition={{ delay: 0.4, duration: 0.6 }}
-                        ></motion.div>
                       </motion.h1>
 
                       <div className="flex gap-2">
