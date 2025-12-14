@@ -389,6 +389,33 @@ export default function Home() {
                     </motion.div>
 
                     <motion.div
+                      className="grid grid-cols-4 gap-2 text-xs font-sf-mono text-primary/40 mb-6 px-28"
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.75, duration: 0.8 }}
+                    >
+                      <div className="border border-primary/20 p-3 text-center hover:border-primary/40 transition-colors">
+                        <div className="text-primary/30 mb-1 font-mono">PROJECTS</div>
+                        <div className="font-bold">15+ COMPLETED</div>
+                      </div>
+                      <div className="border border-primary/20 p-3 text-center hover:border-primary/40 transition-colors">
+                        <div className="text-primary/30 mb-1">PUBLICATIONS</div>
+                        <div className="font-bold">3+ RESEARCH PAPERS</div>
+                      </div>
+                      <div className="border border-primary/20 p-3 text-center hover:border-primary/40 transition-colors">
+                        <div className="text-primary/30 mb-1">EXPERIENCE</div>
+                        <div className="flex items-center justify-center font-bold">
+                          <div className="w-1.5 h-1.5 rounded-full bg-green-500 mr-1.5 animate-[blink_0.5s_ease-in-out_infinite]"></div>
+                          2+ YEARS
+                        </div>
+                      </div>
+                      <div className="border border-primary/20 p-3 text-center hover:border-primary/40 transition-colors">
+                        <div className="text-primary/30 mb-1">SPECIALIZATION</div>
+                        <div className="font-bold">LLM • CV • MLOps</div>
+                      </div>
+                    </motion.div>
+
+                    <motion.div
                       className="flex flex-wrap gap-3 justify-center"
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
@@ -437,17 +464,17 @@ export default function Home() {
                   {/* Resume Button */}
                   <Button
                     variant="outline"
-                    className="w-full rounded-none border-primary/20 text-xs font-sf-mono group bg-transparent hover:bg-primary/10 mb-2"
+                    className="w-full rounded-none border-primary/20 text-xs font-sf-mono group bg-transparent hover:bg-primary/10 mb-2 font-black"
                     onClick={() => setIsResumeModalOpen(true)}
                   >
-                    <span className="group-hover:tracking-widest transition-all duration-500 flex items-center">
+                    <span className="flex items-center justify-center">
                       <FileText className="h-3 w-3 mr-2" />
                       VIEW RESUME
                       <ArrowRight className="ml-2 h-3 w-3 group-hover:translate-x-1 transition-transform" />
                     </span>
                   </Button>
 
-                  {/* GitHub and LinkedIn buttons - half-half below resume with arrows */}
+                  {/* GitHub and LinkedIn buttons - half-half below resume */}
                   <div className="flex gap-2">
                     <Button
                       className="flex-1 group rounded-none border border-primary/20 bg-transparent text-primary hover:bg-primary/10 font-black p-2 flex items-center justify-center"
