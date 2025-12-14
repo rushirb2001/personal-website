@@ -215,7 +215,7 @@ export default function Home() {
                     asChild
                   >
                     <Link href="https://github.com/rushirbhavsar" target="_blank" rel="noopener noreferrer">
-                      <Github className="h-4 w-4 text-purple-800" />
+                      <Github className="h-6 w-6 text-purple-800 font-bold" />
                     </Link>
                   </Button>
                   <Button
@@ -223,7 +223,7 @@ export default function Home() {
                     asChild
                   >
                     <Link href="https://linkedin.com/in/rushir-bhavsar/" target="_blank" rel="noopener noreferrer">
-                      <Linkedin className="h-4 w-4 text-blue-700" />
+                      <Linkedin className="h-6 w-6 text-blue-700 font-bold" />
                     </Link>
                   </Button>
                 </div>
@@ -318,7 +318,7 @@ export default function Home() {
                           asChild
                         >
                           <Link href="https://github.com/rushirb2001" target="_blank" rel="noopener noreferrer">
-                            <Github className="h-5 w-5 text-purple-800" />
+                            <Github className="h-7 w-7 text-purple-800 font-bold" />
                           </Link>
                         </Button>
                         <Button
@@ -330,7 +330,7 @@ export default function Home() {
                             target="_blank"
                             rel="noopener noreferrer"
                           >
-                            <Linkedin className="h-5 w-5 text-blue-700" />
+                            <Linkedin className="h-7 w-7 text-blue-700 font-bold" />
                           </Link>
                         </Button>
                       </div>
@@ -391,7 +391,7 @@ export default function Home() {
                         <span className="flex items-center justify-center">
                           <FileText className="h-3 w-3 mr-2" />
                           VIEW RESUME
-                          <ArrowRight className="ml-2 h-3 w-3 group-hover:translate-x-1 transition-transform" />
+                          <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                         </span>
                       </Button>
                     </div>
