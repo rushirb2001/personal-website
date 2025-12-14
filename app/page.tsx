@@ -230,11 +230,15 @@ export default function Home() {
 
                 {/* Right half - Resume button */}
                 <Button
-                  className="flex-1 group rounded-none border border-primary/20 bg-transparent text-primary hover:bg-primary/10 font-black text-xs py-2"
+                  variant="ghost"
+                  className="flex-1 group rounded-none border-0 text-xs font-sf-mono bg-transparent hover:bg-transparent font-medium"
                   onClick={() => setIsResumeModalOpen(true)}
                 >
-                  <FileText className="h-3 w-3 mr-1" />
-                  RESUME
+                  <span className="flex items-center justify-center">
+                    <FileText className="h-6 w-6 mr-2 stroke-[1.5] text-amber-600 fill-amber-600/0 group-hover:fill-amber-600/100 group-hover:scale-115 transition-all duration-300 ease-out" />
+                    VIEW RESUME
+                    <ArrowRight className="ml-2 h-3 w-3 group-hover:translate-x-1 transition-transform" />
+                  </span>
                 </Button>
               </motion.div>
 
@@ -380,14 +384,14 @@ export default function Home() {
                       </motion.p>
 
                       <Button
-                        variant="outline"
-                        className="rounded-none border-primary/20 text-xs font-sf-mono group bg-transparent hover:bg-primary/10 font-black"
+                        variant="ghost"
+                        className="rounded-none border-0 text-xs font-sf-mono group bg-transparent hover:bg-transparent font-medium"
                         onClick={() => setIsResumeModalOpen(true)}
                       >
                         <span className="flex items-center justify-center">
-                          <FileText className="h-3 w-3 mr-2" />
+                          <FileText className="h-6 w-6 mr-2 stroke-[1.5] text-amber-600 fill-amber-600/0 group-hover:fill-amber-600/100 group-hover:scale-115 transition-all duration-300 ease-out" />
                           VIEW RESUME
-                          <ArrowRight className="ml-2 h-3 w-3 group-hover:translate-x-1 transition-transform" />
+                          <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                         </span>
                       </Button>
                     </div>
