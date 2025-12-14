@@ -302,7 +302,7 @@ export default function Home() {
                     <div className="flex items-center justify-between mb-2">
                       {/* Title - left aligned */}
                       <motion.h1
-                        className="tracking-tight relative font-black text-5xl"
+                        className="relative font-black tracking-widest text-6xl"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{
