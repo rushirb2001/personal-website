@@ -399,12 +399,12 @@ export default function Home() {
                         className="border border-primary/20 text-sm font-sf-mono group bg-primary/5 hover:bg-primary/15 font-normal tracking-wide transition-all duration-300 ease-out hover:scale-105 hover:shadow-lg hover:shadow-primary/10 rounded-none shadow-none"
                         onClick={() => setIsResumeModalOpen(true)}
                       >
-                        <span className="flex items-center justify-center gap-3">
+                        <span className="flex items-center justify-center gap-2">
                           <span className="relative">
                             <FileText className="h-7 w-7 stroke-[1.5] text-primary/70 fill-primary/0 group-hover:fill-primary/20 group-hover:text-primary group-hover:scale-110 transition-all duration-300 ease-out" />
                             <span className="absolute -top-1 -right-1 h-2 w-2 rounded-full bg-primary opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                           </span>
-                          <span className="text-primary/80 group-hover:text-primary font-medium tracking-wider transition-colors duration-300">
+                          <span className="text-primary/80 group-hover:text-primary font-medium transition-colors duration-300 tracking-tighter">
                             VIEW RESUME
                           </span>
                           <ArrowRight className="h-4 w-4 text-primary/60 group-hover:translate-x-1.5 group-hover:text-primary transition-all duration-300" />
