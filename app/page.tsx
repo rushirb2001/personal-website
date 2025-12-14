@@ -236,18 +236,18 @@ export default function Home() {
                 >
                   <Button
                     variant="ghost"
-                    className="flex-1 group rounded-sm border-0 text-sm font-sf-mono bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-rose-500/10 hover:from-amber-500/20 hover:via-orange-500/20 hover:to-rose-500/20 font-normal tracking-wide transition-all duration-300 ease-out hover:scale-105 hover:shadow-lg hover:shadow-amber-500/10"
+                    className="flex-1 group rounded-sm border-0 text-sm font-sf-mono bg-primary/5 hover:bg-primary/15 font-normal tracking-wide transition-all duration-300 ease-out hover:scale-105 hover:shadow-lg hover:shadow-primary/10"
                     onClick={() => setIsResumeModalOpen(true)}
                   >
                     <span className="flex items-center justify-center gap-3">
                       <span className="relative">
-                        <FileText className="h-7 w-7 stroke-[1.5] text-amber-500 fill-amber-500/0 group-hover:fill-amber-500/30 group-hover:text-orange-500 group-hover:scale-110 transition-all duration-300 ease-out" />
-                        <span className="absolute -top-1 -right-1 h-2 w-2 rounded-full bg-gradient-to-r from-amber-400 to-orange-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                        <FileText className="h-7 w-7 stroke-[1.5] text-primary/70 fill-primary/0 group-hover:fill-primary/20 group-hover:text-primary group-hover:scale-110 transition-all duration-300 ease-out" />
+                        <span className="absolute -top-1 -right-1 h-2 w-2 rounded-full bg-primary opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                       </span>
-                      <span className="bg-gradient-to-r from-amber-600 via-orange-500 to-rose-500 bg-clip-text text-transparent font-medium tracking-wider">
+                      <span className="text-primary/80 group-hover:text-primary font-medium tracking-wider transition-colors duration-300">
                         VIEW RESUME
                       </span>
-                      <ArrowRight className="h-4 w-4 text-orange-500 group-hover:translate-x-1.5 group-hover:text-rose-500 transition-all duration-300" />
+                      <ArrowRight className="h-4 w-4 text-primary/60 group-hover:translate-x-1.5 group-hover:text-primary transition-all duration-300" />
                     </span>
                   </Button>
                 </motion.div>
@@ -396,18 +396,18 @@ export default function Home() {
 
                       <Button
                         variant="ghost"
-                        className="rounded-sm border-0 text-sm font-sf-mono group bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-rose-500/10 hover:from-amber-500/20 hover:via-orange-500/20 hover:to-rose-500/20 font-normal tracking-wide transition-all duration-300 ease-out hover:scale-105 hover:shadow-lg hover:shadow-amber-500/10"
+                        className="rounded-sm border-0 text-sm font-sf-mono group bg-primary/5 hover:bg-primary/15 font-normal tracking-wide transition-all duration-300 ease-out hover:scale-105 hover:shadow-lg hover:shadow-primary/10"
                         onClick={() => setIsResumeModalOpen(true)}
                       >
                         <span className="flex items-center justify-center gap-3">
                           <span className="relative">
-                            <FileText className="h-7 w-7 stroke-[1.5] text-amber-500 fill-amber-500/0 group-hover:fill-amber-500/30 group-hover:text-orange-500 group-hover:scale-110 transition-all duration-300 ease-out" />
-                            <span className="absolute -top-1 -right-1 h-2 w-2 rounded-full bg-gradient-to-r from-amber-400 to-orange-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                            <FileText className="h-7 w-7 stroke-[1.5] text-primary/70 fill-primary/0 group-hover:fill-primary/20 group-hover:text-primary group-hover:scale-110 transition-all duration-300 ease-out" />
+                            <span className="absolute -top-1 -right-1 h-2 w-2 rounded-full bg-primary opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                           </span>
-                          <span className="bg-gradient-to-r from-amber-600 via-orange-500 to-rose-500 bg-clip-text text-transparent font-medium tracking-wider">
+                          <span className="text-primary/80 group-hover:text-primary font-medium tracking-wider transition-colors duration-300">
                             VIEW RESUME
                           </span>
-                          <ArrowRight className="h-4 w-4 text-orange-500 group-hover:translate-x-1.5 group-hover:text-rose-500 transition-all duration-300" />
+                          <ArrowRight className="h-4 w-4 text-primary/60 group-hover:translate-x-1.5 group-hover:text-primary transition-all duration-300" />
                         </span>
                       </Button>
                     </div>
