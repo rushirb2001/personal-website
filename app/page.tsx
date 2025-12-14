@@ -210,22 +210,22 @@ export default function Home() {
               >
                 {/* Left half - GitHub and LinkedIn split 50-50 */}
                 <div className="flex-1 flex gap-2">
-                  <Button
-                    className="flex-1 group rounded-none border border-primary/20 bg-transparent text-primary hover:bg-primary/10 font-black p-2"
-                    asChild
+                  <Link
+                    href="https://github.com/rushirb2001"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-14 h-14 flex items-center justify-center rounded-none bg-transparent text-purple-800 hover:bg-purple-800 hover:text-background transition-colors"
                   >
-                    <Link href="https://github.com/rushirbhavsar" target="_blank" rel="noopener noreferrer">
-                      <Github className="h-6 w-6 text-purple-800 font-bold" />
-                    </Link>
-                  </Button>
-                  <Button
-                    className="flex-1 group rounded-none border border-primary/20 bg-transparent text-primary hover:bg-primary/10 font-black p-2"
-                    asChild
+                    <Github className="h-8 w-8 stroke-[2.5]" />
+                  </Link>
+                  <Link
+                    href="https://linkedin.com/in/rushir-bhavsar/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-14 h-14 flex items-center justify-center rounded-none bg-transparent text-blue-700 hover:bg-blue-700 hover:text-background transition-colors"
                   >
-                    <Link href="https://linkedin.com/in/rushir-bhavsar/" target="_blank" rel="noopener noreferrer">
-                      <Linkedin className="h-6 w-6 text-blue-700 font-bold" />
-                    </Link>
-                  </Button>
+                    <Linkedin className="h-8 w-8 stroke-[2.5]" />
+                  </Link>
                 </div>
 
                 {/* Right half - Resume button */}
@@ -313,26 +313,22 @@ export default function Home() {
                       </motion.h1>
 
                       <div className="flex gap-2">
-                        <Button
-                          className="w-14 h-14 p-0 group rounded-none border border-primary/20 bg-transparent text-primary hover:bg-primary/10"
-                          asChild
+                        <Link
+                          href="https://github.com/rushirb2001"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="w-14 h-14 flex items-center justify-center rounded-none bg-transparent text-purple-800 hover:bg-purple-800 hover:text-background transition-colors"
                         >
-                          <Link href="https://github.com/rushirb2001" target="_blank" rel="noopener noreferrer">
-                            <Github className="h-7 w-7 text-purple-800 font-bold" />
-                          </Link>
-                        </Button>
-                        <Button
-                          className="w-14 h-14 p-0 group rounded-none border border-primary/20 bg-transparent text-primary hover:bg-primary/10"
-                          asChild
+                          <Github className="h-8 w-8 stroke-[2.5]" />
+                        </Link>
+                        <Link
+                          href="https://linkedin.com/in/rushir-bhavsar/"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="w-14 h-14 flex items-center justify-center rounded-none bg-transparent text-blue-700 hover:bg-blue-700 hover:text-background transition-colors"
                         >
-                          <Link
-                            href="https://linkedin.com/in/rushir-bhavsar/"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            <Linkedin className="h-7 w-7 text-blue-700 font-bold" />
-                          </Link>
-                        </Button>
+                          <Linkedin className="h-8 w-8 stroke-[2.5]" />
+                        </Link>
                       </div>
                     </div>
 
@@ -391,7 +387,7 @@ export default function Home() {
                         <span className="flex items-center justify-center">
                           <FileText className="h-3 w-3 mr-2" />
                           VIEW RESUME
-                          <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                          <ArrowRight className="ml-2 h-3 w-3 group-hover:translate-x-1 transition-transform" />
                         </span>
                       </Button>
                     </div>
