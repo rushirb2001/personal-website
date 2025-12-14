@@ -1,92 +1,1077 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@import "tw-animate-css";
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+/* San Francisco Font */
+@font-face {
+  font-family: "San Francisco";
+  font-weight: 400;
+  src: url("https://applesocial.s3.amazonaws.com/assets/styles/fonts/sanfrancisco/sanfranciscodisplay-regular-webfont.woff");
 }
 
-@layer base {
-  :root {
-    --font-sans: var(--font-geist-sans);
-    --font-mono: var(--font-geist-mono);
-    --background: 0 0% 100%;
-    --foreground: 0 0% 3.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 3.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 3.9%;
-    --primary: 0 0% 9%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 0 0% 96.1%;
-    --secondary-foreground: 0 0% 9%;
-    --muted: 0 0% 96.1%;
-    --muted-foreground: 0 0% 45.1%;
-    --accent: 0 0% 96.1%;
-    --accent-foreground: 0 0% 9%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 89.8%;
-    --input: 0 0% 89.8%;
-    --ring: 0 0% 3.9%;
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
-    --radius: 0.5rem;
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
-  }
-  .dark {
-    --background: 0 0% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 0 0% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 0 0% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 0 0% 9%;
-    --secondary: 0 0% 14.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 14.9%;
-    --muted-foreground: 0 0% 63.9%;
-    --accent: 0 0% 14.9%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 14.9%;
-    --input: 0 0% 14.9%;
-    --ring: 0 0% 83.1%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
-  }
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --background: hsl(0 0% 96%);
+  --foreground: hsl(0 0% 12%);
+
+  --card: hsl(0 0% 96%);
+  --card-foreground: hsl(0 0% 12%);
+
+  --popover: hsl(0 0% 96%);
+  --popover-foreground: hsl(0 0% 12%);
+
+  --primary: hsl(0 0% 12%);
+  --primary-foreground: hsl(0 0% 96%);
+
+  --secondary: hsl(0 0% 88%);
+  --secondary-foreground: hsl(0 0% 12%);
+
+  --muted: hsl(0 0% 88%);
+  --muted-foreground: hsl(0 0% 45%);
+
+  --accent: hsl(0 0% 88%);
+  --accent-foreground: hsl(0 0% 12%);
+
+  --destructive: hsl(0 84.2% 60.2%);
+  --destructive-foreground: hsl(0 0% 98%);
+
+  --border: hsl(0 0% 78%);
+  --input: hsl(0 0% 78%);
+  --ring: hsl(0 0% 12%);
+
+  --radius: 0.5rem;
+
+  /* Subtle blur effect */
+  --subtle-blur: 1px;
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+}
+
+.dark {
+  /* More sterile dark mode colors */
+  --background: hsl(0 0% 6%);
+  --foreground: hsl(0 0% 90%);
+
+  --card: hsl(0 0% 6%);
+  --card-foreground: hsl(0 0% 90%);
+
+  --popover: hsl(0 0% 6%);
+  --popover-foreground: hsl(0 0% 90%);
+
+  --primary: hsl(0 0% 90%);
+  --primary-foreground: hsl(0 0% 6%);
+
+  --secondary: hsl(0 0% 10%);
+  --secondary-foreground: hsl(0 0% 90%);
+
+  --muted: hsl(0 0% 10%);
+  --muted-foreground: hsl(0 0% 60%);
+
+  --accent: hsl(0 0% 10%);
+  --accent-foreground: hsl(0 0% 90%);
+
+  --destructive: hsl(0 62.8% 30.6%);
+  --destructive-foreground: hsl(0 0% 90%);
+
+  --border: hsl(0 0% 13%);
+  --input: hsl(0 0% 13%);
+  --ring: hsl(0 0% 80%);
+
+  /* Subtle blur effect */
+  --subtle-blur: 1px;
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(0.269 0 0);
+  --sidebar-ring: oklch(0.439 0 0);
+}
+
+/* Tailwind v4: Theme configuration for semantic tokens */
+@theme inline {
+  /* optional: --font-sans, --font-serif, --font-mono if they are applied in the layout.tsx */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
 }
 
 @layer base {
   * {
-    @apply border-border;
+    @apply border-border outline-ring/50;
   }
   body {
     @apply bg-background text-foreground;
   }
+}
+
+* {
+  border-color: var(--border);
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+html,
+body {
+  height: 100%;
+  overflow-x: hidden;
+}
+
+/* Apply subtle blur to card elements */
+.card,
+.modal-content,
+.folder-card {
+  backdrop-filter: blur(var(--subtle-blur));
+  -webkit-backdrop-filter: blur(var(--subtle-blur));
+}
+
+/* Mobile-first responsive styles */
+.section-title {
+  position: relative;
+  padding-bottom: 0.5rem;
+  font-size: 1.25rem;
+  font-weight: 500;
+  letter-spacing: -0.025em;
+}
+
+.section-title::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 6rem;
+  height: 2px;
+  background-color: var(--primary);
+  opacity: 0.7;
+}
+
+@media (min-width: 768px) {
+  .section-title {
+    font-size: 1.5rem;
+  }
+
+  .section-title::before {
+    width: 8rem;
+  }
+}
+
+/* Custom scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: color-mix(in srgb, var(--primary) 20%, transparent);
+  border-radius: 0;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: color-mix(in srgb, var(--primary) 40%, transparent);
+}
+
+/* ID label styling */
+.id-label {
+  position: absolute;
+  top: -0.5rem;
+  left: -0.5rem;
+  font-size: 0.75rem;
+  font-family: "SF Mono", SFMono-Regular, ui-monospace, monospace;
+  color: color-mix(in srgb, var(--primary) 70%, transparent);
+  background-color: var(--background);
+  padding: 0.125rem 0.375rem;
+  border-left: 1px solid color-mix(in srgb, var(--primary) 20%, transparent);
+  border-top: 1px solid color-mix(in srgb, var(--primary) 20%, transparent);
+}
+
+.dark .id-label {
+  background-color: #0a192f;
+}
+
+/* Mobile optimized modal */
+.mobile-optimized-modal {
+  width: 95%;
+  max-width: 28rem;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0.75rem;
+}
+
+@media (min-width: 768px) {
+  .mobile-optimized-modal {
+    padding: 1rem;
+  }
+}
+
+/* Mobile optimized content container */
+.mobile-content-container {
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+  width: 100%;
+  max-width: 100%;
+}
+
+@media (min-width: 768px) {
+  .mobile-content-container {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+/* Mobile optimized text */
+.mobile-text-sm {
+  font-size: 0.75rem;
+}
+
+@media (min-width: 768px) {
+  .mobile-text-sm {
+    font-size: 0.875rem;
+  }
+}
+
+.mobile-text-xs {
+  font-size: 0.625rem;
+}
+
+@media (min-width: 768px) {
+  .mobile-text-xs {
+    font-size: 0.75rem;
+  }
+}
+
+/* Custom font classes */
+.font-sf-pro {
+  font-family: "San Francisco", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+.font-sf-mono {
+  font-family: "SF Mono", SFMono-Regular, ui-monospace, "Cascadia Mono", "Segoe UI Mono", "Liberation Mono", Menlo,
+    monospace;
+}
+
+/* Extended eerie color palette */
+.bg-eerie-white {
+  background-color: #ececec;
+}
+.bg-eerie-offwhite {
+  background-color: #e0e0e0;
+}
+.bg-eerie-gray {
+  background-color: #9a9a9a;
+}
+.bg-eerie-darkgray {
+  background-color: #484848;
+}
+.bg-eerie-black {
+  background-color: #161616;
+}
+.bg-eerie-deepblack {
+  background-color: #0e0e0e;
+}
+
+/* Pulse animation for timeline dots */
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 0.8;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+}
+
+/* Unsettling text selection */
+::selection {
+  background-color: color-mix(in srgb, var(--primary) 50%, transparent);
+  color: color-mix(in srgb, var(--primary-foreground) 90%, transparent);
+  text-shadow: 0 0 2px color-mix(in srgb, var(--primary-foreground) 50%, transparent);
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: color-mix(in srgb, var(--primary) 20%, transparent);
+  border-radius: 0;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: color-mix(in srgb, var(--primary) 30%, transparent);
+}
+
+/* Blink animation for status indicators */
+@keyframes statusBlink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.status-active {
+  animation: statusBlink 4s infinite;
+}
+
+/* Hover tracking effect */
+.tracking-hover:hover {
+  letter-spacing: 0.05em;
+  transition: letter-spacing 0.5s ease;
+}
+
+/* Recording indicator dot */
+.recording-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #ff3b30;
+  animation: pulse-recording 2s infinite;
+}
+
+@keyframes pulse-recording {
+  0% {
+    opacity: 0.4;
+    transform: scale(0.95);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0.4;
+    transform: scale(0.95);
+  }
+}
+
+/* Last accessed timestamp */
+.last-accessed {
+  font-family: "SF Mono", SFMono-Regular, ui-monospace, monospace;
+  font-size: 0.55rem;
+  color: color-mix(in srgb, var(--primary) 40%, transparent);
+  letter-spacing: 0.02em;
+}
+
+/* Theme transition */
+html {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+html.dark {
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+/* Ensure fixed elements transition smoothly */
+header,
+footer,
+.fixed-element {
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Ensure content transitions smoothly */
+* {
+  transition: background-color 0.5s ease, border-color 0.5s ease, color 0.5s ease;
+}
+
+/* Z-index hierarchy */
+.z-10 {
+  z-index: 10;
+}
+.z-20 {
+  z-index: 20;
+}
+.z-30 {
+  z-index: 30;
+}
+.z-35 {
+  z-index: 35;
+}
+.z-40 {
+  z-index: 40;
+}
+.z-50 {
+  z-index: 50;
+}
+.z-60 {
+  z-index: 60;
+}
+.z-70 {
+  z-index: 70;
+}
+
+/* Transition durations */
+.transition-slow {
+  transition-duration: 800ms;
+}
+
+.transition-medium {
+  transition-duration: 500ms;
+}
+
+.transition-fast {
+  transition-duration: 300ms;
+}
+
+/* Ensure no gaps between elements */
+.flex-col > * {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+/* Ensure footer touches content */
+footer {
+  margin-top: 0;
+}
+
+main {
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
+
+/* Fixed header and footer for mobile */
+@media (max-width: 768px) {
+  header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 60;
+    backdrop-filter: blur(var(--subtle-blur));
+    -webkit-backdrop-filter: blur(var(--subtle-blur));
+  }
+
+  footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 60;
+    backdrop-filter: blur(var(--subtle-blur));
+    -webkit-backdrop-filter: blur(var(--subtle-blur));
+  }
+
+  main {
+    margin-top: 60px;
+    margin-bottom: 40px;
+    min-height: calc(100vh - 100px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* Content container for mobile */
+.mobile-container {
+  padding-left: 16px;
+  padding-right: 16px;
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+/* Scan lines background */
+.bg-scan-lines {
+  background-image: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.15),
+    rgba(0, 0, 0, 0.15) 1px,
+    transparent 1px,
+    transparent 2px
+  );
+}
+
+/* Light mode specific scan lines */
+.light .bg-scan-lines {
+  background-image: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.1),
+    rgba(0, 0, 0, 0.1) 1px,
+    transparent 1px,
+    transparent 2px
+  );
+}
+
+/* Glitch animation */
+@keyframes glitch {
+  0% {
+    transform: translate(0);
+  }
+  20% {
+    transform: translate(-2px, 2px);
+  }
+  40% {
+    transform: translate(-2px, -2px);
+  }
+  60% {
+    transform: translate(2px, 2px);
+  }
+  80% {
+    transform: translate(2px, -2px);
+  }
+  100% {
+    transform: translate(0);
+  }
+}
+
+.animate-glitch {
+  animation: glitch 0.2s ease-in-out;
+}
+
+/* Cold boot text flicker */
+@keyframes textFlicker {
+  0% {
+    opacity: 0.8;
+  }
+  10% {
+    opacity: 0.1;
+  }
+  20% {
+    opacity: 0.9;
+  }
+  30% {
+    opacity: 0.7;
+  }
+  40% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  60% {
+    opacity: 0.8;
+  }
+  70% {
+    opacity: 0.7;
+  }
+  80% {
+    opacity: 0.9;
+  }
+  90% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.animate-flicker {
+  animation: textFlicker 2s linear;
+}
+
+/* System boot progress bar */
+@keyframes bootProgress {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+.animate-boot-progress {
+  animation: bootProgress 5s linear forwards;
+}
+
+/* Terminal typing cursor animation */
+@keyframes cursorBlink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+.animate-cursor-blink::after {
+  content: "|";
+  animation: cursorBlink 1s infinite;
+  margin-left: 2px;
+}
+
+/* Subtle data transfer animation */
+@keyframes dataTransfer {
+  0% {
+    background-position: 0% 0%;
+  }
+  100% {
+    background-position: 100% 0%;
+  }
+}
+
+.animate-data-transfer {
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--primary) 10%, transparent) 0%,
+    color-mix(in srgb, var(--primary) 30%, transparent) 50%,
+    color-mix(in srgb, var(--primary) 10%, transparent) 100%
+  );
+  background-size: 200% 100%;
+  animation: dataTransfer 2s linear infinite;
+}
+
+/* Systemic, abrupt animations */
+@keyframes systemicGlitch {
+  0% {
+    transform: translate(0);
+  }
+  25% {
+    transform: translate(-3px, 0);
+  }
+  50% {
+    transform: translate(3px, 0);
+  }
+  75% {
+    transform: translate(-3px, 0);
+  }
+  100% {
+    transform: translate(0);
+  }
+}
+
+.animate-systemic-glitch {
+  animation: systemicGlitch 0.15s steps(2) 1;
+}
+
+/* Mechanical text flicker */
+@keyframes mechanicalFlicker {
+  0% {
+    opacity: 1;
+  }
+  10% {
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  30% {
+    opacity: 0;
+  }
+  40% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.animate-mechanical-flicker {
+  animation: mechanicalFlicker 1s steps(1) 1;
+}
+
+/* Mechanical pulse */
+@keyframes mechanicalPulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+.animate-mechanical-pulse {
+  animation: mechanicalPulse 1s steps(1) infinite;
+}
+
+/* System boot progress bar */
+@keyframes systemicProgress {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+.animate-systemic-progress {
+  animation: systemicProgress 5s linear forwards;
+}
+
+/* Folder hover effect */
+@keyframes folderHover {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-2px);
+  }
+}
+
+.folder-hover:hover {
+  animation: folderHover 0.2s forwards;
+}
+
+/* Folder shadow effect */
+.folder-shadow {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.folder-shadow:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+@keyframes pulseBorder {
+  0%,
+  100% {
+    border-color: color-mix(in srgb, var(--primary) 20%, transparent);
+  }
+  50% {
+    border-color: color-mix(in srgb, var(--primary) 40%, transparent);
+  }
+}
+
+.pulse-animation {
+  animation: pulseBorder 2s infinite;
+}
+
+/* Terminal-specific styles */
+.terminal-text {
+  font-family: "SF Mono", SFMono-Regular, ui-monospace, "Cascadia Mono", "Segoe UI Mono", "Liberation Mono", Menlo,
+    monospace;
+  font-size: 0.75rem;
+  color: color-mix(in srgb, var(--primary) 70%, transparent);
+}
+
+.terminal-cursor {
+  display: inline-block;
+  width: 0.5rem;
+  height: 1rem;
+  background-color: color-mix(in srgb, var(--primary) 70%, transparent);
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+.terminal-history::-webkit-scrollbar {
+  width: 4px;
+}
+
+.terminal-history::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.terminal-history::-webkit-scrollbar-thumb {
+  background-color: color-mix(in srgb, var(--primary) 20%, transparent);
+  border-radius: 0;
+}
+
+.terminal-history::-webkit-scrollbar-thumb:hover {
+  background-color: color-mix(in srgb, var(--primary) 40%, transparent);
+}
+
+/* Easter egg styles */
+@keyframes easterEggReveal {
+  0% {
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.05;
+  }
+  20% {
+    opacity: 0.2;
+  }
+  30% {
+    opacity: 0.05;
+  }
+  40% {
+    opacity: 0.15;
+  }
+  50% {
+    opacity: 0.05;
+  }
+  60% {
+    opacity: 0.2;
+  }
+  70% {
+    opacity: 0.05;
+  }
+  80% {
+    opacity: 0.1;
+  }
+  90% {
+    opacity: 0.15;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.easter-egg-reveal {
+  animation: easterEggReveal 0.5s steps(10) forwards;
+}
+
+.easter-egg-text {
+  text-shadow: 0 0 2px rgba(255, 0, 0, 0.5);
+  letter-spacing: 0.05em;
+}
+
+@keyframes textDistortion {
+  0% {
+    transform: skew(0deg, 0deg);
+    letter-spacing: 0.05em;
+  }
+  25% {
+    transform: skew(1deg, 0.5deg);
+    letter-spacing: 0.07em;
+  }
+  50% {
+    transform: skew(-1deg, -0.5deg);
+    letter-spacing: 0.03em;
+  }
+  75% {
+    transform: skew(0.5deg, 1deg);
+    letter-spacing: 0.06em;
+  }
+  100% {
+    transform: skew(0deg, 0deg);
+    letter-spacing: 0.05em;
+  }
+}
+
+.easter-egg-text {
+  animation: textDistortion 0.3s infinite;
+}
+
+/* Mobile-specific styles */
+@media (max-width: 640px) {
+  .section-title {
+    font-size: 1.5rem;
+  }
+
+  .section-title::before {
+    width: 5rem;
+  }
+
+  .last-accessed {
+    font-size: 0.5rem;
+  }
+
+  .recording-dot {
+    width: 4px;
+    height: 4px;
+  }
+
+  .modal-content {
+    width: 95%;
+    max-width: 95%;
+    margin: 0 auto;
+    padding: 0.75rem;
+  }
+
+  .p-4 {
+    padding: 0.75rem;
+  }
+
+  .text-base {
+    font-size: 0.875rem;
+  }
+
+  .text-sm {
+    font-size: 0.75rem;
+  }
+
+  .text-xs {
+    font-size: 0.7rem;
+  }
+}
+
+.animate-\[blink_0\.5s_ease-in-out_infinite\] {
+  animation: blink 0.5s ease-in-out infinite;
+}
+
+/* Responsive modal adjustments */
+@media (max-width: 640px) {
+  .modal-content {
+    width: 95%;
+    max-height: 80vh;
+    padding: 1rem;
+  }
+
+  .modal-header {
+    padding: 0.5rem 1rem;
+  }
+
+  .modal-footer {
+    padding: 0.5rem 1rem;
+  }
+}
+
+/* Responsive text adjustments */
+@media (max-width: 640px) {
+  .text-xs {
+    font-size: 0.65rem;
+  }
+
+  .text-sm {
+    font-size: 0.75rem;
+  }
+}
+
+/* Hide native cursor when custom cursor is active */
+.hide-cursor {
+  cursor: none !important;
+}
+
+.hide-cursor * {
+  cursor: none !important;
+}
+
+/* Optimize animations for better performance */
+@media (prefers-reduced-motion: reduce) {
+  .cursor-target-ring,
+  .cursor-crosshair-h,
+  .cursor-crosshair-v,
+  .cursor-text-highlight {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+/* Ensure hardware acceleration for cursor elements */
+.fixed.pointer-events-none {
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+}
+
+/* Performance optimizations */
+.transform-gpu {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  will-change: transform;
+}
+
+.will-change-opacity {
+  will-change: opacity;
+}
+
+.will-change-transform {
+  will-change: transform;
+}
+
+/* Reduce layout shifts */
+.content-visibility-auto {
+  content-visibility: auto;
+}
+
+/* Optimize animations for reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Optimize paint performance */
+.paint-optimization {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* Optimize for touch devices */
+@media (hover: none) {
+  .hover-effect {
+    display: none;
+  }
+}
+
+/* Optimize images */
+img {
+  content-visibility: auto;
+}
+
+/* Optimize scrolling */
+.optimize-scroll {
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+
+/* Optimize font loading */
+.font-display {
+  font-display: swap;
+}
+
+/* Exclude transforms and opacity from transitions */
+.transform-transition-exclude {
+  transition: background-color 0.3s ease;
 }
