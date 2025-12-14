@@ -85,13 +85,13 @@ export default function Home() {
       <AnimatePresence>
         {showContent && (
           <motion.div
-            className="flex items-center justify-center min-h-[calc(100vh)] px-4 md:px-8 -translate-y-16 bg-scan-lines"
+            className="fixed top-[60px] bottom-[60px] left-0 right-0 flex items-center justify-center px-4 md:px-8 bg-scan-lines overflow-hidden"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.7, ease: [0.4, 0, 0.2, 1] }}
           >
             {/* Mobile Layout - Fixed vertical structure */}
-            <div className="lg:hidden w-full h-[calc(100vh-10rem)] overflow-hidden flex flex-col justify-center items-center gap-4 relative px-6 pl-0 pr-0 pt-0">
+            <div className="lg:hidden w-full h-full flex flex-col justify-center items-center gap-4 relative px-6 pl-0 pr-0 pt-0">
               {/* Name Effect - shifted down */}
               <motion.div
                 className="relative text-center w-full mt-8"
