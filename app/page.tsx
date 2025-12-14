@@ -214,17 +214,17 @@ export default function Home() {
                     href="https://github.com/rushirb2001"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-14 h-14 flex items-center justify-center rounded-none bg-transparent text-purple-800 hover:bg-purple-800 hover:text-background transition-colors"
+                    className="w-14 h-14 flex items-center justify-center rounded-none group"
                   >
-                    <Github className="h-8 w-8 stroke-[2.5]" />
+                    <Github className="h-8 w-8 stroke-[2.5] text-purple-800 group-hover:fill-purple-800 transition-all" />
                   </Link>
                   <Link
                     href="https://linkedin.com/in/rushir-bhavsar/"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-14 h-14 flex items-center justify-center rounded-none bg-transparent text-blue-700 hover:bg-blue-700 hover:text-background transition-colors"
+                    className="w-14 h-14 flex items-center justify-center rounded-none group"
                   >
-                    <Linkedin className="h-8 w-8 stroke-[2.5]" />
+                    <Linkedin className="h-8 w-8 stroke-[2.5] text-blue-700 group-hover:fill-blue-700 transition-all" />
                   </Link>
                 </div>
 
@@ -317,17 +317,17 @@ export default function Home() {
                           href="https://github.com/rushirb2001"
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="w-14 h-14 flex items-center justify-center rounded-none bg-transparent text-purple-800 hover:bg-purple-800 hover:text-background transition-colors"
+                          className="w-14 h-14 flex items-center justify-center rounded-none group"
                         >
-                          <Github className="h-8 w-8 stroke-[2.5]" />
+                          <Github className="h-8 w-8 stroke-[2.5] text-purple-800 group-hover:fill-purple-800 transition-all" />
                         </Link>
                         <Link
                           href="https://linkedin.com/in/rushir-bhavsar/"
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="w-14 h-14 flex items-center justify-center rounded-none bg-transparent text-blue-700 hover:bg-blue-700 hover:text-background transition-colors"
+                          className="w-14 h-14 flex items-center justify-center rounded-none group"
                         >
-                          <Linkedin className="h-8 w-8 stroke-[2.5]" />
+                          <Linkedin className="h-8 w-8 stroke-[2.5] text-blue-700 group-hover:fill-blue-700 transition-all" />
                         </Link>
                       </div>
                     </div>
