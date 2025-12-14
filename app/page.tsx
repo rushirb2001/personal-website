@@ -178,12 +178,12 @@ export default function Home() {
 
               {/* Dynamic Photo */}
               <motion.div
-                className="relative w-full max-w-[240px]"
+                className="relative w-full max-w-[200px]"
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.4, duration: 0.8 }}
               >
-                <div className="relative border border-primary/20 bg-secondary/20 p-1">
+                <div className="relative border border-primary/20 bg-secondary/20 p-2">
                   <Image
                     src="/images/personal_photo.png"
                     alt="Profile"
@@ -286,17 +286,17 @@ export default function Home() {
               </motion.div>
             </div>
 
-            <div className="hidden lg:block w-full max-w-7xl">
+            <div className="hidden lg:block w-full max-w-7xl p-2">
               <div className="grid grid-cols-1 lg:grid-cols-[350px_1fr] gap-8 py-16">
                 {/* Left column - Profile Photo */}
                 <motion.div
-                  className="relative px-6 py-4 flex items-start"
+                  className="relative p-2 flex items-start"
                   initial={{ opacity: 0, x: -30 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.2, duration: 0.8 }}
                 >
                   {/* Profile Image */}
-                  <div className="relative border border-primary/20 bg-secondary/20 p-1 w-full">
+                  <div className="relative border border-primary/20 bg-secondary/20 p-2 w-full max-w-[350px]">
                     <Image
                       src="/images/design-mode/new_personal_photo(1).png"
                       alt="Profile"
@@ -311,7 +311,7 @@ export default function Home() {
                 </motion.div>
 
                 {/* Right column - Content */}
-                <div className="px-6">
+                <div className="p-2">
                   <motion.div
                     className="relative py-5"
                     initial={{ opacity: 0, x: 30 }}
