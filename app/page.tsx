@@ -354,7 +354,7 @@ export default function Home() {
                   >
                     {/* Terminal-style ID */}
                     <motion.h1
-                      className="tracking-tight mb-2 relative font-black text-4xl"
+                      className="tracking-tight mb-2 relative font-black text-5xl"
                       initial={{ opacity: 0, letterSpacing: "0.08em" }}
                       animate={{ opacity: 1, letterSpacing: "0.03em" }}
                       transition={{
