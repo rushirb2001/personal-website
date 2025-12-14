@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { createContext, useContext } from "react"
+import { createContext, useContext, useEffect } from "react"
 import { useTheme as useNextTheme, ThemeProvider as NextThemeProvider } from "next-themes"
 
 interface ThemeContextType {
@@ -17,7 +17,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       attribute="class"
       defaultTheme="light"
       enableSystem={false}
-      disableTransitionOnChange={false}
+      disableTransitionOnChange
       storageKey="theme"
     >
       <ThemeContextBridge>{children}</ThemeContextBridge>
@@ -27,6 +27,14 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
 function ThemeContextBridge({ children }: { children: React.ReactNode }) {
   const { theme, setTheme, resolvedTheme } = useNextTheme()
+
+  useEffect(() => {
+    // Small delay to ensure the initial theme is applied without transition
+    const timer = setTimeout(() => {
+      document.documentElement.style.setProperty("--theme-transition-duration", "0.15s")
+    }, 100)
+    return () => clearTimeout(timer)
+  }, [])
 
   const contextValue: ThemeContextType = {
     theme: (resolvedTheme as "light" | "dark") || "light",

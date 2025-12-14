@@ -133,14 +133,17 @@ export default function ClientLayout({
               (function() {
                 try {
                   var theme = localStorage.getItem('theme') || 'light';
-                  document.documentElement.classList.toggle('dark', theme === 'dark');
+                  var root = document.documentElement;
+                  root.classList.remove('light', 'dark');
+                  root.classList.add(theme);
+                  root.style.colorScheme = theme;
                 } catch (e) {}
               })();
             `,
           }}
         />
       </head>
-      <body className="font-sf-pro bg-background text-foreground transition-colors duration-200">
+      <body className="font-sf-pro bg-background text-foreground theme-transition">
         <ThemeProvider>
           <NavigationProvider isReady={isTransitionReady}>
             <div className="flex flex-col min-h-screen overflow-hidden">
@@ -164,7 +167,7 @@ export default function ClientLayout({
                     </motion.div>
 
                     <motion.main
-                      className="flex-1 pt-16 pb-16 overflow-y-auto relative"
+                      className="flex-1 pt-16 pb-16 overflow-y-auto relative theme-transition"
                       key="main-content"
                       initial={isInitialRender ? "hidden" : "visible"}
                       animate="visible"

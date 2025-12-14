@@ -148,6 +148,28 @@ body {
   overflow-x: hidden;
 }
 
+/* Optimized theme transition - only apply to specific properties on specific elements */
+html {
+  color-scheme: light;
+}
+
+html.dark {
+  color-scheme: dark;
+}
+
+/* Theme-aware elements with smooth transitions - targeted instead of using * selector */
+.theme-transition,
+body,
+header,
+footer,
+main,
+.modal-content,
+.card,
+.folder-card,
+[data-theme-transition] {
+  transition: background-color 0.15s ease-out, border-color 0.15s ease-out, color 0.15s ease-out;
+}
+
 /* Apply subtle blur to card elements */
 .card,
 .modal-content,
@@ -979,56 +1001,6 @@ main {
   ::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
+    transition: none !important;
   }
-}
-
-/* Optimize paint performance */
-.paint-optimization {
-  transform: translateZ(0);
-  backface-visibility: hidden;
-  perspective: 1000px;
-}
-
-/* Optimize for touch devices */
-@media (hover: none) {
-  .hover-effect {
-    display: none;
-  }
-}
-
-/* Optimize images */
-img {
-  content-visibility: auto;
-}
-
-/* Optimize scrolling */
-.optimize-scroll {
-  -webkit-overflow-scrolling: touch;
-  scroll-behavior: smooth;
-}
-
-/* Optimize font loading */
-.font-display {
-  font-display: swap;
-}
-
-/* Exclude transforms and opacity from transitions to prevent animation flashes */
-.transform-transition-exclude {
-  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
-  transition-property: background-color, border-color, color;
-}
-
-/* Ensure animations don't cause theme flashes */
-.animation-no-theme-flash {
-  will-change: transform, opacity;
-  backface-visibility: hidden;
-  transform: translateZ(0);
-}
-
-/* Modal backdrop with subtle blur */
-.modal-backdrop {
-  backdrop-filter: blur(calc(var(--subtle-blur) * 2));
-  -webkit-backdrop-filter: blur(calc(var(--subtle-blur) * 2));
 }

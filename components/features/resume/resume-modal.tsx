@@ -54,7 +54,7 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-2 md:p-0"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/70 backdrop-blur-sm p-2 md:p-0"
           onClick={onClose}
         >
           <motion.div
@@ -62,11 +62,11 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.95, opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="w-full max-w-4xl h-[70vh] bg-background dark:bg-eerie-black border border-primary/30 shadow-lg flex flex-col"
+            className="w-full max-w-4xl h-[70vh] bg-background border border-primary/30 shadow-lg flex flex-col modal-content"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Header */}
-            <div className="dark:bg-primary/10 bg-white px-3 md:px-4 py-2 md:py-3 flex justify-between items-center border-b border-primary/30">
+            {/* Header - Use semantic bg-card instead of hardcoded colors */}
+            <div className="bg-card px-3 md:px-4 py-2 md:py-3 flex justify-between items-center border-b border-primary/30">
               <div className="flex items-center">
                 <FileText className="h-4 w-4 mr-2 text-primary/70" />
                 <span className="text-xs md:text-sm font-sf-mono text-primary/70 truncate">
@@ -82,10 +82,10 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
               </button>
             </div>
 
-            {/* Content */}
+            {/* Content - Use semantic bg-background */}
             <div className="flex-1 overflow-hidden relative">
               {loading && (
-                <div className="absolute inset-0 flex items-center justify-center bg-background dark:bg-eerie-black">
+                <div className="absolute inset-0 flex items-center justify-center bg-background">
                   <div className="h-6 w-6 border-2 border-primary/30 border-t-primary rounded-full animate-spin"></div>
                 </div>
               )}
@@ -99,8 +99,8 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
               />
             </div>
 
-            {/* Footer with buttons */}
-            <div className="dark:bg-primary/10 bg-white px-3 md:px-4 py-2 md:py-3 flex justify-end items-center gap-3 border-t border-primary/30">
+            {/* Footer - Use semantic bg-card */}
+            <div className="bg-card px-3 md:px-4 py-2 md:py-3 flex justify-end items-center gap-3 border-t border-primary/30">
               <a
                 href={pdfUrl}
                 download="resume.pdf"
