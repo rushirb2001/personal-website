@@ -201,7 +201,7 @@ function CategoryTree({
 
 export default function SkillsPage() {
   return (
-    <PageLayout title="SKILLS" subtitle="TECHNICAL EXPERTISE">
+    <PageLayout title="SKILLS" subtitle="MY TOOLBOX">
       <div className="flex flex-col gap-5 py-6 overflow-x-auto">
         {/* Languages - flat items */}
         <CategoryTree title={skillsData.languages.title} items={skillsData.languages.items} index={0} />
