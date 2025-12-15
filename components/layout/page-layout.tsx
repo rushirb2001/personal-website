@@ -18,7 +18,7 @@ export function PageLayout({ title, subtitle, children }: PageLayoutProps) {
         </p>
       </div>
       <div className="w-full max-w-full flex flex-col justify-center">
-        <div className="break-words overflow-hidden pt-2 sm:pt-3 md:pt-4 lg:pt-8 px-0 sm:px-2 md:px-4 lg:px-0">
+        <div className="break-words overflow-hidden min-h-[50vh] sm:min-h-0 flex flex-col items-center sm:items-start justify-center sm:justify-start pt-0 sm:pt-3 md:pt-4 lg:pt-8 px-0 sm:px-2 md:px-4 lg:px-0">
           {children}
         </div>
       </div>
