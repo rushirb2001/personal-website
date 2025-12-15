@@ -1,6 +1,6 @@
 "use client"
 
-import { motion, AnimatePresence } from "framer-motion"
+import { motion } from "framer-motion"
 import { ArrowRight, Github, Linkedin, FileText, MapPin, Mail } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useNavigation } from "@/contexts/navigation-context"
@@ -10,10 +10,26 @@ import Image from "next/image"
 import Link from "next/link"
 
 const specializations = [
-  { label: "LLM/RAG", desc: "Large Language Models & Retrieval-Augmented Generation" },
-  { label: "CV", desc: "Computer Vision & Image Processing" },
-  { label: "MLOps", desc: "ML Infrastructure & Deployment" },
-  { label: "GenAI", desc: "Generative AI & Diffusion Models" },
+  "Deep Learning",
+  "Computer Vision",
+  "NLP",
+  "LLM/RAG",
+  "MLOps",
+  "Distributed Training",
+  "Model Evaluations",
+  "Generative AI",
+  "Transformers",
+  "PyTorch",
+  "TensorFlow",
+  "Kubernetes",
+  "AWS SageMaker",
+  "Vector Databases",
+  "Fine-Tuning",
+  "RLHF",
+  "Diffusion Models",
+  "Edge AI",
+  "Model Optimization",
+  "Data Engineering",
 ]
 
 const featuredProject = {
@@ -171,47 +187,29 @@ export default function HomeSplitPage() {
                     healthcare, astronomy, and enterprise AI domains.
                   </p>
 
+                  {/* Infinite Horizontal Carousel */}
                   <div className="mt-3 pt-3 border-t border-primary/10">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-[9px] font-sf-mono text-primary/40 uppercase tracking-wider">
-                        SPECIALIZATIONS
-                      </span>
-                      <div className="flex gap-1">
-                        {specializations.map((_, idx) => (
-                          <button
-                            key={idx}
-                            onClick={() => setActiveSpecIndex(idx)}
-                            className={`w-1.5 h-1.5 rounded-full transition-colors ${
-                              activeSpecIndex === idx ? "bg-primary" : "bg-primary/20"
-                            }`}
-                          />
+                    <div className="relative overflow-hidden bg-primary py-2.5">
+                      <div className="flex animate-marquee whitespace-nowrap">
+                        {[...specializations, ...specializations].map((item, idx) => (
+                          <div key={idx} className="flex items-center">
+                            <span className="text-xs font-sf-mono font-medium text-background tracking-wide px-4">
+                              {item}
+                            </span>
+                            <span className="text-green-400 text-sm">✦</span>
+                          </div>
                         ))}
                       </div>
-                    </div>
-                    <div className="relative h-12 overflow-hidden">
-                      <AnimatePresence mode="wait">
-                        <motion.div
-                          key={activeSpecIndex}
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -10 }}
-                          transition={{ duration: 0.2 }}
-                          className="border border-primary/20 p-2 bg-primary/5"
-                        >
-                          <div className="flex items-center justify-between">
-                            <span className="text-xs font-sf-mono font-bold text-primary">
-                              {specializations[activeSpecIndex].label}
+                      <div className="absolute top-0 left-0 flex animate-marquee2 whitespace-nowrap py-2.5">
+                        {[...specializations, ...specializations].map((item, idx) => (
+                          <div key={idx} className="flex items-center">
+                            <span className="text-xs font-sf-mono font-medium text-background tracking-wide px-4">
+                              {item}
                             </span>
-                            <span className="text-[8px] font-mono text-primary/50">
-                              {String(activeSpecIndex + 1).padStart(2, "0")}/
-                              {String(specializations.length).padStart(2, "0")}
-                            </span>
+                            <span className="text-green-400 text-sm">✦</span>
                           </div>
-                          <p className="text-[9px] font-mono text-primary/60 mt-0.5">
-                            {specializations[activeSpecIndex].desc}
-                          </p>
-                        </motion.div>
-                      </AnimatePresence>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 </div>
