@@ -414,6 +414,7 @@ export default function Home() {
                       </div>
                     </div>
 
+                    {/* Description */}
                     <motion.div
                       className="mb-6 text-sm leading-relaxed text-left border border-primary/20 p-4"
                       initial={{ opacity: 0, y: 10 }}
@@ -428,21 +429,7 @@ export default function Home() {
                       </p>
                     </motion.div>
 
-                    {/* Description */}
-                    <motion.div
-                      className="mb-6 text-sm leading-relaxed text-left"
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.7, duration: 0.8 }}
-                    >
-                      <p className="font-mono">
-                        Data Scientist and AI Engineer specializing in machine learning, deep learning, and AI systems
-                        development. Creating innovative solutions using cutting-edge AI technologies with experience
-                        across healthcare, astronomy, and enterprise AI domains. Expertise in transformer-based models,
-                        retrieval-augmented generation, and production AI system optimization.
-                      </p>
-                    </motion.div>
-
+                    {/* Stats Section */}
                     <motion.div
                       className="grid grid-cols-4 gap-2 text-xs font-sf-mono text-primary/40 mb-6"
                       initial={{ opacity: 0, y: 20 }}
