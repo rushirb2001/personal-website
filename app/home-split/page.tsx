@@ -42,11 +42,12 @@ const featuredProject = {
 const stats = [
   { label: "PROJECTS", value: "15+" },
   { label: "PUBLICATIONS", value: "3+" },
-  { label: "EXPERIENCE", value: "2+", sublabel: "YRS", hasIndicator: true },
+  { label: "YRS EXPERIENCE", value: "2+" },
+  { label: "TECHNOLOGIES", value: "50+" },
+  { label: "DOMAINS", value: "4+" },
 ]
 
 function InfiniteMarquee({ items }: { items: string[] }) {
-  // Duplicate items for seamless loop
   const duplicatedItems = [...items, ...items]
 
   return (
@@ -85,62 +86,79 @@ export default function HomeSplitPage() {
     <>
       <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-[1fr_2fr] gap-3 sm:gap-4 md:gap-6 lg:gap-8 py-3 sm:py-4 md:py-6 lg:py-8 px-3 sm:px-4 md:px-6 lg:px-8 max-w-7xl mx-auto">
         {/* LEFT SIDE - Sticky Identity */}
-        <div className="md:sticky md:top-20 lg:top-24 self-start flex flex-col justify-center md:h-auto lg:h-[calc(100vh-12rem)] md:mb-4 lg:mb-0">
+        <div className="md:sticky md:top-20 lg:top-24 self-start flex flex-col justify-center items-center lg:items-start text-center lg:text-left md:h-auto lg:h-[calc(100vh-12rem)] md:mb-4 lg:mb-0">
+          <motion.div
+            className="relative w-32 h-32 sm:w-36 sm:h-36 lg:w-40 lg:h-40 mb-4 border border-primary/20"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.3 }}
+          >
+            <Image
+              src="/images/design-mode/new_personal_photo(1).png"
+              alt="Profile"
+              fill
+              className="object-cover grayscale"
+            />
+            <div className="absolute top-2 right-2 bg-background/90 border border-primary/30 px-1.5 py-0.5 text-[8px] font-sf-mono">
+              VERIFIED
+            </div>
+          </motion.div>
+
           {/* Title */}
-          <h1 className="relative pb-2 text-lg sm:text-xl md:text-xl lg:text-2xl font-medium tracking-tight uppercase before:content-[''] before:absolute before:top-0 before:left-0 before:w-20 sm:before:w-24 md:before:w-28 lg:before:w-32 before:h-0.5 before:bg-primary/70">
+          <h1 className="relative pb-2 text-lg sm:text-xl md:text-xl lg:text-2xl font-medium tracking-tight uppercase before:content-[''] before:absolute before:top-0 before:left-1/2 lg:before:left-0 before:-translate-x-1/2 lg:before:translate-x-0 before:w-20 sm:before:w-24 md:before:w-28 lg:before:w-32 before:h-0.5 before:bg-primary/70">
             RUSHIR BHAVSAR
           </h1>
           <p className="text-[10px] sm:text-xs md:text-xs lg:text-sm text-primary/70 font-sf-mono tracking-wide">
             DATA SCIENTIST • AI ENGINEER • ML RESEARCHER
           </p>
 
-          <div className="flex flex-col gap-4 mt-4 pt-4 border-t border-primary/10">
+          <div className="flex flex-col gap-4 mt-4 pt-4 border-t border-primary/10 items-center lg:items-start">
             {/* Social Icons Row */}
             <div className="flex items-center gap-2">
               <Link
                 href="https://github.com/rushirb2001"
                 target="_blank"
-                className="w-8 h-8 flex items-center justify-center border border-primary/20 hover:bg-primary hover:text-background transition-colors"
+                className="w-9 h-9 flex items-center justify-center border border-primary/20 hover:bg-primary hover:text-background transition-colors"
               >
                 <Github className="h-4 w-4" />
               </Link>
               <Link
                 href="https://linkedin.com/in/rushir-bhavsar/"
                 target="_blank"
-                className="w-8 h-8 flex items-center justify-center border border-primary/20 hover:bg-primary hover:text-background transition-colors"
+                className="w-9 h-9 flex items-center justify-center border border-primary/20 hover:bg-primary hover:text-background transition-colors"
               >
                 <Linkedin className="h-4 w-4" />
               </Link>
               <Link
                 href="mailto:rushirbhavsar@gmail.com"
-                className="w-8 h-8 flex items-center justify-center border border-primary/20 hover:bg-primary hover:text-background transition-colors"
+                className="w-9 h-9 flex items-center justify-center border border-primary/20 hover:bg-primary hover:text-background transition-colors"
               >
                 <Mail className="h-4 w-4" />
               </Link>
             </div>
 
-            {/* Action Buttons Row - with margin from icons */}
+            {/* Action Buttons Row */}
             <div className="flex items-center gap-2">
               <Button
                 variant="ghost"
-                className="h-8 px-3 border border-primary/20 text-[10px] font-sf-mono bg-transparent hover:bg-primary hover:text-background rounded-none transition-colors"
+                className="h-9 px-4 border border-primary/20 text-xs font-sf-mono bg-transparent hover:bg-primary hover:text-background rounded-none transition-colors"
                 onClick={() => setIsResumeModalOpen(true)}
               >
-                <FileText className="h-3.5 w-3.5 mr-1.5" />
+                <FileText className="h-4 w-4 mr-2" />
                 RESUME
               </Button>
               <Button
                 variant="ghost"
-                className="h-8 px-3 border border-primary/20 text-[10px] font-sf-mono bg-transparent hover:bg-primary hover:text-background rounded-none transition-colors"
+                className="h-9 px-4 border border-primary/20 text-xs font-sf-mono bg-transparent hover:bg-primary hover:text-background rounded-none transition-colors"
                 onClick={() => navigateTo("/contact")}
               >
                 CONTACT
-                <ArrowRight className="h-3 w-3 ml-1.5" />
+                <ArrowRight className="h-3.5 w-3.5 ml-2" />
               </Button>
             </div>
           </div>
 
-          <div className="flex items-center text-[10px] font-sf-mono text-primary/50 mt-3">
+          <div className="flex items-center text-[10px] font-sf-mono text-primary/50 mt-4">
             <MapPin className="h-3 w-3 mr-1" />
             NEW YORK CITY, USA
           </div>
@@ -155,29 +173,16 @@ export default function HomeSplitPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3 }}
             >
-              <div className="border-b border-primary/20 px-3 py-1.5 bg-primary/5">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-xs font-sf-mono font-bold tracking-widest text-primary">METRICS</h3>
-                  <span className="text-[9px] font-sf-mono text-primary/30">[00]</span>
-                </div>
-              </div>
-              <div className="grid grid-cols-3 divide-x divide-primary/20">
+              <div className="grid grid-cols-5 divide-x divide-primary/20">
                 {stats.map((stat, idx) => (
-                  <div key={idx} className="flex flex-col items-center justify-center py-3 sm:py-4 px-2">
-                    <div className="flex items-baseline">
-                      {stat.hasIndicator && (
-                        <span className="w-2 h-2 rounded-full bg-green-500 mr-2 animate-[blink_0.5s_ease-in-out_infinite]" />
-                      )}
-                      <span className="text-2xl sm:text-3xl md:text-4xl font-sf-mono font-bold text-primary tracking-tighter">
-                        {stat.value}
-                      </span>
-                      {stat.sublabel && (
-                        <span className="text-[10px] sm:text-xs font-sf-mono text-primary/50 ml-1">
-                          {stat.sublabel}
-                        </span>
-                      )}
-                    </div>
-                    <span className="text-[9px] sm:text-[10px] font-sf-mono text-primary/40 uppercase tracking-wider mt-1">
+                  <div key={idx} className="flex flex-col items-center justify-center py-4 sm:py-5 px-2">
+                    <span
+                      className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-primary tracking-tighter"
+                      style={{ fontFamily: "'SF Mono', monospace" }}
+                    >
+                      {stat.value}
+                    </span>
+                    <span className="text-[8px] sm:text-[9px] font-sf-mono text-primary/50 uppercase tracking-wider mt-1 text-center">
                       {stat.label}
                     </span>
                   </div>
@@ -185,58 +190,35 @@ export default function HomeSplitPage() {
               </div>
             </motion.div>
 
-            {/* Photo + About with Infinite Marquee */}
-            <div className="flex flex-col md:flex-row gap-3 items-stretch">
-              {/* Photo Block */}
-              <motion.div
-                className="border border-primary/20 bg-background p-2 md:w-[160px] lg:w-[180px] shrink-0"
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.3, delay: 0.1 }}
-              >
-                <div className="relative aspect-square w-full">
-                  <Image
-                    src="/images/design-mode/new_personal_photo(1).png"
-                    alt="Profile"
-                    fill
-                    className="object-cover grayscale"
-                  />
-                  <div className="absolute top-2 right-2 bg-background/90 border border-primary/30 px-1.5 py-0.5 text-[8px] font-sf-mono">
-                    VERIFIED
-                  </div>
+            <motion.div
+              className="border border-primary/20 bg-background flex flex-col overflow-hidden"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: 0.1 }}
+            >
+              <div className="border-b border-primary/20 px-3 py-1.5 bg-primary/5">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-xs font-sf-mono font-bold tracking-widest text-primary">ABOUT</h3>
+                  <span className="text-[9px] font-sf-mono text-primary/30">[01]</span>
                 </div>
-              </motion.div>
+              </div>
+              <div className="px-3 py-3 flex-1 flex flex-col overflow-hidden">
+                <p className="text-xs sm:text-sm font-mono text-primary/70 leading-relaxed">
+                  Data Scientist and AI Engineer specializing in machine learning, deep learning, and AI systems
+                  development. Creating innovative solutions using cutting-edge AI technologies with experience across
+                  healthcare, astronomy, and enterprise AI domains.
+                </p>
 
-              <motion.div
-                className="border border-primary/20 bg-background flex-1 flex flex-col overflow-hidden min-w-0"
-                initial={{ opacity: 0, x: 10 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.3, delay: 0.15 }}
-              >
-                <div className="border-b border-primary/20 px-3 py-1.5 bg-primary/5">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-xs font-sf-mono font-bold tracking-widest text-primary">ABOUT</h3>
-                    <span className="text-[9px] font-sf-mono text-primary/30">[01]</span>
+                <div className="mt-3 pt-3 border-t border-primary/10 overflow-hidden">
+                  <span className="text-[9px] font-sf-mono text-primary/40 uppercase tracking-wider block mb-2">
+                    SPECIALIZATIONS
+                  </span>
+                  <div className="overflow-hidden">
+                    <InfiniteMarquee items={technologies} />
                   </div>
                 </div>
-                <div className="px-3 py-2 flex-1 flex flex-col overflow-hidden">
-                  <p className="text-[10px] sm:text-xs font-mono text-primary/70 leading-relaxed">
-                    Data Scientist and AI Engineer specializing in machine learning, deep learning, and AI systems
-                    development. Creating innovative solutions using cutting-edge AI technologies with experience across
-                    healthcare, astronomy, and enterprise AI domains.
-                  </p>
-
-                  <div className="mt-3 pt-3 border-t border-primary/10 overflow-hidden">
-                    <span className="text-[9px] font-sf-mono text-primary/40 uppercase tracking-wider block mb-2">
-                      SPECIALIZATIONS
-                    </span>
-                    <div className="overflow-hidden">
-                      <InfiniteMarquee items={technologies} />
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            </div>
+              </div>
+            </motion.div>
 
             {/* Bottom Section: Featured Project + Quick Actions */}
             <div className="flex flex-col md:flex-row gap-3 items-stretch">
@@ -245,7 +227,7 @@ export default function HomeSplitPage() {
                 className="border border-primary/20 bg-background flex-1"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: 0.25 }}
+                transition={{ duration: 0.3, delay: 0.2 }}
               >
                 <div className="border-b border-primary/20 px-3 py-1.5 bg-primary/5">
                   <div className="flex items-center justify-between">
@@ -279,12 +261,12 @@ export default function HomeSplitPage() {
                 </div>
               </motion.div>
 
-              {/* Quick Actions - UNCHANGED */}
+              {/* Quick Actions */}
               <motion.div
-                className="border border-primary/20 bg-background md:w-[160px] lg:w-[180px] shrink-0"
+                className="border border-primary/20 bg-background md:w-[180px] lg:w-[200px] shrink-0"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: 0.3 }}
+                transition={{ duration: 0.3, delay: 0.25 }}
               >
                 <div className="border-b border-primary/20 px-3 py-1.5 bg-primary/5">
                   <div className="flex items-center justify-between">
@@ -317,7 +299,7 @@ export default function HomeSplitPage() {
               className="flex items-center justify-between border-t border-primary/20 pt-2"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 0.2, delay: 0.35 }}
+              transition={{ duration: 0.2, delay: 0.3 }}
             >
               <div className="flex gap-3 text-[9px] font-sf-mono text-primary/40 uppercase tracking-wider">
                 <span>STATUS: AVAILABLE</span>
