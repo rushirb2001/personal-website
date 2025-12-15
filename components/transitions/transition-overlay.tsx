@@ -27,27 +27,22 @@ export function TransitionOverlay() {
     }
   }, [isTransitioning])
 
-  // Generate random positions for floating particles
-  const particles = useMemo(
+  const horizontalLines = useMemo(
     () =>
-      Array.from({ length: 20 }).map((_, i) => ({
+      Array.from({ length: 5 }).map((_, i) => ({
         id: i,
-        x: Math.random() * 100,
-        y: Math.random() * 100,
-        size: Math.random() * 3 + 1,
-        delay: Math.random() * 0.5,
-        duration: Math.random() * 2 + 1,
+        y: (i + 1) * 16.66,
+        delay: i * 0.08,
       })),
     [],
   )
 
-  // Generate horizontal lines
-  const lines = useMemo(
+  const verticalLines = useMemo(
     () =>
-      Array.from({ length: 8 }).map((_, i) => ({
+      Array.from({ length: 4 }).map((_, i) => ({
         id: i,
-        y: (i + 1) * 11,
-        delay: i * 0.05,
+        x: (i + 1) * 20,
+        delay: i * 0.06,
       })),
     [],
   )
@@ -62,7 +57,7 @@ export function TransitionOverlay() {
           exit={{ opacity: 0 }}
           transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
         >
-          {/* Fluid gradient background */}
+          {/* Solid background */}
           <motion.div
             className="absolute inset-0 bg-background"
             initial={{ opacity: 0 }}
@@ -71,67 +66,52 @@ export function TransitionOverlay() {
             transition={{ duration: 0.3 }}
           />
 
-          {/* Animated horizontal lines sweeping across */}
           <div className="absolute inset-0 overflow-hidden">
-            {lines.map((line) => (
+            {/* Horizontal lines - extend from edges */}
+            {horizontalLines.map((line) => (
               <motion.div
-                key={line.id}
-                className="absolute left-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent"
-                style={{ top: `${line.y}%`, width: "100%" }}
-                initial={{ x: "-100%", opacity: 0 }}
-                animate={{
-                  x: ["100%", "-100%"],
-                  opacity: [0, 1, 1, 0],
-                }}
+                key={`h-${line.id}`}
+                className="absolute left-0 right-0 h-px bg-primary/10"
+                style={{ top: `${line.y}%` }}
+                initial={{ scaleX: 0 }}
+                animate={{ scaleX: 1 }}
+                exit={{ scaleX: 0 }}
                 transition={{
-                  duration: 2,
+                  duration: 0.4,
                   delay: line.delay,
-                  repeat: Number.POSITIVE_INFINITY,
-                  ease: "linear",
+                  ease: [0.22, 1, 0.36, 1],
                 }}
               />
             ))}
-          </div>
 
-          {/* Floating particles */}
-          <div className="absolute inset-0 overflow-hidden">
-            {particles.map((particle) => (
+            {/* Vertical lines - extend from top */}
+            {verticalLines.map((line) => (
               <motion.div
-                key={particle.id}
-                className="absolute rounded-full bg-primary/20"
-                style={{
-                  left: `${particle.x}%`,
-                  top: `${particle.y}%`,
-                  width: particle.size,
-                  height: particle.size,
-                }}
-                initial={{ opacity: 0, scale: 0 }}
-                animate={{
-                  opacity: [0, 0.6, 0],
-                  scale: [0, 1, 0],
-                  y: [0, -30, -60],
-                }}
+                key={`v-${line.id}`}
+                className="absolute top-0 bottom-0 w-px bg-primary/10"
+                style={{ left: `${line.x}%` }}
+                initial={{ scaleY: 0, originY: 0 }}
+                animate={{ scaleY: 1 }}
+                exit={{ scaleY: 0 }}
                 transition={{
-                  duration: particle.duration,
-                  delay: particle.delay,
-                  repeat: Number.POSITIVE_INFINITY,
-                  ease: "easeOut",
+                  duration: 0.5,
+                  delay: line.delay,
+                  ease: [0.22, 1, 0.36, 1],
                 }}
               />
             ))}
           </div>
 
-          {/* Central content */}
           <div className="absolute inset-0 flex items-center justify-center">
             <motion.div
-              className="relative flex flex-col items-center"
+              className="relative flex flex-col items-center gap-8"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
             >
               {/* Morphing circle loader */}
-              <div className="relative w-16 h-16 mb-6">
+              <div className="relative w-16 h-16">
                 {/* Outer ring */}
                 <motion.div
                   className="absolute inset-0 border border-primary/30 rounded-full"
@@ -209,65 +189,67 @@ export function TransitionOverlay() {
                 ))}
               </div>
 
-              {/* Path text with reveal animation */}
-              <motion.div
-                className="overflow-hidden"
-                initial={{ width: 0 }}
-                animate={{ width: "auto" }}
-                transition={{ duration: 0.5, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-              >
-                <motion.span
-                  className="block text-sm font-sf-mono tracking-widest text-primary/70 whitespace-nowrap"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.3, delay: 0.3 }}
-                >
-                  /{displayPath}
-                </motion.span>
-              </motion.div>
-
-              {/* Subtle loading bar */}
-              <motion.div
-                className="mt-4 h-px w-32 bg-primary/10 overflow-hidden rounded-full"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.4 }}
-              >
+              <div className="flex flex-col items-center gap-3">
+                {/* Path text with reveal animation */}
                 <motion.div
-                  className="h-full bg-primary/40"
-                  initial={{ x: "-100%" }}
-                  animate={{ x: "100%" }}
-                  transition={{
-                    duration: 1,
-                    repeat: Number.POSITIVE_INFINITY,
-                    ease: "easeInOut",
-                  }}
-                />
-              </motion.div>
+                  className="overflow-hidden"
+                  initial={{ width: 0 }}
+                  animate={{ width: "auto" }}
+                  transition={{ duration: 0.5, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+                >
+                  <motion.span
+                    className="block text-xs font-sf-mono tracking-[0.3em] text-primary/60 whitespace-nowrap uppercase"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.3, delay: 0.3 }}
+                  >
+                    /{displayPath}
+                  </motion.span>
+                </motion.div>
+
+                {/* Loading bar - cleaner styling */}
+                <motion.div
+                  className="h-px w-24 bg-primary/10 overflow-hidden"
+                  initial={{ opacity: 0, scaleX: 0 }}
+                  animate={{ opacity: 1, scaleX: 1 }}
+                  transition={{ delay: 0.3, duration: 0.3 }}
+                >
+                  <motion.div
+                    className="h-full w-full bg-primary/40"
+                    initial={{ x: "-100%" }}
+                    animate={{ x: "100%" }}
+                    transition={{
+                      duration: 0.8,
+                      repeat: Number.POSITIVE_INFINITY,
+                      ease: "easeInOut",
+                    }}
+                  />
+                </motion.div>
+              </div>
             </motion.div>
           </div>
 
-          {/* Corner accents */}
+          {/* Corner accents - kept for brutalist aesthetic */}
           <motion.div
-            className="absolute top-4 left-4 w-8 h-8 border-l border-t border-primary/20"
+            className="absolute top-4 left-4 w-6 h-6 border-l border-t border-primary/20"
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.3, delay: 0.1 }}
           />
           <motion.div
-            className="absolute top-4 right-4 w-8 h-8 border-r border-t border-primary/20"
+            className="absolute top-4 right-4 w-6 h-6 border-r border-t border-primary/20"
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.3, delay: 0.15 }}
           />
           <motion.div
-            className="absolute bottom-4 left-4 w-8 h-8 border-l border-b border-primary/20"
+            className="absolute bottom-4 left-4 w-6 h-6 border-l border-b border-primary/20"
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.3, delay: 0.2 }}
           />
           <motion.div
-            className="absolute bottom-4 right-4 w-8 h-8 border-r border-b border-primary/20"
+            className="absolute bottom-4 right-4 w-6 h-6 border-r border-b border-primary/20"
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.3, delay: 0.25 }}
