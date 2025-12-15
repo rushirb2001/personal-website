@@ -24,9 +24,9 @@ export function Header() {
           <a
             href="/"
             onClick={handleHomeClick}
-            className="text-base md:text-lg font-sf-mono font-medium tracking-tighter truncate cursor-pointer"
+            className="text-base md:text-lg font-sf-mono truncate cursor-pointer font-medium tracking-tighter text-center"
           >
-            RUSHIR BHAVSAR
+            RUSHIR BHAVSAR.
           </a>
 
           <div className="hidden md:flex items-center gap-1.5 text-[10px] font-sf-mono text-green-500 tracking-wide">
