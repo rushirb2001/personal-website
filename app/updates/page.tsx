@@ -51,10 +51,8 @@ export default function UpdatesPage() {
       const rect = element.getBoundingClientRect()
       setExpandRect(rect)
       setExpandingPost(post)
-
-      setTimeout(() => {
-        router.push(`/updates/${post.id}`)
-      }, 400)
+      // Navigate instantly without delay
+      router.push(`/updates/${post.id}`)
     }
   }
 

@@ -1,5 +1,7 @@
 "use client"
 
+import React from "react"
+
 import { useEffect, useState } from "react"
 import { useParams, useRouter } from "next/navigation"
 import { motion } from "framer-motion"
@@ -10,6 +12,11 @@ import { Button } from "@/components/ui/button"
 import { useNavigation } from "@/contexts/navigation-context"
 import { BlogContent } from "@/components/features/blog/blog-content"
 
+const ExpansionContext = React.createContext<{
+  expandRect: DOMRect | null
+  isExpanding: boolean
+} | null>(null)
+
 export default function BlogPostPage() {
   const params = useParams()
   const router = useRouter()
@@ -18,6 +25,7 @@ export default function BlogPostPage() {
   const [loading, setLoading] = useState(true)
   const [showNavBar, setShowNavBar] = useState(false)
   const [showContent, setShowContent] = useState(false)
+  const [isExpanding, setIsExpanding] = useState(true)
 
   useEffect(() => {
     if (params.id) {
@@ -25,7 +33,10 @@ export default function BlogPostPage() {
       if (postData) {
         setPost(postData)
         setShowNavBar(true)
-        setTimeout(() => setShowContent(true), 450)
+        setTimeout(() => {
+          setIsExpanding(false)
+          setShowContent(true)
+        }, 450)
       } else {
         router.push("/updates")
       }
@@ -51,6 +62,7 @@ export default function BlogPostPage() {
 
   return (
     <>
+      {/* Navigation bar drops down from top */}
       <motion.div
         className="fixed top-14 md:top-16 left-0 right-0 z-50 bg-background dark:bg-eerie-black border-b border-primary/20"
         initial={{ y: -60, opacity: 0 }}
@@ -76,6 +88,34 @@ export default function BlogPostPage() {
           </Button>
         </div>
       </motion.div>
+
+      {isExpanding && (
+        <motion.div
+          className="fixed z-40 overflow-hidden pointer-events-none"
+          initial={{
+            top: 0,
+            left: 0,
+            width: "100vw",
+            height: "100vh",
+            borderRadius: 0,
+          }}
+          animate={{
+            top: "9.5rem",
+            left: "50%",
+            x: "-50%",
+            width: "min(100vw - 2rem, 48rem)",
+            height: "calc(100vh - 9.5rem - 4rem)",
+            borderRadius: 0,
+          }}
+          transition={{
+            duration: 0.45,
+            ease: [0.32, 0.72, 0, 1],
+          }}
+          onAnimationComplete={() => setIsExpanding(false)}
+        >
+          <div className="h-full w-full border border-primary/20 bg-background dark:bg-eerie-black/50 overflow-hidden" />
+        </motion.div>
+      )}
 
       <div className="fixed top-[9.5rem] md:top-[9.5rem] left-0 right-0 bottom-16 z-30">
         <div className="container max-w-3xl mx-auto px-4 h-full">
