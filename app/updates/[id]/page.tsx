@@ -1,7 +1,5 @@
 "use client"
 
-import React from "react"
-
 import { useEffect, useState } from "react"
 import { useParams, useRouter } from "next/navigation"
 import { motion } from "framer-motion"
@@ -12,11 +10,6 @@ import { Button } from "@/components/ui/button"
 import { useNavigation } from "@/contexts/navigation-context"
 import { BlogContent } from "@/components/features/blog/blog-content"
 
-const ExpansionContext = React.createContext<{
-  expandRect: DOMRect | null
-  isExpanding: boolean
-} | null>(null)
-
 export default function BlogPostPage() {
   const params = useParams()
   const router = useRouter()
@@ -25,7 +18,17 @@ export default function BlogPostPage() {
   const [loading, setLoading] = useState(true)
   const [showNavBar, setShowNavBar] = useState(false)
   const [showContent, setShowContent] = useState(false)
-  const [isExpanding, setIsExpanding] = useState(true)
+  const [expandRect, setExpandRect] = useState<{ top: number; left: number; width: number; height: number } | null>(
+    null,
+  )
+
+  useEffect(() => {
+    const stored = sessionStorage.getItem("expandRect")
+    if (stored) {
+      setExpandRect(JSON.parse(stored))
+      sessionStorage.removeItem("expandRect")
+    }
+  }, [])
 
   useEffect(() => {
     if (params.id) {
@@ -34,7 +37,6 @@ export default function BlogPostPage() {
         setPost(postData)
         setShowNavBar(true)
         setTimeout(() => {
-          setIsExpanding(false)
           setShowContent(true)
         }, 450)
       } else {
@@ -89,14 +91,14 @@ export default function BlogPostPage() {
         </div>
       </motion.div>
 
-      {isExpanding && (
+      {expandRect && (
         <motion.div
           className="fixed z-40 overflow-hidden pointer-events-none"
           initial={{
-            top: 0,
-            left: 0,
-            width: "100vw",
-            height: "100vh",
+            top: expandRect.top,
+            left: expandRect.left,
+            width: expandRect.width,
+            height: expandRect.height,
             borderRadius: 0,
           }}
           animate={{
@@ -111,7 +113,6 @@ export default function BlogPostPage() {
             duration: 0.45,
             ease: [0.32, 0.72, 0, 1],
           }}
-          onAnimationComplete={() => setIsExpanding(false)}
         >
           <div className="h-full w-full border border-primary/20 bg-background dark:bg-eerie-black/50 overflow-hidden" />
         </motion.div>

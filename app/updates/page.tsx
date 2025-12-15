@@ -51,6 +51,15 @@ export default function UpdatesPage() {
       const rect = element.getBoundingClientRect()
       setExpandRect(rect)
       setExpandingPost(post)
+      sessionStorage.setItem(
+        "expandRect",
+        JSON.stringify({
+          top: rect.top,
+          left: rect.left,
+          width: rect.width,
+          height: rect.height,
+        }),
+      )
       // Navigate instantly without delay
       router.push(`/updates/${post.id}`)
     }
