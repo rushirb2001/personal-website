@@ -120,7 +120,7 @@ export default function Home() {
                     fill
                     className="object-cover grayscale"
                   />
-                  <div className="absolute top-3 right-3 bg-background/80 border border-primary/30 px-2 py-1 text-[9px] font-sf-mono">
+                  <div className="absolute top-3 right-3 bg-background/80 border border-primary/30 px-2 py-1 font-sf-mono font-extrabold text-xs">
                     VERIFIED
                   </div>
                 </div>
@@ -151,7 +151,7 @@ export default function Home() {
                 </Link>
                 <Button
                   variant="ghost"
-                  className="h-12 px-4 border border-primary/20 text-[11px] font-sf-mono bg-primary/5 hover:bg-primary/10 rounded-none"
+                  className="h-12 px-4 border border-primary/20 font-sf-mono bg-primary/5 hover:bg-primary/10 rounded-none font-semibold text-base"
                   onClick={() => setIsResumeModalOpen(true)}
                 >
                   <FileText className="h-4 w-4 mr-2" />
@@ -166,16 +166,16 @@ export default function Home() {
                 transition={{ delay: 0.5, duration: 0.6 }}
               >
                 <div className="flex-1 flex flex-col items-center justify-center border border-primary/20 px-2 py-3">
-                  <span className="text-primary/40 mb-1">PROJECTS</span>
-                  <span className="font-bold text-sm">15+</span>
+                  <span className="text-primary/40 mb-1 text-sm font-bold">PROJECTS</span>
+                  <span className="text-sm font-thin">15+</span>
                 </div>
                 <div className="flex-1 flex flex-col items-center justify-center border border-primary/20 px-2 py-3">
-                  <span className="text-primary/40 mb-1">PUBLICATIONS</span>
-                  <span className="font-bold text-sm">3+</span>
+                  <span className="text-primary/40 mb-1 text-sm font-bold">PUBLICATIONS</span>
+                  <span className="text-sm font-thin">3+</span>
                 </div>
                 <div className="flex-1 flex flex-col items-center justify-center border border-primary/20 px-2 py-3">
-                  <span className="text-primary/40 mb-1">EXPERIENCE</span>
-                  <span className="font-bold text-sm flex items-center">
+                  <span className="text-primary/40 mb-1 text-sm font-bold">EXPERIENCE</span>
+                  <span className="text-sm flex items-center font-thin">
                     <span className="w-1.5 h-1.5 rounded-full bg-green-500 mr-1.5 animate-[blink_0.5s_ease-in-out_infinite]"></span>
                     2+ YRS
                   </span>
@@ -190,15 +190,15 @@ export default function Home() {
                 transition={{ delay: 0.6, duration: 0.6 }}
               >
                 <Button
-                  className="flex-1 group rounded-none border border-primary/20 bg-transparent text-primary hover:bg-primary/10 font-black text-xs h-12"
+                  className="flex-1 group rounded-none border border-primary/20 bg-transparent text-primary hover:bg-primary/10 h-12 text-base font-black tracking-normal"
                   onClick={() => navigateTo("/contact")}
                 >
-                  <Mail className="mr-1.5 h-4 w-4" />
+                  
                   CONTACT
                   <ArrowRight className="ml-1.5 h-3.5 w-3.5 group-hover:translate-x-1 transition-transform" />
                 </Button>
                 <Button
-                  className="flex-1 group rounded-none border border-primary/20 bg-transparent text-primary hover:bg-primary/10 font-black text-xs h-12"
+                  className="flex-1 group rounded-none border border-primary/20 bg-transparent text-primary hover:bg-primary/10 font-black h-12 text-base"
                   onClick={() => navigateTo("/projects")}
                 >
                   EXPLORE
