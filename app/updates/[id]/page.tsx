@@ -192,7 +192,11 @@ export default function BlogPostPage() {
           y: reversePhase === "nav-up" || reversePhase === "navigating" ? -60 : 0,
           opacity: reversePhase === "nav-up" || reversePhase === "navigating" ? 0 : 1,
         }}
-        transition={{ duration: 0.25, ease: [0.32, 0.72, 0, 1], delay: reversePhase === "idle" ? 0.1 : 0 }}
+        transition={{ 
+          duration: 0.25, 
+          ease: [0.32, 0.72, 0, 1], 
+          delay: reversePhase === "idle" ? 0.1 : (reversePhase === "nav-up" || reversePhase === "navigating" ? 0 : 0.7)
+        }}
       >
         <div className="container max-w-3xl mx-auto px-4 py-4 flex justify-between">
           <Button
