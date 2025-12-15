@@ -50,7 +50,7 @@ function InfiniteMarquee({ items }: { items: string[] }) {
   const duplicatedItems = [...items, ...items]
 
   return (
-    <div className="relative overflow-hidden bg-primary text-background py-2">
+    <div className="relative overflow-hidden bg-primary/5 py-2">
       <motion.div
         className="flex whitespace-nowrap"
         animate={{
@@ -66,8 +66,10 @@ function InfiniteMarquee({ items }: { items: string[] }) {
       >
         {duplicatedItems.map((item, idx) => (
           <div key={idx} className="flex items-center shrink-0">
-            <span className="text-[10px] sm:text-xs font-sf-mono font-medium tracking-wide px-4 sm:px-6">{item}</span>
-            <span className="text-green-400 text-xs">✦</span>
+            <span className="text-[10px] sm:text-xs font-sf-mono font-medium tracking-wide px-4 sm:px-6 text-primary/70">
+              {item}
+            </span>
+            <span className="text-green-500 text-[10px]">✦</span>
           </div>
         ))}
       </motion.div>
@@ -138,14 +140,20 @@ export default function HomeSplitPage() {
         </div>
 
         {/* RIGHT SIDE - Content */}
-        <div className="w-full max-w-full flex flex-col justify-start">
+        <div className="w-full max-w-full flex flex-col justify-start overflow-hidden">
           <div className="flex flex-col gap-3 h-full pt-2 sm:pt-3 md:pt-4 lg:pt-0">
             <motion.div
-              className="border border-primary/20 bg-background"
+              className="border border-primary/20 bg-background overflow-hidden"
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3 }}
             >
+              <div className="border-b border-primary/20 px-3 py-1.5 bg-primary/5">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-xs font-sf-mono font-bold tracking-widest text-primary">METRICS</h3>
+                  <span className="text-[9px] font-sf-mono text-primary/30">[00]</span>
+                </div>
+              </div>
               <div className="grid grid-cols-3 divide-x divide-primary/20">
                 {stats.map((stat, idx) => (
                   <div key={idx} className="flex flex-col items-center justify-center py-3 sm:py-4 px-2">
@@ -193,7 +201,7 @@ export default function HomeSplitPage() {
               </motion.div>
 
               <motion.div
-                className="border border-primary/20 bg-background flex-1 flex flex-col overflow-hidden"
+                className="border border-primary/20 bg-background flex-1 flex flex-col overflow-hidden min-w-0"
                 initial={{ opacity: 0, x: 10 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.3, delay: 0.15 }}
@@ -204,18 +212,18 @@ export default function HomeSplitPage() {
                     <span className="text-[9px] font-sf-mono text-primary/30">[01]</span>
                   </div>
                 </div>
-                <div className="px-3 py-2 flex-1 flex flex-col">
+                <div className="px-3 py-2 flex-1 flex flex-col overflow-hidden">
                   <p className="text-[10px] sm:text-xs font-mono text-primary/70 leading-relaxed">
                     Data Scientist and AI Engineer specializing in machine learning, deep learning, and AI systems
                     development. Creating innovative solutions using cutting-edge AI technologies with experience across
                     healthcare, astronomy, and enterprise AI domains.
                   </p>
 
-                  <div className="mt-3 pt-3 border-t border-primary/10">
+                  <div className="mt-3 pt-3 border-t border-primary/10 overflow-hidden">
                     <span className="text-[9px] font-sf-mono text-primary/40 uppercase tracking-wider block mb-2">
                       SPECIALIZATIONS
                     </span>
-                    <div className="border border-primary/20 overflow-hidden">
+                    <div className="overflow-hidden">
                       <InfiniteMarquee items={technologies} />
                     </div>
                   </div>
