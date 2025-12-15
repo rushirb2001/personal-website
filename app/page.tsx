@@ -1,12 +1,10 @@
 "use client"
 
-import type React from "react"
-
 import { ArrowRight, Linkedin, Github, FileText } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { motion } from "framer-motion"
 import { useNavigation } from "@/contexts/navigation-context"
-import { useState, useRef } from "react"
+import { useState } from "react"
 import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
 import { UpdatesBanner } from "@/components/features/updates/updates-banner"
@@ -23,17 +21,6 @@ export default function Home() {
   const { navigateTo } = useNavigation()
 
   const [isResumeModalOpen, setIsResumeModalOpen] = useState(false)
-  const [buttonRect, setButtonRect] = useState<DOMRect | null>(null)
-  const desktopButtonRef = useRef<HTMLButtonElement>(null)
-  const mobileButtonRef = useRef<HTMLButtonElement>(null)
-
-  const handleResumeClick = (buttonRef: React.RefObject<HTMLButtonElement>) => {
-    if (buttonRef.current) {
-      const rect = buttonRef.current.getBoundingClientRect()
-      setButtonRect(rect)
-    }
-    setIsResumeModalOpen(true)
-  }
 
   return (
     <>
@@ -125,10 +112,9 @@ export default function Home() {
               <Linkedin className="h-5 w-5 stroke-[2] text-blue-700 group-hover:scale-110 transition-transform" />
             </Link>
             <Button
-              ref={mobileButtonRef}
               variant="ghost"
               className="h-12 px-4 border border-primary/20 font-sf-mono bg-primary/5 hover:bg-primary/10 rounded-none font-semibold text-base"
-              onClick={() => handleResumeClick(mobileButtonRef)}
+              onClick={() => setIsResumeModalOpen(true)}
             >
               <FileText className="h-4 w-4 mr-2" />
               VIEW RESUME
@@ -298,10 +284,9 @@ export default function Home() {
                     </motion.p>
 
                     <Button
-                      ref={desktopButtonRef}
                       variant="ghost"
                       className="border border-primary/20 text-xs lg:text-sm font-sf-mono group bg-primary/5 hover:bg-primary/15 font-normal tracking-wide transition-all duration-300 ease-out hover:scale-105 hover:shadow-lg hover:shadow-primary/10 rounded-none shadow-none"
-                      onClick={() => handleResumeClick(desktopButtonRef)}
+                      onClick={() => setIsResumeModalOpen(true)}
                     >
                       <span className="flex items-center justify-center gap-2">
                         <span className="relative">
@@ -365,7 +350,7 @@ export default function Home() {
         </div>
       </motion.div>
 
-      <ResumeModal isOpen={isResumeModalOpen} onClose={() => setIsResumeModalOpen(false)} buttonRect={buttonRect} />
+      <ResumeModal isOpen={isResumeModalOpen} onClose={() => setIsResumeModalOpen(false)} />
     </>
   )
 }

@@ -1,178 +1,72 @@
 "use client"
 
-import { useEffect, useState, useCallback } from "react"
+import { useEffect, useState } from "react"
 import { FileText, Download, ExternalLink } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 
 interface ResumeModalProps {
   isOpen: boolean
   onClose: () => void
-  buttonRect?: DOMRect | null
 }
 
-export function ResumeModal({ isOpen, onClose, buttonRect }: ResumeModalProps) {
+export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
   const [loading, setLoading] = useState(true)
   const [isMobile, setIsMobile] = useState(false)
-  const [showContent, setShowContent] = useState(false)
-  const [isClosing, setIsClosing] = useState(false)
 
   const pdfUrl = "https://v9fl0vq2qbxv8yrh.public.blob.vercel-storage.com/resume-ZpPZh22hfStdIegCtsD7DORRyDEFN7.pdf"
+  // Google Docs viewer URL
   const googleDocsViewerUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(pdfUrl)}&embedded=true`
 
   useEffect(() => {
+    // Check if mobile
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768)
     }
+
     checkMobile()
     window.addEventListener("resize", checkMobile)
-    return () => window.removeEventListener("resize", checkMobile)
+
+    return () => {
+      window.removeEventListener("resize", checkMobile)
+    }
   }, [])
 
+  // Close on escape key
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && isOpen && !isClosing) handleClose()
+      if (e.key === "Escape") onClose()
     }
     window.addEventListener("keydown", handleEsc)
     return () => window.removeEventListener("keydown", handleEsc)
-  }, [isOpen, isClosing])
+  }, [onClose])
 
+  // Reset loading state when modal opens
   useEffect(() => {
     if (isOpen) {
       setLoading(true)
-      setIsClosing(false)
-      const timer = setTimeout(() => setShowContent(true), 250)
-      return () => clearTimeout(timer)
-    } else {
-      setShowContent(false)
     }
   }, [isOpen])
 
-  const handleClose = useCallback(() => {
-    if (isClosing) return
-    setIsClosing(true)
-    setShowContent(false)
-    setTimeout(() => {
-      setIsClosing(false)
-      onClose()
-    }, 250)
-  }, [isClosing, onClose])
-
-  // Get target modal dimensions
-  const getTargetRect = () => {
-    const viewportWidth = typeof window !== "undefined" ? window.innerWidth : 1024
-    const viewportHeight = typeof window !== "undefined" ? window.innerHeight : 768
-    const modalWidth = isMobile ? viewportWidth - 16 : Math.min(viewportWidth - 32, 896)
-    const modalHeight = viewportHeight * 0.7
-    return {
-      top: viewportHeight * 0.15,
-      left: (viewportWidth - modalWidth) / 2,
-      width: modalWidth,
-      height: modalHeight,
-    }
-  }
-
-  // Get button start position
-  const getButtonRect = () => {
-    if (!buttonRect) {
-      const viewportWidth = typeof window !== "undefined" ? window.innerWidth : 1024
-      const viewportHeight = typeof window !== "undefined" ? window.innerHeight : 768
-      return {
-        top: viewportHeight / 2 - 20,
-        left: viewportWidth / 2 - 75,
-        width: 150,
-        height: 40,
-      }
-    }
-    return {
-      top: buttonRect.top,
-      left: buttonRect.left,
-      width: buttonRect.width,
-      height: buttonRect.height,
-    }
-  }
-
-  if (!isOpen && !isClosing) return null
-
-  const targetRect = getTargetRect()
-  const startRect = getButtonRect()
-
   return (
-    <AnimatePresence mode="wait">
-      {(isOpen || isClosing) && (
-        <>
-          {/* Backdrop */}
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/70 backdrop-blur-sm p-2 md:p-0"
+          onClick={onClose}
+        >
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.15 }}
-            className="fixed inset-0 z-50 bg-foreground/70 backdrop-blur-sm"
-            onClick={handleClose}
-          />
-
-          {/* Expansion/Collapse Animation Overlay */}
-          <motion.div
-            className="fixed z-[60] bg-background border border-primary/20 overflow-hidden pointer-events-none"
-            initial={{
-              top: startRect.top,
-              left: startRect.left,
-              width: startRect.width,
-              height: startRect.height,
-            }}
-            animate={
-              isClosing
-                ? {
-                    top: startRect.top,
-                    left: startRect.left,
-                    width: startRect.width,
-                    height: startRect.height,
-                  }
-                : {
-                    top: targetRect.top,
-                    left: targetRect.left,
-                    width: targetRect.width,
-                    height: targetRect.height,
-                  }
-            }
-            transition={{
-              duration: 0.25,
-              ease: [0.32, 0.72, 0, 1],
-            }}
-            style={{ opacity: showContent ? 0 : 1 }}
-          >
-            {/* Button text that blurs out during expansion */}
-            <motion.div
-              className="flex items-center justify-center h-full gap-2 font-sf-mono text-xs text-primary/70"
-              initial={{ opacity: 1, filter: "blur(0px)" }}
-              animate={isClosing ? { opacity: 1, filter: "blur(0px)" } : { opacity: 0, filter: "blur(4px)" }}
-              transition={{ duration: 0.1 }}
-            >
-              <FileText className="h-4 w-4" />
-              <span>VIEW RESUME</span>
-            </motion.div>
-          </motion.div>
-
-          {/* Actual Modal Content */}
-          <motion.div
-            className="fixed z-[60] flex flex-col bg-background border border-primary/20 shadow-lg overflow-hidden"
-            style={{
-              top: targetRect.top,
-              left: targetRect.left,
-              width: targetRect.width,
-              height: targetRect.height,
-            }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: showContent ? 1 : 0 }}
-            transition={{ duration: 0.1 }}
+            initial={{ scale: 0.95, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.95, opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="w-full max-w-4xl h-[70vh] bg-background border border-primary/30 shadow-lg flex flex-col modal-content"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Header */}
-            <motion.div
-              className="bg-card px-3 md:px-4 py-2 md:py-3 flex justify-between items-center border-b border-primary/20"
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: showContent ? 1 : 0, y: showContent ? 0 : -10 }}
-              transition={{ duration: 0.15, delay: 0 }}
-            >
+            {/* Header - Use semantic bg-card instead of hardcoded colors */}
+            <div className="bg-card px-3 md:px-4 py-2 md:py-3 flex justify-between items-center border-b border-primary/30">
               <div className="flex items-center">
                 <FileText className="h-4 w-4 mr-2 text-primary/70" />
                 <span className="text-xs md:text-sm font-sf-mono text-primary/70 truncate">
@@ -180,26 +74,22 @@ export function ResumeModal({ isOpen, onClose, buttonRect }: ResumeModalProps) {
                 </span>
               </div>
               <button
-                onClick={handleClose}
+                onClick={onClose}
                 className="text-primary/70 hover:text-primary transition-colors font-sf-mono text-xs md:text-sm"
                 aria-label="Close"
               >
                 [ CLOSE ]
               </button>
-            </motion.div>
+            </div>
 
-            {/* Content */}
-            <motion.div
-              className="flex-1 overflow-hidden relative"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: showContent ? 1 : 0 }}
-              transition={{ duration: 0.15, delay: 0.03 }}
-            >
+            {/* Content - Use semantic bg-background */}
+            <div className="flex-1 overflow-hidden relative">
               {loading && (
                 <div className="absolute inset-0 flex items-center justify-center bg-background">
                   <div className="h-6 w-6 border-2 border-primary/30 border-t-primary rounded-full animate-spin"></div>
                 </div>
               )}
+
               <iframe
                 src={googleDocsViewerUrl}
                 className="w-full h-full"
@@ -207,19 +97,14 @@ export function ResumeModal({ isOpen, onClose, buttonRect }: ResumeModalProps) {
                 title="Resume"
                 frameBorder="0"
               />
-            </motion.div>
+            </div>
 
-            {/* Footer */}
-            <motion.div
-              className="bg-card px-3 md:px-4 py-2 md:py-3 flex justify-end items-center gap-3 border-t border-primary/20"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: showContent ? 1 : 0, y: showContent ? 0 : 10 }}
-              transition={{ duration: 0.15, delay: 0.06 }}
-            >
+            {/* Footer - Use semantic bg-card */}
+            <div className="bg-card px-3 md:px-4 py-2 md:py-3 flex justify-end items-center gap-3 border-t border-primary/30">
               <a
                 href={pdfUrl}
                 download="resume.pdf"
-                className="flex items-center gap-1.5 px-3 py-1.5 text-xs md:text-sm font-sf-mono border border-primary/20 hover:bg-primary/10 text-primary/70 hover:text-primary transition-colors"
+                className="flex items-center gap-1.5 px-3 py-1.5 text-xs md:text-sm font-sf-mono border border-primary/30 hover:bg-primary/10 text-primary/70 hover:text-primary transition-colors"
               >
                 <Download className="h-3.5 w-3.5" />[ DOWNLOAD ]
               </a>
@@ -227,13 +112,13 @@ export function ResumeModal({ isOpen, onClose, buttonRect }: ResumeModalProps) {
                 href={pdfUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-1.5 px-3 py-1.5 text-xs md:text-sm font-sf-mono border border-primary/20 hover:bg-primary/10 text-primary/70 hover:text-primary transition-colors"
+                className="flex items-center gap-1.5 px-3 py-1.5 text-xs md:text-sm font-sf-mono border border-primary/30 hover:bg-primary/10 text-primary/70 hover:text-primary transition-colors"
               >
                 <ExternalLink className="h-3.5 w-3.5" />[ OPEN ]
               </a>
-            </motion.div>
+            </div>
           </motion.div>
-        </>
+        </motion.div>
       )}
     </AnimatePresence>
   )
