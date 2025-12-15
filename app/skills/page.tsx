@@ -5,7 +5,11 @@ import { motion } from "framer-motion"
 const skillsData = {
   languages: {
     title: "LANGUAGES",
-    items: ["Python", "SQL", "Git", "Bash", "CUDA", "Swift", "TypeScript", "C++", "HTML/CSS"],
+    subcategories: {
+      Core: ["Python", "SQL", "C++"],
+      Scripting: ["Bash", "Git", "CUDA"],
+      "Web/Mobile": ["TypeScript", "Swift", "HTML/CSS"],
+    },
   },
   frameworks: {
     title: "FRAMEWORKS",
@@ -40,6 +44,23 @@ const skillsData = {
       Azure: ["AzureML", "Azure OpenAI", "Azure Kubernetes Service", "CosmosDB"],
     },
   },
+}
+
+function calculateTotals() {
+  let totalTech = 0
+  let totalSubcategories = 0
+
+  Object.values(skillsData).forEach((category) => {
+    if (category.subcategories) {
+      const subcats = Object.entries(category.subcategories)
+      totalSubcategories += subcats.length
+      subcats.forEach(([_, items]) => {
+        totalTech += items.length
+      })
+    }
+  })
+
+  return { totalTech, totalSubcategories }
 }
 
 function SkillTag({ name, delay }: { name: string; delay: number }) {
@@ -90,19 +111,19 @@ function SubcategoryRow({
 function CategoryBlock({
   title,
   subcategories,
-  items,
   index,
+  fullWidth = false,
 }: {
   title: string
-  subcategories?: Record<string, string[]>
-  items?: string[]
+  subcategories: Record<string, string[]>
   index: number
+  fullWidth?: boolean
 }) {
   const categoryDelay = index * 0.1
 
   return (
     <motion.div
-      className="border border-primary/20 bg-background"
+      className={`border border-primary/20 bg-background ${fullWidth ? "col-span-1 md:col-span-2" : ""}`}
       initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, delay: categoryDelay }}
@@ -119,55 +140,41 @@ function CategoryBlock({
 
       {/* Category content */}
       <div className="px-3 py-2">
-        {subcategories ? (
-          <div className="flex flex-col">
-            {Object.entries(subcategories).map(([subcat, subItems], idx) => (
-              <SubcategoryRow key={subcat} title={subcat} items={subItems} categoryDelay={categoryDelay} index={idx} />
-            ))}
-          </div>
-        ) : items ? (
-          <div className="flex flex-wrap gap-1.5 py-1">
-            {items.map((item, idx) => (
-              <SkillTag key={idx} name={item} delay={categoryDelay + idx * 0.02} />
-            ))}
-          </div>
-        ) : null}
+        <div className="flex flex-col">
+          {Object.entries(subcategories).map(([subcat, subItems], idx) => (
+            <SubcategoryRow key={subcat} title={subcat} items={subItems} categoryDelay={categoryDelay} index={idx} />
+          ))}
+        </div>
       </div>
     </motion.div>
   )
 }
 
 export default function SkillsPage() {
-  // Calculate total skills count
-  const totalSkills =
-    skillsData.languages.items.length +
-    Object.values(skillsData.frameworks.subcategories).flat().length +
-    Object.values(skillsData.trainEvalInfer.subcategories).flat().length +
-    Object.values(skillsData.databases.subcategories).flat().length +
-    Object.values(skillsData.cloud.subcategories).flat().length
+  const { totalTech, totalSubcategories } = calculateTotals()
 
   return (
     <PageLayout title="SKILLS" subtitle="TECHNICAL EXPERTISE">
       <div className="flex flex-col gap-3 sm:gap-4 py-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
-          {/* Languages - full width on mobile, spans first column */}
-          <CategoryBlock title={skillsData.languages.title} items={skillsData.languages.items} index={0} />
+          <CategoryBlock
+            title={skillsData.languages.title}
+            subcategories={skillsData.languages.subcategories}
+            index={0}
+          />
 
-          {/* Train/Eval/Infer - pairs with Languages */}
           <CategoryBlock
             title={skillsData.trainEvalInfer.title}
             subcategories={skillsData.trainEvalInfer.subcategories}
             index={1}
           />
 
-          {/* Frameworks - larger block */}
           <CategoryBlock
             title={skillsData.frameworks.title}
             subcategories={skillsData.frameworks.subcategories}
             index={2}
           />
 
-          {/* Databases */}
           <CategoryBlock
             title={skillsData.databases.title}
             subcategories={skillsData.databases.subcategories}
@@ -176,7 +183,12 @@ export default function SkillsPage() {
         </div>
 
         {/* Cloud - full width */}
-        <CategoryBlock title={skillsData.cloud.title} subcategories={skillsData.cloud.subcategories} index={4} />
+        <CategoryBlock
+          title={skillsData.cloud.title}
+          subcategories={skillsData.cloud.subcategories}
+          index={4}
+          fullWidth
+        />
 
         <motion.div
           className="flex items-center justify-between border-t border-primary/20 pt-3 mt-2"
@@ -187,11 +199,11 @@ export default function SkillsPage() {
           <div className="flex gap-4 sm:gap-6 text-[10px] sm:text-xs font-sf-mono text-primary/40 uppercase tracking-wider">
             <span>5 CATEGORIES</span>
             <span className="text-primary/20">/</span>
-            <span>15 SUBCATEGORIES</span>
+            <span>{totalSubcategories} SUBCATEGORIES</span>
             <span className="text-primary/20">/</span>
-            <span>{totalSkills} TECHNOLOGIES</span>
+            <span>{totalTech} TECHNOLOGIES</span>
           </div>
-          <div className="text-[9px] sm:text-[10px] font-sf-mono text-primary/30">LAST.UPDATED" 2024</div>
+          <div className="text-[9px] sm:text-[10px] font-sf-mono text-primary/30">LAST.UPDATED: 2024</div>
         </motion.div>
       </div>
     </PageLayout>
