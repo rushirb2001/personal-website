@@ -50,7 +50,7 @@ export default function BlogPostPage() {
       // After expansion completes (600ms), start revealing
       const timer = setTimeout(() => {
         setAnimationPhase("revealing")
-      }, 600)
+      }, 550)
       return () => clearTimeout(timer)
     }
   }, [expandRect, animationPhase])
@@ -59,7 +59,7 @@ export default function BlogPostPage() {
     if (animationPhase === "revealing") {
       const timer = setTimeout(() => {
         setAnimationPhase("complete")
-      }, 300)
+      }, 50)
       return () => clearTimeout(timer)
     }
   }, [animationPhase])
@@ -144,12 +144,12 @@ export default function BlogPostPage() {
             {/* Scrollable Content Inside Window */}
             <div className="h-full overflow-y-auto p-6">
               <motion.div
-                initial={{ filter: "blur(8px)", opacity: 0 }}
+                initial={{ filter: "blur(4px)", opacity: 0.8 }}
                 animate={{
-                  filter: animationPhase === "complete" ? "blur(0px)" : "blur(8px)",
-                  opacity: animationPhase !== "expanding" ? 1 : 0,
+                  filter: animationPhase === "complete" ? "blur(0px)" : "blur(4px)",
+                  opacity: animationPhase !== "expanding" ? 1 : 0.8,
                 }}
-                transition={{ duration: 0.3, ease: [0.32, 0.72, 0, 1] }}
+                transition={{ duration: 0.12, ease: "easeOut" }}
               >
                 <div className="flex items-center mb-4">
                   <FileText className="h-4 w-4 mr-2 text-primary/70" />
