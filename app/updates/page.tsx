@@ -41,7 +41,7 @@ export default function UpdatesPage() {
   }>({ show: false, startRect: { top: 0, left: 0, width: 0, height: 0 }, endRect: null, postData: null })
 
   const [cardRevealed, setCardRevealed] = useState<string | null>(null)
-  const [animationComplete, setAnimationComplete] = useState(false)
+  const [collapseStarted, setCollapseStarted] = useState(false)
 
   const allTags = Array.from(new Set(posts.flatMap((post) => post.tags)))
 
@@ -62,59 +62,55 @@ export default function UpdatesPage() {
       const postData = JSON.parse(collapsePostData)
 
       setReturningPostId(collapsePostId)
+      setCollapseStarted(true)
 
       sessionStorage.removeItem("collapseToRect")
       sessionStorage.removeItem("collapseFromPost")
       sessionStorage.removeItem("collapsePostData")
 
       requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          requestAnimationFrame(() => {
-            const targetElement = articleRefs.current.get(collapsePostId)
-            if (targetElement) {
-              const endRect = targetElement.getBoundingClientRect()
+        const targetElement = articleRefs.current.get(collapsePostId)
+        if (targetElement) {
+          const endRect = targetElement.getBoundingClientRect()
 
-              const startRect = {
-                top: 152,
-                left: Math.max(16, (window.innerWidth - Math.min(window.innerWidth - 32, 768)) / 2),
-                width: Math.min(window.innerWidth - 32, 768),
-                height: window.innerHeight - 152 - 64,
-              }
+          const startRect = {
+            top: 152,
+            left: Math.max(16, (window.innerWidth - Math.min(window.innerWidth - 32, 768)) / 2),
+            width: Math.min(window.innerWidth - 32, 768),
+            height: window.innerHeight - 152 - 64,
+          }
 
-              setCollapseAnimation({
-                show: true,
-                startRect,
-                endRect: {
-                  top: endRect.top,
-                  left: endRect.left,
-                  width: endRect.width,
-                  height: endRect.height,
-                },
-                postData,
-              })
+          setCollapseAnimation({
+            show: true,
+            startRect,
+            endRect: {
+              top: endRect.top,
+              left: endRect.left,
+              width: endRect.width,
+              height: endRect.height,
+            },
+            postData,
+          })
+
+          setTimeout(() => {
+            setCollapseAnimation((prev) => ({ ...prev, show: false }))
+            setCardRevealed(collapsePostId)
+
+            setTimeout(() => {
+              setCollapseStarted(false)
+              setReturningPostId(null)
+              setHighlightedPostId(collapsePostId)
 
               setTimeout(() => {
-                setAnimationComplete(true)
-
-                // Small delay before hiding overlay and showing card
-                setTimeout(() => {
-                  setCollapseAnimation((prev) => ({ ...prev, show: false }))
-                  setCardRevealed(collapsePostId)
-                  setReturningPostId(null)
-                  setHighlightedPostId(collapsePostId)
-
-                  setTimeout(() => {
-                    setHighlightedPostId(null)
-                    setCardRevealed(null)
-                    setAnimationComplete(false)
-                  }, 400)
-                }, 80)
-              }, 750)
-            } else {
-              setReturningPostId(null)
-            }
-          })
-        })
+                setHighlightedPostId(null)
+                setCardRevealed(null)
+              }, 400)
+            }, 50)
+          }, 700)
+        } else {
+          setReturningPostId(null)
+          setCollapseStarted(false)
+        }
       })
     }
   }, [])
@@ -141,6 +137,10 @@ export default function UpdatesPage() {
     }
   }
 
+  const isCardHidden = (postId: string) => {
+    return returningPostId === postId && collapseStarted && cardRevealed !== postId
+  }
+
   return (
     <PageLayout title="BLOG" subtitle="ARTICLES, DAILY BLOGS AND LIFE UPDATES">
       <AnimatePresence>
@@ -161,9 +161,9 @@ export default function UpdatesPage() {
               height: collapseAnimation.endRect.height,
               opacity: 1,
             }}
-            exit={{ opacity: 0, transition: { duration: 0.1 } }}
+            exit={{ opacity: 0, transition: { duration: 0.08 } }}
             transition={{
-              duration: 0.75,
+              duration: 0.7,
               ease: [0.22, 1, 0.36, 1],
             }}
           >
@@ -171,7 +171,7 @@ export default function UpdatesPage() {
               className="p-4 h-full"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 0.35, duration: 0.4, ease: "easeOut" }}
+              transition={{ delay: 0.3, duration: 0.35, ease: "easeOut" }}
             >
               <div className="flex justify-between items-start mb-2">
                 <h2 className="text-sm font-sf-mono font-medium line-clamp-1">{collapseAnimation.postData.title}</h2>
@@ -300,8 +300,8 @@ export default function UpdatesPage() {
                     : "border-primary/20 hover:border-primary/40"
                 }`}
                 style={{
-                  opacity: returningPostId === post.id && !cardRevealed ? 0 : undefined,
-                  visibility: returningPostId === post.id && !cardRevealed ? "hidden" : undefined,
+                  opacity: isCardHidden(post.id) ? 0 : undefined,
+                  visibility: isCardHidden(post.id) ? "hidden" : undefined,
                 }}
                 onClick={(e) => handleArticleClick(e, post)}
               >

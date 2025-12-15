@@ -26,7 +26,7 @@ export default function BlogPostPage() {
   const [originalRect, setOriginalRect] = useState<{ top: number; left: number; width: number; height: number } | null>(
     null,
   )
-  const [isNavigatingBack, setIsNavigatingBack] = useState(false)
+  const [reversePhase, setReversePhase] = useState<"idle" | "text-reverse" | "blank" | "nav-up" | "navigating">("idle")
 
   useEffect(() => {
     const stored = sessionStorage.getItem("expandRect")
@@ -70,11 +70,39 @@ export default function BlogPostPage() {
     }
   }, [animationPhase])
 
+  useEffect(() => {
+    if (reversePhase === "text-reverse") {
+      // Text reverse animation takes 300ms
+      const timer = setTimeout(() => {
+        setReversePhase("blank")
+      }, 300)
+      return () => clearTimeout(timer)
+    }
+  }, [reversePhase])
+
+  useEffect(() => {
+    if (reversePhase === "blank") {
+      // Small delay then pull up nav
+      const timer = setTimeout(() => {
+        setReversePhase("nav-up")
+      }, 50)
+      return () => clearTimeout(timer)
+    }
+  }, [reversePhase])
+
+  useEffect(() => {
+    if (reversePhase === "nav-up") {
+      // Nav pulls up over 250ms, then navigate
+      const timer = setTimeout(() => {
+        setReversePhase("navigating")
+        router.push("/updates")
+      }, 250)
+      return () => clearTimeout(timer)
+    }
+  }, [reversePhase, router])
+
   const handleBackToUpdates = () => {
     if (originalRect && post) {
-      setAnimationPhase("collapsing")
-      setIsNavigatingBack(true)
-
       // Store data for updates page collapse animation
       sessionStorage.setItem("collapseToRect", JSON.stringify(originalRect))
       sessionStorage.setItem("collapseFromPost", post.id)
@@ -89,9 +117,7 @@ export default function BlogPostPage() {
         }),
       )
 
-      setTimeout(() => {
-        router.push("/updates")
-      }, 50)
+      setReversePhase("text-reverse")
     } else {
       router.push("/updates")
     }
@@ -106,6 +132,13 @@ export default function BlogPostPage() {
         delayChildren: 0.05,
       },
     },
+    exit: {
+      opacity: 0,
+      transition: {
+        staggerChildren: 0.05,
+        staggerDirection: -1,
+      },
+    },
   }
 
   const itemVariants = {
@@ -117,6 +150,15 @@ export default function BlogPostPage() {
       transition: {
         duration: 0.35,
         ease: [0.25, 0.46, 0.45, 0.94],
+      },
+    },
+    exit: {
+      opacity: 0,
+      y: 15,
+      filter: "blur(4px)",
+      transition: {
+        duration: 0.2,
+        ease: [0.55, 0, 1, 0.45],
       },
     },
   }
@@ -137,6 +179,9 @@ export default function BlogPostPage() {
     )
   }
 
+  const showContent = reversePhase === "idle" && (animationPhase === "revealing" || animationPhase === "complete")
+  const isReversing = reversePhase !== "idle"
+
   return (
     <>
       {/* Navigation bar drops down from top */}
@@ -144,16 +189,17 @@ export default function BlogPostPage() {
         className="fixed top-14 md:top-16 left-0 right-0 z-40 bg-background dark:bg-eerie-black border-b border-primary/20"
         initial={{ y: -60, opacity: 0 }}
         animate={{
-          y: isNavigatingBack ? -60 : 0,
-          opacity: isNavigatingBack ? 0 : 1,
+          y: reversePhase === "nav-up" || reversePhase === "navigating" ? -60 : 0,
+          opacity: reversePhase === "nav-up" || reversePhase === "navigating" ? 0 : 1,
         }}
-        transition={{ duration: 0.3, ease: [0.32, 0.72, 0, 1], delay: isNavigatingBack ? 0 : 0.1 }}
+        transition={{ duration: 0.25, ease: [0.32, 0.72, 0, 1], delay: reversePhase === "idle" ? 0.1 : 0 }}
       >
         <div className="container max-w-3xl mx-auto px-4 py-4 flex justify-between">
           <Button
             variant="outline"
             className="rounded-none border-primary/20 text-xs font-sf-mono flex items-center bg-transparent"
             onClick={handleBackToUpdates}
+            disabled={isReversing}
           >
             <ArrowLeft className="mr-1 h-3 w-3" />
             BACK TO UPDATES
@@ -163,6 +209,7 @@ export default function BlogPostPage() {
             variant="outline"
             className="rounded-none border-primary/20 text-xs font-sf-mono bg-transparent"
             onClick={() => navigateTo("/")}
+            disabled={isReversing}
           >
             RETURN TO MAIN SYSTEM
           </Button>
@@ -193,7 +240,7 @@ export default function BlogPostPage() {
         />
       )}
 
-      {isNavigatingBack && (
+      {(reversePhase === "blank" || reversePhase === "nav-up" || reversePhase === "navigating") && (
         <motion.div
           className="fixed z-[100] border border-primary/20 bg-background dark:bg-eerie-black"
           style={{
@@ -203,6 +250,8 @@ export default function BlogPostPage() {
             width: "min(100vw - 2rem, 48rem)",
             height: "calc(100vh - 9.5rem - 4rem)",
           }}
+          initial={{ opacity: 1 }}
+          animate={{ opacity: 1 }}
         />
       )}
 
@@ -211,11 +260,11 @@ export default function BlogPostPage() {
         className="fixed top-[9.5rem] left-0 right-0 bottom-16 z-30"
         initial={{ opacity: 0 }}
         animate={{
-          opacity: animationPhase === "expanding" || animationPhase === "collapsing" ? 0 : 1,
+          opacity: animationPhase === "expanding" ? 0 : 1,
         }}
         transition={{ duration: 0.15 }}
         style={{
-          visibility: animationPhase === "expanding" || animationPhase === "collapsing" ? "hidden" : "visible",
+          visibility: animationPhase === "expanding" ? "hidden" : "visible",
         }}
       >
         <div className="container max-w-3xl mx-auto px-4 h-full">
@@ -225,7 +274,7 @@ export default function BlogPostPage() {
               <motion.div
                 variants={containerVariants}
                 initial="hidden"
-                animate={animationPhase === "complete" || animationPhase === "revealing" ? "visible" : "hidden"}
+                animate={showContent ? "visible" : isReversing ? "exit" : "hidden"}
               >
                 <motion.div variants={itemVariants} className="flex items-center mb-4">
                   <FileText className="h-4 w-4 mr-2 text-primary/70" />
