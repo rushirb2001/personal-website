@@ -66,7 +66,7 @@ function LeafBranch({ isLast = false }: { isLast?: boolean }) {
 function SkillLeaf({ name, index, isHovered }: { name: string; index: number; isHovered: boolean }) {
   return (
     <motion.span
-      className="inline-flex items-center px-2.5 py-1 text-xs font-sf-mono bg-primary/5 border border-primary/15 hover:bg-primary/10 hover:border-primary/30 transition-all duration-150 cursor-default"
+      className="inline-flex items-center px-2.5 py-1.5 text-xs font-sf-mono bg-primary/5 border border-primary/15 hover:bg-primary/10 hover:border-primary/30 transition-all duration-150 cursor-default"
       initial={{ opacity: 0.6 }}
       animate={{ opacity: isHovered ? 1 : 0.6 }}
       transition={{ duration: 0.1, delay: index * 0.015 }}
@@ -79,12 +79,14 @@ function SkillLeaf({ name, index, isHovered }: { name: string; index: number; is
 function SubcategoryBranch({
   title,
   items,
+  isFirst,
   isLast,
   categoryIndex,
   subIndex,
 }: {
   title: string
   items: string[]
+  isFirst: boolean
   isLast: boolean
   categoryIndex: number
   subIndex: number
@@ -100,17 +102,20 @@ function SubcategoryBranch({
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Vertical connector line */}
-      <div className="flex flex-col items-center mr-1">
-        <div className={`w-px flex-1 ${subIndex === 0 ? "bg-transparent" : "bg-primary/20"}`} />
-        <div className="w-3 h-px bg-primary/20" />
-        <div className={`w-px flex-1 ${isLast ? "bg-transparent" : "bg-primary/20"}`} />
+      {/* Vertical trunk + horizontal branch connector */}
+      <div className="relative w-5 flex-shrink-0">
+        {/* Vertical line - top half */}
+        <div className={`absolute left-0 top-0 w-px bg-primary/25 ${isFirst ? "h-1/2 top-1/2" : "h-1/2"}`} />
+        {/* Vertical line - bottom half */}
+        <div className={`absolute left-0 bottom-0 w-px bg-primary/25 ${isLast ? "h-1/2 bottom-1/2" : "h-1/2"}`} />
+        {/* Horizontal branch */}
+        <div className="absolute left-0 top-1/2 -translate-y-1/2 w-5 h-px bg-primary/25" />
       </div>
 
       {/* Subcategory node */}
-      <div className="flex items-center gap-2 py-1">
+      <div className="flex items-center gap-3 py-2">
         <span
-          className={`text-xs font-sf-mono whitespace-nowrap px-2 py-1 border transition-all duration-150 ${
+          className={`text-xs font-sf-mono whitespace-nowrap px-2.5 py-1.5 border transition-all duration-150 ${
             isHovered
               ? "text-primary/80 border-primary/30 bg-primary/10"
               : "text-primary/40 border-primary/15 bg-primary/5"
@@ -120,10 +125,10 @@ function SubcategoryBranch({
         </span>
 
         {/* Horizontal connector to skills */}
-        <div className="w-3 h-px bg-primary/15" />
+        <div className="w-4 h-px bg-primary/20" />
 
         {/* Skills leaf nodes */}
-        <div className="flex flex-wrap gap-1.5 items-center">
+        <div className="flex flex-wrap gap-2 items-center">
           {items.map((item, idx) => (
             <SkillLeaf key={idx} name={item} index={idx} isHovered={isHovered} />
           ))}
@@ -145,10 +150,11 @@ function CategoryTree({
   index: number
 }) {
   const [isHovered, setIsHovered] = useState(false)
+  const subcatEntries = subcategories ? Object.entries(subcategories) : []
 
   return (
     <motion.div
-      className="flex items-start"
+      className="flex items-start mb-4"
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25, delay: index * 0.08 }}
@@ -160,7 +166,7 @@ function CategoryTree({
         onMouseLeave={() => setIsHovered(false)}
       >
         <div
-          className={`px-3 py-1.5 border text-sm font-sf-mono font-medium tracking-wide transition-all duration-150 ${
+          className={`px-3 py-2 border text-sm font-sf-mono font-medium tracking-wide transition-all duration-150 ${
             isHovered
               ? "border-primary/40 bg-primary/10 text-primary"
               : "border-primary/25 bg-primary/5 text-primary/70"
@@ -169,25 +175,26 @@ function CategoryTree({
           {title}
         </div>
         {/* Connector line from root */}
-        <div className="w-4 h-px bg-primary/20" />
+        <div className="w-5 h-px bg-primary/25" />
       </div>
 
       {/* Branches */}
       <div className="flex flex-col">
         {subcategories ? (
-          Object.entries(subcategories).map(([subcat, subItems], idx) => (
+          subcatEntries.map(([subcat, subItems], idx) => (
             <SubcategoryBranch
               key={subcat}
               title={subcat}
               items={subItems}
-              isLast={idx === Object.entries(subcategories).length - 1}
+              isFirst={idx === 0}
+              isLast={idx === subcatEntries.length - 1}
               categoryIndex={index}
               subIndex={idx}
             />
           ))
         ) : items ? (
-          <div className="flex items-center gap-2 py-1">
-            <div className="flex flex-wrap gap-1.5">
+          <div className="flex items-center gap-3 py-2">
+            <div className="flex flex-wrap gap-2">
               {items.map((item, idx) => (
                 <SkillLeaf key={idx} name={item} index={idx} isHovered={isHovered} />
               ))}
@@ -202,7 +209,7 @@ function CategoryTree({
 export default function SkillsPage() {
   return (
     <PageLayout title="SKILLS" subtitle="TECHNICAL EXPERTISE">
-      <div className="flex flex-col gap-5 py-6 overflow-x-auto">
+      <div className="flex flex-col gap-8 py-6 overflow-x-auto">
         {/* Languages - flat items */}
         <CategoryTree title={skillsData.languages.title} items={skillsData.languages.items} index={0} />
 
