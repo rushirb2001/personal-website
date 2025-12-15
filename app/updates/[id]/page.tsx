@@ -276,7 +276,6 @@ export default function BlogPostPage() {
 
       {/* Main content container */}
       <motion.div
-        ref={containerRef}
         className="fixed top-[9.5rem] left-0 right-0 bottom-16 z-30"
         initial={{ opacity: 0 }}
         animate={{
@@ -288,7 +287,10 @@ export default function BlogPostPage() {
         }}
       >
         <div className="container max-w-3xl mx-auto px-4 h-full">
-          <div className="h-full border border-primary/20 bg-background dark:bg-eerie-black/50 overflow-hidden">
+          <div
+            className="h-full border border-primary/20 bg-background dark:bg-eerie-black/50 overflow-hidden"
+            ref={containerRef}
+          >
             {/* Scrollable Content Inside Window */}
             <div className="h-full overflow-y-auto p-6">
               <motion.div
