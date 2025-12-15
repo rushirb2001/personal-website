@@ -8,7 +8,7 @@ interface PageLayoutProps {
 
 export function PageLayout({ title, subtitle, children }: PageLayoutProps) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-[1fr_2fr] gap-3 sm:gap-4 md:gap-6 lg:gap-8 py-3 sm:py-4 md:py-6 lg:py-8 px-3 sm:px-4 md:px-6 lg:px-8 max-w-7xl mx-auto min-h-[calc(100vh-120px)]">
+    <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-[1fr_2fr] gap-3 sm:gap-4 md:gap-6 lg:gap-8 py-3 sm:py-4 md:py-6 lg:py-8 px-3 sm:px-4 md:px-6 lg:px-8 max-w-7xl mx-auto">
       <div className="md:sticky md:top-20 lg:top-24 self-start flex flex-col justify-center md:h-auto lg:h-[calc(100vh-12rem)] md:mb-4 lg:mb-0">
         <h1 className="relative pb-2 text-lg sm:text-xl md:text-xl lg:text-2xl font-medium tracking-tight uppercase before:content-[''] before:absolute before:top-0 before:left-0 before:w-20 sm:before:w-24 md:before:w-28 lg:before:w-32 before:h-0.5 before:bg-primary/70">
           {title}
@@ -17,8 +17,8 @@ export function PageLayout({ title, subtitle, children }: PageLayoutProps) {
           {subtitle}
         </p>
       </div>
-      <div className="w-full max-w-full flex flex-col justify-start">
-        <div className="break-words overflow-hidden min-h-[50vh] sm:min-h-0 flex flex-col items-center sm:items-start justify-center sm:justify-start pt-0 sm:pt-3 md:pt-4 lg:pt-8 px-0 sm:px-2 md:px-4 lg:px-0">
+      <div className="w-full max-w-full flex flex-col justify-center">
+        <div className="break-words overflow-hidden pt-2 sm:pt-3 md:pt-4 lg:pt-8 px-0 sm:px-2 md:px-4 lg:px-0">
           {children}
         </div>
       </div>

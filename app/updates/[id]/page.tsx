@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import { useParams, useRouter } from "next/navigation"
 import { motion } from "framer-motion"
 import { getPostById, type BlogPost } from "@/lib/blog-data"
@@ -16,6 +16,7 @@ export default function BlogPostPage() {
   const { navigateTo } = useNavigation()
   const [post, setPost] = useState<BlogPost | null>(null)
   const [loading, setLoading] = useState(true)
+  const containerRef = useRef<HTMLDivElement>(null)
 
   const [animationPhase, setAnimationPhase] = useState<"expanding" | "revealing" | "complete" | "collapsing">(
     "expanding",
@@ -103,7 +104,21 @@ export default function BlogPostPage() {
 
   const handleBackToUpdates = () => {
     if (originalRect && post) {
-      // Store data for updates page collapse animation
+      // Measure the current container element
+      if (containerRef.current) {
+        const containerRect = containerRef.current.getBoundingClientRect()
+        sessionStorage.setItem(
+          "collapseContainerRect",
+          JSON.stringify({
+            top: containerRect.top,
+            left: containerRect.left,
+            width: containerRect.width,
+            height: containerRect.height,
+          }),
+        )
+      }
+
+      // Store original card rect for the end position
       sessionStorage.setItem("collapseToRect", JSON.stringify(originalRect))
       sessionStorage.setItem("collapseFromPost", post.id)
       sessionStorage.setItem(
@@ -192,10 +207,10 @@ export default function BlogPostPage() {
           y: reversePhase === "nav-up" || reversePhase === "navigating" ? -60 : 0,
           opacity: reversePhase === "nav-up" || reversePhase === "navigating" ? 0 : 1,
         }}
-        transition={{ 
-          duration: 0.25, 
-          ease: [0.32, 0.72, 0, 1], 
-          delay: reversePhase === "idle" ? 0.1 : (reversePhase === "nav-up" || reversePhase === "navigating" ? 0 : 0.7)
+        transition={{
+          duration: 0.25,
+          ease: [0.32, 0.72, 0, 1],
+          delay: reversePhase === "idle" ? 0.1 : reversePhase === "nav-up" || reversePhase === "navigating" ? 0 : 0.7,
         }}
       >
         <div className="container max-w-3xl mx-auto px-4 py-4 flex justify-between">
@@ -261,6 +276,7 @@ export default function BlogPostPage() {
 
       {/* Main content container */}
       <motion.div
+        ref={containerRef}
         className="fixed top-[9.5rem] left-0 right-0 bottom-16 z-30"
         initial={{ opacity: 0 }}
         animate={{

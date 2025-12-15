@@ -11,6 +11,33 @@ import { Button } from "@/components/ui/button"
 import { PageLayout } from "@/components/layout/page-layout"
 import { useRouter } from "next/navigation"
 
+function getInitialCollapseAnimation(): {
+  show: boolean
+  startRect: { top: number; left: number; width: number; height: number }
+  endRect: { top: number; left: number; width: number; height: number } | null
+  postData: BlogPost | null
+} {
+  if (typeof window !== "undefined") {
+    const containerRect = sessionStorage.getItem("collapseContainerRect")
+    const collapseRect = sessionStorage.getItem("collapseToRect")
+    const collapsePostData = sessionStorage.getItem("collapsePostData")
+
+    if (containerRect && collapseRect && collapsePostData) {
+      const startRect = JSON.parse(containerRect)
+      const endRect = JSON.parse(collapseRect)
+      const postData = JSON.parse(collapsePostData)
+
+      return {
+        show: true,
+        startRect,
+        endRect,
+        postData,
+      }
+    }
+  }
+  return { show: false, startRect: { top: 0, left: 0, width: 0, height: 0 }, endRect: null, postData: null }
+}
+
 function getInitialReturningPostId(): string | null {
   if (typeof window !== "undefined") {
     const collapsePostId = sessionStorage.getItem("collapseFromPost")
@@ -43,15 +70,15 @@ export default function UpdatesPage() {
   const [highlightedPostId, setHighlightedPostId] = useState<string | null>(null)
   const isReturningFromArticle = useRef(returningPostId !== null)
 
-  const [collapseAnimation, setCollapseAnimation] = useState<{
-    show: boolean
-    startRect: { top: number; left: number; width: number; height: number }
-    endRect: { top: number; left: number; width: number; height: number } | null
-    postData: BlogPost | null
-  }>({ show: false, startRect: { top: 0, left: 0, width: 0, height: 0 }, endRect: null, postData: null })
+  const [collapseAnimation, setCollapseAnimation] = useState(() => getInitialCollapseAnimation())
 
   const [cardRevealed, setCardRevealed] = useState<string | null>(null)
-  const [collapseStarted, setCollapseStarted] = useState(false)
+  const [collapseStarted, setCollapseStarted] = useState(() => {
+    if (typeof window !== "undefined") {
+      return sessionStorage.getItem("collapseFromPost") !== null
+    }
+    return false
+  })
 
   const allTags = Array.from(new Set(posts.flatMap((post) => post.tags)))
 
@@ -67,69 +94,50 @@ export default function UpdatesPage() {
   }
 
   useEffect(() => {
-    const collapseRect = sessionStorage.getItem("collapseToRect")
     const collapsePostId = sessionStorage.getItem("collapseFromPost")
-    const collapsePostData = sessionStorage.getItem("collapsePostData")
 
-    if (collapseRect && collapsePostId && collapsePostData) {
-      const originalCardRect = JSON.parse(collapseRect)
-      const postData = JSON.parse(collapsePostData)
-
-      setReturningPostId(collapsePostId)
-      setCollapseStarted(true)
-
+    if (collapsePostId && collapseAnimation.show) {
+      // Clear sessionStorage
+      sessionStorage.removeItem("collapseContainerRect")
       sessionStorage.removeItem("collapseToRect")
       sessionStorage.removeItem("collapseFromPost")
       sessionStorage.removeItem("collapsePostData")
 
+      // Update endRect with actual card position after render
       requestAnimationFrame(() => {
-        const targetElement = articleRefs.current.get(collapsePostId)
-        if (targetElement) {
-          const endRect = targetElement.getBoundingClientRect()
-
-          // Calculate width to match "min(100vw - 2rem, 48rem)"
-          const viewportWidth = document.documentElement.clientWidth // This matches vw without scrollbar
-          const calculatedWidth = Math.min(viewportWidth - 32, 768)
-
-          const startRect = {
-            top: 152,
-            left: Math.max(16, (viewportWidth - calculatedWidth) / 2),
-            width: calculatedWidth,
-            height: window.innerHeight - 152 - 64,
+        requestAnimationFrame(() => {
+          const targetElement = articleRefs.current.get(collapsePostId)
+          if (targetElement) {
+            const endRect = targetElement.getBoundingClientRect()
+            setCollapseAnimation((prev) => ({
+              ...prev,
+              endRect: {
+                top: endRect.top,
+                left: endRect.left,
+                width: endRect.width,
+                height: endRect.height,
+              },
+            }))
           }
+        })
+      })
 
-          setCollapseAnimation({
-            show: true,
-            startRect,
-            endRect: {
-              top: endRect.top,
-              left: endRect.left,
-              width: endRect.width,
-              height: endRect.height,
-            },
-            postData,
-          })
+      // Animation completion timer
+      setTimeout(() => {
+        setCollapseAnimation((prev) => ({ ...prev, show: false }))
+        setCardRevealed(collapsePostId)
+
+        setTimeout(() => {
+          setCollapseStarted(false)
+          setReturningPostId(null)
+          setHighlightedPostId(collapsePostId)
 
           setTimeout(() => {
-            setCollapseAnimation((prev) => ({ ...prev, show: false }))
-            setCardRevealed(collapsePostId)
-
-            setTimeout(() => {
-              setCollapseStarted(false)
-              setReturningPostId(null)
-              setHighlightedPostId(collapsePostId)
-
-              setTimeout(() => {
-                setHighlightedPostId(null)
-                setCardRevealed(null)
-              }, 400)
-            }, 50)
-          }, 700)
-        } else {
-          setReturningPostId(null)
-          setCollapseStarted(false)
-        }
-      })
+            setHighlightedPostId(null)
+            setCardRevealed(null)
+          }, 400)
+        }, 50)
+      }, 700)
     }
   }, [])
 
