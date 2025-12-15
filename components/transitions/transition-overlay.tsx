@@ -1,184 +1,277 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useMemo } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { useNavigation } from "@/contexts/navigation-context"
-import { SeveranceLogo } from "@/components/ui/severance-logo"
-
-// Systemic, abrupt transitions
-const systemicTransition = {
-  duration: 0.3,
-  ease: [0.4, 0, 1, 1], // Abrupt cubic-bezier
-}
 
 export function TransitionOverlay() {
   const { isTransitioning, targetPath } = useNavigation()
-  const [text, setText] = useState("")
-  const [scanLines, setScanLines] = useState(false)
-  const [glitch, setGlitch] = useState(false)
-  const [progress, setProgress] = useState(0)
   const [isMounted, setIsMounted] = useState(false)
+  const [phase, setPhase] = useState<"enter" | "hold" | "exit">("enter")
 
-  // Set mounted state after initial render
   useEffect(() => {
     setIsMounted(true)
-
-    // Listen for easter egg trigger events
-    const handleEasterEggTrigger = () => {
-      setGlitch(true)
-      setTimeout(() => setGlitch(false), 500)
-    }
-
-    window.addEventListener("easterEggTrigger", handleEasterEggTrigger)
-
-    // Clean up
-    return () => {
-      window.removeEventListener("easterEggTrigger", handleEasterEggTrigger)
-    }
   }, [])
 
   // Format display path
   const displayPath = targetPath ? targetPath.slice(1).toUpperCase() || "HOME" : "LOADING"
 
-  // Typewriter effect for text - more mechanical and abrupt
+  // Phase management
   useEffect(() => {
-    if (!isTransitioning) {
-      setText("")
-      setProgress(0)
-      setScanLines(false)
-      return
+    if (isTransitioning) {
+      setPhase("enter")
+      const holdTimer = setTimeout(() => setPhase("hold"), 300)
+      return () => clearTimeout(holdTimer)
+    } else {
+      setPhase("exit")
     }
+  }, [isTransitioning])
 
-    const message = `SWITCHING TO ID:/${displayPath}`
-    let currentText = ""
-    let charIndex = 0
+  // Generate random positions for floating particles
+  const particles = useMemo(
+    () =>
+      Array.from({ length: 20 }).map((_, i) => ({
+        id: i,
+        x: Math.random() * 100,
+        y: Math.random() * 100,
+        size: Math.random() * 3 + 1,
+        delay: Math.random() * 0.5,
+        duration: Math.random() * 2 + 1,
+      })),
+    [],
+  )
 
-    // Reset states
-    setText("")
-    setProgress(0)
-    setScanLines(false)
-
-    // Start typewriter effect - constant speed, no easing
-    const typeInterval = setInterval(() => {
-      if (charIndex < message.length) {
-        currentText += message[charIndex]
-        setText(currentText)
-        charIndex++
-        // Linear progress
-        setProgress((charIndex / message.length) * 100)
-      } else {
-        clearInterval(typeInterval)
-        setScanLines(true)
-
-        // Abrupt, mechanical glitch effects
-        const glitchInterval = setInterval(() => {
-          if (Math.random() > 0.7) {
-            setGlitch(true)
-            setTimeout(() => setGlitch(false), 100) // Shorter glitch duration
-          }
-        }, 500)
-
-        return () => clearInterval(glitchInterval)
-      }
-    }, 35) // Consistent typing speed
-
-    return () => clearInterval(typeInterval)
-  }, [isTransitioning, displayPath])
+  // Generate horizontal lines
+  const lines = useMemo(
+    () =>
+      Array.from({ length: 8 }).map((_, i) => ({
+        id: i,
+        y: (i + 1) * 11,
+        delay: i * 0.05,
+      })),
+    [],
+  )
 
   return (
     <AnimatePresence>
       {isTransitioning && isMounted && (
         <motion.div
-          className="fixed inset-x-0 top-16 bottom-0 z-30 flex items-center justify-center backdrop-blur-md bg-background/80"
+          className="fixed inset-x-0 top-14 md:top-16 bottom-0 z-30 overflow-hidden"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={systemicTransition} // Abrupt transition
+          transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
         >
-          {/* Terminal window */}
+          {/* Fluid gradient background */}
           <motion.div
-            className={`w-full max-w-lg border border-primary/30 bg-background text-foreground p-6 font-sf-mono relative overflow-hidden ${glitch ? "animate-systemic-glitch" : ""}`}
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            transition={{
-              height: { ...systemicTransition, duration: 0.2 }, // Even faster height transition
-              opacity: systemicTransition,
-            }}
-          >
-            {/* Header */}
-            <div className="border-b border-primary/20 pb-2 mb-4 flex justify-between items-center">
-              <div className="text-xs">CHANGING WEBVIEW</div>
-              <div className="text-xs">ID: NAV-{Math.floor(Math.random() * 1000)}</div>
-            </div>
+            className="absolute inset-0 bg-background"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+          />
 
-            {/* Content */}
-            <div className="space-y-4">
-              <div className="h-24 flex flex-col justify-center">
-                <div className="text-center">
-                  <div className="flex justify-center mb-3">
-                    <SeveranceLogo size={40} glitch={glitch} />
-                  </div>
-                  <div className="text-sm mb-2 text-primary/70">COMPILING PAGE PIXELS</div>
-                  <div className="text-lg animate-mechanical-flicker">{text}</div>
-                  <div className="h-0.5 bg-primary/20 mt-4 relative">
-                    <div
-                      className="absolute top-0 left-0 h-full bg-primary/50"
-                      style={{
-                        width: `${progress}%`,
-                        transition: "width 0.1s linear", // Linear, abrupt progress bar
-                      }}
-                    ></div>
-                  </div>
-                </div>
-              </div>
-            </div>
+          {/* Animated horizontal lines sweeping across */}
+          <div className="absolute inset-0 overflow-hidden">
+            {lines.map((line) => (
+              <motion.div
+                key={line.id}
+                className="absolute left-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent"
+                style={{ top: `${line.y}%`, width: "100%" }}
+                initial={{ x: "-100%", opacity: 0 }}
+                animate={{
+                  x: ["100%", "-100%"],
+                  opacity: [0, 1, 1, 0],
+                }}
+                transition={{
+                  duration: 2,
+                  delay: line.delay,
+                  repeat: Number.POSITIVE_INFINITY,
+                  ease: "linear",
+                }}
+              />
+            ))}
+          </div>
 
-            {/* Footer */}
-            <div className="border-t border-primary/20 pt-2 mt-4 flex justify-between items-center text-xs">
-              <div>STATUS: TRACING RAYS</div>
-              <div className="flex items-center">
-                <div className="w-2 h-2 rounded-full bg-yellow-500 mr-2 animate-mechanical-pulse"></div>
-                <span>PLEASE WAIT</span>
-              </div>
-            </div>
+          {/* Floating particles */}
+          <div className="absolute inset-0 overflow-hidden">
+            {particles.map((particle) => (
+              <motion.div
+                key={particle.id}
+                className="absolute rounded-full bg-primary/20"
+                style={{
+                  left: `${particle.x}%`,
+                  top: `${particle.y}%`,
+                  width: particle.size,
+                  height: particle.size,
+                }}
+                initial={{ opacity: 0, scale: 0 }}
+                animate={{
+                  opacity: [0, 0.6, 0],
+                  scale: [0, 1, 0],
+                  y: [0, -30, -60],
+                }}
+                transition={{
+                  duration: particle.duration,
+                  delay: particle.delay,
+                  repeat: Number.POSITIVE_INFINITY,
+                  ease: "easeOut",
+                }}
+              />
+            ))}
+          </div>
 
-            {/* Scan lines overlay */}
-            {scanLines && <div className="absolute inset-0 bg-scan-lines opacity-20 pointer-events-none"></div>}
-          </motion.div>
+          {/* Central content */}
+          <div className="absolute inset-0 flex items-center justify-center">
+            <motion.div
+              className="relative flex flex-col items-center"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+            >
+              {/* Morphing circle loader */}
+              <div className="relative w-16 h-16 mb-6">
+                {/* Outer ring */}
+                <motion.div
+                  className="absolute inset-0 border border-primary/30 rounded-full"
+                  animate={{
+                    scale: [1, 1.2, 1],
+                    opacity: [0.3, 0.6, 0.3],
+                  }}
+                  transition={{
+                    duration: 1.5,
+                    repeat: Number.POSITIVE_INFINITY,
+                    ease: "easeInOut",
+                  }}
+                />
 
-          {/* Background scan lines */}
-          <div className="absolute inset-0 bg-scan-lines opacity-10 pointer-events-none"></div>
+                {/* Middle ring */}
+                <motion.div
+                  className="absolute inset-2 border border-primary/50 rounded-full"
+                  animate={{
+                    scale: [1.1, 0.9, 1.1],
+                    rotate: [0, 180, 360],
+                  }}
+                  transition={{
+                    duration: 2,
+                    repeat: Number.POSITIVE_INFINITY,
+                    ease: "linear",
+                  }}
+                />
 
-          {/* Hidden easter egg - only visible during glitches */}
-          <div
-            className={`absolute inset-0 flex items-center justify-center overflow-hidden opacity-0 ${
-              glitch ? "easter-egg-reveal" : ""
-            } pointer-events-none z-20`}
-          >
-            <div className="relative w-full h-full">
-              <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <div className="text-xs font-sf-mono tracking-widest text-center max-w-md p-4 easter-egg-text">
-                  <div className="mb-2 text-sm">CONTINGENCY PROTOCOL ACTIVATED</div>
-                  <div className="opacity-70">
-                    SUBJECT ID: RB-042
-                    <br />
-                    MEMORY PARTITION BREACH DETECTED
-                    <br />
-                    INNIE/OUTIE SEPARATION COMPROMISED
-                    <br />
-                    PLEASE REPORT TO WELLNESS CENTER IMMEDIATELY
-                  </div>
-                </div>
-              </div>
-              <div className="absolute inset-0 grid grid-cols-12 grid-rows-12 opacity-20">
-                {Array.from({ length: 144 }).map((_, i) => (
-                  <div key={i} className="border border-primary/10 flex items-center justify-center">
-                    {i % 13 === 0 && <div className="w-1 h-1 bg-red-500 rounded-full"></div>}
-                  </div>
+                {/* Inner dot */}
+                <motion.div
+                  className="absolute inset-0 flex items-center justify-center"
+                  animate={{
+                    scale: [0.8, 1.2, 0.8],
+                  }}
+                  transition={{
+                    duration: 1,
+                    repeat: Number.POSITIVE_INFINITY,
+                    ease: "easeInOut",
+                  }}
+                >
+                  <div className="w-2 h-2 rounded-full bg-primary/70" />
+                </motion.div>
+
+                {/* Orbiting dots */}
+                {[0, 1, 2].map((i) => (
+                  <motion.div
+                    key={i}
+                    className="absolute w-1.5 h-1.5 rounded-full bg-primary/50"
+                    style={{
+                      top: "50%",
+                      left: "50%",
+                      marginTop: -3,
+                      marginLeft: -3,
+                    }}
+                    animate={{
+                      x: [
+                        Math.cos((i * 120 * Math.PI) / 180) * 24,
+                        Math.cos(((i * 120 + 120) * Math.PI) / 180) * 24,
+                        Math.cos(((i * 120 + 240) * Math.PI) / 180) * 24,
+                        Math.cos((i * 120 * Math.PI) / 180) * 24,
+                      ],
+                      y: [
+                        Math.sin((i * 120 * Math.PI) / 180) * 24,
+                        Math.sin(((i * 120 + 120) * Math.PI) / 180) * 24,
+                        Math.sin(((i * 120 + 240) * Math.PI) / 180) * 24,
+                        Math.sin((i * 120 * Math.PI) / 180) * 24,
+                      ],
+                    }}
+                    transition={{
+                      duration: 2,
+                      repeat: Number.POSITIVE_INFINITY,
+                      ease: "linear",
+                    }}
+                  />
                 ))}
               </div>
-            </div>
+
+              {/* Path text with reveal animation */}
+              <motion.div
+                className="overflow-hidden"
+                initial={{ width: 0 }}
+                animate={{ width: "auto" }}
+                transition={{ duration: 0.5, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+              >
+                <motion.span
+                  className="block text-sm font-sf-mono tracking-widest text-primary/70 whitespace-nowrap"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.3, delay: 0.3 }}
+                >
+                  /{displayPath}
+                </motion.span>
+              </motion.div>
+
+              {/* Subtle loading bar */}
+              <motion.div
+                className="mt-4 h-px w-32 bg-primary/10 overflow-hidden rounded-full"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.4 }}
+              >
+                <motion.div
+                  className="h-full bg-primary/40"
+                  initial={{ x: "-100%" }}
+                  animate={{ x: "100%" }}
+                  transition={{
+                    duration: 1,
+                    repeat: Number.POSITIVE_INFINITY,
+                    ease: "easeInOut",
+                  }}
+                />
+              </motion.div>
+            </motion.div>
           </div>
+
+          {/* Corner accents */}
+          <motion.div
+            className="absolute top-4 left-4 w-8 h-8 border-l border-t border-primary/20"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.3, delay: 0.1 }}
+          />
+          <motion.div
+            className="absolute top-4 right-4 w-8 h-8 border-r border-t border-primary/20"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.3, delay: 0.15 }}
+          />
+          <motion.div
+            className="absolute bottom-4 left-4 w-8 h-8 border-l border-b border-primary/20"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.3, delay: 0.2 }}
+          />
+          <motion.div
+            className="absolute bottom-4 right-4 w-8 h-8 border-r border-b border-primary/20"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.3, delay: 0.25 }}
+          />
         </motion.div>
       )}
     </AnimatePresence>
