@@ -154,28 +154,35 @@ export default function SkillsPage() {
   return (
     <PageLayout title="SKILLS" subtitle="TECHNICAL EXPERTISE">
       <div className="flex flex-col gap-2 sm:gap-3 h-full">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-3 items-stretch">
-          <CategoryBlock
-            title={skillsData.languages.title}
-            subcategories={skillsData.languages.subcategories}
-            index={0}
-          />
-          <CategoryBlock
-            title={skillsData.trainEvalInfer.title}
-            subcategories={skillsData.trainEvalInfer.subcategories}
-            index={1}
-          />
-          <CategoryBlock
-            title={skillsData.frameworks.title}
-            subcategories={skillsData.frameworks.subcategories}
-            index={2}
-          />
-          <CategoryBlock
-            title={skillsData.databases.title}
-            subcategories={skillsData.databases.subcategories}
-            index={3}
-          />
+        <div className="flex flex-col md:flex-row gap-2 sm:gap-3 items-stretch">
+          {/* Left column - Languages + Frameworks stacked */}
+          <div className="flex flex-col gap-2 sm:gap-3 flex-1">
+            <CategoryBlock
+              title={skillsData.languages.title}
+              subcategories={skillsData.languages.subcategories}
+              index={0}
+            />
+            <CategoryBlock
+              title={skillsData.frameworks.title}
+              subcategories={skillsData.frameworks.subcategories}
+              index={2}
+            />
+          </div>
+          {/* Right column - Train/Eval/Infer + Databases stacked */}
+          <div className="flex flex-col gap-2 sm:gap-3 flex-1">
+            <CategoryBlock
+              title={skillsData.trainEvalInfer.title}
+              subcategories={skillsData.trainEvalInfer.subcategories}
+              index={1}
+            />
+            <CategoryBlock
+              title={skillsData.databases.title}
+              subcategories={skillsData.databases.subcategories}
+              index={3}
+            />
+          </div>
         </div>
+        {/* Cloud section stays full width */}
         <CategoryBlock
           title={skillsData.cloud.title}
           subcategories={skillsData.cloud.subcategories}

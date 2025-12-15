@@ -1,9 +1,10 @@
 "use client"
 
 import { useState } from "react"
-import { MapPin, Clock } from "lucide-react"
+import { MapPin } from "lucide-react"
 import { PageLayout } from "@/components/layout/page-layout"
 import { AcademicRecordModal } from "@/components/features/education/academic-record-modal"
+import { FileText, Lock, CheckCircle, Clock } from "lucide-react"
 
 export default function EducationPage() {
   const [selectedRecord, setSelectedRecord] = useState<number | null>(null)
@@ -58,89 +59,86 @@ export default function EducationPage() {
 
   return (
     <PageLayout title="EDUCATION" subtitle="ACADEMIC BACKGROUND">
-      <div className="h-full flex flex-col">
-        <div className="flex justify-between items-center mb-3 pb-2">
-          <div className="text-xs font-sf-mono flex items-center">
-            <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse mr-2"></div>
-            <span>DEGREES</span>
-          </div>
-          <div className="text-xs font-sf-mono">
-            SHOWING {education.length} RECORD{education.length !== 1 ? "S" : ""}
-          </div>
-        </div>
-        <div className="border-b border-primary/20 mb-3"></div>
-
-        <div className="flex-1 space-y-3">
-          {education.map((edu, index) => (
-            <div
-              key={index}
-              onClick={() => handleOpenRecord(index)}
-              className="border border-primary/20 hover:border-primary/50 bg-primary/5 hover:bg-primary/10 transition-all duration-200 cursor-pointer group p-3"
-            >
-              {/* Header Row */}
-              <div className="space-y-1 mb-2">
-                <div className="flex items-start justify-between gap-4">
-                  <h3 className="text-sm md:text-base font-medium leading-tight">{edu.institution}</h3>
-                  <div className="hidden sm:flex items-center gap-3 text-xs text-primary/60 font-sf-mono flex-shrink-0">
-                    <span className="flex items-center gap-1">
-                      <MapPin className="h-3 w-3" />
-                      {edu.id}
-                    </span>
-                    <span className="text-primary/40">|</span>
-                    <span className="flex items-center gap-1">
-                      <Clock className="h-3 w-3" />
-                      {edu.period}
-                    </span>
-                  </div>
-                  <div className="flex sm:hidden flex-col gap-1 text-xs text-primary/60 font-sf-mono text-right">
-                    <span className="flex items-center gap-1 justify-end">
-                      <MapPin className="h-3 w-3" />
-                      {edu.id}
-                    </span>
-                    <span className="flex items-center gap-1 justify-end">
-                      <Clock className="h-3 w-3" />
-                      {edu.period}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Degree badges */}
-                <div className="flex gap-1.5 flex-wrap">
-                  <span className="text-xs font-sf-mono bg-primary/10 border border-primary/20 px-2 py-0.5">
-                    {edu.degree}
-                  </span>
-                  <span
-                    className={`text-xs font-sf-mono px-2 py-0.5 ${
-                      edu.status === "GRADUATED"
-                        ? "bg-green-500/10 border border-green-500/30 text-green-600 dark:text-green-400"
-                        : "bg-primary/5 border border-primary/20"
-                    }`}
-                  >
-                    {edu.status}
-                  </span>
-                </div>
-              </div>
-
-              {/* Description */}
-              <p className="text-xs text-primary/70 mb-2 leading-relaxed">{edu.description}</p>
-
-              {/* Footer */}
-              <div className="flex items-center justify-between mt-2 pt-2 border-t border-primary/10 gap-2">
-                <div className="flex gap-1.5 min-w-0 flex-1">
-                  <div className="flex gap-1.5 flex-wrap max-h-[24px] overflow-hidden">
-                    <span className="text-xs font-sf-mono bg-primary/5 border border-primary/15 text-primary/60 px-1.5 py-0.5 whitespace-nowrap">
-                      {edu.field}
-                    </span>
-                  </div>
-                </div>
-                <span className="text-xs text-primary/50 group-hover:text-primary/70 transition-colors flex-shrink-0 whitespace-nowrap ml-2">
-                  VIEW FULL DETAILS →
-                </span>
-              </div>
+      <div className="flex flex-col items-center justify-center min-h-[calc(100vh-16rem)]">
+        <div className="w-full max-w-2xl mx-auto">
+          {/* Section header */}
+          <div className="mb-4 md:mb-6 border-b border-primary/20 pb-2 flex justify-between items-center">
+            <div className="text-xs font-sf-mono flex items-center">
+              <FileText className="h-3.5 w-3.5 mr-2 text-primary/70" />
+              <span>UNIVERSITY ACADEMICS </span>
             </div>
-          ))}
+            <div className="text-xs font-sf-mono flex items-center">
+              <Lock className="h-3.5 w-3.5 mr-2 text-primary/70" />
+              <span>VERIFIED</span>
+            </div>
+          </div>
+
+          {/* File records */}
+          <div className="space-y-4 md:space-y-6">
+            {education.map((edu, index) => (
+              <div
+                key={index}
+                onClick={() => handleOpenRecord(index)}
+                className="border border-primary/30 hover:border-primary/60 bg-primary/5 hover:bg-primary/10 transition-all duration-300 cursor-pointer group"
+              >
+                <div className="p-4 relative">
+                  {/* File ID and status */}
+                  <div className="flex justify-between items-center mb-3">
+                    <div className="flex justify-between text-xs font-sf-mono text-primary/70"><MapPin className="mr-2 h-4 w-4 align" />{edu.id}</div>
+                    <div className="flex items-center">
+                      {edu.status === "GRADUATED" ? (
+                        <>
+                          <CheckCircle className="h-3.5 w-3.5 mr-1.5 text-green-500" />
+                          <span className="text-xs font-sf-mono text-green-500">{edu.status}</span>
+                        </>
+                      ) : (
+                        <>
+                          <Clock className="h-3.5 w-3.5 mr-1.5 text-yellow-500" />
+                          <span className="text-xs font-sf-mono text-yellow-500">{edu.status}</span>
+                        </>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Main content */}
+                  <div className="grid grid-cols-[1fr_auto] gap-4">
+                    <div>
+                      <h3 className="text-base font-medium mb-1">{edu.institution}</h3>
+                      <p className="text-sm font-sf-mono text-primary/70">{edu.degree}</p>
+                      <p className="text-xs font-sf-mono text-primary/50 mt-1">{edu.period}</p>
+                    </div>
+                    <div className="flex items-center">
+                      <div className="w-16 h-16 border border-primary/20 flex items-center justify-center bg-secondary/30 dark:bg-eerie-darkgray/30 group-hover:bg-secondary/50 dark:group-hover:bg-eerie-darkgray/50 transition-colors">
+                        <div className="text-2xl font-sf-mono text-primary/40 group-hover:text-primary/60 transition-colors">
+                          {index === 0 ? "MS" : "BS"}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Footer */}
+                  <div className="mt-3 pt-2 border-t border-primary/10 flex justify-between items-center">
+                    <div className="text-xs font-sf-mono text-primary/50">{edu.field}</div>
+                    <div className="text-xs font-sf-mono text-primary/50 group-hover:text-primary/70 transition-colors flex items-center">
+                      <span className="mr-1">VIEW COMPLETE RECORD</span>
+                      <FileText className="h-3 w-3" />
+                    </div>
+                  </div>
+
+                  {/* Hover effects */}
+                  <div className="absolute inset-0 bg-scan-lines opacity-0 group-hover:opacity-10 pointer-events-none transition-opacity"></div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Section footer */}
+          <div className="mt-6 pt-2 border-t border-primary/20 text-xs text-primary/30 font-sf-mono text-center">
+            ACADEMICS • LAST UPDATED: 05/01/2025
+          </div>
         </div>
 
+        {/* Updated Modal */}
         {selectedRecord !== null && (
           <AcademicRecordModal
             isOpen={selectedRecord !== null}
