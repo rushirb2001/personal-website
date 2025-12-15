@@ -56,12 +56,11 @@ export default function UpdatesPage() {
     const collapseRect = sessionStorage.getItem("collapseToRect")
     const collapsePostId = sessionStorage.getItem("collapseFromPost")
     const collapsePostData = sessionStorage.getItem("collapsePostData")
-    const containerRectStr = sessionStorage.getItem("containerRect")
+    const collapseContainerRect = sessionStorage.getItem("collapseContainerRect")
 
     if (collapseRect && collapsePostId && collapsePostData) {
       const originalCardRect = JSON.parse(collapseRect)
       const postData = JSON.parse(collapsePostData)
-      const containerRect = containerRectStr ? JSON.parse(containerRectStr) : null
 
       setReturningPostId(collapsePostId)
       setCollapseStarted(true)
@@ -69,22 +68,18 @@ export default function UpdatesPage() {
       sessionStorage.removeItem("collapseToRect")
       sessionStorage.removeItem("collapseFromPost")
       sessionStorage.removeItem("collapsePostData")
-      sessionStorage.removeItem("containerRect")
+      sessionStorage.removeItem("collapseContainerRect")
 
-      setTimeout(() => {
+      requestAnimationFrame(() => {
         requestAnimationFrame(() => {
           const targetElement = articleRefs.current.get(collapsePostId)
           if (targetElement) {
             const endRect = targetElement.getBoundingClientRect()
 
-            let startRect
-            if (containerRect) {
-              startRect = {
-                top: containerRect.top,
-                left: containerRect.left,
-                width: containerRect.width,
-                height: containerRect.height,
-              }
+            let startRect: { top: number; left: number; width: number; height: number }
+
+            if (collapseContainerRect) {
+              startRect = JSON.parse(collapseContainerRect)
             } else {
               const viewportWidth = document.documentElement.clientWidth
               const calculatedWidth = Math.min(viewportWidth - 32, 768)
@@ -123,9 +118,12 @@ export default function UpdatesPage() {
                 }, 400)
               }, 50)
             }, 700)
+          } else {
+            setReturningPostId(null)
+            setCollapseStarted(false)
           }
         })
-      }, 16)
+      })
     }
   }, [])
 
