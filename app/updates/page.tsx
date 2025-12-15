@@ -54,7 +54,7 @@ export default function UpdatesPage() {
 
       setTimeout(() => {
         router.push(`/updates/${post.id}`)
-      }, 500)
+      }, 600)
     }
   }
 
@@ -62,70 +62,53 @@ export default function UpdatesPage() {
     <PageLayout title="BLOG" subtitle="ARTICLES, DAILY BLOGS AND LIFE UPDATES">
       <AnimatePresence>
         {expandingPost && expandRect && (
-          <>
-            {/* Background overlay */}
-            <motion.div
-              className="fixed inset-0 z-[100] bg-background"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-            />
-
-            <motion.div
-              className="fixed z-[101] overflow-hidden"
-              initial={{
-                top: expandRect.top,
-                left: expandRect.left,
-                width: expandRect.width,
-                height: expandRect.height,
-              }}
-              animate={{
-                top: "9.5rem",
-                left: "50%",
-                x: "-50%",
-                width: "min(100vw - 2rem, 48rem)",
-                height: "calc(100vh - 9.5rem - 4rem)",
-              }}
-              transition={{
-                duration: 0.5,
-                ease: [0.4, 0, 0.2, 1],
-              }}
-            >
-              <motion.div
-                className="h-full w-full border border-primary/20 bg-background dark:bg-eerie-black/50 overflow-hidden"
-                initial={{ borderColor: "rgba(var(--primary), 0.4)" }}
-                animate={{ borderColor: "rgba(var(--primary), 0.2)" }}
-                transition={{ delay: 0.2, duration: 0.3 }}
-              >
-                <div className="h-full overflow-hidden p-6">
-                  <motion.div
-                    initial={{ opacity: 1 }}
-                    animate={{ opacity: 0 }}
-                    transition={{ delay: 0.25, duration: 0.2 }}
-                  >
-                    {/* Mimic article card content during expansion */}
-                    <div className="flex justify-between items-start mb-2">
-                      <h2 className="text-sm font-sf-mono font-medium">{expandingPost.title}</h2>
-                      <div className="flex items-center text-xs text-primary/60 font-sf-mono">
-                        <Calendar className="h-3 w-3 mr-1" />
-                        {formatDate(new Date(expandingPost.date))}
-                      </div>
+          <motion.div
+            className="fixed z-40 overflow-hidden pointer-events-none"
+            initial={{
+              top: expandRect.top,
+              left: expandRect.left,
+              width: expandRect.width,
+              height: expandRect.height,
+            }}
+            animate={{
+              top: "9.5rem",
+              left: "50%",
+              x: "-50%",
+              width: "min(100vw - 2rem, 48rem)",
+              height: "calc(100vh - 9.5rem - 4rem)",
+            }}
+            transition={{
+              duration: 0.55,
+              ease: [0.32, 0.72, 0, 1],
+            }}
+          >
+            <motion.div className="h-full w-full border border-primary/20 bg-background dark:bg-eerie-black/50 overflow-hidden">
+              <div className="h-full overflow-hidden p-6">
+                <motion.div
+                  initial={{ opacity: 1, filter: "blur(0px)" }}
+                  animate={{ opacity: 0, filter: "blur(8px)" }}
+                  transition={{ duration: 0.35, ease: "easeOut" }}
+                >
+                  <div className="flex justify-between items-start mb-2">
+                    <h2 className="text-sm font-sf-mono font-medium">{expandingPost.title}</h2>
+                    <div className="flex items-center text-xs text-primary/60 font-sf-mono">
+                      <Calendar className="h-3 w-3 mr-1" />
+                      {formatDate(new Date(expandingPost.date))}
                     </div>
-                    <p className="text-xs text-primary/70 mb-3 font-sf-mono">{expandingPost.summary}</p>
-                    <div className="flex items-center gap-1">
-                      <Tag className="h-3 w-3 text-primary/50" />
-                      {expandingPost.tags.slice(0, 3).map((tag) => (
-                        <span key={tag} className="text-xs text-primary/50 font-sf-mono">
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  </motion.div>
-                </div>
-              </motion.div>
+                  </div>
+                  <p className="text-xs text-primary/70 mb-3 font-sf-mono">{expandingPost.summary}</p>
+                  <div className="flex items-center gap-1">
+                    <Tag className="h-3 w-3 text-primary/50" />
+                    {expandingPost.tags.slice(0, 3).map((tag) => (
+                      <span key={tag} className="text-xs text-primary/50 font-sf-mono">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </motion.div>
+              </div>
             </motion.div>
-          </>
+          </motion.div>
         )}
       </AnimatePresence>
 
