@@ -1,7 +1,4 @@
 "use client"
-
-import type React from "react"
-
 import { useState } from "react"
 import { PageLayout } from "@/components/layout/page-layout"
 import { motion } from "framer-motion"
@@ -21,7 +18,7 @@ const skillsData = {
     },
   },
   trainEvalInfer: {
-    title: "TRAIN, EVAL & INFER",
+    title: "TRAIN/EVAL/INFER",
     subcategories: {
       Training: ["LoRA", "QLoRA", "DeepSpeed Zero", "Ray", "Pytorch FSDP"],
       Evaluation: ["MLFlow", "WandB", "DeepEval", "RAGAS"],
@@ -46,52 +43,158 @@ const skillsData = {
   },
 }
 
-function SkillTag({ name, showTooltip = false }: { name: string; showTooltip?: boolean }) {
+function TreeBranch({ isLast = false }: { isLast?: boolean }) {
   return (
-    <span className="inline-flex items-center px-1.5 py-0.5 text-[9px] md:text-[10px] font-sf-mono bg-primary/5 border border-primary/20 hover:bg-primary/10 hover:border-primary/40 transition-all duration-150 cursor-default">
-      {name}
-    </span>
-  )
-}
-
-function SubcategoryRow({ title, items }: { title: string; items: string[] }) {
-  const [isHovered, setIsHovered] = useState(false)
-
-  return (
-    <div className="group" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
-      <div className="flex items-start gap-2 py-1">
-        <span className="text-[9px] md:text-[10px] font-sf-mono text-primary/50 whitespace-nowrap min-w-[80px] md:min-w-[100px]">
-          {title}
-        </span>
-        <div className="flex flex-wrap gap-1">
-          {items.map((item, idx) => (
-            <motion.span
-              key={idx}
-              initial={{ opacity: 0.7 }}
-              animate={{ opacity: isHovered ? 1 : 0.7 }}
-              transition={{ duration: 0.15, delay: idx * 0.02 }}
-            >
-              <SkillTag name={item} />
-            </motion.span>
-          ))}
-        </div>
+    <div className="flex items-stretch">
+      <div className="w-3 flex flex-col items-center">
+        <div className="w-px h-1/2 bg-primary/20" />
+        <div className="w-3 h-px bg-primary/20" />
+        {!isLast && <div className="w-px h-1/2 bg-primary/20" />}
       </div>
     </div>
   )
 }
 
-function CategorySection({ title, children, index }: { title: string; children: React.ReactNode; index: number }) {
+function LeafBranch({ isLast = false }: { isLast?: boolean }) {
+  return (
+    <div className="flex items-center h-full">
+      <div className="w-2 h-px bg-primary/15" />
+    </div>
+  )
+}
+
+function SkillLeaf({ name, index, isHovered }: { name: string; index: number; isHovered: boolean }) {
+  return (
+    <motion.span
+      className="inline-flex items-center px-1.5 py-0.5 text-[9px] font-sf-mono bg-primary/5 border border-primary/15 hover:bg-primary/10 hover:border-primary/30 transition-all duration-150 cursor-default"
+      initial={{ opacity: 0.6 }}
+      animate={{ opacity: isHovered ? 1 : 0.6 }}
+      transition={{ duration: 0.1, delay: index * 0.015 }}
+    >
+      {name}
+    </motion.span>
+  )
+}
+
+function SubcategoryBranch({
+  title,
+  items,
+  isLast,
+  categoryIndex,
+  subIndex,
+}: {
+  title: string
+  items: string[]
+  isLast: boolean
+  categoryIndex: number
+  subIndex: number
+}) {
+  const [isHovered, setIsHovered] = useState(false)
+
   return (
     <motion.div
-      className="border border-primary/20 bg-background"
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3, delay: index * 0.05 }}
+      className="flex"
+      initial={{ opacity: 0, x: -5 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.2, delay: categoryIndex * 0.05 + subIndex * 0.03 }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="border-b border-primary/20 px-2 py-1.5 bg-primary/5">
-        <h3 className="text-[10px] md:text-xs font-sf-mono font-medium tracking-wide">{title}</h3>
+      {/* Vertical connector line */}
+      <div className="flex flex-col items-center mr-0.5">
+        <div className={`w-px flex-1 ${subIndex === 0 ? "bg-transparent" : "bg-primary/20"}`} />
+        <div className="w-2 h-px bg-primary/20" />
+        <div className={`w-px flex-1 ${isLast ? "bg-transparent" : "bg-primary/20"}`} />
       </div>
-      <div className="px-2 py-2">{children}</div>
+
+      {/* Subcategory node */}
+      <div className="flex items-center gap-1.5 py-0.5">
+        <span
+          className={`text-[8px] font-sf-mono whitespace-nowrap px-1 py-0.5 border transition-all duration-150 ${
+            isHovered
+              ? "text-primary/80 border-primary/30 bg-primary/10"
+              : "text-primary/40 border-primary/15 bg-primary/5"
+          }`}
+        >
+          {title}
+        </span>
+
+        {/* Horizontal connector to skills */}
+        <div className="w-1.5 h-px bg-primary/15" />
+
+        {/* Skills leaf nodes */}
+        <div className="flex flex-wrap gap-0.5 items-center">
+          {items.map((item, idx) => (
+            <SkillLeaf key={idx} name={item} index={idx} isHovered={isHovered} />
+          ))}
+        </div>
+      </div>
+    </motion.div>
+  )
+}
+
+function CategoryTree({
+  title,
+  subcategories,
+  items,
+  index,
+}: {
+  title: string
+  subcategories?: Record<string, string[]>
+  items?: string[]
+  index: number
+}) {
+  const [isHovered, setIsHovered] = useState(false)
+
+  return (
+    <motion.div
+      className="flex items-start"
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.25, delay: index * 0.08 }}
+    >
+      {/* Root node */}
+      <div
+        className="flex items-center shrink-0"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
+        <div
+          className={`px-2 py-1 border text-[10px] font-sf-mono font-medium tracking-wide transition-all duration-150 ${
+            isHovered
+              ? "border-primary/40 bg-primary/10 text-primary"
+              : "border-primary/25 bg-primary/5 text-primary/70"
+          }`}
+        >
+          {title}
+        </div>
+        {/* Connector line from root */}
+        <div className="w-2 h-px bg-primary/20" />
+      </div>
+
+      {/* Branches */}
+      <div className="flex flex-col">
+        {subcategories ? (
+          Object.entries(subcategories).map(([subcat, subItems], idx) => (
+            <SubcategoryBranch
+              key={subcat}
+              title={subcat}
+              items={subItems}
+              isLast={idx === Object.entries(subcategories).length - 1}
+              categoryIndex={index}
+              subIndex={idx}
+            />
+          ))
+        ) : items ? (
+          <div className="flex items-center gap-1 py-0.5">
+            <div className="flex flex-wrap gap-0.5">
+              {items.map((item, idx) => (
+                <SkillLeaf key={idx} name={item} index={idx} isHovered={isHovered} />
+              ))}
+            </div>
+          </div>
+        ) : null}
+      </div>
     </motion.div>
   )
 }
@@ -99,69 +202,43 @@ function CategorySection({ title, children, index }: { title: string; children: 
 export default function SkillsPage() {
   return (
     <PageLayout title="SKILLS" subtitle="TECHNICAL EXPERTISE">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 pt-4 pb-4">
-        {/* Languages - simple flat list */}
-        <CategorySection title={skillsData.languages.title} index={0}>
-          <div className="flex flex-wrap gap-1">
-            {skillsData.languages.items.map((item, idx) => (
-              <SkillTag key={idx} name={item} />
-            ))}
-          </div>
-        </CategorySection>
+      <div className="flex flex-col gap-3 py-4 overflow-x-auto">
+        {/* Languages - flat items */}
+        <CategoryTree title={skillsData.languages.title} items={skillsData.languages.items} index={0} />
 
         {/* Frameworks - subcategorized */}
-        <CategorySection title={skillsData.frameworks.title} index={1}>
-          <div className="space-y-1">
-            {Object.entries(skillsData.frameworks.subcategories).map(([subcat, items]) => (
-              <SubcategoryRow key={subcat} title={subcat} items={items} />
-            ))}
-          </div>
-        </CategorySection>
+        <CategoryTree
+          title={skillsData.frameworks.title}
+          subcategories={skillsData.frameworks.subcategories}
+          index={1}
+        />
 
-        {/* Train, Eval & Infer */}
-        <CategorySection title={skillsData.trainEvalInfer.title} index={2}>
-          <div className="space-y-1">
-            {Object.entries(skillsData.trainEvalInfer.subcategories).map(([subcat, items]) => (
-              <SubcategoryRow key={subcat} title={subcat} items={items} />
-            ))}
-          </div>
-        </CategorySection>
+        {/* Train/Eval/Infer */}
+        <CategoryTree
+          title={skillsData.trainEvalInfer.title}
+          subcategories={skillsData.trainEvalInfer.subcategories}
+          index={2}
+        />
 
         {/* Databases */}
-        <CategorySection title={skillsData.databases.title} index={3}>
-          <div className="space-y-1">
-            {Object.entries(skillsData.databases.subcategories).map(([subcat, items]) => (
-              <SubcategoryRow key={subcat} title={subcat} items={items} />
-            ))}
-          </div>
-        </CategorySection>
+        <CategoryTree title={skillsData.databases.title} subcategories={skillsData.databases.subcategories} index={3} />
 
-        {/* Cloud - spans full width due to more content */}
-        <div className="lg:col-span-2">
-          <CategorySection title={skillsData.cloud.title} index={4}>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
-              {Object.entries(skillsData.cloud.subcategories).map(([provider, items]) => (
-                <div key={provider} className="space-y-1">
-                  <span className="text-[9px] md:text-[10px] font-sf-mono text-primary/50 block">{provider}</span>
-                  <div className="flex flex-wrap gap-1">
-                    {items.map((item, idx) => (
-                      <SkillTag key={idx} name={item} />
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CategorySection>
-        </div>
+        {/* Cloud */}
+        <CategoryTree title={skillsData.cloud.title} subcategories={skillsData.cloud.subcategories} index={4} />
 
         {/* Stats footer */}
-        <div className="lg:col-span-2 text-[9px] md:text-[10px] text-primary/30 font-sf-mono text-center pt-2 flex justify-center gap-6">
-          <span>5 CATEGORIES</span>
+        <motion.div
+          className="text-[9px] text-primary/30 font-sf-mono flex gap-4 pt-2 pl-1"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.3, delay: 0.5 }}
+        >
+          <span>5 ROOTS</span>
           <span>•</span>
-          <span>15 SUBCATEGORIES</span>
+          <span>15 BRANCHES</span>
           <span>•</span>
-          <span>70+ TECHNOLOGIES</span>
-        </div>
+          <span>70+ LEAVES</span>
+        </motion.div>
       </div>
     </PageLayout>
   )
