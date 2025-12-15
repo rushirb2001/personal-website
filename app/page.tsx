@@ -105,12 +105,14 @@ export default function Home() {
                 </p>
               </motion.div>
 
+              {/* Photo - 75% width, square, centered */}
               <motion.div
                 className="relative w-[75%] aspect-square"
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.3, duration: 0.6 }}
               >
+                {/* Styled photo like desktop with border, padding, and VERIFIED badge */}
                 <div className="relative border border-primary/20 bg-secondary/20 p-2 w-full h-full">
                   <Image
                     src="/images/design-mode/new_personal_photo(1).png"
