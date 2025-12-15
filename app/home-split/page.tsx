@@ -70,18 +70,18 @@ export default function HomeSplitPage() {
             >
               <div className="border-b border-primary/20 px-3 py-1.5 bg-primary/5">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-xs font-sf-mono font-bold tracking-widest text-primary">ABOUT</h3>
+                  <h3 className="text-xs font-sf-mono font-bold text-primary tracking-tighter">ABOUT</h3>
                   <span className="text-[9px] font-sf-mono text-primary/30">[01]</span>
                 </div>
               </div>
               <div className="px-3 py-2 flex-1 flex flex-col justify-between">
-                <p className="text-[10px] sm:text-xs font-mono text-primary/70 leading-relaxed">
+                <p className="text-[10px] sm:text-xs text-primary/70 leading-relaxed font-mono tracking-tight text-justify py-4 px-3.5">
                   Data Scientist and AI Engineer specializing in machine learning, deep learning, and AI systems
                   development. Creating innovative solutions using cutting-edge AI technologies with experience across
                   healthcare, astronomy, and enterprise AI domains. Expertise in transformer-based models,
                   retrieval-augmented generation, and scalable ML pipelines.
                 </p>
-                <div className="flex items-center justify-between mt-3">
+                <div className="flex items-center justify-between mt-3 px-3.5 py-2">
                   <div className="flex items-center gap-1.5">
                     <Link
                       href="https://github.com/rushirb2001"
@@ -142,7 +142,7 @@ export default function HomeSplitPage() {
             >
               <div className="border-b border-primary/20 px-3 py-1.5 bg-primary/5">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-xs font-sf-mono font-bold tracking-widest text-primary">METRICS</h3>
+                  <h3 className="text-xs font-sf-mono font-bold text-primary tracking-tighter">METRICS</h3>
                   <span className="text-[9px] font-sf-mono text-primary/30">[02]</span>
                 </div>
               </div>
@@ -173,7 +173,7 @@ export default function HomeSplitPage() {
             >
               <div className="border-b border-primary/20 px-3 py-1.5 bg-primary/5">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-xs font-sf-mono font-bold tracking-widest text-primary">SPECIALIZATIONS</h3>
+                  <h3 className="text-xs font-sf-mono font-bold text-primary tracking-tighter">SPECIALIZATIONS</h3>
                   <span className="text-[9px] font-sf-mono text-primary/30">[03]</span>
                 </div>
               </div>
@@ -219,7 +219,7 @@ export default function HomeSplitPage() {
             >
               <div className="border-b border-primary/20 px-3 py-1.5 bg-primary/5">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-xs font-sf-mono font-bold tracking-widest text-primary">FEATURED PROJECT</h3>
+                  <h3 className="text-xs font-sf-mono font-bold text-primary tracking-tighter">FEATURED PROJECT</h3>
                   <span className="text-[9px] font-sf-mono text-primary/30">[04]</span>
                 </div>
               </div>
@@ -258,7 +258,7 @@ export default function HomeSplitPage() {
             >
               <div className="border-b border-primary/20 px-3 py-1.5 bg-primary/5">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-xs font-sf-mono font-bold tracking-widest text-primary">EXPLORE</h3>
+                  <h3 className="text-xs font-sf-mono font-bold text-primary tracking-tighter">EXPLORE</h3>
                   <span className="text-[9px] font-sf-mono text-primary/30">[05]</span>
                 </div>
               </div>
