@@ -230,7 +230,7 @@ export default function BlogPostPage() {
             onClick={() => navigateTo("/")}
             disabled={isReversing}
           >
-            RETURN TO MAIN SYSTEM
+            BACK TO HOME  
           </Button>
         </div>
       </motion.div>
