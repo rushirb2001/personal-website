@@ -3,7 +3,7 @@
 import type React from "react"
 
 import { useState, useEffect, useRef } from "react"
-import { motion } from "framer-motion"
+import { motion, AnimatePresence } from "framer-motion"
 import { getPublishedPosts, type BlogPost } from "@/lib/blog-data"
 import { formatDate } from "@/lib/utils"
 import { ArrowRight, Calendar, Tag, Terminal } from "lucide-react"
@@ -20,6 +20,12 @@ export default function UpdatesPage() {
 
   const articleRefs = useRef<Map<string, HTMLDivElement>>(new Map())
 
+  const [collapseAnimation, setCollapseAnimation] = useState<{
+    rect: { top: number; left: number; width: number; height: number }
+    postId: string
+  } | null>(null)
+  const [highlightedPostId, setHighlightedPostId] = useState<string | null>(null)
+
   // Get all unique tags
   const allTags = Array.from(new Set(posts.flatMap((post) => post.tags)))
 
@@ -35,6 +41,27 @@ export default function UpdatesPage() {
   // Use useEffect to ensure we're mounted before trying to use context
   useEffect(() => {
     setMounted(true)
+
+    const collapseRect = sessionStorage.getItem("collapseToRect")
+    const collapsePostId = sessionStorage.getItem("collapseFromPost")
+
+    if (collapseRect && collapsePostId) {
+      setCollapseAnimation({
+        rect: JSON.parse(collapseRect),
+        postId: collapsePostId,
+      })
+      setHighlightedPostId(collapsePostId)
+      sessionStorage.removeItem("collapseToRect")
+      sessionStorage.removeItem("collapseFromPost")
+
+      // Clear highlight after animation
+      setTimeout(() => {
+        setCollapseAnimation(null)
+        setTimeout(() => {
+          setHighlightedPostId(null)
+        }, 300)
+      }, 100)
+    }
   }, [])
 
   // Function to navigate without using the context
@@ -62,6 +89,34 @@ export default function UpdatesPage() {
 
   return (
     <PageLayout title="BLOG" subtitle="ARTICLES, DAILY BLOGS AND LIFE UPDATES">
+      <AnimatePresence>
+        {collapseAnimation && (
+          <motion.div
+            className="fixed z-50 pointer-events-none border border-primary/20 bg-background dark:bg-eerie-black"
+            initial={{
+              top: 152,
+              left: "50%",
+              x: "-50%",
+              width: "min(100vw - 2rem, 48rem)",
+              height: "calc(100vh - 9.5rem - 4rem)",
+            }}
+            animate={{
+              top: collapseAnimation.rect.top,
+              left: collapseAnimation.rect.left,
+              x: 0,
+              width: collapseAnimation.rect.width,
+              height: collapseAnimation.rect.height,
+              opacity: 0,
+            }}
+            transition={{
+              duration: 0.5,
+              ease: [0.32, 0.72, 0, 1],
+              opacity: { delay: 0.3, duration: 0.2 },
+            }}
+          />
+        )}
+      </AnimatePresence>
+
       <div className="container max-w-4xl mx-auto px-2 md:px-4">
         <div className="mb-8 border border-primary/20 p-2 md:p-4 bg-background dark:bg-eerie-black/50 -mx-2 md:mx-0">
           <div className="flex flex-col mb-4">
@@ -140,7 +195,11 @@ export default function UpdatesPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1, duration: 0.5 }}
-                className="border border-primary/20 hover:border-primary/40 transition-colors cursor-pointer"
+                className={`border transition-all duration-300 cursor-pointer ${
+                  highlightedPostId === post.id
+                    ? "border-primary/60 bg-primary/10"
+                    : "border-primary/20 hover:border-primary/40"
+                }`}
                 onClick={(e) => handleArticleClick(e, post)}
               >
                 <div className="p-4 hover:bg-primary/5 transition-colors">
