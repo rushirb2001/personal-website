@@ -99,7 +99,7 @@ export default function Home() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2, duration: 0.6 }}
               >
-                <h1 className="font-black tracking-tight mb-2 w-full text-6xl">RUSHIR BHAVSAR</h1>
+                <h1 className="font-black tracking-tight mb-2 w-full text-6xl mt-4">RUSHIR BHAVSAR</h1>
                 <p className="font-sf-mono text-primary/70 w-full tracking-widest text-lg">
                   DATA SCIENTIST • AI ENGINEER • ML RESEARCHER •
                 </p>
