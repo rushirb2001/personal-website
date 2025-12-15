@@ -431,7 +431,7 @@ export default function Home() {
 
                     {/* Stats Section */}
                     <motion.div
-                      className="grid grid-cols-4 gap-2 text-xs font-sf-mono text-primary/40 mb-6"
+                      className="grid grid-cols-4 gap-2 text-xs font-sf-mono text-primary/40 mb-0"
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.75, duration: 0.8 }}
