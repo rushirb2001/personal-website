@@ -239,7 +239,7 @@ export default function UpdatesPage() {
       <div className="container max-w-4xl mx-auto px-2 md:px-4">
         <div className="mb-8 border border-primary/20 p-2 md:p-4 bg-background dark:bg-eerie-black/50 -mx-2 md:mx-0">
           <div className="flex flex-col mb-4">
-            <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center justify-between mb-2 py-2">
               <div className="flex items-center">
                 <Terminal className="h-4 w-4 mr-2 text-primary/70" />
                 <h1 className="text-lg font-sf-mono">BLOG ARTICLES </h1>
