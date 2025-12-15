@@ -61,7 +61,7 @@ export default function UpdatesPage() {
       <AnimatePresence>
         {expandingPost && expandRect && (
           <motion.div
-            className="fixed z-40 overflow-hidden pointer-events-none"
+            className="fixed z-30 overflow-hidden pointer-events-none"
             initial={{
               top: expandRect.top,
               left: expandRect.left,
@@ -76,7 +76,7 @@ export default function UpdatesPage() {
               height: "calc(100vh - 9.5rem - 4rem)",
             }}
             transition={{
-              duration: 0.55,
+              duration: 0.5,
               ease: [0.32, 0.72, 0, 1],
             }}
           >
@@ -84,8 +84,8 @@ export default function UpdatesPage() {
               <div className="h-full overflow-hidden p-6">
                 <motion.div
                   initial={{ opacity: 1, filter: "blur(0px)" }}
-                  animate={{ opacity: 0, filter: "blur(8px)" }}
-                  transition={{ duration: 0.35, ease: "easeOut" }}
+                  animate={{ opacity: 0, filter: "blur(12px)" }}
+                  transition={{ duration: 0.4, ease: "easeOut" }}
                 >
                   <div className="flex justify-between items-start mb-2">
                     <h2 className="text-sm font-sf-mono font-medium">{expandingPost.title}</h2>

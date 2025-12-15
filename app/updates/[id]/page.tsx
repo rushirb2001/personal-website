@@ -16,6 +16,7 @@ export default function BlogPostPage() {
   const { navigateTo } = useNavigation()
   const [post, setPost] = useState<BlogPost | null>(null)
   const [loading, setLoading] = useState(true)
+  const [showNavBar, setShowNavBar] = useState(false)
   const [showContent, setShowContent] = useState(false)
 
   useEffect(() => {
@@ -23,7 +24,8 @@ export default function BlogPostPage() {
       const postData = getPostById(params.id as string)
       if (postData) {
         setPost(postData)
-        setTimeout(() => setShowContent(true), 150)
+        setShowNavBar(true)
+        setTimeout(() => setShowContent(true), 450)
       } else {
         router.push("/updates")
       }
@@ -52,8 +54,8 @@ export default function BlogPostPage() {
       <motion.div
         className="fixed top-14 md:top-16 left-0 right-0 z-50 bg-background dark:bg-eerie-black border-b border-primary/20"
         initial={{ y: -60, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.4, delay: 0.1, ease: [0.32, 0.72, 0, 1] }}
+        animate={{ y: showNavBar ? 0 : -60, opacity: showNavBar ? 1 : 0 }}
+        transition={{ duration: 0.35, ease: [0.32, 0.72, 0, 1] }}
       >
         <div className="container max-w-3xl mx-auto px-4 py-4 flex justify-between">
           <Button
@@ -75,18 +77,18 @@ export default function BlogPostPage() {
         </div>
       </motion.div>
 
-      <div className="fixed top-[9.5rem] md:top-[9.5rem] left-0 right-0 bottom-16 z-40">
+      <div className="fixed top-[9.5rem] md:top-[9.5rem] left-0 right-0 bottom-16 z-30">
         <div className="container max-w-3xl mx-auto px-4 h-full">
           <div className="h-full border border-primary/20 bg-background dark:bg-eerie-black/50 overflow-hidden">
             {/* Scrollable Content Inside Window */}
             <div className="h-full overflow-y-auto p-6">
               <motion.div
-                initial={{ opacity: 0, filter: "blur(10px)" }}
+                initial={{ opacity: 0, filter: "blur(12px)" }}
                 animate={{
                   opacity: showContent ? 1 : 0,
-                  filter: showContent ? "blur(0px)" : "blur(10px)",
+                  filter: showContent ? "blur(0px)" : "blur(12px)",
                 }}
-                transition={{ duration: 0.5, ease: [0.32, 0.72, 0, 1] }}
+                transition={{ duration: 0.4, ease: [0.32, 0.72, 0, 1] }}
               >
                 <div className="flex items-center mb-4">
                   <FileText className="h-4 w-4 mr-2 text-primary/70" />
