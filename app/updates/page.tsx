@@ -6,7 +6,7 @@ import { useState, useEffect, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { getPublishedPosts, type BlogPost } from "@/lib/blog-data"
 import { formatDate } from "@/lib/utils"
-import { ArrowRight, Calendar, Tag, Terminal } from "lucide-react"
+import { ArrowLeft, ArrowRight, Calendar, Tag, Terminal } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { PageLayout } from "@/components/layout/page-layout"
 import { useRouter } from "next/navigation"
@@ -55,7 +55,7 @@ export default function UpdatesPage() {
       // Navigate after animation completes
       setTimeout(() => {
         router.push(`/updates/${post.id}`)
-      }, 600)
+      }, 700)
     }
   }
 
@@ -73,78 +73,83 @@ export default function UpdatesPage() {
               transition={{ duration: 0.4 }}
             />
 
-            {/* Expanding article card */}
             <motion.div
-              className="fixed z-[101] border border-primary/40 bg-background dark:bg-eerie-black/95 overflow-hidden"
+              className="fixed top-14 md:top-16 left-0 right-0 z-[102] bg-background dark:bg-eerie-black border-b border-primary/20"
+              initial={{ y: -60, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.15, duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
+            >
+              <div className="container max-w-3xl mx-auto px-4 py-4 flex justify-between">
+                <div className="flex items-center text-xs font-sf-mono text-primary/50">
+                  <ArrowLeft className="mr-1 h-3 w-3" />
+                  BACK TO UPDATES
+                </div>
+                <div className="text-xs font-sf-mono text-primary/50">RETURN TO MAIN SYSTEM</div>
+              </div>
+            </motion.div>
+
+            <motion.div
+              className="fixed z-[101] overflow-hidden"
               initial={{
                 top: expandRect.top,
                 left: expandRect.left,
                 width: expandRect.width,
                 height: expandRect.height,
-                borderRadius: 0,
               }}
               animate={{
-                top: 60,
-                left: 0,
-                width: "100vw",
-                height: "calc(100vh - 120px)",
-                borderRadius: 0,
+                top: "9.5rem",
+                left: "50%",
+                x: "-50%",
+                width: "min(100vw - 2rem, 48rem)",
+                height: "calc(100vh - 9.5rem - 4rem)",
               }}
               transition={{
-                duration: 0.5,
+                duration: 0.55,
                 ease: [0.4, 0, 0.2, 1],
               }}
             >
-              <motion.div className="p-6 h-full overflow-hidden" initial={{ opacity: 1 }} animate={{ opacity: 1 }}>
-                {/* Article header during expansion */}
-                <motion.div
-                  initial={{ opacity: 1, y: 0 }}
-                  animate={{ opacity: 0.7, y: 20 }}
-                  transition={{ delay: 0.2, duration: 0.3 }}
-                >
-                  <div className="flex justify-between items-start mb-4">
-                    <h2 className="text-lg font-sf-mono font-medium">{expandingPost.title}</h2>
-                    <div className="flex items-center text-xs text-primary/60 font-sf-mono">
-                      <Calendar className="h-3 w-3 mr-1" />
-                      {formatDate(new Date(expandingPost.date))}
+              <motion.div
+                className="h-full w-full border border-primary/20 bg-background dark:bg-eerie-black/50 overflow-hidden"
+                initial={{ borderColor: "rgba(var(--primary), 0.4)" }}
+                animate={{ borderColor: "rgba(var(--primary), 0.2)" }}
+                transition={{ delay: 0.3, duration: 0.3 }}
+              >
+                <div className="h-full overflow-hidden p-6">
+                  <motion.div
+                    initial={{ opacity: 1, y: 0 }}
+                    animate={{ opacity: 0, y: 10 }}
+                    transition={{ delay: 0.3, duration: 0.25 }}
+                  >
+                    {/* Mimic article card content during expansion */}
+                    <div className="flex justify-between items-start mb-2">
+                      <h2 className="text-sm font-sf-mono font-medium">{expandingPost.title}</h2>
+                      <div className="flex items-center text-xs text-primary/60 font-sf-mono">
+                        <Calendar className="h-3 w-3 mr-1" />
+                        {formatDate(new Date(expandingPost.date))}
+                      </div>
                     </div>
-                  </div>
-                  <p className="text-sm text-primary/70 mb-4 font-sf-mono">{expandingPost.summary}</p>
-                  <div className="flex items-center gap-2">
-                    <Tag className="h-3 w-3 text-primary/50" />
-                    {expandingPost.tags.map((tag) => (
-                      <span
-                        key={tag}
-                        className="text-xs text-primary/50 font-sf-mono px-2 py-0.5 border border-primary/20"
-                      >
-                        {tag.toUpperCase()}
-                      </span>
-                    ))}
-                  </div>
-                </motion.div>
+                    <p className="text-xs text-primary/70 mb-3 font-sf-mono">{expandingPost.summary}</p>
+                    <div className="flex items-center gap-1">
+                      <Tag className="h-3 w-3 text-primary/50" />
+                      {expandingPost.tags.slice(0, 3).map((tag) => (
+                        <span key={tag} className="text-xs text-primary/50 font-sf-mono">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  </motion.div>
 
-                {/* Loading indicator */}
-                <motion.div
-                  className="absolute inset-0 flex items-center justify-center"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.4, duration: 0.2 }}
-                >
-                  <div className="text-sm font-sf-mono text-primary/70">LOADING RECORD...</div>
-                </motion.div>
+                  {/* Loading indicator fades in */}
+                  <motion.div
+                    className="absolute inset-0 flex items-center justify-center"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.45, duration: 0.2 }}
+                  >
+                    <div className="text-sm font-sf-mono text-primary/70">LOADING RECORD...</div>
+                  </motion.div>
+                </div>
               </motion.div>
-            </motion.div>
-
-            {/* Navigation bar sliding down effect */}
-            <motion.div
-              className="fixed top-14 left-0 right-0 z-[102] bg-background dark:bg-eerie-black border-b border-primary/20"
-              initial={{ y: -60, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.2, duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
-            >
-              <div className="container max-w-3xl mx-auto px-4 py-4 flex justify-between">
-                <div className="text-xs font-sf-mono text-primary/50">TRANSITIONING...</div>
-              </div>
             </motion.div>
           </>
         )}

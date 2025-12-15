@@ -16,14 +16,15 @@ export default function BlogPostPage() {
   const { navigateTo } = useNavigation()
   const [post, setPost] = useState<BlogPost | null>(null)
   const [loading, setLoading] = useState(true)
+  const [showContent, setShowContent] = useState(false)
 
   useEffect(() => {
     if (params.id) {
       const postData = getPostById(params.id as string)
       if (postData) {
         setPost(postData)
+        setTimeout(() => setShowContent(true), 100)
       } else {
-        // Post not found, redirect to updates page
         router.push("/updates")
       }
       setLoading(false)
@@ -48,8 +49,11 @@ export default function BlogPostPage() {
 
   return (
     <>
-      {/* Fixed Navigation Buttons */}
-      <div className="fixed top-14 md:top-16 left-0 right-0 z-50 bg-background dark:bg-eerie-black border-b border-primary/20">
+      <motion.div
+        className="fixed top-14 md:top-16 left-0 right-0 z-50 bg-background dark:bg-eerie-black border-b border-primary/20"
+        initial={{ y: 0, opacity: 1 }}
+        animate={{ y: 0, opacity: 1 }}
+      >
         <div className="container max-w-3xl mx-auto px-4 py-4 flex justify-between">
           <Button
             variant="outline"
@@ -68,7 +72,7 @@ export default function BlogPostPage() {
             RETURN TO MAIN SYSTEM
           </Button>
         </div>
-      </div>
+      </motion.div>
 
       {/* Fixed Border Window with Scrollable Content */}
       <div className="fixed top-[9.5rem] md:top-[9.5rem] left-0 right-0 bottom-16 z-40">
@@ -76,7 +80,11 @@ export default function BlogPostPage() {
           <div className="h-full border border-primary/20 bg-background dark:bg-eerie-black/50 overflow-hidden">
             {/* Scrollable Content Inside Window */}
             <div className="h-full overflow-y-auto p-6">
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: showContent ? 1 : 0 }}
+                transition={{ duration: 0.4, ease: "easeOut" }}
+              >
                 <div className="flex items-center mb-4">
                   <FileText className="h-4 w-4 mr-2 text-primary/70" />
                   <div className="text-xs font-sf-mono text-primary/70">
