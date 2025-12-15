@@ -47,7 +47,7 @@ export default function Home() {
       </motion.div>
 
       <motion.div
-        className="fixed top-[60px] bottom-[60px] left-0 right-0 flex items-center justify-center px-4 md:px-8 bg-scan-lines overflow-hidden"
+        className="fixed top-[60px] bottom-[60px] left-0 right-0 flex items-center justify-center px-4 md:px-8 overflow-hidden"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.7, ease: [0.4, 0, 0.2, 1] }}
