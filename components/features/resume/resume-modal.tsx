@@ -40,8 +40,7 @@ export function ResumeModal({ isOpen, onClose, buttonRect }: ResumeModalProps) {
     if (isOpen) {
       setLoading(true)
       setIsClosing(false)
-      // Delay content reveal for expansion animation
-      const timer = setTimeout(() => setShowContent(true), 400)
+      const timer = setTimeout(() => setShowContent(true), 250)
       return () => clearTimeout(timer)
     } else {
       setShowContent(false)
@@ -52,11 +51,10 @@ export function ResumeModal({ isOpen, onClose, buttonRect }: ResumeModalProps) {
     if (isClosing) return
     setIsClosing(true)
     setShowContent(false)
-    // Allow collapse animation to play
     setTimeout(() => {
       setIsClosing(false)
       onClose()
-    }, 400)
+    }, 250)
   }, [isClosing, onClose])
 
   // Get target modal dimensions
@@ -107,7 +105,7 @@ export function ResumeModal({ isOpen, onClose, buttonRect }: ResumeModalProps) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
+            transition={{ duration: 0.15 }}
             className="fixed inset-0 z-50 bg-foreground/70 backdrop-blur-sm"
             onClick={handleClose}
           />
@@ -137,8 +135,8 @@ export function ResumeModal({ isOpen, onClose, buttonRect }: ResumeModalProps) {
                   }
             }
             transition={{
-              duration: 0.4,
-              ease: [0.22, 1, 0.36, 1],
+              duration: 0.25,
+              ease: [0.32, 0.72, 0, 1],
             }}
             style={{ opacity: showContent ? 0 : 1 }}
           >
@@ -146,8 +144,8 @@ export function ResumeModal({ isOpen, onClose, buttonRect }: ResumeModalProps) {
             <motion.div
               className="flex items-center justify-center h-full gap-2 font-sf-mono text-xs text-primary/70"
               initial={{ opacity: 1, filter: "blur(0px)" }}
-              animate={isClosing ? { opacity: 1, filter: "blur(0px)" } : { opacity: 0, filter: "blur(8px)" }}
-              transition={{ duration: 0.2 }}
+              animate={isClosing ? { opacity: 1, filter: "blur(0px)" } : { opacity: 0, filter: "blur(4px)" }}
+              transition={{ duration: 0.1 }}
             >
               <FileText className="h-4 w-4" />
               <span>VIEW RESUME</span>
@@ -165,7 +163,7 @@ export function ResumeModal({ isOpen, onClose, buttonRect }: ResumeModalProps) {
             }}
             initial={{ opacity: 0 }}
             animate={{ opacity: showContent ? 1 : 0 }}
-            transition={{ duration: 0.2 }}
+            transition={{ duration: 0.1 }}
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
@@ -173,7 +171,7 @@ export function ResumeModal({ isOpen, onClose, buttonRect }: ResumeModalProps) {
               className="bg-card px-3 md:px-4 py-2 md:py-3 flex justify-between items-center border-b border-primary/20"
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: showContent ? 1 : 0, y: showContent ? 0 : -10 }}
-              transition={{ duration: 0.3, delay: 0.05 }}
+              transition={{ duration: 0.15, delay: 0 }}
             >
               <div className="flex items-center">
                 <FileText className="h-4 w-4 mr-2 text-primary/70" />
@@ -195,7 +193,7 @@ export function ResumeModal({ isOpen, onClose, buttonRect }: ResumeModalProps) {
               className="flex-1 overflow-hidden relative"
               initial={{ opacity: 0 }}
               animate={{ opacity: showContent ? 1 : 0 }}
-              transition={{ duration: 0.3, delay: 0.1 }}
+              transition={{ duration: 0.15, delay: 0.03 }}
             >
               {loading && (
                 <div className="absolute inset-0 flex items-center justify-center bg-background">
@@ -216,7 +214,7 @@ export function ResumeModal({ isOpen, onClose, buttonRect }: ResumeModalProps) {
               className="bg-card px-3 md:px-4 py-2 md:py-3 flex justify-end items-center gap-3 border-t border-primary/20"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: showContent ? 1 : 0, y: showContent ? 0 : 10 }}
-              transition={{ duration: 0.3, delay: 0.15 }}
+              transition={{ duration: 0.15, delay: 0.06 }}
             >
               <a
                 href={pdfUrl}
