@@ -1,6 +1,6 @@
 "use client"
 
-import { ArrowRight, Linkedin, Github, FileText, Mail } from "lucide-react"
+import { ArrowRight, Linkedin, Github, FileText } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { motion, AnimatePresence } from "framer-motion"
 import { useNavigation } from "@/contexts/navigation-context"
@@ -159,8 +159,9 @@ export default function Home() {
                 </Button>
               </motion.div>
 
+              {/* Stats Section */}
               <motion.div
-                className="flex items-stretch gap-2 text-[10px] font-sf-mono w-full"
+                className="flex items-center justify-center gap-2 text-[10px] font-sf-mono w-full"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5, duration: 0.6 }}
@@ -193,7 +194,6 @@ export default function Home() {
                   className="flex-1 group rounded-none border border-primary/20 bg-transparent text-primary hover:bg-primary/10 h-12 text-base font-black tracking-normal"
                   onClick={() => navigateTo("/contact")}
                 >
-                  
                   CONTACT
                   <ArrowRight className="ml-1.5 h-3.5 w-3.5 group-hover:translate-x-1 transition-transform" />
                 </Button>
@@ -381,29 +381,6 @@ export default function Home() {
                         <div className="text-primary/30 mb-1">SPECIALIZATION</div>
                         <div className="font-bold">LLM • CV • MLOps</div>
                       </div>
-                    </motion.div>
-
-                    <motion.div
-                      className="hidden flex-wrap gap-3"
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.8, duration: 0.8 }}
-                    >
-                      <Button
-                        className="group rounded-none border border-primary/20 bg-transparent text-primary hover:bg-primary/10 font-black text-sm px-4"
-                        onClick={() => navigateTo("/projects")}
-                      >
-                        EXPLORE
-                        <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                      </Button>
-
-                      <Button
-                        className="group rounded-none border border-primary/20 bg-transparent text-primary hover:bg-primary/10 font-black text-sm px-4"
-                        onClick={() => navigateTo("/contact")}
-                      >
-                        CONTACT
-                        <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                      </Button>
                     </motion.div>
                   </motion.div>
                 </div>
