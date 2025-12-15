@@ -16,7 +16,7 @@ export default function BlogPostPage() {
   const { navigateTo } = useNavigation()
   const [post, setPost] = useState<BlogPost | null>(null)
   const [loading, setLoading] = useState(true)
-  const [showNavBar, setShowNavBar] = useState(false)
+  const [navDropped, setNavDropped] = useState(false)
   const [showContent, setShowContent] = useState(false)
 
   useEffect(() => {
@@ -24,8 +24,8 @@ export default function BlogPostPage() {
       const postData = getPostById(params.id as string)
       if (postData) {
         setPost(postData)
-        setShowNavBar(true)
-        setTimeout(() => setShowContent(true), 450)
+        setNavDropped(true)
+        setTimeout(() => setShowContent(true), 350) // Content reveals as nav finishes dropping
       } else {
         router.push("/updates")
       }
@@ -54,7 +54,7 @@ export default function BlogPostPage() {
       <motion.div
         className="fixed top-14 md:top-16 left-0 right-0 z-50 bg-background dark:bg-eerie-black border-b border-primary/20"
         initial={{ y: -60, opacity: 0 }}
-        animate={{ y: showNavBar ? 0 : -60, opacity: showNavBar ? 1 : 0 }}
+        animate={{ y: navDropped ? 0 : -60, opacity: navDropped ? 1 : 0 }}
         transition={{ duration: 0.35, ease: [0.32, 0.72, 0, 1] }}
       >
         <div className="container max-w-3xl mx-auto px-4 py-4 flex justify-between">
@@ -77,18 +77,29 @@ export default function BlogPostPage() {
         </div>
       </motion.div>
 
-      <div className="fixed top-[9.5rem] md:top-[9.5rem] left-0 right-0 bottom-16 z-30">
+      <motion.div
+        className="fixed top-[9.5rem] md:top-[9.5rem] left-0 right-0 bottom-16 z-40"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.2 }}
+      >
         <div className="container max-w-3xl mx-auto px-4 h-full">
-          <div className="h-full border border-primary/20 bg-background dark:bg-eerie-black/50 overflow-hidden">
+          <motion.div
+            className="h-full border border-primary/20 bg-background dark:bg-eerie-black/50 overflow-hidden"
+            initial={{ opacity: 0.8 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
+          >
             {/* Scrollable Content Inside Window */}
             <div className="h-full overflow-y-auto p-6">
               <motion.div
-                initial={{ opacity: 0, filter: "blur(12px)" }}
+                initial={{ opacity: 0, filter: "blur(12px)", y: 8 }}
                 animate={{
                   opacity: showContent ? 1 : 0,
                   filter: showContent ? "blur(0px)" : "blur(12px)",
+                  y: showContent ? 0 : 8,
                 }}
-                transition={{ duration: 0.4, ease: [0.32, 0.72, 0, 1] }}
+                transition={{ duration: 0.45, ease: [0.32, 0.72, 0, 1] }}
               >
                 <div className="flex items-center mb-4">
                   <FileText className="h-4 w-4 mr-2 text-primary/70" />
@@ -119,9 +130,9 @@ export default function BlogPostPage() {
                 </div>
               </motion.div>
             </div>
-          </div>
+          </motion.div>
         </div>
-      </div>
+      </motion.div>
     </>
   )
 }

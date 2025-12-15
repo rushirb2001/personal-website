@@ -3,7 +3,7 @@
 import type React from "react"
 
 import { useState, useEffect, useRef } from "react"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion } from "framer-motion"
 import { getPublishedPosts, type BlogPost } from "@/lib/blog-data"
 import { formatDate } from "@/lib/utils"
 import { ArrowRight, Calendar, Tag, Terminal } from "lucide-react"
@@ -18,98 +18,32 @@ export default function UpdatesPage() {
   const router = useRouter()
   const [mounted, setMounted] = useState(false)
 
-  const [expandingPost, setExpandingPost] = useState<BlogPost | null>(null)
-  const [expandRect, setExpandRect] = useState<DOMRect | null>(null)
   const articleRefs = useRef<Map<string, HTMLDivElement>>(new Map())
 
-  // Get all unique tags
   const allTags = Array.from(new Set(posts.flatMap((post) => post.tags)))
 
-  // Filter posts by selected tags
   const filteredPosts =
     selectedTags.length > 0 ? posts.filter((post) => post.tags.some((tag) => selectedTags.includes(tag))) : posts
 
-  // Toggle tag selection
   const toggleTag = (tag: string) => {
     setSelectedTags((prev) => (prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]))
   }
 
-  // Use useEffect to ensure we're mounted before trying to use context
   useEffect(() => {
     setMounted(true)
   }, [])
 
-  // Function to navigate without using the context
   const handleReturnToMain = () => {
     router.push("/")
   }
 
   const handleArticleClick = (e: React.MouseEvent, post: BlogPost) => {
     e.preventDefault()
-    const element = articleRefs.current.get(post.id)
-    if (element) {
-      const rect = element.getBoundingClientRect()
-      setExpandRect(rect)
-      setExpandingPost(post)
-
-      router.push(`/updates/${post.id}`)
-    }
+    router.push(`/updates/${post.id}`)
   }
 
   return (
     <PageLayout title="BLOG" subtitle="ARTICLES, DAILY BLOGS AND LIFE UPDATES">
-      <AnimatePresence>
-        {expandingPost && expandRect && (
-          <motion.div
-            className="fixed z-30 overflow-hidden pointer-events-none"
-            initial={{
-              top: expandRect.top,
-              left: expandRect.left,
-              width: expandRect.width,
-              height: expandRect.height,
-            }}
-            animate={{
-              top: "9.5rem",
-              left: "50%",
-              x: "-50%",
-              width: "min(100vw - 2rem, 48rem)",
-              height: "calc(100vh - 9.5rem - 4rem)",
-            }}
-            transition={{
-              duration: 0.5,
-              ease: [0.32, 0.72, 0, 1],
-            }}
-          >
-            <motion.div className="h-full w-full border border-primary/20 bg-background dark:bg-eerie-black/50 overflow-hidden">
-              <div className="h-full overflow-hidden p-6">
-                <motion.div
-                  initial={{ opacity: 1, filter: "blur(0px)" }}
-                  animate={{ opacity: 0, filter: "blur(12px)" }}
-                  transition={{ duration: 0.4, ease: "easeOut" }}
-                >
-                  <div className="flex justify-between items-start mb-2">
-                    <h2 className="text-sm font-sf-mono font-medium">{expandingPost.title}</h2>
-                    <div className="flex items-center text-xs text-primary/60 font-sf-mono">
-                      <Calendar className="h-3 w-3 mr-1" />
-                      {formatDate(new Date(expandingPost.date))}
-                    </div>
-                  </div>
-                  <p className="text-xs text-primary/70 mb-3 font-sf-mono">{expandingPost.summary}</p>
-                  <div className="flex items-center gap-1">
-                    <Tag className="h-3 w-3 text-primary/50" />
-                    {expandingPost.tags.slice(0, 3).map((tag) => (
-                      <span key={tag} className="text-xs text-primary/50 font-sf-mono">
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                </motion.div>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
       <div className="container max-w-4xl mx-auto px-2 md:px-4">
         <div className="mb-8 border border-primary/20 p-2 md:p-4 bg-background dark:bg-eerie-black/50 -mx-2 md:mx-0">
           <div className="flex flex-col mb-4">
@@ -123,7 +57,6 @@ export default function UpdatesPage() {
               </div>
             </div>
 
-            {/* Tags filter dropdown */}
             <div className="relative w-full border border-primary/20 mb-4 mt-2 bg-card/10">
               <button
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
@@ -177,7 +110,6 @@ export default function UpdatesPage() {
             </div>
           </div>
 
-          {/* Posts list */}
           <div className="space-y-4">
             {filteredPosts.map((post, index) => (
               <motion.div
@@ -186,10 +118,7 @@ export default function UpdatesPage() {
                   if (el) articleRefs.current.set(post.id, el)
                 }}
                 initial={{ opacity: 0, y: 20 }}
-                animate={{
-                  opacity: expandingPost?.id === post.id ? 0 : 1,
-                  y: 0,
-                }}
+                animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1, duration: 0.5 }}
                 className="border border-primary/20 hover:border-primary/40 transition-colors cursor-pointer"
                 onClick={(e) => handleArticleClick(e, post)}
