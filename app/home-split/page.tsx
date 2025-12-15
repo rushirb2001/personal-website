@@ -94,43 +94,50 @@ export default function HomeSplitPage() {
             DATA SCIENTIST • AI ENGINEER • ML RESEARCHER
           </p>
 
-          <div className="flex items-center gap-2 mt-4 pt-4 border-t border-primary/10">
-            <Link
-              href="https://github.com/rushirb2001"
-              target="_blank"
-              className="w-8 h-8 flex items-center justify-center border border-primary/20 hover:bg-primary hover:text-background transition-colors"
-            >
-              <Github className="h-4 w-4" />
-            </Link>
-            <Link
-              href="https://linkedin.com/in/rushir-bhavsar/"
-              target="_blank"
-              className="w-8 h-8 flex items-center justify-center border border-primary/20 hover:bg-primary hover:text-background transition-colors"
-            >
-              <Linkedin className="h-4 w-4" />
-            </Link>
-            <Link
-              href="mailto:rushirbhavsar@gmail.com"
-              className="w-8 h-8 flex items-center justify-center border border-primary/20 hover:bg-primary hover:text-background transition-colors"
-            >
-              <Mail className="h-4 w-4" />
-            </Link>
-            <Button
-              variant="ghost"
-              className="h-8 px-2 border border-primary/20 text-[10px] font-sf-mono bg-transparent hover:bg-primary hover:text-background rounded-none transition-colors"
-              onClick={() => setIsResumeModalOpen(true)}
-            >
-              <FileText className="h-3.5 w-3.5 mr-1" />
-              RESUME
-            </Button>
-            <Button
-              variant="ghost"
-              className="h-8 px-2 border border-primary/20 text-[10px] font-sf-mono bg-transparent hover:bg-primary hover:text-background rounded-none transition-colors"
-              onClick={() => navigateTo("/contact")}
-            >
-              CONTACT
-              <ArrowRight className="h-3 w-3 ml-1" />
-            </Button>
+          <div className="flex flex-col gap-4 mt-4 pt-4 border-t border-primary/10">
+            {/* Social Icons Row */}
+            <div className="flex items-center gap-2">
+              <Link
+                href="https://github.com/rushirb2001"
+                target="_blank"
+                className="w-8 h-8 flex items-center justify-center border border-primary/20 hover:bg-primary hover:text-background transition-colors"
+              >
+                <Github className="h-4 w-4" />
+              </Link>
+              <Link
+                href="https://linkedin.com/in/rushir-bhavsar/"
+                target="_blank"
+                className="w-8 h-8 flex items-center justify-center border border-primary/20 hover:bg-primary hover:text-background transition-colors"
+              >
+                <Linkedin className="h-4 w-4" />
+              </Link>
+              <Link
+                href="mailto:rushirbhavsar@gmail.com"
+                className="w-8 h-8 flex items-center justify-center border border-primary/20 hover:bg-primary hover:text-background transition-colors"
+              >
+                <Mail className="h-4 w-4" />
+              </Link>
+            </div>
+
+            {/* Action Buttons Row - with margin from icons */}
+            <div className="flex items-center gap-2">
+              <Button
+                variant="ghost"
+                className="h-8 px-3 border border-primary/20 text-[10px] font-sf-mono bg-transparent hover:bg-primary hover:text-background rounded-none transition-colors"
+                onClick={() => setIsResumeModalOpen(true)}
+              >
+                <FileText className="h-3.5 w-3.5 mr-1.5" />
+                RESUME
+              </Button>
+              <Button
+                variant="ghost"
+                className="h-8 px-3 border border-primary/20 text-[10px] font-sf-mono bg-transparent hover:bg-primary hover:text-background rounded-none transition-colors"
+                onClick={() => navigateTo("/contact")}
+              >
+                CONTACT
+                <ArrowRight className="h-3 w-3 ml-1.5" />
+              </Button>
+            </div>
           </div>
 
           <div className="flex items-center text-[10px] font-sf-mono text-primary/50 mt-3">
