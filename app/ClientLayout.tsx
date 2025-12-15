@@ -157,14 +157,14 @@ export default function ClientLayout({
               <AnimatePresence mode="wait">
                 {isMounted && (
                   <>
-                    <motion.div
+                    {/* <motion.div
                       key="header"
                       initial={isInitialRender ? "hidden" : "visible"}
                       animate="visible"
                       variants={headerVariants}
                     >
                       <Header />
-                    </motion.div>
+                    </motion.div> */}
 
                     <motion.main
                       className="flex-1 pt-16 pb-16 overflow-y-auto relative theme-transition"
@@ -177,14 +177,14 @@ export default function ClientLayout({
                       <TransitionOverlay />
                     </motion.main>
 
-                    <motion.div
+                    {/* <motion.div
                       key="footer"
                       initial={isInitialRender ? "hidden" : "visible"}
                       animate="visible"
                       variants={footerVariants}
                     >
                       <Footer />
-                    </motion.div>
+                    </motion.div> */}
                   </>
                 )}
               </AnimatePresence>
