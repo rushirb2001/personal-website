@@ -1,11 +1,12 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { motion } from "framer-motion"
-import { getPublishedPosts } from "@/lib/blog-data"
+import type React from "react"
+
+import { useState, useEffect, useRef } from "react"
+import { motion, AnimatePresence } from "framer-motion"
+import { getPublishedPosts, type BlogPost } from "@/lib/blog-data"
 import { formatDate } from "@/lib/utils"
 import { ArrowRight, Calendar, Tag, Terminal } from "lucide-react"
-import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { PageLayout } from "@/components/layout/page-layout"
 import { useRouter } from "next/navigation"
@@ -16,6 +17,10 @@ export default function UpdatesPage() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const router = useRouter()
   const [mounted, setMounted] = useState(false)
+
+  const [expandingPost, setExpandingPost] = useState<BlogPost | null>(null)
+  const [expandRect, setExpandRect] = useState<DOMRect | null>(null)
+  const articleRefs = useRef<Map<string, HTMLDivElement>>(new Map())
 
   // Get all unique tags
   const allTags = Array.from(new Set(posts.flatMap((post) => post.tags)))
@@ -39,8 +44,112 @@ export default function UpdatesPage() {
     router.push("/")
   }
 
+  const handleArticleClick = (e: React.MouseEvent, post: BlogPost) => {
+    e.preventDefault()
+    const element = articleRefs.current.get(post.id)
+    if (element) {
+      const rect = element.getBoundingClientRect()
+      setExpandRect(rect)
+      setExpandingPost(post)
+
+      // Navigate after animation completes
+      setTimeout(() => {
+        router.push(`/updates/${post.id}`)
+      }, 600)
+    }
+  }
+
   return (
     <PageLayout title="BLOG" subtitle="ARTICLES, DAILY BLOGS AND LIFE UPDATES">
+      <AnimatePresence>
+        {expandingPost && expandRect && (
+          <>
+            {/* Background overlay */}
+            <motion.div
+              className="fixed inset-0 z-[100] bg-background"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.4 }}
+            />
+
+            {/* Expanding article card */}
+            <motion.div
+              className="fixed z-[101] border border-primary/40 bg-background dark:bg-eerie-black/95 overflow-hidden"
+              initial={{
+                top: expandRect.top,
+                left: expandRect.left,
+                width: expandRect.width,
+                height: expandRect.height,
+                borderRadius: 0,
+              }}
+              animate={{
+                top: 60,
+                left: 0,
+                width: "100vw",
+                height: "calc(100vh - 120px)",
+                borderRadius: 0,
+              }}
+              transition={{
+                duration: 0.5,
+                ease: [0.4, 0, 0.2, 1],
+              }}
+            >
+              <motion.div className="p-6 h-full overflow-hidden" initial={{ opacity: 1 }} animate={{ opacity: 1 }}>
+                {/* Article header during expansion */}
+                <motion.div
+                  initial={{ opacity: 1, y: 0 }}
+                  animate={{ opacity: 0.7, y: 20 }}
+                  transition={{ delay: 0.2, duration: 0.3 }}
+                >
+                  <div className="flex justify-between items-start mb-4">
+                    <h2 className="text-lg font-sf-mono font-medium">{expandingPost.title}</h2>
+                    <div className="flex items-center text-xs text-primary/60 font-sf-mono">
+                      <Calendar className="h-3 w-3 mr-1" />
+                      {formatDate(new Date(expandingPost.date))}
+                    </div>
+                  </div>
+                  <p className="text-sm text-primary/70 mb-4 font-sf-mono">{expandingPost.summary}</p>
+                  <div className="flex items-center gap-2">
+                    <Tag className="h-3 w-3 text-primary/50" />
+                    {expandingPost.tags.map((tag) => (
+                      <span
+                        key={tag}
+                        className="text-xs text-primary/50 font-sf-mono px-2 py-0.5 border border-primary/20"
+                      >
+                        {tag.toUpperCase()}
+                      </span>
+                    ))}
+                  </div>
+                </motion.div>
+
+                {/* Loading indicator */}
+                <motion.div
+                  className="absolute inset-0 flex items-center justify-center"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.4, duration: 0.2 }}
+                >
+                  <div className="text-sm font-sf-mono text-primary/70">LOADING RECORD...</div>
+                </motion.div>
+              </motion.div>
+            </motion.div>
+
+            {/* Navigation bar sliding down effect */}
+            <motion.div
+              className="fixed top-14 left-0 right-0 z-[102] bg-background dark:bg-eerie-black border-b border-primary/20"
+              initial={{ y: -60, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.2, duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
+            >
+              <div className="container max-w-3xl mx-auto px-4 py-4 flex justify-between">
+                <div className="text-xs font-sf-mono text-primary/50">TRANSITIONING...</div>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
       <div className="container max-w-4xl mx-auto px-2 md:px-4">
         <div className="mb-8 border border-primary/20 p-2 md:p-4 bg-background dark:bg-eerie-black/50 -mx-2 md:mx-0">
           <div className="flex flex-col mb-4">
@@ -55,10 +164,10 @@ export default function UpdatesPage() {
             </div>
 
             {/* Tags filter dropdown */}
-            <div className="relative w-full border border-primary/20 mb-4 mt-2 bg-eerie-gray/10">
+            <div className="relative w-full border border-primary/20 mb-4 mt-2 bg-card/10">
               <button
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                className="w-full flex items-center justify-between px-3 py-2 text-xs font-sf-mono bg-eerie-gray/20"
+                className="w-full flex items-center justify-between px-3 py-2 text-xs font-sf-mono bg-card/20"
               >
                 <span className="text-primary/70">
                   {selectedTags.length > 0
@@ -90,7 +199,7 @@ export default function UpdatesPage() {
                     ))}
                   </div>
                   {selectedTags.length > 0 && (
-                    <div className="border-t border-primary/20 p-2 flex justify-between bg-eerie-gray/20">
+                    <div className="border-t border-primary/20 p-2 flex justify-between bg-card/20">
                       <span className="text-xs font-sf-mono text-primary/70">{selectedTags.length} SELECTED</span>
                       <button
                         onClick={() => {
@@ -113,45 +222,50 @@ export default function UpdatesPage() {
             {filteredPosts.map((post, index) => (
               <motion.div
                 key={post.id}
+                ref={(el) => {
+                  if (el) articleRefs.current.set(post.id, el)
+                }}
                 initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
+                animate={{
+                  opacity: expandingPost?.id === post.id ? 0 : 1,
+                  y: 0,
+                }}
                 transition={{ delay: index * 0.1, duration: 0.5 }}
-                className="border border-primary/20 hover:border-primary/40 transition-colors"
+                className="border border-primary/20 hover:border-primary/40 transition-colors cursor-pointer"
+                onClick={(e) => handleArticleClick(e, post)}
               >
-                <Link href={`/updates/${post.id}`} className="block">
-                  <div className="p-4 cursor-pointer hover:bg-primary/5 transition-colors">
-                    <div className="flex justify-between items-start mb-2">
-                      <h2 className="text-sm font-sf-mono font-medium">{post.title}</h2>
-                      <div className="flex items-center text-xs text-primary/60 font-sf-mono">
-                        <Calendar className="h-3 w-3 mr-1" />
-                        {formatDate(new Date(post.date))}
-                      </div>
-                    </div>
-
-                    <p className="text-xs text-primary/70 mb-3 font-sf-mono">{post.summary}</p>
-
-                    <div className="flex justify-between items-center">
-                      <div className="flex items-center gap-1">
-                        <Tag className="h-3 w-3 text-primary/50" />
-                        <div className="flex gap-1">
-                          {post.tags.slice(0, 3).map((tag) => (
-                            <span key={tag} className="text-xs text-primary/50 font-sf-mono">
-                              {tag}
-                            </span>
-                          ))}
-                          {post.tags.length > 3 && (
-                            <span className="text-xs text-primary/50 font-sf-mono">+{post.tags.length - 3}</span>
-                          )}
-                        </div>
-                      </div>
-
-                      <div className="text-xs font-sf-mono text-primary/70 flex items-center">
-                        READ ENTRY
-                        <ArrowRight className="ml-1 h-3 w-3" />
-                      </div>
+                <div className="p-4 hover:bg-primary/5 transition-colors">
+                  <div className="flex justify-between items-start mb-2">
+                    <h2 className="text-sm font-sf-mono font-medium">{post.title}</h2>
+                    <div className="flex items-center text-xs text-primary/60 font-sf-mono">
+                      <Calendar className="h-3 w-3 mr-1" />
+                      {formatDate(new Date(post.date))}
                     </div>
                   </div>
-                </Link>
+
+                  <p className="text-xs text-primary/70 mb-3 font-sf-mono">{post.summary}</p>
+
+                  <div className="flex justify-between items-center">
+                    <div className="flex items-center gap-1">
+                      <Tag className="h-3 w-3 text-primary/50" />
+                      <div className="flex gap-1">
+                        {post.tags.slice(0, 3).map((tag) => (
+                          <span key={tag} className="text-xs text-primary/50 font-sf-mono">
+                            {tag}
+                          </span>
+                        ))}
+                        {post.tags.length > 3 && (
+                          <span className="text-xs text-primary/50 font-sf-mono">+{post.tags.length - 3}</span>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="text-xs font-sf-mono text-primary/70 flex items-center">
+                      READ ENTRY
+                      <ArrowRight className="ml-1 h-3 w-3" />
+                    </div>
+                  </div>
+                </div>
               </motion.div>
             ))}
           </div>
