@@ -91,7 +91,7 @@ export default function Home() {
             transition={{ duration: 0.7, ease: [0.4, 0, 0.2, 1] }}
           >
             {/* Mobile Layout - Fixed vertical structure */}
-            <div className="md:hidden w-full h-full flex flex-col justify-center items-center gap-3 px-4">
+            <div className="md:hidden w-full h-full flex flex-col justify-between items-center px-4 py-6">
               {/* Title & Subtitle */}
               <motion.div
                 className="text-center w-full"
@@ -103,22 +103,16 @@ export default function Home() {
                 <p className="text-[10px] font-sf-mono text-primary/70">DATA SCIENTIST • AI ENGINEER • ML RESEARCHER</p>
               </motion.div>
 
-              {/* Photo - Square */}
+              {/* Photo - Full width with margin */}
               <motion.div
-                className="relative w-[180px] h-[180px]"
+                className="relative w-full aspect-square"
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.3, duration: 0.6 }}
               >
-                <div className="relative border border-primary/20 bg-secondary/20 p-1.5 w-full h-full">
-                  <Image
-                    src="/images/personal_photo.png"
-                    alt="Profile"
-                    width={180}
-                    height={180}
-                    className="w-full h-full object-cover grayscale"
-                  />
-                  <div className="absolute top-1.5 right-1.5 bg-background/80 border border-primary/30 px-1.5 py-0.5 text-[8px] font-sf-mono">
+                <div className="relative border border-primary/20 bg-secondary/20 p-2 w-full h-full">
+                  <Image src="/images/personal_photo.png" alt="Profile" fill className="object-cover grayscale" />
+                  <div className="absolute top-3 right-3 bg-background/80 border border-primary/30 px-2 py-1 text-[9px] font-sf-mono">
                     VERIFIED
                   </div>
                 </div>
@@ -135,7 +129,7 @@ export default function Home() {
                   href="https://github.com/rushirb2001"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-10 h-10 flex items-center justify-center border border-primary/20 group hover:bg-primary/10 transition-colors"
+                  className="w-12 h-12 flex items-center justify-center border border-primary/20 group hover:bg-primary/10 transition-colors"
                 >
                   <Github className="h-5 w-5 stroke-[2] text-purple-800 group-hover:scale-110 transition-transform" />
                 </Link>
@@ -143,37 +137,37 @@ export default function Home() {
                   href="https://linkedin.com/in/rushir-bhavsar/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-10 h-10 flex items-center justify-center border border-primary/20 group hover:bg-primary/10 transition-colors"
+                  className="w-12 h-12 flex items-center justify-center border border-primary/20 group hover:bg-primary/10 transition-colors"
                 >
                   <Linkedin className="h-5 w-5 stroke-[2] text-blue-700 group-hover:scale-110 transition-transform" />
                 </Link>
                 <Button
                   variant="ghost"
-                  className="h-10 px-3 border border-primary/20 text-[10px] font-sf-mono bg-primary/5 hover:bg-primary/10 rounded-none"
+                  className="h-12 px-4 border border-primary/20 text-[11px] font-sf-mono bg-primary/5 hover:bg-primary/10 rounded-none"
                   onClick={() => setIsResumeModalOpen(true)}
                 >
-                  <FileText className="h-4 w-4 mr-1.5" />
+                  <FileText className="h-4 w-4 mr-2" />
                   VIEW RESUME
                 </Button>
               </motion.div>
 
-              {/* Compact Stats - Single Row */}
               <motion.div
-                className="flex items-center justify-center gap-4 text-[9px] font-sf-mono text-primary/60 border border-primary/20 px-4 py-2 w-full"
+                className="flex flex-col items-stretch gap-2 text-[10px] font-sf-mono w-full"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5, duration: 0.6 }}
               >
-                <div className="text-center">
-                  <span className="text-primary/40">PROJECTS:</span> <span className="font-bold">15+</span>
+                <div className="flex justify-between items-center border border-primary/20 px-4 py-2">
+                  <span className="text-primary/40">PROJECTS</span>
+                  <span className="font-bold">15+</span>
                 </div>
-                <div className="w-px h-3 bg-primary/20" />
-                <div className="text-center">
-                  <span className="text-primary/40">PUBLICATIONS:</span> <span className="font-bold">3+</span>
+                <div className="flex justify-between items-center border border-primary/20 px-4 py-2">
+                  <span className="text-primary/40">PUBLICATIONS</span>
+                  <span className="font-bold">3+</span>
                 </div>
-                <div className="w-px h-3 bg-primary/20" />
-                <div className="text-center">
-                  <span className="text-primary/40">EXPERIENCE:</span> <span className="font-bold">2+ YRS</span>
+                <div className="flex justify-between items-center border border-primary/20 px-4 py-2">
+                  <span className="text-primary/40">EXPERIENCE</span>
+                  <span className="font-bold">2+ YRS</span>
                 </div>
               </motion.div>
 
@@ -185,19 +179,19 @@ export default function Home() {
                 transition={{ delay: 0.6, duration: 0.6 }}
               >
                 <Button
-                  className="flex-1 group rounded-none border border-primary/20 bg-transparent text-primary hover:bg-primary/10 font-black text-xs h-10"
+                  className="flex-1 group rounded-none border border-primary/20 bg-transparent text-primary hover:bg-primary/10 font-black text-xs h-12"
                   onClick={() => navigateTo("/contact")}
                 >
-                  <Mail className="mr-1.5 h-3.5 w-3.5" />
+                  <Mail className="mr-1.5 h-4 w-4" />
                   CONTACT
-                  <ArrowRight className="ml-1.5 h-3 w-3 group-hover:translate-x-1 transition-transform" />
+                  <ArrowRight className="ml-1.5 h-3.5 w-3.5 group-hover:translate-x-1 transition-transform" />
                 </Button>
                 <Button
-                  className="flex-1 group rounded-none border border-primary/20 bg-transparent text-primary hover:bg-primary/10 font-black text-xs h-10"
+                  className="flex-1 group rounded-none border border-primary/20 bg-transparent text-primary hover:bg-primary/10 font-black text-xs h-12"
                   onClick={() => navigateTo("/projects")}
                 >
                   EXPLORE
-                  <ArrowRight className="ml-1.5 h-3 w-3 group-hover:translate-x-1 transition-transform" />
+                  <ArrowRight className="ml-1.5 h-3.5 w-3.5 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </motion.div>
             </div>
