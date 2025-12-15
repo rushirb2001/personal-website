@@ -5,7 +5,7 @@ import { useParams, useRouter } from "next/navigation"
 import { motion } from "framer-motion"
 import { getPostById, type BlogPost } from "@/lib/blog-data"
 import { formatDate } from "@/lib/utils"
-import { ArrowLeft, ArrowRight, Calendar, FileText, Tag } from "lucide-react"
+import { ArrowLeft, FileText, Tag } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useNavigation } from "@/contexts/navigation-context"
 import { BlogContent } from "@/components/features/blog/blog-content"
@@ -69,15 +69,6 @@ export default function BlogPostPage() {
     }
   }, [animationPhase])
 
-  useEffect(() => {
-    if (animationPhase === "collapsing") {
-      const timer = setTimeout(() => {
-        router.push("/updates")
-      }, 450) // Increased delay to 450ms for smoother visual transition
-      return () => clearTimeout(timer)
-    }
-  }, [animationPhase, router])
-
   const handleBackToUpdates = () => {
     if (originalRect && post) {
       // Store the target card position and post info for the updates page
@@ -93,7 +84,8 @@ export default function BlogPostPage() {
           tags: post.tags,
         }),
       )
-      setAnimationPhase("collapsing")
+      // Navigate immediately - updates page will handle collapse animation
+      router.push("/updates")
     } else {
       router.push("/updates")
     }
@@ -141,15 +133,12 @@ export default function BlogPostPage() {
 
   return (
     <>
-      {/* Navigation bar drops down from top, slides up on collapse */}
+      {/* Navigation bar drops down from top */}
       <motion.div
         className="fixed top-14 md:top-16 left-0 right-0 z-50 bg-background dark:bg-eerie-black border-b border-primary/20"
         initial={{ y: -60, opacity: 0 }}
-        animate={{
-          y: animationPhase === "collapsing" ? -60 : 0,
-          opacity: animationPhase === "collapsing" ? 0 : 1,
-        }}
-        transition={{ duration: 0.4, ease: [0.32, 0.72, 0, 1], delay: animationPhase === "collapsing" ? 0 : 0.1 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.4, ease: [0.32, 0.72, 0, 1], delay: 0.1 }}
       >
         <div className="container max-w-3xl mx-auto px-4 py-4 flex justify-between">
           <Button
@@ -195,80 +184,13 @@ export default function BlogPostPage() {
         />
       )}
 
-      {originalRect && animationPhase === "collapsing" && post && (
-        <motion.div
-          className="fixed z-40 pointer-events-none border border-primary/20 bg-background dark:bg-eerie-black overflow-hidden"
-          initial={{
-            top: 152,
-            left: "50%",
-            x: "-50%",
-            width: "min(100vw - 2rem, 48rem)",
-            height: "calc(100vh - 9.5rem - 4rem)",
-          }}
-          animate={{
-            top: originalRect.top,
-            left: originalRect.left,
-            x: 0,
-            width: originalRect.width,
-            height: originalRect.height,
-          }}
-          transition={{
-            duration: 0.55,
-            ease: [0.4, 0, 0.2, 1],
-          }}
-        >
-          {/* Card preview content that appears during collapse */}
-          <motion.div
-            className="p-4 h-full"
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.15, duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
-          >
-            <div className="flex justify-between items-start mb-2">
-              <h2 className="text-sm font-sf-mono font-medium line-clamp-1">{post.title}</h2>
-              <div className="flex items-center text-xs text-primary/60 font-sf-mono whitespace-nowrap ml-2">
-                <Calendar className="h-3 w-3 mr-1" />
-                {formatDate(new Date(post.date))}
-              </div>
-            </div>
-
-            <p className="text-xs text-primary/70 mb-3 font-sf-mono line-clamp-2">{post.summary}</p>
-
-            <div className="flex justify-between items-center">
-              <div className="flex items-center gap-1">
-                <Tag className="h-3 w-3 text-primary/50" />
-                <div className="flex gap-1">
-                  {post.tags.slice(0, 3).map((tag) => (
-                    <span key={tag} className="text-xs text-primary/50 font-sf-mono">
-                      {tag}
-                    </span>
-                  ))}
-                  {post.tags.length > 3 && (
-                    <span className="text-xs text-primary/50 font-sf-mono">+{post.tags.length - 3}</span>
-                  )}
-                </div>
-              </div>
-
-              <div className="text-xs font-sf-mono text-primary/70 flex items-center">
-                READ ENTRY
-                <ArrowRight className="ml-1 h-3 w-3" />
-              </div>
-            </div>
-          </motion.div>
-        </motion.div>
-      )}
-
-      {/* Main content container - hide during collapse */}
+      {/* Main content container */}
       <motion.div
         className="fixed top-[9.5rem] left-0 right-0 bottom-16 z-30"
         initial={{ opacity: 0 }}
-        animate={{
-          opacity: animationPhase === "expanding" || animationPhase === "collapsing" ? 0 : 1,
-        }}
+        animate={{ opacity: animationPhase === "expanding" ? 0 : 1 }}
         transition={{ duration: 0.2 }}
-        style={{
-          visibility: animationPhase === "expanding" || animationPhase === "collapsing" ? "hidden" : "visible",
-        }}
+        style={{ visibility: animationPhase === "expanding" ? "hidden" : "visible" }}
       >
         <div className="container max-w-3xl mx-auto px-4 h-full">
           <div className="h-full border border-primary/20 bg-background dark:bg-eerie-black/50 overflow-hidden">

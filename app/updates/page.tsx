@@ -22,12 +22,14 @@ export default function UpdatesPage() {
   const [returningPostId, setReturningPostId] = useState<string | null>(null)
   const [highlightedPostId, setHighlightedPostId] = useState<string | null>(null)
   const isReturningFromArticle = useRef(false)
+
   const [collapseAnimation, setCollapseAnimation] = useState<{
     show: boolean
+    phase: "collapsing" | "landing" | "done"
     startRect: { top: number; left: number; width: number; height: number }
     endRect: { top: number; left: number; width: number; height: number } | null
     postData: BlogPost | null
-  }>({ show: false, startRect: { top: 0, left: 0, width: 0, height: 0 }, endRect: null, postData: null })
+  }>({ show: false, phase: "done", startRect: { top: 0, left: 0, width: 0, height: 0 }, endRect: null, postData: null })
 
   const allTags = Array.from(new Set(posts.flatMap((post) => post.tags)))
 
@@ -38,6 +40,7 @@ export default function UpdatesPage() {
     setSelectedTags((prev) => (prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]))
   }
 
+  // Check synchronously before first render
   if (typeof window !== "undefined" && !isReturningFromArticle.current) {
     const collapseRect = sessionStorage.getItem("collapseToRect")
     const collapsePostId = sessionStorage.getItem("collapseFromPost")
@@ -52,7 +55,7 @@ export default function UpdatesPage() {
     const collapsePostData = sessionStorage.getItem("collapsePostData")
 
     if (collapseRect && collapsePostId && collapsePostData) {
-      const startRect = JSON.parse(collapseRect)
+      const originalCardRect = JSON.parse(collapseRect)
       const postData = JSON.parse(collapsePostData)
 
       setReturningPostId(collapsePostId)
@@ -61,6 +64,16 @@ export default function UpdatesPage() {
       sessionStorage.removeItem("collapseFromPost")
       sessionStorage.removeItem("collapsePostData")
 
+      // Start collapse animation from full container position
+      // Calculate starting position (same as article page container)
+      const startRect = {
+        top: 152, // 9.5rem in pixels
+        left: Math.max(16, (window.innerWidth - Math.min(window.innerWidth - 32, 768)) / 2),
+        width: Math.min(window.innerWidth - 32, 768),
+        height: window.innerHeight - 152 - 64, // viewport minus top and bottom
+      }
+
+      // Get target card position after a frame to ensure DOM is ready
       requestAnimationFrame(() => {
         const targetElement = articleRefs.current.get(collapsePostId)
         if (targetElement) {
@@ -68,6 +81,7 @@ export default function UpdatesPage() {
 
           setCollapseAnimation({
             show: true,
+            phase: "collapsing",
             startRect,
             endRect: {
               top: endRect.top,
@@ -78,15 +92,23 @@ export default function UpdatesPage() {
             postData,
           })
 
+          // After collapse animation completes, show the actual card
           setTimeout(() => {
-            setCollapseAnimation((prev) => ({ ...prev, show: false }))
-            setReturningPostId(null)
-            setHighlightedPostId(collapsePostId)
+            setCollapseAnimation((prev) => ({ ...prev, phase: "landing" }))
 
             setTimeout(() => {
-              setHighlightedPostId(null)
-            }, 400)
-          }, 600)
+              setCollapseAnimation((prev) => ({ ...prev, show: false, phase: "done" }))
+              setReturningPostId(null)
+              setHighlightedPostId(collapsePostId)
+
+              setTimeout(() => {
+                setHighlightedPostId(null)
+              }, 300)
+            }, 100)
+          }, 500)
+        } else {
+          // Fallback if element not found
+          setReturningPostId(null)
         }
       })
     }
@@ -119,37 +141,44 @@ export default function UpdatesPage() {
       <AnimatePresence>
         {collapseAnimation.show && collapseAnimation.endRect && collapseAnimation.postData && (
           <motion.div
-            className="fixed z-30 border border-primary/20 bg-background dark:bg-eerie-black/95 overflow-hidden pointer-events-none"
+            className="fixed z-50 border border-primary/20 bg-background dark:bg-eerie-black overflow-hidden pointer-events-none"
             initial={{
               top: collapseAnimation.startRect.top,
               left: collapseAnimation.startRect.left,
               width: collapseAnimation.startRect.width,
               height: collapseAnimation.startRect.height,
-              scale: 1,
             }}
             animate={{
               top: collapseAnimation.endRect.top,
               left: collapseAnimation.endRect.left,
               width: collapseAnimation.endRect.width,
               height: collapseAnimation.endRect.height,
-              scale: 1,
             }}
-            transition={{ duration: 0.55, ease: [0.4, 0, 0.2, 1] }}
+            exit={{ opacity: 0 }}
+            transition={{
+              duration: 0.5,
+              ease: [0.32, 0.72, 0, 1],
+            }}
           >
+            {/* Card content that morphs into place */}
             <motion.div
-              className="p-4"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.1, duration: 0.25, ease: "easeOut" }}
+              className="p-4 h-full"
+              initial={{ opacity: 0, filter: "blur(8px)" }}
+              animate={{ opacity: 1, filter: "blur(0px)" }}
+              transition={{ delay: 0.15, duration: 0.35, ease: [0.32, 0.72, 0, 1] }}
             >
               <div className="flex justify-between items-start mb-2">
-                <h2 className="text-sm font-sf-mono font-medium">{collapseAnimation.postData.title}</h2>
-                <div className="flex items-center text-xs text-primary/60 font-sf-mono">
+                <h2 className="text-sm font-sf-mono font-medium line-clamp-1">{collapseAnimation.postData.title}</h2>
+                <div className="flex items-center text-xs text-primary/60 font-sf-mono whitespace-nowrap ml-2">
                   <Calendar className="h-3 w-3 mr-1" />
                   {formatDate(new Date(collapseAnimation.postData.date))}
                 </div>
               </div>
-              <p className="text-xs text-primary/70 mb-3 font-sf-mono">{collapseAnimation.postData.summary}</p>
+
+              <p className="text-xs text-primary/70 mb-3 font-sf-mono line-clamp-2">
+                {collapseAnimation.postData.summary}
+              </p>
+
               <div className="flex justify-between items-center">
                 <div className="flex items-center gap-1">
                   <Tag className="h-3 w-3 text-primary/50" />
@@ -159,8 +188,14 @@ export default function UpdatesPage() {
                         {tag}
                       </span>
                     ))}
+                    {collapseAnimation.postData.tags.length > 3 && (
+                      <span className="text-xs text-primary/50 font-sf-mono">
+                        +{collapseAnimation.postData.tags.length - 3}
+                      </span>
+                    )}
                   </div>
                 </div>
+
                 <div className="text-xs font-sf-mono text-primary/70 flex items-center">
                   READ ENTRY
                   <ArrowRight className="ml-1 h-3 w-3" />
@@ -259,8 +294,8 @@ export default function UpdatesPage() {
                     : "border-primary/20 hover:border-primary/40"
                 }`}
                 style={{
-                  opacity: returningPostId === post.id ? 0 : undefined,
-                  visibility: returningPostId === post.id ? "hidden" : undefined,
+                  opacity: returningPostId === post.id && collapseAnimation.phase !== "done" ? 0 : undefined,
+                  visibility: returningPostId === post.id && collapseAnimation.phase !== "done" ? "hidden" : undefined,
                 }}
                 onClick={(e) => handleArticleClick(e, post)}
               >
