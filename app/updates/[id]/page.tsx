@@ -192,10 +192,10 @@ export default function BlogPostPage() {
           y: reversePhase === "nav-up" || reversePhase === "navigating" ? -60 : 0,
           opacity: reversePhase === "nav-up" || reversePhase === "navigating" ? 0 : 1,
         }}
-        transition={{ 
-          duration: 0.25, 
-          ease: [0.32, 0.72, 0, 1], 
-          delay: reversePhase === "idle" ? 0.1 : (reversePhase === "nav-up" || reversePhase === "navigating" ? 0 : 0.7)
+        transition={{
+          duration: 0.25,
+          ease: [0.32, 0.72, 0, 1],
+          delay: reversePhase === "idle" ? 0.1 : reversePhase === "nav-up" || reversePhase === "navigating" ? 0 : 0.7,
         }}
       >
         <div className="container max-w-3xl mx-auto px-4 py-4 flex justify-between">
@@ -232,10 +232,13 @@ export default function BlogPostPage() {
           }}
           animate={{
             top: 152,
-            left: "50%",
-            x: "-50%",
-            width: "min(100vw - 2rem, 48rem)",
-            height: "calc(100vh - 9.5rem - 4rem)",
+            left: Math.max(
+              16,
+              (typeof window !== "undefined" ? document.documentElement.clientWidth : 0) / 2 -
+                Math.min((typeof window !== "undefined" ? document.documentElement.clientWidth : 0) - 32, 768) / 2,
+            ),
+            width: Math.min((typeof window !== "undefined" ? document.documentElement.clientWidth : 0) - 32, 768),
+            height: typeof window !== "undefined" ? window.innerHeight - 152 - 64 : 0,
           }}
           transition={{
             duration: 0.6,
@@ -249,10 +252,13 @@ export default function BlogPostPage() {
           className="fixed z-[100] border border-primary/20 bg-background dark:bg-eerie-black"
           style={{
             top: 152,
-            left: "50%",
-            transform: "translateX(-50%)",
-            width: "min(100vw - 2rem, 48rem)",
-            height: "calc(100vh - 9.5rem - 4rem)",
+            left: Math.max(
+              16,
+              (typeof window !== "undefined" ? document.documentElement.clientWidth : 0) / 2 -
+                Math.min((typeof window !== "undefined" ? document.documentElement.clientWidth : 0) - 32, 768) / 2,
+            ),
+            width: Math.min((typeof window !== "undefined" ? document.documentElement.clientWidth : 0) - 32, 768),
+            height: typeof window !== "undefined" ? window.innerHeight - 152 - 64 : 0,
           }}
           initial={{ opacity: 1 }}
           animate={{ opacity: 1 }}
