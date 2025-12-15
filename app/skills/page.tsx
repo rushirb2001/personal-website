@@ -66,7 +66,7 @@ function calculateTotals() {
 function SkillTag({ name, delay }: { name: string; delay: number }) {
   return (
     <motion.span
-      className="inline-block px-2 py-0.5 text-[10px] sm:text-xs font-sf-mono uppercase tracking-wide border border-primary/20 bg-background text-primary/70 hover:bg-primary hover:text-background hover:border-primary transition-all duration-100"
+      className="inline-block px-1.5 py-0.5 text-[9px] font-sf-mono uppercase tracking-wide border border-primary/20 bg-background text-primary/70 hover:bg-primary hover:text-background hover:border-primary transition-all duration-100"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.15, delay }}
@@ -87,21 +87,19 @@ function SubcategoryRow({
   categoryDelay: number
   index: number
 }) {
-  const baseDelay = categoryDelay + index * 0.05
+  const baseDelay = categoryDelay + index * 0.03
 
   return (
     <motion.div
-      className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-3 py-1.5 border-b border-primary/10 last:border-b-0"
+      className="flex items-baseline gap-2 py-1 border-b border-primary/5 last:border-b-0"
       initial={{ opacity: 0, x: -10 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.2, delay: baseDelay }}
     >
-      <span className="text-[10px] sm:text-xs font-sf-mono text-primary/40 uppercase tracking-wider w-full sm:w-28 shrink-0">
-        {title}
-      </span>
-      <div className="flex flex-wrap gap-1.5">
+      <span className="text-[9px] font-sf-mono text-primary/40 uppercase tracking-wider w-20 shrink-0">{title}</span>
+      <div className="flex flex-wrap gap-1">
         {items.map((item, idx) => (
-          <SkillTag key={idx} name={item} delay={baseDelay + idx * 0.02} />
+          <SkillTag key={idx} name={item} delay={baseDelay + idx * 0.01} />
         ))}
       </div>
     </motion.div>
@@ -119,27 +117,25 @@ function CategoryBlock({
   index: number
   fullWidth?: boolean
 }) {
-  const categoryDelay = index * 0.1
+  const categoryDelay = index * 0.08
 
   return (
     <motion.div
       className={`border border-primary/20 bg-background ${fullWidth ? "col-span-1 md:col-span-2" : ""}`}
-      initial={{ opacity: 0, y: 15 }}
+      initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3, delay: categoryDelay }}
+      transition={{ duration: 0.25, delay: categoryDelay }}
     >
-      {/* Category header */}
-      <div className="border-b border-primary/20 px-3 py-2 bg-primary/5">
+      {/* Category header - compact */}
+      <div className="border-b border-primary/20 px-2 py-1 bg-primary/5">
         <div className="flex items-center justify-between">
-          <h3 className="text-xs sm:text-sm font-sf-mono font-bold tracking-widest text-primary">{title}</h3>
-          <span className="text-[9px] sm:text-[10px] font-sf-mono text-primary/30">
-            [{String(index + 1).padStart(2, "0")}]
-          </span>
+          <h3 className="text-[10px] font-sf-mono font-bold tracking-widest text-primary">{title}</h3>
+          <span className="text-[8px] font-sf-mono text-primary/30">[{String(index + 1).padStart(2, "0")}]</span>
         </div>
       </div>
 
-      {/* Category content */}
-      <div className="px-3 py-2">
+      {/* Category content - minimal padding */}
+      <div className="px-2 py-1.5">
         <div className="flex flex-col">
           {Object.entries(subcategories).map(([subcat, subItems], idx) => (
             <SubcategoryRow key={subcat} title={subcat} items={subItems} categoryDelay={categoryDelay} index={idx} />
@@ -155,55 +151,59 @@ export default function SkillsPage() {
 
   return (
     <PageLayout title="SKILLS" subtitle="TECHNICAL EXPERTISE">
-      <div className="flex flex-col gap-3 sm:gap-4 py-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
-          <CategoryBlock
-            title={skillsData.languages.title}
-            subcategories={skillsData.languages.subcategories}
-            index={0}
-          />
+      <div className="flex flex-col justify-between h-[calc(100vh-12rem)] py-0">
+        <div className="flex flex-col gap-2">
+          {/* Top row: Languages, Train/Eval/Infer */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+            <CategoryBlock
+              title={skillsData.languages.title}
+              subcategories={skillsData.languages.subcategories}
+              index={0}
+            />
+            <CategoryBlock
+              title={skillsData.trainEvalInfer.title}
+              subcategories={skillsData.trainEvalInfer.subcategories}
+              index={1}
+            />
+          </div>
 
-          <CategoryBlock
-            title={skillsData.trainEvalInfer.title}
-            subcategories={skillsData.trainEvalInfer.subcategories}
-            index={1}
-          />
+          {/* Middle row: Frameworks, Databases */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+            <CategoryBlock
+              title={skillsData.frameworks.title}
+              subcategories={skillsData.frameworks.subcategories}
+              index={2}
+            />
+            <CategoryBlock
+              title={skillsData.databases.title}
+              subcategories={skillsData.databases.subcategories}
+              index={3}
+            />
+          </div>
 
+          {/* Cloud - full width */}
           <CategoryBlock
-            title={skillsData.frameworks.title}
-            subcategories={skillsData.frameworks.subcategories}
-            index={2}
-          />
-
-          <CategoryBlock
-            title={skillsData.databases.title}
-            subcategories={skillsData.databases.subcategories}
-            index={3}
+            title={skillsData.cloud.title}
+            subcategories={skillsData.cloud.subcategories}
+            index={4}
+            fullWidth
           />
         </div>
 
-        {/* Cloud - full width */}
-        <CategoryBlock
-          title={skillsData.cloud.title}
-          subcategories={skillsData.cloud.subcategories}
-          index={4}
-          fullWidth
-        />
-
         <motion.div
-          className="flex items-center justify-between border-t border-primary/20 pt-3 mt-2"
+          className="flex items-center justify-between border-t border-primary/20 pt-2 mt-auto"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.3, delay: 0.6 }}
+          transition={{ duration: 0.3, delay: 0.5 }}
         >
-          <div className="flex gap-4 sm:gap-6 text-[10px] sm:text-xs font-sf-mono text-primary/40 uppercase tracking-wider">
+          <div className="flex gap-3 text-[9px] font-sf-mono text-primary/40 uppercase tracking-wider">
             <span>5 CATEGORIES</span>
             <span className="text-primary/20">/</span>
             <span>{totalSubcategories} SUBCATEGORIES</span>
             <span className="text-primary/20">/</span>
             <span>{totalTech} TECHNOLOGIES</span>
           </div>
-          <div className="text-[9px] sm:text-[10px] font-sf-mono text-primary/30">LAST.UPDATED: 2024</div>
+          <div className="text-[8px] font-sf-mono text-primary/30">LAST.UPDATED: 2024</div>
         </motion.div>
       </div>
     </PageLayout>
