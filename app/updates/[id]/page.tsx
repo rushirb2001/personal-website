@@ -57,10 +57,9 @@ export default function BlogPostPage() {
 
   useEffect(() => {
     if (animationPhase === "revealing") {
-      // After blur reveal completes (500ms), mark complete
       const timer = setTimeout(() => {
         setAnimationPhase("complete")
-      }, 500)
+      }, 300)
       return () => clearTimeout(timer)
     }
   }, [animationPhase])
@@ -145,12 +144,12 @@ export default function BlogPostPage() {
             {/* Scrollable Content Inside Window */}
             <div className="h-full overflow-y-auto p-6">
               <motion.div
-                initial={{ filter: "blur(12px)", opacity: 0 }}
+                initial={{ filter: "blur(8px)", opacity: 0 }}
                 animate={{
-                  filter: animationPhase === "complete" ? "blur(0px)" : "blur(12px)",
+                  filter: animationPhase === "complete" ? "blur(0px)" : "blur(8px)",
                   opacity: animationPhase !== "expanding" ? 1 : 0,
                 }}
-                transition={{ duration: 0.5, ease: [0.32, 0.72, 0, 1] }}
+                transition={{ duration: 0.3, ease: [0.32, 0.72, 0, 1] }}
               >
                 <div className="flex items-center mb-4">
                   <FileText className="h-4 w-4 mr-2 text-primary/70" />
