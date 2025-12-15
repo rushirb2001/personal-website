@@ -30,6 +30,8 @@ export default function UpdatesPage() {
     postData: BlogPost | null
   }>({ show: false, startRect: { top: 0, left: 0, width: 0, height: 0 }, endRect: null, postData: null })
 
+  const [cardRevealed, setCardRevealed] = useState<string | null>(null)
+
   const allTags = Array.from(new Set(posts.flatMap((post) => post.tags)))
 
   const filteredPosts =
@@ -89,12 +91,17 @@ export default function UpdatesPage() {
 
             setTimeout(() => {
               setCollapseAnimation((prev) => ({ ...prev, show: false }))
-              setReturningPostId(null)
-              setHighlightedPostId(collapsePostId)
 
               setTimeout(() => {
-                setHighlightedPostId(null)
-              }, 400)
+                setCardRevealed(collapsePostId)
+                setReturningPostId(null)
+                setHighlightedPostId(collapsePostId)
+
+                setTimeout(() => {
+                  setHighlightedPostId(null)
+                  setCardRevealed(null)
+                }, 400)
+              }, 50)
             }, 700)
           } else {
             setReturningPostId(null)
@@ -285,8 +292,8 @@ export default function UpdatesPage() {
                     : "border-primary/20 hover:border-primary/40"
                 }`}
                 style={{
-                  opacity: returningPostId === post.id && collapseAnimation.show ? 0 : undefined,
-                  visibility: returningPostId === post.id && collapseAnimation.show ? "hidden" : undefined,
+                  opacity: returningPostId === post.id && !cardRevealed ? 0 : undefined,
+                  visibility: returningPostId === post.id && !cardRevealed ? "hidden" : undefined,
                 }}
                 onClick={(e) => handleArticleClick(e, post)}
               >
