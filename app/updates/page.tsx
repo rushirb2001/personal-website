@@ -22,20 +22,17 @@ export default function UpdatesPage() {
 
   const [returningPostId, setReturningPostId] = useState<string | null>(null)
   const [highlightedPostId, setHighlightedPostId] = useState<string | null>(null)
+  const [isReturningFromArticle, setIsReturningFromArticle] = useState(false)
 
-  // Get all unique tags
   const allTags = Array.from(new Set(posts.flatMap((post) => post.tags)))
 
-  // Filter posts by selected tags
   const filteredPosts =
     selectedTags.length > 0 ? posts.filter((post) => post.tags.some((tag) => selectedTags.includes(tag))) : posts
 
-  // Toggle tag selection
   const toggleTag = (tag: string) => {
     setSelectedTags((prev) => (prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]))
   }
 
-  // Use useEffect to ensure we're mounted before trying to use context
   useEffect(() => {
     setMounted(true)
 
@@ -43,16 +40,15 @@ export default function UpdatesPage() {
     const collapsePostId = sessionStorage.getItem("collapseFromPost")
 
     if (collapseRect && collapsePostId) {
+      setIsReturningFromArticle(true)
       setReturningPostId(collapsePostId)
       sessionStorage.removeItem("collapseToRect")
       sessionStorage.removeItem("collapseFromPost")
 
-      // After collapse animation lands, show the card with highlight
       setTimeout(() => {
         setReturningPostId(null)
         setHighlightedPostId(collapsePostId)
 
-        // Clear highlight after a moment
         setTimeout(() => {
           setHighlightedPostId(null)
         }, 400)
@@ -60,7 +56,6 @@ export default function UpdatesPage() {
     }
   }, [])
 
-  // Function to navigate without using the context
   const handleReturnToMain = () => {
     router.push("/")
   }
@@ -100,7 +95,6 @@ export default function UpdatesPage() {
               </div>
             </div>
 
-            {/* Tags filter dropdown */}
             <div className="relative w-full border border-primary/20 mb-4 mt-2 bg-card/10">
               <button
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
@@ -154,7 +148,6 @@ export default function UpdatesPage() {
             </div>
           </div>
 
-          {/* Posts list */}
           <div className="space-y-4">
             {filteredPosts.map((post, index) => (
               <motion.div
@@ -162,9 +155,12 @@ export default function UpdatesPage() {
                 ref={(el) => {
                   if (el) articleRefs.current.set(post.id, el)
                 }}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: isReturningFromArticle ? 1 : 0, y: isReturningFromArticle ? 0 : 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1, duration: 0.5 }}
+                transition={{
+                  delay: isReturningFromArticle ? 0 : index * 0.1,
+                  duration: isReturningFromArticle ? 0 : 0.5,
+                }}
                 className={`border transition-all duration-300 cursor-pointer ${
                   highlightedPostId === post.id
                     ? "border-primary/60 bg-primary/10"
