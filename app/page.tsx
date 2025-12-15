@@ -292,7 +292,7 @@ export default function Home() {
                   transition={{ delay: 0.2, duration: 0.8 }}
                 >
                   {/* Profile Image */}
-                  <div className="relative border border-primary/20 bg-secondary/20 p-2 w-full max-w-[350px] h-full flex items-center">
+                  <div className="relative border border-primary/20 bg-secondary/20 p-2 w-full max-w-[350px] aspect-square">
                     <Image
                       src="/images/design-mode/new_personal_photo(1).png"
                       alt="Profile"
