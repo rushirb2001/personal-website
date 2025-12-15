@@ -20,10 +20,7 @@ export default function UpdatesPage() {
 
   const articleRefs = useRef<Map<string, HTMLDivElement>>(new Map())
 
-  const [collapseAnimation, setCollapseAnimation] = useState<{
-    rect: { top: number; left: number; width: number; height: number }
-    postId: string
-  } | null>(null)
+  const [returningPostId, setReturningPostId] = useState<string | null>(null)
   const [highlightedPostId, setHighlightedPostId] = useState<string | null>(null)
 
   // Get all unique tags
@@ -46,21 +43,20 @@ export default function UpdatesPage() {
     const collapsePostId = sessionStorage.getItem("collapseFromPost")
 
     if (collapseRect && collapsePostId) {
-      setCollapseAnimation({
-        rect: JSON.parse(collapseRect),
-        postId: collapsePostId,
-      })
-      setHighlightedPostId(collapsePostId)
+      setReturningPostId(collapsePostId)
       sessionStorage.removeItem("collapseToRect")
       sessionStorage.removeItem("collapseFromPost")
 
-      // Clear highlight after animation
+      // After collapse animation lands, show the card with highlight
       setTimeout(() => {
-        setCollapseAnimation(null)
+        setReturningPostId(null)
+        setHighlightedPostId(collapsePostId)
+
+        // Clear highlight after a moment
         setTimeout(() => {
           setHighlightedPostId(null)
-        }, 300)
-      }, 100)
+        }, 400)
+      }, 550)
     }
   }, [])
 
@@ -89,33 +85,7 @@ export default function UpdatesPage() {
 
   return (
     <PageLayout title="BLOG" subtitle="ARTICLES, DAILY BLOGS AND LIFE UPDATES">
-      <AnimatePresence>
-        {collapseAnimation && (
-          <motion.div
-            className="fixed z-50 pointer-events-none border border-primary/20 bg-background dark:bg-eerie-black"
-            initial={{
-              top: 152,
-              left: "50%",
-              x: "-50%",
-              width: "min(100vw - 2rem, 48rem)",
-              height: "calc(100vh - 9.5rem - 4rem)",
-            }}
-            animate={{
-              top: collapseAnimation.rect.top,
-              left: collapseAnimation.rect.left,
-              x: 0,
-              width: collapseAnimation.rect.width,
-              height: collapseAnimation.rect.height,
-              opacity: 0,
-            }}
-            transition={{
-              duration: 0.5,
-              ease: [0.32, 0.72, 0, 1],
-              opacity: { delay: 0.3, duration: 0.2 },
-            }}
-          />
-        )}
-      </AnimatePresence>
+      <AnimatePresence>{/* Placeholder for collapse animation if needed */}</AnimatePresence>
 
       <div className="container max-w-4xl mx-auto px-2 md:px-4">
         <div className="mb-8 border border-primary/20 p-2 md:p-4 bg-background dark:bg-eerie-black/50 -mx-2 md:mx-0">
@@ -200,6 +170,9 @@ export default function UpdatesPage() {
                     ? "border-primary/60 bg-primary/10"
                     : "border-primary/20 hover:border-primary/40"
                 }`}
+                style={{
+                  opacity: returningPostId === post.id ? 0 : 1,
+                }}
                 onClick={(e) => handleArticleClick(e, post)}
               >
                 <div className="p-4 hover:bg-primary/5 transition-colors">
