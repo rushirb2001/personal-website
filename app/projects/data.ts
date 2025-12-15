@@ -86,4 +86,6 @@ export const projects: Project[] = [
   },
 ]
 
-export const categories = ["All", "Web Development", "Machine Learning", "Data Science", "Mobile", "Other"]
+export const categories = ["All", "Web Development", "Machine Learning", "Data Science", "Mobile", "Other"] as const
+
+export type Category = (typeof categories)[number]
