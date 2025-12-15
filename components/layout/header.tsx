@@ -27,6 +27,12 @@ export function Header() {
         >
           RUSHIR BHAVSAR
         </a>
+
+        <div className="hidden md:flex items-center gap-1.5 text-[10px] font-sf-mono text-green-500 tracking-wide">
+          <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-[blink_0.5s_ease-in-out_infinite]" />
+          SEEKING FULL-TIME ML ROLES
+        </div>
+
         <div className="flex items-center space-x-2 md:space-x-4">
           {/* Mobile dropdown navigation */}
           <div className="md:hidden">
