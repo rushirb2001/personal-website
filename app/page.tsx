@@ -282,23 +282,23 @@ export default function Home() {
               </motion.div>
             </div>
 
-            <div className="hidden lg:block w-full max-w-7xl p-2">
+            <div className="hidden lg:block w-full max-w-7xl">
               <div className="grid grid-cols-1 lg:grid-cols-[350px_1fr] gap-8 py-16">
                 {/* Left column - Profile Photo */}
                 <motion.div
-                  className="relative p-2 flex items-start"
+                  className="relative flex items-stretch"
                   initial={{ opacity: 0, x: -30 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.2, duration: 0.8 }}
                 >
                   {/* Profile Image */}
-                  <div className="relative border border-primary/20 bg-secondary/20 p-2 w-full max-w-[350px]">
+                  <div className="relative border border-primary/20 bg-secondary/20 p-2 w-full max-w-[350px] h-full flex items-center">
                     <Image
                       src="/images/design-mode/new_personal_photo(1).png"
                       alt="Profile"
                       width={400}
                       height={400}
-                      className="w-full grayscale"
+                      className="w-full h-full object-cover grayscale"
                     />
                     <div className="absolute top-2 right-2 bg-background/80 border border-primary/30 px-2 py-1 text-[10px] font-sf-mono">
                       VERIFIED
@@ -307,9 +307,9 @@ export default function Home() {
                 </motion.div>
 
                 {/* Right column - Content */}
-                <div className="p-2">
+                <div>
                   <motion.div
-                    className="relative py-5"
+                    className="relative"
                     initial={{ opacity: 0, x: 30 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.2, duration: 0.8 }}
