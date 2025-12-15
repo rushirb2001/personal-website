@@ -1,5 +1,6 @@
 "use client"
 
+import { PageLayout } from "@/components/layout/page-layout"
 import { motion } from "framer-motion"
 import { ArrowRight, Github, Linkedin, FileText, MapPin, Mail } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -9,27 +10,11 @@ import { ResumeModal } from "@/components/features/resume/resume-modal"
 import Image from "next/image"
 import Link from "next/link"
 
-const technologies = [
-  "Deep Learning",
-  "Computer Vision",
-  "NLP",
-  "LLM/RAG",
-  "MLOps",
-  "Distributed Training",
-  "Model Evaluation",
-  "Transformers",
-  "Generative AI",
-  "Reinforcement Learning",
-  "Time Series",
-  "Anomaly Detection",
-  "Feature Engineering",
-  "Model Optimization",
-  "Edge Deployment",
-  "Data Pipelines",
-  "A/B Testing",
-  "Vector Databases",
-  "Fine-Tuning",
-  "Prompt Engineering",
+const specializations = [
+  { label: "LLM/RAG", desc: "Large Language Models & Retrieval-Augmented Generation" },
+  { label: "CV", desc: "Computer Vision & Image Processing" },
+  { label: "MLOps", desc: "ML Infrastructure & Deployment" },
+  { label: "GenAI", desc: "Generative AI & Diffusion Models" },
 ]
 
 const featuredProject = {
@@ -42,158 +27,74 @@ const featuredProject = {
 const stats = [
   { label: "PROJECTS", value: "15+" },
   { label: "PUBLICATIONS", value: "3+" },
-  { label: "YRS EXPERIENCE", value: "2+" },
-  { label: "TECHNOLOGIES", value: "50+" },
-  { label: "DOMAINS", value: "4+" },
+  { label: "EXPERIENCE", value: "2+ YRS", hasIndicator: true },
 ]
-
-function InfiniteMarquee({ items }: { items: string[] }) {
-  const duplicatedItems = [...items, ...items]
-
-  return (
-    <div className="relative overflow-hidden bg-primary/5 py-2">
-      <motion.div
-        className="flex whitespace-nowrap"
-        animate={{
-          x: [0, -50 * items.length],
-        }}
-        transition={{
-          x: {
-            duration: 30,
-            repeat: Number.POSITIVE_INFINITY,
-            ease: "linear",
-          },
-        }}
-      >
-        {duplicatedItems.map((item, idx) => (
-          <div key={idx} className="flex items-center shrink-0">
-            <span className="text-[10px] sm:text-xs font-sf-mono font-medium tracking-wide px-4 sm:px-6 text-primary/70">
-              {item}
-            </span>
-            <span className="text-green-500 text-[10px]">✦</span>
-          </div>
-        ))}
-      </motion.div>
-    </div>
-  )
-}
 
 export default function HomeSplitPage() {
   const { navigateTo } = useNavigation()
   const [isResumeModalOpen, setIsResumeModalOpen] = useState(false)
+  const [activeSpec, setActiveSpec] = useState<number | null>(null)
 
   return (
     <>
-      <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-[1fr_2fr] gap-3 sm:gap-4 md:gap-6 lg:gap-8 py-3 sm:py-4 md:py-6 lg:py-8 px-3 sm:px-4 md:px-6 lg:px-8 max-w-7xl mx-auto">
-        {/* LEFT SIDE - Sticky Identity */}
-        <div className="md:sticky md:top-20 lg:top-24 self-start flex flex-col justify-center items-center lg:items-start text-center lg:text-left md:h-auto lg:h-[calc(100vh-12rem)] md:mb-4 lg:mb-0">
-          <motion.div
-            className="relative w-32 h-32 sm:w-36 sm:h-36 lg:w-40 lg:h-40 mb-4 border border-primary/20"
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.3 }}
-          >
-            <Image
-              src="/images/design-mode/new_personal_photo(1).png"
-              alt="Profile"
-              fill
-              className="object-cover grayscale"
-            />
-            <div className="absolute top-2 right-2 bg-background/90 border border-primary/30 px-1.5 py-0.5 text-[8px] font-sf-mono">
-              VERIFIED
-            </div>
-          </motion.div>
-
-          {/* Title */}
-          <h1 className="relative pb-2 text-lg sm:text-xl md:text-xl lg:text-2xl font-medium tracking-tight uppercase before:content-[''] before:absolute before:top-0 before:left-1/2 lg:before:left-0 before:-translate-x-1/2 lg:before:translate-x-0 before:w-20 sm:before:w-24 md:before:w-28 lg:before:w-32 before:h-0.5 before:bg-primary/70">
-            RUSHIR BHAVSAR
-          </h1>
-          <p className="text-[10px] sm:text-xs md:text-xs lg:text-sm text-primary/70 font-sf-mono tracking-wide">
-            DATA SCIENTIST • AI ENGINEER • ML RESEARCHER
-          </p>
-
-          <div className="flex flex-col gap-4 mt-4 pt-4 border-t border-primary/10 items-center lg:items-start">
-            {/* Social Icons Row */}
-            <div className="flex items-center gap-2">
-              <Link
-                href="https://github.com/rushirb2001"
-                target="_blank"
-                className="w-9 h-9 flex items-center justify-center border border-primary/20 hover:bg-primary hover:text-background transition-colors"
-              >
-                <Github className="h-4 w-4" />
-              </Link>
-              <Link
-                href="https://linkedin.com/in/rushir-bhavsar/"
-                target="_blank"
-                className="w-9 h-9 flex items-center justify-center border border-primary/20 hover:bg-primary hover:text-background transition-colors"
-              >
-                <Linkedin className="h-4 w-4" />
-              </Link>
-              <Link
-                href="mailto:rushirbhavsar@gmail.com"
-                className="w-9 h-9 flex items-center justify-center border border-primary/20 hover:bg-primary hover:text-background transition-colors"
-              >
-                <Mail className="h-4 w-4" />
-              </Link>
-            </div>
-
-            {/* Action Buttons Row */}
-            <div className="flex items-center gap-2">
-              <Button
-                variant="ghost"
-                className="h-9 px-4 border border-primary/20 text-xs font-sf-mono bg-transparent hover:bg-primary hover:text-background rounded-none transition-colors"
-                onClick={() => setIsResumeModalOpen(true)}
-              >
-                <FileText className="h-4 w-4 mr-2" />
-                RESUME
-              </Button>
-              <Button
-                variant="ghost"
-                className="h-9 px-4 border border-primary/20 text-xs font-sf-mono bg-transparent hover:bg-primary hover:text-background rounded-none transition-colors"
-                onClick={() => navigateTo("/contact")}
-              >
-                CONTACT
-                <ArrowRight className="h-3.5 w-3.5 ml-2" />
-              </Button>
-            </div>
-          </div>
-
-          <div className="flex items-center text-[10px] font-sf-mono text-primary/50 mt-4">
-            <MapPin className="h-3 w-3 mr-1" />
-            NEW YORK CITY, USA
-          </div>
-        </div>
-
-        {/* RIGHT SIDE - Content */}
-        <div className="w-full max-w-full flex flex-col justify-start overflow-hidden">
-          <div className="flex flex-col gap-3 h-full pt-2 sm:pt-3 md:pt-4 lg:pt-0">
+      <PageLayout title="RUSHIR BHAVSAR" subtitle="DATA SCIENTIST • AI ENGINEER • ML RESEARCHER">
+        <div className="flex flex-col gap-3 h-full">
+          {/* Top Section: Photo + About */}
+          <div className="flex flex-col md:flex-row gap-3 items-stretch">
+            {/* Photo Block */}
             <motion.div
-              className="border border-primary/20 bg-background overflow-hidden"
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
+              className="border border-primary/20 bg-background p-2 md:w-[180px] lg:w-[200px] shrink-0"
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.3 }}
             >
-              <div className="grid grid-cols-5 divide-x divide-primary/20">
-                {stats.map((stat, idx) => (
-                  <div key={idx} className="flex flex-col items-center justify-center py-4 sm:py-5 px-2">
-                    <span
-                      className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-primary tracking-tighter"
-                      style={{ fontFamily: "'SF Mono', monospace" }}
-                    >
-                      {stat.value}
-                    </span>
-                    <span className="text-[8px] sm:text-[9px] font-sf-mono text-primary/50 uppercase tracking-wider mt-1 text-center">
-                      {stat.label}
-                    </span>
-                  </div>
-                ))}
+              <div className="relative aspect-square w-full">
+                <Image
+                  src="/images/design-mode/new_personal_photo(1).png"
+                  alt="Profile"
+                  fill
+                  className="object-cover grayscale"
+                />
+                <div className="absolute top-2 right-2 bg-background/90 border border-primary/30 px-1.5 py-0.5 text-[8px] font-sf-mono">
+                  VERIFIED
+                </div>
+              </div>
+              {/* Links under photo */}
+              <div className="flex items-center justify-between mt-2 pt-2 border-t border-primary/10">
+                <div className="flex gap-1">
+                  <Link
+                    href="https://github.com/rushirb2001"
+                    target="_blank"
+                    className="w-7 h-7 flex items-center justify-center border border-primary/20 hover:bg-primary hover:text-background transition-colors"
+                  >
+                    <Github className="h-3.5 w-3.5" />
+                  </Link>
+                  <Link
+                    href="https://linkedin.com/in/rushir-bhavsar/"
+                    target="_blank"
+                    className="w-7 h-7 flex items-center justify-center border border-primary/20 hover:bg-primary hover:text-background transition-colors"
+                  >
+                    <Linkedin className="h-3.5 w-3.5" />
+                  </Link>
+                  <Link
+                    href="mailto:rushirbhavsar@gmail.com"
+                    className="w-7 h-7 flex items-center justify-center border border-primary/20 hover:bg-primary hover:text-background transition-colors"
+                  >
+                    <Mail className="h-3.5 w-3.5" />
+                  </Link>
+                </div>
+                <div className="flex items-center text-[8px] font-sf-mono text-primary/50">
+                  <MapPin className="h-2.5 w-2.5 mr-0.5" />
+                  NYC
+                </div>
               </div>
             </motion.div>
 
+            {/* About Block */}
             <motion.div
-              className="border border-primary/20 bg-background flex flex-col overflow-hidden"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
+              className="border border-primary/20 bg-background flex-1 flex flex-col"
+              initial={{ opacity: 0, x: 10 }}
+              animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.3, delay: 0.1 }}
             >
               <div className="border-b border-primary/20 px-3 py-1.5 bg-primary/5">
@@ -202,115 +103,205 @@ export default function HomeSplitPage() {
                   <span className="text-[9px] font-sf-mono text-primary/30">[01]</span>
                 </div>
               </div>
-              <div className="px-3 py-3 flex-1 flex flex-col overflow-hidden">
-                <p className="text-xs sm:text-sm font-mono text-primary/70 leading-relaxed">
+              <div className="px-3 py-2 flex-1 flex flex-col justify-between">
+                <p className="text-[10px] sm:text-xs font-mono text-primary/70 leading-relaxed">
                   Data Scientist and AI Engineer specializing in machine learning, deep learning, and AI systems
                   development. Creating innovative solutions using cutting-edge AI technologies with experience across
-                  healthcare, astronomy, and enterprise AI domains.
+                  healthcare, astronomy, and enterprise AI domains. Expertise in transformer-based models,
+                  retrieval-augmented generation, and scalable ML pipelines.
                 </p>
-
-                <div className="mt-3 pt-3 border-t border-primary/10 overflow-hidden">
-                  <span className="text-[9px] font-sf-mono text-primary/40 uppercase tracking-wider block mb-2">
-                    SPECIALIZATIONS
-                  </span>
-                  <div className="overflow-hidden">
-                    <InfiniteMarquee items={technologies} />
-                  </div>
+                <div className="flex items-center gap-2 mt-2 pt-2 border-t border-primary/10">
+                  <Button
+                    variant="ghost"
+                    className="h-7 px-2 border border-primary/20 text-[9px] font-sf-mono bg-transparent hover:bg-primary hover:text-background rounded-none transition-colors"
+                    onClick={() => setIsResumeModalOpen(true)}
+                  >
+                    <FileText className="h-3 w-3 mr-1" />
+                    RESUME
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    className="h-7 px-2 border border-primary/20 text-[9px] font-sf-mono bg-transparent hover:bg-primary hover:text-background rounded-none transition-colors"
+                    onClick={() => navigateTo("/contact")}
+                  >
+                    CONTACT
+                    <ArrowRight className="h-2.5 w-2.5 ml-1" />
+                  </Button>
                 </div>
               </div>
-            </motion.div>
-
-            {/* Bottom Section: Featured Project + Quick Actions */}
-            <div className="flex flex-col md:flex-row gap-3 items-stretch">
-              {/* Featured Project Tile */}
-              <motion.div
-                className="border border-primary/20 bg-background flex-1"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: 0.2 }}
-              >
-                <div className="border-b border-primary/20 px-3 py-1.5 bg-primary/5">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-xs font-sf-mono font-bold tracking-widest text-primary">FEATURED PROJECT</h3>
-                    <span className="text-[9px] font-sf-mono text-primary/30">[02]</span>
-                  </div>
-                </div>
-                <div className="p-3">
-                  <h4 className="text-sm font-sf-mono font-bold text-primary mb-1">{featuredProject.title}</h4>
-                  <p className="text-[10px] font-mono text-primary/60 mb-2">{featuredProject.description}</p>
-                  <div className="flex items-center justify-between">
-                    <div className="flex gap-1">
-                      {featuredProject.tags.map((tag, idx) => (
-                        <span
-                          key={idx}
-                          className="px-1.5 py-0.5 text-[8px] font-sf-mono border border-primary/20 text-primary/60"
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                    <Button
-                      variant="ghost"
-                      className="h-6 px-2 text-[9px] font-sf-mono border border-primary/20 hover:bg-primary hover:text-background rounded-none"
-                      onClick={() => navigateTo(featuredProject.link)}
-                    >
-                      VIEW ALL
-                      <ArrowRight className="h-2.5 w-2.5 ml-1" />
-                    </Button>
-                  </div>
-                </div>
-              </motion.div>
-
-              {/* Quick Actions */}
-              <motion.div
-                className="border border-primary/20 bg-background md:w-[180px] lg:w-[200px] shrink-0"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: 0.25 }}
-              >
-                <div className="border-b border-primary/20 px-3 py-1.5 bg-primary/5">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-xs font-sf-mono font-bold tracking-widest text-primary">EXPLORE</h3>
-                    <span className="text-[9px] font-sf-mono text-primary/30">[03]</span>
-                  </div>
-                </div>
-                <div className="p-2 flex flex-col gap-1.5">
-                  {[
-                    { label: "PROJECTS", path: "/projects" },
-                    { label: "EXPERIENCE", path: "/experience" },
-                    { label: "PUBLICATIONS", path: "/publications" },
-                  ].map((item, idx) => (
-                    <Button
-                      key={idx}
-                      variant="ghost"
-                      className="h-7 w-full justify-between text-[10px] font-sf-mono border border-primary/20 hover:bg-primary hover:text-background rounded-none transition-colors"
-                      onClick={() => navigateTo(item.path)}
-                    >
-                      {item.label}
-                      <ArrowRight className="h-3 w-3" />
-                    </Button>
-                  ))}
-                </div>
-              </motion.div>
-            </div>
-
-            {/* Footer */}
-            <motion.div
-              className="flex items-center justify-between border-t border-primary/20 pt-2"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.2, delay: 0.3 }}
-            >
-              <div className="flex gap-3 text-[9px] font-sf-mono text-primary/40 uppercase tracking-wider">
-                <span>STATUS: AVAILABLE</span>
-                <span className="text-primary/20">/</span>
-                <span>SEEKING: ML/AI ROLES</span>
-              </div>
-              <div className="text-[9px] font-sf-mono text-primary/30">LAST.UPDATED: 2025</div>
             </motion.div>
           </div>
+
+          {/* Middle Section: Stats + Specializations */}
+          <div className="flex flex-col md:flex-row gap-3 items-stretch">
+            {/* Stats Block */}
+            <motion.div
+              className="border border-primary/20 bg-background md:w-[180px] lg:w-[200px] shrink-0"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: 0.15 }}
+            >
+              <div className="border-b border-primary/20 px-3 py-1.5 bg-primary/5">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-xs font-sf-mono font-bold tracking-widest text-primary">METRICS</h3>
+                  <span className="text-[9px] font-sf-mono text-primary/30">[02]</span>
+                </div>
+              </div>
+              <div className="p-2">
+                {stats.map((stat, idx) => (
+                  <div
+                    key={idx}
+                    className="flex items-center justify-between py-1.5 border-b border-primary/5 last:border-b-0"
+                  >
+                    <span className="text-[9px] font-sf-mono text-primary/40 uppercase">{stat.label}</span>
+                    <span className="text-[10px] font-sf-mono font-bold text-primary flex items-center">
+                      {stat.hasIndicator && (
+                        <span className="w-1.5 h-1.5 rounded-full bg-green-500 mr-1 animate-[blink_0.5s_ease-in-out_infinite]" />
+                      )}
+                      {stat.value}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+
+            {/* Specializations Block - Static Carousel */}
+            <motion.div
+              className="border border-primary/20 bg-background flex-1"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: 0.2 }}
+            >
+              <div className="border-b border-primary/20 px-3 py-1.5 bg-primary/5">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-xs font-sf-mono font-bold tracking-widest text-primary">SPECIALIZATIONS</h3>
+                  <span className="text-[9px] font-sf-mono text-primary/30">[03]</span>
+                </div>
+              </div>
+              <div className="p-2">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                  {specializations.map((spec, idx) => (
+                    <motion.div
+                      key={idx}
+                      className={`border border-primary/20 p-2 cursor-pointer transition-all duration-150 ${
+                        activeSpec === idx ? "bg-primary text-background" : "bg-background hover:bg-primary/5"
+                      }`}
+                      onMouseEnter={() => setActiveSpec(idx)}
+                      onMouseLeave={() => setActiveSpec(null)}
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.2, delay: 0.25 + idx * 0.05 }}
+                    >
+                      <div
+                        className={`text-xs font-sf-mono font-bold tracking-wider ${activeSpec === idx ? "text-background" : "text-primary"}`}
+                      >
+                        {spec.label}
+                      </div>
+                      <div
+                        className={`text-[8px] font-mono mt-1 leading-tight ${activeSpec === idx ? "text-background/80" : "text-primary/50"}`}
+                      >
+                        {spec.desc}
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Bottom Section: Featured Project + Quick Actions */}
+          <div className="flex flex-col md:flex-row gap-3 items-stretch">
+            {/* Featured Project Tile */}
+            <motion.div
+              className="border border-primary/20 bg-background flex-1"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: 0.3 }}
+            >
+              <div className="border-b border-primary/20 px-3 py-1.5 bg-primary/5">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-xs font-sf-mono font-bold tracking-widest text-primary">FEATURED PROJECT</h3>
+                  <span className="text-[9px] font-sf-mono text-primary/30">[04]</span>
+                </div>
+              </div>
+              <div className="p-3">
+                <h4 className="text-sm font-sf-mono font-bold text-primary mb-1">{featuredProject.title}</h4>
+                <p className="text-[10px] font-mono text-primary/60 mb-2">{featuredProject.description}</p>
+                <div className="flex items-center justify-between">
+                  <div className="flex gap-1">
+                    {featuredProject.tags.map((tag, idx) => (
+                      <span
+                        key={idx}
+                        className="px-1.5 py-0.5 text-[8px] font-sf-mono border border-primary/20 text-primary/60"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                  <Button
+                    variant="ghost"
+                    className="h-6 px-2 text-[9px] font-sf-mono border border-primary/20 hover:bg-primary hover:text-background rounded-none"
+                    onClick={() => navigateTo(featuredProject.link)}
+                  >
+                    VIEW ALL
+                    <ArrowRight className="h-2.5 w-2.5 ml-1" />
+                  </Button>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Quick Actions */}
+            <motion.div
+              className="border border-primary/20 bg-background md:w-[180px] lg:w-[200px] shrink-0"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: 0.35 }}
+            >
+              <div className="border-b border-primary/20 px-3 py-1.5 bg-primary/5">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-xs font-sf-mono font-bold tracking-widest text-primary">EXPLORE</h3>
+                  <span className="text-[9px] font-sf-mono text-primary/30">[05]</span>
+                </div>
+              </div>
+              <div className="p-2 flex flex-col gap-1.5">
+                {[
+                  { label: "PROJECTS", path: "/projects" },
+                  { label: "EXPERIENCE", path: "/experience" },
+                  { label: "PUBLICATIONS", path: "/publications" },
+                ].map((item, idx) => (
+                  <Button
+                    key={idx}
+                    variant="ghost"
+                    className="h-7 w-full justify-between text-[10px] font-sf-mono border border-primary/20 hover:bg-primary hover:text-background rounded-none transition-colors"
+                    onClick={() => navigateTo(item.path)}
+                  >
+                    {item.label}
+                    <ArrowRight className="h-3 w-3" />
+                  </Button>
+                ))}
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Footer */}
+          <motion.div
+            className="flex items-center justify-between border-t border-primary/20 pt-2"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.2, delay: 0.4 }}
+          >
+            <div className="flex items-center gap-3 text-[9px] font-sf-mono uppercase tracking-wider">
+              <span className="text-primary/40">STATUS: AVAILABLE</span>
+              <span className="text-primary/20">/</span>
+              <span className="flex items-center gap-1.5 text-green-500">
+                <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-[blink_0.5s_ease-in-out_infinite]" />
+                SEEKING FULL-TIME ML ROLES
+              </span>
+            </div>
+            <div className="text-[9px] font-sf-mono text-primary/30">LAST.UPDATED: 2025</div>
+          </motion.div>
         </div>
-      </div>
+      </PageLayout>
       <ResumeModal isOpen={isResumeModalOpen} onClose={() => setIsResumeModalOpen(false)} />
     </>
   )
