@@ -195,7 +195,7 @@ export default function SkillsPage() {
             <span className="text-primary/20">/</span>
             <span>{totalTech} TECHNOLOGIES</span>
           </div>
-          <div className="text-[9px] sm:text-[10px] font-sf-mono text-primary/30">LAST.UPDATED: 2024</div>
+          <div className="text-[9px] sm:text-[10px] font-sf-mono text-primary/30">{"LAST.UPDATED: 2025"}</div>
         </motion.div>
       </div>
     </PageLayout>
