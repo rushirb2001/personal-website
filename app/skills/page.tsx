@@ -1,139 +1,62 @@
 "use client"
-import { useState } from "react"
+
 import { PageLayout } from "@/components/layout/page-layout"
 import { motion } from "framer-motion"
 
 const skillsData = {
   languages: {
-    title: "LANGUAGES",
+    title: "LANG",
     items: ["Python", "SQL", "Git", "Bash", "CUDA", "Swift", "TypeScript", "C++", "HTML/CSS"],
   },
   frameworks: {
     title: "FRAMEWORKS",
     subcategories: {
-      "Deep Learning": ["PyTorch", "TensorFlow", "Keras", "JAX"],
-      "Generative AI": ["Transformers", "LangGraph", "LangChain", "CrewAI", "Hugging Face"],
-      "Traditional ML": ["Pandas", "Numpy", "Scikit-learn", "Matplotlib", "Seaborn", "NLTK"],
-      "Computer Vision": ["OpenCV", "MediaPipe", "Albumentations", "YOLO"],
+      "DEEP LEARN": ["PyTorch", "TensorFlow", "Keras", "JAX"],
+      "GEN AI": ["Transformers", "LangGraph", "LangChain", "CrewAI", "HuggingFace"],
+      "TRAD ML": ["Pandas", "Numpy", "Scikit-learn", "Matplotlib", "Seaborn", "NLTK"],
+      CV: ["OpenCV", "MediaPipe", "Albumentations", "YOLO"],
     },
   },
   trainEvalInfer: {
-    title: "TRAIN/EVAL/INFER",
+    title: "PIPELINE",
     subcategories: {
-      Training: ["LoRA", "QLoRA", "DeepSpeed Zero", "Ray", "Pytorch FSDP"],
-      Evaluation: ["MLFlow", "WandB", "DeepEval", "RAGAS"],
-      Inference: ["vLLM", "MLX", "Diffusers", "Ollama", "Groq", "Baseten"],
+      TRAIN: ["LoRA", "QLoRA", "DeepSpeed", "Ray", "FSDP"],
+      EVAL: ["MLFlow", "WandB", "DeepEval", "RAGAS"],
+      INFER: ["vLLM", "MLX", "Diffusers", "Ollama", "Groq"],
     },
   },
   databases: {
-    title: "DATABASES",
+    title: "DATA",
     subcategories: {
-      "Big Data": ["Apache Spark", "Hadoop", "Hive", "Databricks"],
-      "RDBMS/NoSQL": ["PostgreSQL", "MySQL", "MongoDB", "Firebase", "Redis"],
-      VectorDB: ["ChromaDB", "Pinecone", "Weaviate", "Datastax AstraDB"],
+      "BIG DATA": ["Spark", "Hadoop", "Hive", "Databricks"],
+      DB: ["PostgreSQL", "MySQL", "MongoDB", "Firebase", "Redis"],
+      VECTOR: ["ChromaDB", "Pinecone", "Weaviate", "AstraDB"],
     },
   },
   cloud: {
     title: "CLOUD",
     subcategories: {
-      AWS: ["Lambda", "EC2", "S3", "Sagemaker", "DynamoDB", "OpenSearch", "Bedrock", "Glue"],
-      GCP: ["Cloud Run", "Cloud Storage", "Firebase", "Cloud SQL", "VertexAI", "BigQuery"],
-      Azure: ["AzureML", "Azure OpenAI", "Azure Kubernetes Service", "CosmosDB"],
+      AWS: ["Lambda", "EC2", "S3", "Sagemaker", "Bedrock", "Glue"],
+      GCP: ["Cloud Run", "Firebase", "VertexAI", "BigQuery"],
+      AZURE: ["AzureML", "Azure OpenAI", "AKS", "CosmosDB"],
     },
   },
 }
 
-function TreeBranch({ isLast = false }: { isLast?: boolean }) {
-  return (
-    <div className="flex items-stretch">
-      <div className="w-3 flex flex-col items-center">
-        <div className="w-px h-1/2 bg-primary/20" />
-        <div className="w-3 h-px bg-primary/20" />
-        {!isLast && <div className="w-px h-1/2 bg-primary/20" />}
-      </div>
-    </div>
-  )
-}
-
-function LeafBranch({ isLast = false }: { isLast?: boolean }) {
-  return (
-    <div className="flex items-center h-full">
-      <div className="w-2 h-px bg-primary/15" />
-    </div>
-  )
-}
-
-function SkillLeaf({ name, index, isHovered }: { name: string; index: number; isHovered: boolean }) {
+function SkillTag({ name, delay }: { name: string; delay: number }) {
   return (
     <motion.span
-      className="inline-flex items-center px-2.5 py-1 text-xs font-sf-mono bg-primary/5 border hover:bg-primary/10 hover:border-primary/30 transition-all duration-150 cursor-default rounded-full border-foreground"
-      initial={{ opacity: 0.6 }}
-      animate={{ opacity: isHovered ? 1 : 0.6 }}
-      transition={{ duration: 0.1, delay: index * 0.015 }}
+      className="text-[10px] sm:text-xs font-sf-mono text-primary/60 hover:text-primary hover:bg-primary/10 px-1.5 py-0.5 transition-colors duration-100 cursor-default"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.15, delay }}
     >
       {name}
     </motion.span>
   )
 }
 
-function SubcategoryBranch({
-  title,
-  items,
-  isLast,
-  categoryIndex,
-  subIndex,
-}: {
-  title: string
-  items: string[]
-  isLast: boolean
-  categoryIndex: number
-  subIndex: number
-}) {
-  const [isHovered, setIsHovered] = useState(false)
-
-  return (
-    <motion.div
-      className="flex"
-      initial={{ opacity: 0, x: -5 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.2, delay: categoryIndex * 0.05 + subIndex * 0.03 }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
-      {/* Vertical connector line */}
-      <div className="flex flex-col items-center mr-1">
-        <div className={`w-px flex-1 ${subIndex === 0 ? "bg-transparent" : "bg-primary/20"}`} />
-        <div className="w-3 h-px bg-primary/20" />
-        <div className={`w-px flex-1 ${isLast ? "bg-transparent" : "bg-primary/20"}`} />
-      </div>
-
-      {/* Subcategory node */}
-      <div className="flex items-center gap-2 py-1">
-        <span
-          className={`text-xs font-sf-mono whitespace-nowrap px-2 py-1 border transition-all duration-150 tracking-tighter text-ring font-mono ${
-            isHovered
-              ? "text-primary/80 border-primary/30 bg-primary/10"
-              : "text-primary/40 border-primary/15 bg-primary/5"
-          }`}
-        >
-          {title}
-        </span>
-
-        {/* Horizontal connector to skills */}
-        <div className="w-3 h-px bg-primary/15" />
-
-        {/* Skills leaf nodes */}
-        <div className="flex flex-wrap gap-1.5 items-center">
-          {items.map((item, idx) => (
-            <SkillLeaf key={idx} name={item} index={idx} isHovered={isHovered} />
-          ))}
-        </div>
-      </div>
-    </motion.div>
-  )
-}
-
-function CategoryTree({
+function CategoryBlock({
   title,
   subcategories,
   items,
@@ -144,54 +67,44 @@ function CategoryTree({
   items?: string[]
   index: number
 }) {
-  const [isHovered, setIsHovered] = useState(false)
+  const baseDelay = index * 0.1
 
   return (
     <motion.div
-      className="flex items-start"
-      initial={{ opacity: 0, y: 8 }}
+      className="border border-primary/20 bg-primary/[0.02]"
+      initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.25, delay: index * 0.08 }}
+      transition={{ duration: 0.2, delay: baseDelay }}
     >
-      {/* Root node */}
-      <div
-        className="flex items-center shrink-0"
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-      >
-        <div
-          className={`px-3 py-1.5 border font-sf-mono tracking-wide transition-all duration-150 text-base font-bold ${
-            isHovered
-              ? "border-primary/40 bg-primary/10 text-primary"
-              : "border-primary/25 bg-primary/5 text-primary/70"
-          }`}
-        >
-          {title}
-        </div>
-        {/* Connector line from root */}
-        <div className="w-4 h-px bg-primary/20" />
+      {/* Category header */}
+      <div className="border-b border-primary/20 px-3 py-2 bg-primary/5">
+        <span className="text-xs sm:text-sm font-sf-mono font-bold tracking-wider text-primary/80">{title}</span>
       </div>
 
-      {/* Branches */}
-      <div className="flex flex-col">
+      {/* Content */}
+      <div className="p-2 sm:p-3">
         {subcategories ? (
-          Object.entries(subcategories).map(([subcat, subItems], idx) => (
-            <SubcategoryBranch
-              key={subcat}
-              title={subcat}
-              items={subItems}
-              isLast={idx === Object.entries(subcategories).length - 1}
-              categoryIndex={index}
-              subIndex={idx}
-            />
-          ))
+          <div className="space-y-2">
+            {Object.entries(subcategories).map(([subcat, subItems], subIdx) => (
+              <div key={subcat} className="group">
+                <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+                  <span className="text-[9px] sm:text-[10px] font-sf-mono text-primary/40 font-medium w-16 sm:w-20 shrink-0 group-hover:text-primary/60 transition-colors">
+                    {subcat}
+                  </span>
+                  <div className="flex flex-wrap gap-x-1 gap-y-0.5">
+                    {subItems.map((item, itemIdx) => (
+                      <SkillTag key={item} name={item} delay={baseDelay + subIdx * 0.05 + itemIdx * 0.02} />
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         ) : items ? (
-          <div className="flex items-center gap-2 py-1">
-            <div className="flex flex-wrap gap-1.5">
-              {items.map((item, idx) => (
-                <SkillLeaf key={idx} name={item} index={idx} isHovered={isHovered} />
-              ))}
-            </div>
+          <div className="flex flex-wrap gap-x-1 gap-y-0.5">
+            {items.map((item, idx) => (
+              <SkillTag key={item} name={item} delay={baseDelay + idx * 0.02} />
+            ))}
           </div>
         ) : null}
       </div>
@@ -202,42 +115,49 @@ function CategoryTree({
 export default function SkillsPage() {
   return (
     <PageLayout title="SKILLS" subtitle="TECHNICAL EXPERTISE">
-      <div className="flex flex-col gap-5 py-6 overflow-x-auto">
-        {/* Languages - flat items */}
-        <CategoryTree title={skillsData.languages.title} items={skillsData.languages.items} index={0} />
+      <div className="py-4 sm:py-6">
+        {/* Main grid - responsive layout */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+          {/* Languages - full width on mobile, half on desktop */}
+          <CategoryBlock title={skillsData.languages.title} items={skillsData.languages.items} index={0} />
 
-        {/* Frameworks - subcategorized */}
-        <CategoryTree
-          title={skillsData.frameworks.title}
-          subcategories={skillsData.frameworks.subcategories}
-          index={1}
-        />
+          {/* Frameworks */}
+          <CategoryBlock
+            title={skillsData.frameworks.title}
+            subcategories={skillsData.frameworks.subcategories}
+            index={1}
+          />
 
-        {/* Train/Eval/Infer */}
-        <CategoryTree
-          title={skillsData.trainEvalInfer.title}
-          subcategories={skillsData.trainEvalInfer.subcategories}
-          index={2}
-        />
+          {/* Pipeline (Train/Eval/Infer) */}
+          <CategoryBlock
+            title={skillsData.trainEvalInfer.title}
+            subcategories={skillsData.trainEvalInfer.subcategories}
+            index={2}
+          />
 
-        {/* Databases */}
-        <CategoryTree title={skillsData.databases.title} subcategories={skillsData.databases.subcategories} index={3} />
+          {/* Databases */}
+          <CategoryBlock
+            title={skillsData.databases.title}
+            subcategories={skillsData.databases.subcategories}
+            index={3}
+          />
 
-        {/* Cloud */}
-        <CategoryTree title={skillsData.cloud.title} subcategories={skillsData.cloud.subcategories} index={4} />
+          {/* Cloud - full width */}
+          <div className="md:col-span-2">
+            <CategoryBlock title={skillsData.cloud.title} subcategories={skillsData.cloud.subcategories} index={4} />
+          </div>
+        </div>
 
-        {/* Stats footer */}
+        {/* Footer stats */}
         <motion.div
-          className="text-xs text-primary/30 font-sf-mono flex gap-4 pt-4 pl-1"
+          className="flex items-center justify-between mt-4 sm:mt-6 pt-3 border-t border-primary/10 text-[10px] sm:text-xs font-sf-mono text-primary/30"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.3, delay: 0.5 }}
+          transition={{ delay: 0.6 }}
         >
-          <span>5 ROOTS</span>
-          <span>•</span>
-          <span>15 BRANCHES</span>
-          <span>•</span>
-          <span>70+ LEAVES</span>
+          <span>5 CATEGORIES</span>
+          <span>15 SUBCATEGORIES</span>
+          <span>70+ TECHNOLOGIES</span>
         </motion.div>
       </div>
     </PageLayout>
