@@ -2,7 +2,7 @@
 
 import { PageLayout } from "@/components/layout/page-layout"
 import { motion } from "framer-motion"
-import { ArrowRight, Github, Linkedin, FileText, Mail } from "lucide-react"
+import { ArrowRight, Github, Linkedin, FileText, MapPin, Mail } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useNavigation } from "@/contexts/navigation-context"
 import { useState } from "react"
@@ -11,26 +11,10 @@ import Image from "next/image"
 import Link from "next/link"
 
 const specializations = [
-  "Computer Vision",
-  "NLP",
-  "LLM/RAG",
-  "MLOps",
-  "Distributed Training",
-  "Model Evaluation",
-  "Transformers",
-  "Deep Learning",
-  "GenAI",
-  "Diffusion Models",
-  "Neural Networks",
-  "Feature Engineering",
-  "Data Pipelines",
-  "Model Optimization",
-  "Edge AI",
-  "Time Series",
-  "Reinforcement Learning",
-  "Transfer Learning",
-  "AutoML",
-  "Quantization",
+  { label: "LLM/RAG", desc: "Large Language Models & Retrieval-Augmented Generation" },
+  { label: "CV", desc: "Computer Vision & Image Processing" },
+  { label: "MLOps", desc: "ML Infrastructure & Deployment" },
+  { label: "GenAI", desc: "Generative AI & Diffusion Models" },
 ]
 
 const featuredProject = {
@@ -49,6 +33,7 @@ const stats = [
 export default function HomeSplitPage() {
   const { navigateTo } = useNavigation()
   const [isResumeModalOpen, setIsResumeModalOpen] = useState(false)
+  const [activeSpec, setActiveSpec] = useState<number | null>(null)
 
   return (
     <>
@@ -58,12 +43,12 @@ export default function HomeSplitPage() {
           <div className="flex flex-col md:flex-row gap-3 items-stretch">
             {/* Photo Block */}
             <motion.div
-              className="border border-primary/20 bg-background p-2 md:w-[220px] lg:w-[240px] shrink-0"
+              className="border border-primary/20 bg-background p-2 md:w-[180px] lg:w-[200px] shrink-0"
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.3 }}
             >
-              <div className="relative aspect-square w-full">
+              <div className="relative w-full h-full min-h-[160px]">
                 <Image
                   src="/images/design-mode/new_personal_photo(1).png"
                   alt="Profile"
@@ -96,26 +81,8 @@ export default function HomeSplitPage() {
                   healthcare, astronomy, and enterprise AI domains. Expertise in transformer-based models,
                   retrieval-augmented generation, and scalable ML pipelines.
                 </p>
-                <div className="flex items-center justify-between mt-2 pt-2 border-t border-primary/10">
-                  <div className="flex items-center gap-2">
-                    <Button
-                      variant="ghost"
-                      className="h-7 px-2 border border-primary/20 text-[9px] font-sf-mono bg-transparent hover:bg-primary hover:text-background rounded-none transition-colors"
-                      onClick={() => setIsResumeModalOpen(true)}
-                    >
-                      <FileText className="h-3 w-3 mr-1" />
-                      RESUME
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      className="h-7 px-2 border border-primary/20 text-[9px] font-sf-mono bg-transparent hover:bg-primary hover:text-background rounded-none transition-colors"
-                      onClick={() => navigateTo("/contact")}
-                    >
-                      CONTACT
-                      <ArrowRight className="h-2.5 w-2.5 ml-1" />
-                    </Button>
-                  </div>
-                  <div className="flex items-center gap-1">
+                <div className="flex items-center justify-between mt-3">
+                  <div className="flex items-center gap-1.5">
                     <Link
                       href="https://github.com/rushirb2001"
                       target="_blank"
@@ -136,6 +103,28 @@ export default function HomeSplitPage() {
                     >
                       <Mail className="h-3.5 w-3.5" />
                     </Link>
+                    <div className="flex items-center text-[8px] font-sf-mono text-primary/50 ml-2">
+                      <MapPin className="h-2.5 w-2.5 mr-0.5" />
+                      NEW YORK CITY, USA
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <Button
+                      variant="ghost"
+                      className="h-7 px-2 border border-primary/20 text-[9px] font-sf-mono bg-transparent hover:bg-primary hover:text-background rounded-none transition-colors"
+                      onClick={() => setIsResumeModalOpen(true)}
+                    >
+                      <FileText className="h-3 w-3 mr-1" />
+                      RESUME
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      className="h-7 px-2 border border-primary/20 text-[9px] font-sf-mono bg-transparent hover:bg-primary hover:text-background rounded-none transition-colors"
+                      onClick={() => navigateTo("/contact")}
+                    >
+                      CONTACT
+                      <ArrowRight className="h-2.5 w-2.5 ml-1" />
+                    </Button>
                   </div>
                 </div>
               </div>
@@ -146,7 +135,7 @@ export default function HomeSplitPage() {
           <div className="flex flex-col md:flex-row gap-3 items-stretch">
             {/* Stats Block */}
             <motion.div
-              className="border border-primary/20 bg-background md:w-[220px] lg:w-[240px] shrink-0"
+              className="border border-primary/20 bg-background md:w-[180px] lg:w-[200px] shrink-0"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: 0.15 }}
@@ -175,8 +164,9 @@ export default function HomeSplitPage() {
               </div>
             </motion.div>
 
+            {/* Specializations Block - Static Carousel */}
             <motion.div
-              className="border border-primary/20 bg-background flex-1 overflow-hidden"
+              className="border border-primary/20 bg-background flex-1"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: 0.2 }}
@@ -187,26 +177,32 @@ export default function HomeSplitPage() {
                   <span className="text-[9px] font-sf-mono text-primary/30">[03]</span>
                 </div>
               </div>
-              <div className="p-3 overflow-hidden">
-                <div className="relative overflow-hidden">
-                  <motion.div
-                    className="flex whitespace-nowrap"
-                    animate={{ x: ["0%", "-50%"] }}
-                    transition={{
-                      x: {
-                        duration: 25,
-                        repeat: Number.POSITIVE_INFINITY,
-                        ease: "linear",
-                      },
-                    }}
-                  >
-                    {[...specializations, ...specializations].map((spec, idx) => (
-                      <span key={idx} className="flex items-center mx-4">
-                        <span className="text-[11px] font-sf-mono text-primary/70 tracking-wide">{spec}</span>
-                        <span className="text-green-500 mx-4 text-xs">✦</span>
-                      </span>
-                    ))}
-                  </motion.div>
+              <div className="p-2">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                  {specializations.map((spec, idx) => (
+                    <motion.div
+                      key={idx}
+                      className={`border border-primary/20 p-2 cursor-pointer transition-all duration-150 ${
+                        activeSpec === idx ? "bg-primary text-background" : "bg-background hover:bg-primary/5"
+                      }`}
+                      onMouseEnter={() => setActiveSpec(idx)}
+                      onMouseLeave={() => setActiveSpec(null)}
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.2, delay: 0.25 + idx * 0.05 }}
+                    >
+                      <div
+                        className={`text-xs font-sf-mono font-bold tracking-wider ${activeSpec === idx ? "text-background" : "text-primary"}`}
+                      >
+                        {spec.label}
+                      </div>
+                      <div
+                        className={`text-[8px] font-mono mt-1 leading-tight ${activeSpec === idx ? "text-background/80" : "text-primary/50"}`}
+                      >
+                        {spec.desc}
+                      </div>
+                    </motion.div>
+                  ))}
                 </div>
               </div>
             </motion.div>
@@ -285,24 +281,6 @@ export default function HomeSplitPage() {
               </div>
             </motion.div>
           </div>
-
-          {/* Footer */}
-          <motion.div
-            className="flex items-center justify-between border-t border-primary/20 pt-2"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.2, delay: 0.4 }}
-          >
-            <div className="flex items-center gap-3 text-[9px] font-sf-mono uppercase tracking-wider">
-              <span className="text-primary/40">STATUS: AVAILABLE</span>
-              <span className="text-primary/20">/</span>
-              <span className="flex items-center gap-1.5 text-green-500">
-                <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-[blink_0.5s_ease-in-out_infinite]" />
-                SEEKING FULL-TIME ML ROLES
-              </span>
-            </div>
-            <div className="text-[9px] font-sf-mono text-primary/30">LAST.UPDATED: 2025</div>
-          </motion.div>
         </div>
       </PageLayout>
       <ResumeModal isOpen={isResumeModalOpen} onClose={() => setIsResumeModalOpen(false)} />
