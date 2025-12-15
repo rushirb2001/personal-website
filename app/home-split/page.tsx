@@ -2,7 +2,7 @@
 
 import { PageLayout } from "@/components/layout/page-layout"
 import { motion } from "framer-motion"
-import { ArrowRight, Github, Linkedin, FileText, MapPin, Mail } from "lucide-react"
+import { ArrowRight, Github, Linkedin, FileText, Mail } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useNavigation } from "@/contexts/navigation-context"
 import { useState } from "react"
@@ -11,7 +11,6 @@ import Image from "next/image"
 import Link from "next/link"
 
 const specializations = [
-  "Deep Learning",
   "Computer Vision",
   "NLP",
   "LLM/RAG",
@@ -19,13 +18,19 @@ const specializations = [
   "Distributed Training",
   "Model Evaluation",
   "Transformers",
+  "Deep Learning",
   "GenAI",
-  "PyTorch",
-  "TensorFlow",
-  "AWS",
-  "Kubernetes",
-  "Vector DBs",
-  "Fine-tuning",
+  "Diffusion Models",
+  "Neural Networks",
+  "Feature Engineering",
+  "Data Pipelines",
+  "Model Optimization",
+  "Edge AI",
+  "Time Series",
+  "Reinforcement Learning",
+  "Transfer Learning",
+  "AutoML",
+  "Quantization",
 ]
 
 const featuredProject = {
@@ -51,9 +56,9 @@ export default function HomeSplitPage() {
         <div className="flex flex-col gap-3 h-full">
           {/* Top Section: Photo + About */}
           <div className="flex flex-col md:flex-row gap-3 items-stretch">
-            {/* Photo Block - Increased size, removed social links */}
+            {/* Photo Block */}
             <motion.div
-              className="border border-primary/20 bg-background p-2 md:w-[220px] lg:w-[260px] shrink-0"
+              className="border border-primary/20 bg-background p-2 md:w-[220px] lg:w-[240px] shrink-0"
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.3 }}
@@ -69,16 +74,9 @@ export default function HomeSplitPage() {
                   VERIFIED
                 </div>
               </div>
-              {/* Location only */}
-              <div className="flex items-center justify-center mt-2 pt-2 border-t border-primary/10">
-                <div className="flex items-center text-[9px] font-sf-mono text-primary/50">
-                  <MapPin className="h-3 w-3 mr-1" />
-                  NEW YORK CITY, USA
-                </div>
-              </div>
             </motion.div>
 
-            {/* About Block - Added social links beside buttons */}
+            {/* About Block */}
             <motion.div
               className="border border-primary/20 bg-background flex-1 flex flex-col"
               initial={{ opacity: 0, x: 10 }}
@@ -144,11 +142,11 @@ export default function HomeSplitPage() {
             </motion.div>
           </div>
 
-          {/* Middle Section: Stats + Specializations Marquee */}
+          {/* Middle Section: Stats + Specializations */}
           <div className="flex flex-col md:flex-row gap-3 items-stretch">
             {/* Stats Block */}
             <motion.div
-              className="border border-primary/20 bg-background md:w-[220px] lg:w-[260px] shrink-0"
+              className="border border-primary/20 bg-background md:w-[220px] lg:w-[240px] shrink-0"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: 0.15 }}
@@ -189,14 +187,26 @@ export default function HomeSplitPage() {
                   <span className="text-[9px] font-sf-mono text-primary/30">[03]</span>
                 </div>
               </div>
-              <div className="py-3 overflow-hidden">
-                <div className="flex animate-[marquee_25s_linear_infinite]">
-                  {[...specializations, ...specializations].map((spec, idx) => (
-                    <div key={idx} className="flex items-center shrink-0">
-                      <span className="text-xs font-sf-mono text-primary/70 whitespace-nowrap px-4">{spec}</span>
-                      <span className="text-green-500 text-xs">✦</span>
-                    </div>
-                  ))}
+              <div className="p-3 overflow-hidden">
+                <div className="relative overflow-hidden">
+                  <motion.div
+                    className="flex whitespace-nowrap"
+                    animate={{ x: ["0%", "-50%"] }}
+                    transition={{
+                      x: {
+                        duration: 25,
+                        repeat: Number.POSITIVE_INFINITY,
+                        ease: "linear",
+                      },
+                    }}
+                  >
+                    {[...specializations, ...specializations].map((spec, idx) => (
+                      <span key={idx} className="flex items-center mx-4">
+                        <span className="text-[11px] font-sf-mono text-primary/70 tracking-wide">{spec}</span>
+                        <span className="text-green-500 mx-4 text-xs">✦</span>
+                      </span>
+                    ))}
+                  </motion.div>
                 </div>
               </div>
             </motion.div>
@@ -245,7 +255,7 @@ export default function HomeSplitPage() {
 
             {/* Quick Actions */}
             <motion.div
-              className="border border-primary/20 bg-background md:w-[220px] lg:w-[260px] shrink-0"
+              className="border border-primary/20 bg-background md:w-[180px] lg:w-[200px] shrink-0"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: 0.35 }}

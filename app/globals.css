@@ -994,20 +994,6 @@ main {
   content-visibility: auto;
 }
 
-/* Infinite marquee animation */
-@keyframes marquee {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-50%);
-  }
-}
-
-.animate-marquee {
-  animation: marquee 25s linear infinite;
-}
-
 /* Optimize animations for reduced motion preference */
 @media (prefers-reduced-motion: reduce) {
   *,
