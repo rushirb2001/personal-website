@@ -47,10 +47,9 @@ export default function BlogPostPage() {
 
   useEffect(() => {
     if (expandRect && animationPhase === "expanding") {
-      // After expansion completes (600ms), start revealing
       const timer = setTimeout(() => {
         setAnimationPhase("revealing")
-      }, 550)
+      }, 600)
       return () => clearTimeout(timer)
     }
   }, [expandRect, animationPhase])
@@ -59,10 +58,34 @@ export default function BlogPostPage() {
     if (animationPhase === "revealing") {
       const timer = setTimeout(() => {
         setAnimationPhase("complete")
-      }, 50)
+      }, 400)
       return () => clearTimeout(timer)
     }
   }, [animationPhase])
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.08,
+        delayChildren: 0.05,
+      },
+    },
+  }
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 15, filter: "blur(4px)" },
+    visible: {
+      opacity: 1,
+      y: 0,
+      filter: "blur(0px)",
+      transition: {
+        duration: 0.35,
+        ease: [0.25, 0.46, 0.45, 0.94],
+      },
+    },
+  }
 
   if (loading) {
     return (
@@ -144,23 +167,22 @@ export default function BlogPostPage() {
             {/* Scrollable Content Inside Window */}
             <div className="h-full overflow-y-auto p-6">
               <motion.div
-                initial={{ filter: "blur(4px)", opacity: 0.8 }}
-                animate={{
-                  filter: animationPhase === "complete" ? "blur(0px)" : "blur(4px)",
-                  opacity: animationPhase !== "expanding" ? 1 : 0.8,
-                }}
-                transition={{ duration: 0.12, ease: "easeOut" }}
+                variants={containerVariants}
+                initial="hidden"
+                animate={animationPhase !== "expanding" ? "visible" : "hidden"}
               >
-                <div className="flex items-center mb-4">
+                <motion.div variants={itemVariants} className="flex items-center mb-4">
                   <FileText className="h-4 w-4 mr-2 text-primary/70" />
                   <div className="text-xs font-sf-mono text-primary/70">
                     RECORD ID: {post.id} • {formatDate(new Date(post.date))}
                   </div>
-                </div>
+                </motion.div>
 
-                <h1 className="text-xl font-sf-mono mb-4">{post.title}</h1>
+                <motion.h1 variants={itemVariants} className="text-xl font-sf-mono mb-4">
+                  {post.title}
+                </motion.h1>
 
-                <div className="flex items-center mb-6">
+                <motion.div variants={itemVariants} className="flex items-center mb-6">
                   <Tag className="h-3 w-3 mr-2 text-primary/50" />
                   <div className="flex flex-wrap gap-2">
                     {post.tags.map((tag) => (
@@ -172,12 +194,15 @@ export default function BlogPostPage() {
                       </span>
                     ))}
                   </div>
-                </div>
+                </motion.div>
 
                 {/* Blog content */}
-                <div className="prose prose-sm dark:prose-invert max-w-none font-sf-mono">
+                <motion.div
+                  variants={itemVariants}
+                  className="prose prose-sm dark:prose-invert max-w-none font-sf-mono"
+                >
                   <BlogContent content={post.content} />
-                </div>
+                </motion.div>
               </motion.div>
             </div>
           </div>
