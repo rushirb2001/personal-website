@@ -51,8 +51,9 @@ export default function BlogPostPage() {
     <>
       <motion.div
         className="fixed top-14 md:top-16 left-0 right-0 z-50 bg-background dark:bg-eerie-black border-b border-primary/20"
-        initial={{ y: 0, opacity: 1 }}
+        initial={{ y: -60, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
       >
         <div className="container max-w-3xl mx-auto px-4 py-4 flex justify-between">
           <Button
@@ -74,16 +75,20 @@ export default function BlogPostPage() {
         </div>
       </motion.div>
 
-      {/* Fixed Border Window with Scrollable Content */}
-      <div className="fixed top-[9.5rem] md:top-[9.5rem] left-0 right-0 bottom-16 z-40">
+      <motion.div
+        className="fixed top-[9.5rem] md:top-[9.5rem] left-0 right-0 bottom-16 z-40"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.15, duration: 0.35, ease: "easeOut" }}
+      >
         <div className="container max-w-3xl mx-auto px-4 h-full">
           <div className="h-full border border-primary/20 bg-background dark:bg-eerie-black/50 overflow-hidden">
             {/* Scrollable Content Inside Window */}
             <div className="h-full overflow-y-auto p-6">
               <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: showContent ? 1 : 0 }}
-                transition={{ duration: 0.4, ease: "easeOut" }}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: showContent ? 1 : 0, y: showContent ? 0 : 10 }}
+                transition={{ delay: 0.25, duration: 0.4, ease: "easeOut" }}
               >
                 <div className="flex items-center mb-4">
                   <FileText className="h-4 w-4 mr-2 text-primary/70" />
@@ -116,7 +121,7 @@ export default function BlogPostPage() {
             </div>
           </div>
         </div>
-      </div>
+      </motion.div>
     </>
   )
 }

@@ -6,7 +6,7 @@ import { useState, useEffect, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { getPublishedPosts, type BlogPost } from "@/lib/blog-data"
 import { formatDate } from "@/lib/utils"
-import { ArrowLeft, ArrowRight, Calendar, Tag, Terminal } from "lucide-react"
+import { ArrowRight, Calendar, Tag, Terminal } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { PageLayout } from "@/components/layout/page-layout"
 import { useRouter } from "next/navigation"
@@ -52,10 +52,9 @@ export default function UpdatesPage() {
       setExpandRect(rect)
       setExpandingPost(post)
 
-      // Navigate after animation completes
       setTimeout(() => {
         router.push(`/updates/${post.id}`)
-      }, 700)
+      }, 500)
     }
   }
 
@@ -70,23 +69,8 @@ export default function UpdatesPage() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.4 }}
+              transition={{ duration: 0.3 }}
             />
-
-            <motion.div
-              className="fixed top-14 md:top-16 left-0 right-0 z-[102] bg-background dark:bg-eerie-black border-b border-primary/20"
-              initial={{ y: -60, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.15, duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
-            >
-              <div className="container max-w-3xl mx-auto px-4 py-4 flex justify-between">
-                <div className="flex items-center text-xs font-sf-mono text-primary/50">
-                  <ArrowLeft className="mr-1 h-3 w-3" />
-                  BACK TO UPDATES
-                </div>
-                <div className="text-xs font-sf-mono text-primary/50">RETURN TO MAIN SYSTEM</div>
-              </div>
-            </motion.div>
 
             <motion.div
               className="fixed z-[101] overflow-hidden"
@@ -104,7 +88,7 @@ export default function UpdatesPage() {
                 height: "calc(100vh - 9.5rem - 4rem)",
               }}
               transition={{
-                duration: 0.55,
+                duration: 0.5,
                 ease: [0.4, 0, 0.2, 1],
               }}
             >
@@ -112,13 +96,13 @@ export default function UpdatesPage() {
                 className="h-full w-full border border-primary/20 bg-background dark:bg-eerie-black/50 overflow-hidden"
                 initial={{ borderColor: "rgba(var(--primary), 0.4)" }}
                 animate={{ borderColor: "rgba(var(--primary), 0.2)" }}
-                transition={{ delay: 0.3, duration: 0.3 }}
+                transition={{ delay: 0.2, duration: 0.3 }}
               >
                 <div className="h-full overflow-hidden p-6">
                   <motion.div
-                    initial={{ opacity: 1, y: 0 }}
-                    animate={{ opacity: 0, y: 10 }}
-                    transition={{ delay: 0.3, duration: 0.25 }}
+                    initial={{ opacity: 1 }}
+                    animate={{ opacity: 0 }}
+                    transition={{ delay: 0.25, duration: 0.2 }}
                   >
                     {/* Mimic article card content during expansion */}
                     <div className="flex justify-between items-start mb-2">
@@ -137,16 +121,6 @@ export default function UpdatesPage() {
                         </span>
                       ))}
                     </div>
-                  </motion.div>
-
-                  {/* Loading indicator fades in */}
-                  <motion.div
-                    className="absolute inset-0 flex items-center justify-center"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.45, duration: 0.2 }}
-                  >
-                    <div className="text-sm font-sf-mono text-primary/70">LOADING RECORD...</div>
                   </motion.div>
                 </div>
               </motion.div>
