@@ -26,6 +26,7 @@ export default function BlogPostPage() {
   const [originalRect, setOriginalRect] = useState<{ top: number; left: number; width: number; height: number } | null>(
     null,
   )
+  const [isNavigatingBack, setIsNavigatingBack] = useState(false)
 
   useEffect(() => {
     const stored = sessionStorage.getItem("expandRect")
@@ -71,7 +72,10 @@ export default function BlogPostPage() {
 
   const handleBackToUpdates = () => {
     if (originalRect && post) {
-      // Store the target card position and post info for the updates page
+      setAnimationPhase("collapsing")
+      setIsNavigatingBack(true)
+
+      // Store data for updates page collapse animation
       sessionStorage.setItem("collapseToRect", JSON.stringify(originalRect))
       sessionStorage.setItem("collapseFromPost", post.id)
       sessionStorage.setItem(
@@ -84,8 +88,10 @@ export default function BlogPostPage() {
           tags: post.tags,
         }),
       )
-      // Navigate immediately - updates page will handle collapse animation
-      router.push("/updates")
+
+      setTimeout(() => {
+        router.push("/updates")
+      }, 50)
     } else {
       router.push("/updates")
     }
@@ -135,10 +141,13 @@ export default function BlogPostPage() {
     <>
       {/* Navigation bar drops down from top */}
       <motion.div
-        className="fixed top-14 md:top-16 left-0 right-0 z-50 bg-background dark:bg-eerie-black border-b border-primary/20"
+        className="fixed top-14 md:top-16 left-0 right-0 z-40 bg-background dark:bg-eerie-black border-b border-primary/20"
         initial={{ y: -60, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.4, ease: [0.32, 0.72, 0, 1], delay: 0.1 }}
+        animate={{
+          y: isNavigatingBack ? -60 : 0,
+          opacity: isNavigatingBack ? 0 : 1,
+        }}
+        transition={{ duration: 0.3, ease: [0.32, 0.72, 0, 1], delay: isNavigatingBack ? 0 : 0.1 }}
       >
         <div className="container max-w-3xl mx-auto px-4 py-4 flex justify-between">
           <Button
@@ -184,13 +193,30 @@ export default function BlogPostPage() {
         />
       )}
 
+      {isNavigatingBack && (
+        <motion.div
+          className="fixed z-[100] border border-primary/20 bg-background dark:bg-eerie-black"
+          style={{
+            top: 152,
+            left: "50%",
+            transform: "translateX(-50%)",
+            width: "min(100vw - 2rem, 48rem)",
+            height: "calc(100vh - 9.5rem - 4rem)",
+          }}
+        />
+      )}
+
       {/* Main content container */}
       <motion.div
         className="fixed top-[9.5rem] left-0 right-0 bottom-16 z-30"
         initial={{ opacity: 0 }}
-        animate={{ opacity: animationPhase === "expanding" ? 0 : 1 }}
-        transition={{ duration: 0.2 }}
-        style={{ visibility: animationPhase === "expanding" ? "hidden" : "visible" }}
+        animate={{
+          opacity: animationPhase === "expanding" || animationPhase === "collapsing" ? 0 : 1,
+        }}
+        transition={{ duration: 0.15 }}
+        style={{
+          visibility: animationPhase === "expanding" || animationPhase === "collapsing" ? "hidden" : "visible",
+        }}
       >
         <div className="container max-w-3xl mx-auto px-4 h-full">
           <div className="h-full border border-primary/20 bg-background dark:bg-eerie-black/50 overflow-hidden">

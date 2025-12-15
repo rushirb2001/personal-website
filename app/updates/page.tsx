@@ -41,6 +41,7 @@ export default function UpdatesPage() {
   }>({ show: false, startRect: { top: 0, left: 0, width: 0, height: 0 }, endRect: null, postData: null })
 
   const [cardRevealed, setCardRevealed] = useState<string | null>(null)
+  const [animationComplete, setAnimationComplete] = useState(false)
 
   const allTags = Array.from(new Set(posts.flatMap((post) => post.tags)))
 
@@ -68,46 +69,51 @@ export default function UpdatesPage() {
 
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
-          const targetElement = articleRefs.current.get(collapsePostId)
-          if (targetElement) {
-            const endRect = targetElement.getBoundingClientRect()
+          requestAnimationFrame(() => {
+            const targetElement = articleRefs.current.get(collapsePostId)
+            if (targetElement) {
+              const endRect = targetElement.getBoundingClientRect()
 
-            const startRect = {
-              top: 152,
-              left: Math.max(16, (window.innerWidth - Math.min(window.innerWidth - 32, 768)) / 2),
-              width: Math.min(window.innerWidth - 32, 768),
-              height: window.innerHeight - 152 - 64,
-            }
+              const startRect = {
+                top: 152,
+                left: Math.max(16, (window.innerWidth - Math.min(window.innerWidth - 32, 768)) / 2),
+                width: Math.min(window.innerWidth - 32, 768),
+                height: window.innerHeight - 152 - 64,
+              }
 
-            setCollapseAnimation({
-              show: true,
-              startRect,
-              endRect: {
-                top: endRect.top,
-                left: endRect.left,
-                width: endRect.width,
-                height: endRect.height,
-              },
-              postData,
-            })
-
-            setTimeout(() => {
-              setCollapseAnimation((prev) => ({ ...prev, show: false }))
+              setCollapseAnimation({
+                show: true,
+                startRect,
+                endRect: {
+                  top: endRect.top,
+                  left: endRect.left,
+                  width: endRect.width,
+                  height: endRect.height,
+                },
+                postData,
+              })
 
               setTimeout(() => {
-                setCardRevealed(collapsePostId)
-                setReturningPostId(null)
-                setHighlightedPostId(collapsePostId)
+                setAnimationComplete(true)
 
+                // Small delay before hiding overlay and showing card
                 setTimeout(() => {
-                  setHighlightedPostId(null)
-                  setCardRevealed(null)
-                }, 400)
-              }, 50)
-            }, 700)
-          } else {
-            setReturningPostId(null)
-          }
+                  setCollapseAnimation((prev) => ({ ...prev, show: false }))
+                  setCardRevealed(collapsePostId)
+                  setReturningPostId(null)
+                  setHighlightedPostId(collapsePostId)
+
+                  setTimeout(() => {
+                    setHighlightedPostId(null)
+                    setCardRevealed(null)
+                    setAnimationComplete(false)
+                  }, 400)
+                }, 80)
+              }, 750)
+            } else {
+              setReturningPostId(null)
+            }
+          })
         })
       })
     }
@@ -140,7 +146,7 @@ export default function UpdatesPage() {
       <AnimatePresence>
         {collapseAnimation.show && collapseAnimation.endRect && collapseAnimation.postData && (
           <motion.div
-            className="fixed z-50 border border-primary/20 bg-background dark:bg-eerie-black overflow-hidden pointer-events-none"
+            className="fixed z-[100] border border-primary/20 bg-background dark:bg-eerie-black overflow-hidden pointer-events-none"
             initial={{
               top: collapseAnimation.startRect.top,
               left: collapseAnimation.startRect.left,
@@ -155,17 +161,17 @@ export default function UpdatesPage() {
               height: collapseAnimation.endRect.height,
               opacity: 1,
             }}
-            exit={{ opacity: 0, transition: { duration: 0.15 } }}
+            exit={{ opacity: 0, transition: { duration: 0.1 } }}
             transition={{
-              duration: 0.65,
-              ease: [0.25, 0.1, 0.25, 1],
+              duration: 0.75,
+              ease: [0.22, 1, 0.36, 1],
             }}
           >
             <motion.div
               className="p-4 h-full"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 0.2, duration: 0.4, ease: "easeOut" }}
+              transition={{ delay: 0.35, duration: 0.4, ease: "easeOut" }}
             >
               <div className="flex justify-between items-start mb-2">
                 <h2 className="text-sm font-sf-mono font-medium line-clamp-1">{collapseAnimation.postData.title}</h2>
