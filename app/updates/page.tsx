@@ -386,7 +386,7 @@ export default function UpdatesPage() {
             className="rounded-none border-primary/20 text-xs font-sf-mono bg-transparent"
             onClick={handleReturnToMain}
           >
-            RETURN TO MAIN PAGE
+            BACK TO HOME 
           </Button>
         </div>
       </div>
