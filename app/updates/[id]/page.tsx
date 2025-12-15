@@ -83,6 +83,16 @@ export default function BlogPostPage() {
       // Store the target card position and post info for the updates page
       sessionStorage.setItem("collapseToRect", JSON.stringify(originalRect))
       sessionStorage.setItem("collapseFromPost", post.id)
+      sessionStorage.setItem(
+        "collapsePostData",
+        JSON.stringify({
+          id: post.id,
+          title: post.title,
+          date: post.date,
+          summary: post.summary,
+          tags: post.tags,
+        }),
+      )
       setAnimationPhase("collapsing")
     } else {
       router.push("/updates")

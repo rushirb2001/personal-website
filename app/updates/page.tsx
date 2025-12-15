@@ -16,13 +16,18 @@ export default function UpdatesPage() {
   const [selectedTags, setSelectedTags] = useState<string[]>([])
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const router = useRouter()
-  const [mounted, setMounted] = useState(false)
 
   const articleRefs = useRef<Map<string, HTMLDivElement>>(new Map())
 
   const [returningPostId, setReturningPostId] = useState<string | null>(null)
   const [highlightedPostId, setHighlightedPostId] = useState<string | null>(null)
-  const [isReturningFromArticle, setIsReturningFromArticle] = useState(false)
+  const isReturningFromArticle = useRef(false)
+  const [collapseAnimation, setCollapseAnimation] = useState<{
+    show: boolean
+    startRect: { top: number; left: number; width: number; height: number }
+    endRect: { top: number; left: number; width: number; height: number } | null
+    postData: BlogPost | null
+  }>({ show: false, startRect: { top: 0, left: 0, width: 0, height: 0 }, endRect: null, postData: null })
 
   const allTags = Array.from(new Set(posts.flatMap((post) => post.tags)))
 
@@ -33,26 +38,57 @@ export default function UpdatesPage() {
     setSelectedTags((prev) => (prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]))
   }
 
-  useEffect(() => {
-    setMounted(true)
-
+  if (typeof window !== "undefined" && !isReturningFromArticle.current) {
     const collapseRect = sessionStorage.getItem("collapseToRect")
     const collapsePostId = sessionStorage.getItem("collapseFromPost")
-
     if (collapseRect && collapsePostId) {
-      setIsReturningFromArticle(true)
+      isReturningFromArticle.current = true
+    }
+  }
+
+  useEffect(() => {
+    const collapseRect = sessionStorage.getItem("collapseToRect")
+    const collapsePostId = sessionStorage.getItem("collapseFromPost")
+    const collapsePostData = sessionStorage.getItem("collapsePostData")
+
+    if (collapseRect && collapsePostId && collapsePostData) {
+      const startRect = JSON.parse(collapseRect)
+      const postData = JSON.parse(collapsePostData)
+
       setReturningPostId(collapsePostId)
+
       sessionStorage.removeItem("collapseToRect")
       sessionStorage.removeItem("collapseFromPost")
+      sessionStorage.removeItem("collapsePostData")
 
-      setTimeout(() => {
-        setReturningPostId(null)
-        setHighlightedPostId(collapsePostId)
+      requestAnimationFrame(() => {
+        const targetElement = articleRefs.current.get(collapsePostId)
+        if (targetElement) {
+          const endRect = targetElement.getBoundingClientRect()
 
-        setTimeout(() => {
-          setHighlightedPostId(null)
-        }, 400)
-      }, 550)
+          setCollapseAnimation({
+            show: true,
+            startRect,
+            endRect: {
+              top: endRect.top,
+              left: endRect.left,
+              width: endRect.width,
+              height: endRect.height,
+            },
+            postData,
+          })
+
+          setTimeout(() => {
+            setCollapseAnimation((prev) => ({ ...prev, show: false }))
+            setReturningPostId(null)
+            setHighlightedPostId(collapsePostId)
+
+            setTimeout(() => {
+              setHighlightedPostId(null)
+            }, 400)
+          }, 500)
+        }
+      })
     }
   }, [])
 
@@ -80,7 +116,53 @@ export default function UpdatesPage() {
 
   return (
     <PageLayout title="BLOG" subtitle="ARTICLES, DAILY BLOGS AND LIFE UPDATES">
-      <AnimatePresence>{/* Placeholder for collapse animation if needed */}</AnimatePresence>
+      <AnimatePresence>
+        {collapseAnimation.show && collapseAnimation.endRect && collapseAnimation.postData && (
+          <motion.div
+            className="fixed z-30 border border-primary/20 bg-background dark:bg-eerie-black/95 overflow-hidden pointer-events-none"
+            initial={{
+              top: collapseAnimation.startRect.top,
+              left: collapseAnimation.startRect.left,
+              width: collapseAnimation.startRect.width,
+              height: collapseAnimation.startRect.height,
+            }}
+            animate={{
+              top: collapseAnimation.endRect.top,
+              left: collapseAnimation.endRect.left,
+              width: collapseAnimation.endRect.width,
+              height: collapseAnimation.endRect.height,
+            }}
+            transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+          >
+            <div className="p-4">
+              <div className="flex justify-between items-start mb-2">
+                <h2 className="text-sm font-sf-mono font-medium">{collapseAnimation.postData.title}</h2>
+                <div className="flex items-center text-xs text-primary/60 font-sf-mono">
+                  <Calendar className="h-3 w-3 mr-1" />
+                  {formatDate(new Date(collapseAnimation.postData.date))}
+                </div>
+              </div>
+              <p className="text-xs text-primary/70 mb-3 font-sf-mono">{collapseAnimation.postData.summary}</p>
+              <div className="flex justify-between items-center">
+                <div className="flex items-center gap-1">
+                  <Tag className="h-3 w-3 text-primary/50" />
+                  <div className="flex gap-1">
+                    {collapseAnimation.postData.tags.slice(0, 3).map((tag: string) => (
+                      <span key={tag} className="text-xs text-primary/50 font-sf-mono">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+                <div className="text-xs font-sf-mono text-primary/70 flex items-center">
+                  READ ENTRY
+                  <ArrowRight className="ml-1 h-3 w-3" />
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <div className="container max-w-4xl mx-auto px-2 md:px-4">
         <div className="mb-8 border border-primary/20 p-2 md:p-4 bg-background dark:bg-eerie-black/50 -mx-2 md:mx-0">
@@ -155,11 +237,14 @@ export default function UpdatesPage() {
                 ref={(el) => {
                   if (el) articleRefs.current.set(post.id, el)
                 }}
-                initial={{ opacity: isReturningFromArticle ? 1 : 0, y: isReturningFromArticle ? 0 : 20 }}
+                initial={{
+                  opacity: isReturningFromArticle.current ? 1 : 0,
+                  y: isReturningFromArticle.current ? 0 : 20,
+                }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{
-                  delay: isReturningFromArticle ? 0 : index * 0.1,
-                  duration: isReturningFromArticle ? 0 : 0.5,
+                  delay: isReturningFromArticle.current ? 0 : index * 0.1,
+                  duration: isReturningFromArticle.current ? 0 : 0.5,
                 }}
                 className={`border transition-all duration-300 cursor-pointer ${
                   highlightedPostId === post.id
@@ -167,7 +252,8 @@ export default function UpdatesPage() {
                     : "border-primary/20 hover:border-primary/40"
                 }`}
                 style={{
-                  opacity: returningPostId === post.id ? 0 : 1,
+                  opacity: returningPostId === post.id ? 0 : undefined,
+                  visibility: returningPostId === post.id ? "hidden" : undefined,
                 }}
                 onClick={(e) => handleArticleClick(e, post)}
               >
