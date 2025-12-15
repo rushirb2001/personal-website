@@ -1,13 +1,12 @@
 "use client"
 
-import { useEffect, useState, useMemo } from "react"
+import { useEffect, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { useNavigation } from "@/contexts/navigation-context"
 
 export function TransitionOverlay() {
   const { isTransitioning, targetPath } = useNavigation()
   const [isMounted, setIsMounted] = useState(false)
-  const [phase, setPhase] = useState<"enter" | "hold" | "exit">("enter")
 
   useEffect(() => {
     setIsMounted(true)
@@ -15,37 +14,6 @@ export function TransitionOverlay() {
 
   // Format display path
   const displayPath = targetPath ? targetPath.slice(1).toUpperCase() || "HOME" : "LOADING"
-
-  // Phase management
-  useEffect(() => {
-    if (isTransitioning) {
-      setPhase("enter")
-      const holdTimer = setTimeout(() => setPhase("hold"), 300)
-      return () => clearTimeout(holdTimer)
-    } else {
-      setPhase("exit")
-    }
-  }, [isTransitioning])
-
-  const horizontalLines = useMemo(
-    () =>
-      Array.from({ length: 5 }).map((_, i) => ({
-        id: i,
-        y: (i + 1) * 16.66,
-        delay: i * 0.08,
-      })),
-    [],
-  )
-
-  const verticalLines = useMemo(
-    () =>
-      Array.from({ length: 4 }).map((_, i) => ({
-        id: i,
-        x: (i + 1) * 20,
-        delay: i * 0.06,
-      })),
-    [],
-  )
 
   return (
     <AnimatePresence>
@@ -66,58 +34,21 @@ export function TransitionOverlay() {
             transition={{ duration: 0.3 }}
           />
 
-          <div className="absolute inset-0 overflow-hidden">
-            {/* Horizontal lines - extend from edges */}
-            {horizontalLines.map((line) => (
-              <motion.div
-                key={`h-${line.id}`}
-                className="absolute left-0 right-0 h-px bg-primary/10"
-                style={{ top: `${line.y}%` }}
-                initial={{ scaleX: 0 }}
-                animate={{ scaleX: 1 }}
-                exit={{ scaleX: 0 }}
-                transition={{
-                  duration: 0.4,
-                  delay: line.delay,
-                  ease: [0.22, 1, 0.36, 1],
-                }}
-              />
-            ))}
-
-            {/* Vertical lines - extend from top */}
-            {verticalLines.map((line) => (
-              <motion.div
-                key={`v-${line.id}`}
-                className="absolute top-0 bottom-0 w-px bg-primary/10"
-                style={{ left: `${line.x}%` }}
-                initial={{ scaleY: 0, originY: 0 }}
-                animate={{ scaleY: 1 }}
-                exit={{ scaleY: 0 }}
-                transition={{
-                  duration: 0.5,
-                  delay: line.delay,
-                  ease: [0.22, 1, 0.36, 1],
-                }}
-              />
-            ))}
-          </div>
-
           <div className="absolute inset-0 flex items-center justify-center">
             <motion.div
-              className="relative flex flex-col items-center gap-8"
+              className="relative flex flex-col items-center gap-10"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
             >
-              {/* Morphing circle loader */}
-              <div className="relative w-16 h-16">
-                {/* Outer ring */}
+              <div className="relative w-24 h-24">
+                {/* Outer ring - thicker */}
                 <motion.div
-                  className="absolute inset-0 border border-primary/30 rounded-full"
+                  className="absolute inset-0 border-2 border-primary/40 rounded-full"
                   animate={{
                     scale: [1, 1.2, 1],
-                    opacity: [0.3, 0.6, 0.3],
+                    opacity: [0.4, 0.7, 0.4],
                   }}
                   transition={{
                     duration: 1.5,
@@ -126,9 +57,9 @@ export function TransitionOverlay() {
                   }}
                 />
 
-                {/* Middle ring */}
+                {/* Middle ring - thicker */}
                 <motion.div
-                  className="absolute inset-2 border border-primary/50 rounded-full"
+                  className="absolute inset-3 border-2 border-primary/60 rounded-full"
                   animate={{
                     scale: [1.1, 0.9, 1.1],
                     rotate: [0, 180, 360],
@@ -140,7 +71,7 @@ export function TransitionOverlay() {
                   }}
                 />
 
-                {/* Inner dot */}
+                {/* Inner dot - larger */}
                 <motion.div
                   className="absolute inset-0 flex items-center justify-center"
                   animate={{
@@ -152,32 +83,32 @@ export function TransitionOverlay() {
                     ease: "easeInOut",
                   }}
                 >
-                  <div className="w-2 h-2 rounded-full bg-primary/70" />
+                  <div className="w-4 h-4 rounded-full bg-primary/80" />
                 </motion.div>
 
-                {/* Orbiting dots */}
+                {/* Orbiting dots - larger */}
                 {[0, 1, 2].map((i) => (
                   <motion.div
                     key={i}
-                    className="absolute w-1.5 h-1.5 rounded-full bg-primary/50"
+                    className="absolute w-2.5 h-2.5 rounded-full bg-primary/60"
                     style={{
                       top: "50%",
                       left: "50%",
-                      marginTop: -3,
-                      marginLeft: -3,
+                      marginTop: -5,
+                      marginLeft: -5,
                     }}
                     animate={{
                       x: [
-                        Math.cos((i * 120 * Math.PI) / 180) * 24,
-                        Math.cos(((i * 120 + 120) * Math.PI) / 180) * 24,
-                        Math.cos(((i * 120 + 240) * Math.PI) / 180) * 24,
-                        Math.cos((i * 120 * Math.PI) / 180) * 24,
+                        Math.cos((i * 120 * Math.PI) / 180) * 36,
+                        Math.cos(((i * 120 + 120) * Math.PI) / 180) * 36,
+                        Math.cos(((i * 120 + 240) * Math.PI) / 180) * 36,
+                        Math.cos((i * 120 * Math.PI) / 180) * 36,
                       ],
                       y: [
-                        Math.sin((i * 120 * Math.PI) / 180) * 24,
-                        Math.sin(((i * 120 + 120) * Math.PI) / 180) * 24,
-                        Math.sin(((i * 120 + 240) * Math.PI) / 180) * 24,
-                        Math.sin((i * 120 * Math.PI) / 180) * 24,
+                        Math.sin((i * 120 * Math.PI) / 180) * 36,
+                        Math.sin(((i * 120 + 120) * Math.PI) / 180) * 36,
+                        Math.sin(((i * 120 + 240) * Math.PI) / 180) * 36,
+                        Math.sin((i * 120 * Math.PI) / 180) * 36,
                       ],
                     }}
                     transition={{
@@ -189,8 +120,8 @@ export function TransitionOverlay() {
                 ))}
               </div>
 
-              <div className="flex flex-col items-center gap-3">
-                {/* Path text with reveal animation */}
+              <div className="flex flex-col items-center gap-4">
+                {/* Path text - larger font */}
                 <motion.div
                   className="overflow-hidden"
                   initial={{ width: 0 }}
@@ -198,7 +129,7 @@ export function TransitionOverlay() {
                   transition={{ duration: 0.5, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
                 >
                   <motion.span
-                    className="block text-xs font-sf-mono tracking-[0.3em] text-primary/60 whitespace-nowrap uppercase"
+                    className="block text-sm font-sf-mono tracking-[0.25em] text-primary/80 whitespace-nowrap uppercase font-medium"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.3, delay: 0.3 }}
@@ -207,15 +138,15 @@ export function TransitionOverlay() {
                   </motion.span>
                 </motion.div>
 
-                {/* Loading bar - cleaner styling */}
+                {/* Loading bar - thicker and wider */}
                 <motion.div
-                  className="h-px w-24 bg-primary/10 overflow-hidden"
+                  className="h-0.5 w-32 bg-primary/20 overflow-hidden"
                   initial={{ opacity: 0, scaleX: 0 }}
                   animate={{ opacity: 1, scaleX: 1 }}
                   transition={{ delay: 0.3, duration: 0.3 }}
                 >
                   <motion.div
-                    className="h-full w-full bg-primary/40"
+                    className="h-full w-full bg-primary/70"
                     initial={{ x: "-100%" }}
                     animate={{ x: "100%" }}
                     transition={{
@@ -229,27 +160,26 @@ export function TransitionOverlay() {
             </motion.div>
           </div>
 
-          {/* Corner accents - kept for brutalist aesthetic */}
           <motion.div
-            className="absolute top-4 left-4 w-6 h-6 border-l border-t border-primary/20"
+            className="absolute top-6 left-6 w-8 h-8 border-l-2 border-t-2 border-primary/30"
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.3, delay: 0.1 }}
           />
           <motion.div
-            className="absolute top-4 right-4 w-6 h-6 border-r border-t border-primary/20"
+            className="absolute top-6 right-6 w-8 h-8 border-r-2 border-t-2 border-primary/30"
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.3, delay: 0.15 }}
           />
           <motion.div
-            className="absolute bottom-4 left-4 w-6 h-6 border-l border-b border-primary/20"
+            className="absolute bottom-6 left-6 w-8 h-8 border-l-2 border-b-2 border-primary/30"
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.3, delay: 0.2 }}
           />
           <motion.div
-            className="absolute bottom-4 right-4 w-6 h-6 border-r border-b border-primary/20"
+            className="absolute bottom-6 right-6 w-8 h-8 border-r-2 border-t-2 border-primary/30"
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.3, delay: 0.25 }}
