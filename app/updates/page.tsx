@@ -56,10 +56,12 @@ export default function UpdatesPage() {
     const collapseRect = sessionStorage.getItem("collapseToRect")
     const collapsePostId = sessionStorage.getItem("collapseFromPost")
     const collapsePostData = sessionStorage.getItem("collapsePostData")
+    const containerRectStr = sessionStorage.getItem("containerRect")
 
     if (collapseRect && collapsePostId && collapsePostData) {
       const originalCardRect = JSON.parse(collapseRect)
       const postData = JSON.parse(collapsePostData)
+      const containerRect = containerRectStr ? JSON.parse(containerRectStr) : null
 
       setReturningPostId(collapsePostId)
       setCollapseStarted(true)
@@ -67,54 +69,62 @@ export default function UpdatesPage() {
       sessionStorage.removeItem("collapseToRect")
       sessionStorage.removeItem("collapseFromPost")
       sessionStorage.removeItem("collapsePostData")
+      sessionStorage.removeItem("containerRect")
 
       requestAnimationFrame(() => {
-        const targetElement = articleRefs.current.get(collapsePostId)
-        if (targetElement) {
-          const endRect = targetElement.getBoundingClientRect()
+        requestAnimationFrame(() => {
+          const targetElement = articleRefs.current.get(collapsePostId)
+          if (targetElement) {
+            const endRect = targetElement.getBoundingClientRect()
 
-          // Calculate width to match "min(100vw - 2rem, 48rem)"
-          const viewportWidth = document.documentElement.clientWidth; // This matches vw without scrollbar
-          const calculatedWidth = Math.min(viewportWidth - 32, 768);
+            let startRect
+            if (containerRect) {
+              startRect = {
+                top: containerRect.top,
+                left: containerRect.left,
+                width: containerRect.width,
+                height: containerRect.height,
+              }
+            } else {
+              const viewportWidth = document.documentElement.clientWidth
+              const calculatedWidth = Math.min(viewportWidth - 32, 768)
+              startRect = {
+                top: 152,
+                left: Math.max(16, (viewportWidth - calculatedWidth) / 2),
+                width: calculatedWidth,
+                height: window.innerHeight - 152 - 64,
+              }
+            }
 
-          const startRect = {
-            top: 152,
-            left: Math.max(16, (viewportWidth - calculatedWidth) / 2),
-            width: calculatedWidth,
-            height: window.innerHeight - 152 - 64,
-          }
-
-          setCollapseAnimation({
-            show: true,
-            startRect,
-            endRect: {
-              top: endRect.top,
-              left: endRect.left,
-              width: endRect.width,
-              height: endRect.height,
-            },
-            postData,
-          })
-
-          setTimeout(() => {
-            setCollapseAnimation((prev) => ({ ...prev, show: false }))
-            setCardRevealed(collapsePostId)
+            setCollapseAnimation({
+              show: true,
+              startRect,
+              endRect: {
+                top: endRect.top,
+                left: endRect.left,
+                width: endRect.width,
+                height: endRect.height,
+              },
+              postData,
+            })
 
             setTimeout(() => {
-              setCollapseStarted(false)
-              setReturningPostId(null)
-              setHighlightedPostId(collapsePostId)
+              setCollapseAnimation((prev) => ({ ...prev, show: false }))
+              setCardRevealed(collapsePostId)
 
               setTimeout(() => {
-                setHighlightedPostId(null)
-                setCardRevealed(null)
-              }, 400)
-            }, 50)
-          }, 700)
-        } else {
-          setReturningPostId(null)
-          setCollapseStarted(false)
-        }
+                setCollapseStarted(false)
+                setReturningPostId(null)
+                setHighlightedPostId(collapsePostId)
+
+                setTimeout(() => {
+                  setHighlightedPostId(null)
+                  setCardRevealed(null)
+                }, 400)
+              }, 50)
+            }, 700)
+          }
+        })
       })
     }
   }, [])

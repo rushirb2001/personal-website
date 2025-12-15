@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import { useParams, useRouter } from "next/navigation"
 import { motion } from "framer-motion"
 import { getPostById, type BlogPost } from "@/lib/blog-data"
@@ -26,6 +26,13 @@ export default function BlogPostPage() {
   const [originalRect, setOriginalRect] = useState<{ top: number; left: number; width: number; height: number } | null>(
     null,
   )
+  const [containerRect, setContainerRect] = useState<{
+    top: number
+    left: number
+    width: number
+    height: number
+  } | null>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
   const [reversePhase, setReversePhase] = useState<"idle" | "text-reverse" | "blank" | "nav-up" | "navigating">("idle")
 
   useEffect(() => {
@@ -37,6 +44,18 @@ export default function BlogPostPage() {
       sessionStorage.removeItem("expandRect")
     } else {
       setAnimationPhase("complete")
+    }
+  }, [])
+
+  useEffect(() => {
+    if (containerRef.current) {
+      const rect = containerRef.current.getBoundingClientRect()
+      setContainerRect({
+        top: rect.top,
+        left: rect.left,
+        width: rect.width,
+        height: rect.height,
+      })
     }
   }, [])
 
@@ -104,6 +123,18 @@ export default function BlogPostPage() {
   const handleBackToUpdates = () => {
     if (originalRect && post) {
       // Store data for updates page collapse animation
+      if (containerRef.current) {
+        const rect = containerRef.current.getBoundingClientRect()
+        sessionStorage.setItem(
+          "containerRect",
+          JSON.stringify({
+            top: rect.top,
+            left: rect.left,
+            width: rect.width,
+            height: rect.height,
+          }),
+        )
+      }
       sessionStorage.setItem("collapseToRect", JSON.stringify(originalRect))
       sessionStorage.setItem("collapseFromPost", post.id)
       sessionStorage.setItem(
@@ -221,7 +252,7 @@ export default function BlogPostPage() {
       </motion.div>
 
       {/* Expansion animation box */}
-      {expandRect && animationPhase === "expanding" && (
+      {expandRect && animationPhase === "expanding" && containerRect && (
         <motion.div
           className="fixed z-40 pointer-events-none border border-primary/20 bg-background dark:bg-eerie-black"
           initial={{
@@ -231,14 +262,10 @@ export default function BlogPostPage() {
             height: expandRect.height,
           }}
           animate={{
-            top: 152,
-            left: Math.max(
-              16,
-              (typeof window !== "undefined" ? document.documentElement.clientWidth : 0) / 2 -
-                Math.min((typeof window !== "undefined" ? document.documentElement.clientWidth : 0) - 32, 768) / 2,
-            ),
-            width: Math.min((typeof window !== "undefined" ? document.documentElement.clientWidth : 0) - 32, 768),
-            height: typeof window !== "undefined" ? window.innerHeight - 152 - 64 : 0,
+            top: containerRect.top,
+            left: containerRect.left,
+            width: containerRect.width,
+            height: containerRect.height,
           }}
           transition={{
             duration: 0.6,
@@ -247,18 +274,14 @@ export default function BlogPostPage() {
         />
       )}
 
-      {(reversePhase === "blank" || reversePhase === "nav-up" || reversePhase === "navigating") && (
+      {(reversePhase === "blank" || reversePhase === "nav-up" || reversePhase === "navigating") && containerRect && (
         <motion.div
           className="fixed z-[100] border border-primary/20 bg-background dark:bg-eerie-black"
           style={{
-            top: 152,
-            left: Math.max(
-              16,
-              (typeof window !== "undefined" ? document.documentElement.clientWidth : 0) / 2 -
-                Math.min((typeof window !== "undefined" ? document.documentElement.clientWidth : 0) - 32, 768) / 2,
-            ),
-            width: Math.min((typeof window !== "undefined" ? document.documentElement.clientWidth : 0) - 32, 768),
-            height: typeof window !== "undefined" ? window.innerHeight - 152 - 64 : 0,
+            top: containerRect.top,
+            left: containerRect.left,
+            width: containerRect.width,
+            height: containerRect.height,
           }}
           initial={{ opacity: 1 }}
           animate={{ opacity: 1 }}
@@ -278,7 +301,10 @@ export default function BlogPostPage() {
         }}
       >
         <div className="container max-w-3xl mx-auto px-4 h-full">
-          <div className="h-full border border-primary/20 bg-background dark:bg-eerie-black/50 overflow-hidden">
+          <div
+            ref={containerRef}
+            className="h-full border border-primary/20 bg-background dark:bg-eerie-black/50 overflow-hidden"
+          >
             {/* Scrollable Content Inside Window */}
             <div className="h-full overflow-y-auto p-6">
               <motion.div
