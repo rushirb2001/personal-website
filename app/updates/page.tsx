@@ -11,6 +11,16 @@ import { Button } from "@/components/ui/button"
 import { PageLayout } from "@/components/layout/page-layout"
 import { useRouter } from "next/navigation"
 
+function getInitialReturningPostId(): string | null {
+  if (typeof window !== "undefined") {
+    const collapsePostId = sessionStorage.getItem("collapseFromPost")
+    if (collapsePostId) {
+      return collapsePostId
+    }
+  }
+  return null
+}
+
 export default function UpdatesPage() {
   const posts = getPublishedPosts()
   const [selectedTags, setSelectedTags] = useState<string[]>([])
@@ -19,9 +29,9 @@ export default function UpdatesPage() {
 
   const articleRefs = useRef<Map<string, HTMLDivElement>>(new Map())
 
-  const [returningPostId, setReturningPostId] = useState<string | null>(null)
+  const [returningPostId, setReturningPostId] = useState<string | null>(() => getInitialReturningPostId())
   const [highlightedPostId, setHighlightedPostId] = useState<string | null>(null)
-  const isReturningFromArticle = useRef(false)
+  const isReturningFromArticle = useRef(returningPostId !== null)
 
   const [collapseAnimation, setCollapseAnimation] = useState<{
     show: boolean
@@ -39,14 +49,6 @@ export default function UpdatesPage() {
 
   const toggleTag = (tag: string) => {
     setSelectedTags((prev) => (prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]))
-  }
-
-  if (typeof window !== "undefined" && !isReturningFromArticle.current) {
-    const collapseRect = sessionStorage.getItem("collapseToRect")
-    const collapsePostId = sessionStorage.getItem("collapseFromPost")
-    if (collapseRect && collapsePostId) {
-      isReturningFromArticle.current = true
-    }
   }
 
   useEffect(() => {
