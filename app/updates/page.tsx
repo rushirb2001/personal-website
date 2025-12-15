@@ -73,10 +73,14 @@ export default function UpdatesPage() {
         if (targetElement) {
           const endRect = targetElement.getBoundingClientRect()
 
+          // Calculate width to match "min(100vw - 2rem, 48rem)"
+          const viewportWidth = document.documentElement.clientWidth; // This matches vw without scrollbar
+          const calculatedWidth = Math.min(viewportWidth - 32, 768);
+
           const startRect = {
             top: 152,
-            left: Math.max(16, (window.innerWidth - Math.min(window.innerWidth - 32, 768)) / 2),
-            width: Math.min(window.innerWidth - 32, 768),
+            left: Math.max(16, (viewportWidth - calculatedWidth) / 2),
+            width: calculatedWidth,
             height: window.innerHeight - 152 - 64,
           }
 
