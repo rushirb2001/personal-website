@@ -159,26 +159,6 @@ export function TransitionOverlay() {
               </div>
             </motion.div>
           </div>
-
-          
-          <motion.div
-            className="absolute top-6 right-6 w-8 h-8 border-r-2 border-t-2 border-primary/30"
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.3, delay: 0.15 }}
-          />
-          <motion.div
-            className="absolute bottom-6 left-6 w-8 h-8 border-l-2 border-b-2 border-primary/30"
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.3, delay: 0.2 }}
-          />
-          <motion.div
-            className="absolute bottom-6 right-6 w-8 h-8 border-r-2 border-t-2 border-primary/30"
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.3, delay: 0.25 }}
-          />
         </motion.div>
       )}
     </AnimatePresence>
