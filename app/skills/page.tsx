@@ -66,7 +66,7 @@ function LeafBranch({ isLast = false }: { isLast?: boolean }) {
 function SkillLeaf({ name, index, isHovered }: { name: string; index: number; isHovered: boolean }) {
   return (
     <motion.span
-      className="inline-flex items-center px-1.5 py-0.5 text-[9px] font-sf-mono bg-primary/5 border border-primary/15 hover:bg-primary/10 hover:border-primary/30 transition-all duration-150 cursor-default"
+      className="inline-flex items-center px-2.5 py-1 text-xs font-sf-mono bg-primary/5 border border-primary/15 hover:bg-primary/10 hover:border-primary/30 transition-all duration-150 cursor-default"
       initial={{ opacity: 0.6 }}
       animate={{ opacity: isHovered ? 1 : 0.6 }}
       transition={{ duration: 0.1, delay: index * 0.015 }}
@@ -101,16 +101,16 @@ function SubcategoryBranch({
       onMouseLeave={() => setIsHovered(false)}
     >
       {/* Vertical connector line */}
-      <div className="flex flex-col items-center mr-0.5">
+      <div className="flex flex-col items-center mr-1">
         <div className={`w-px flex-1 ${subIndex === 0 ? "bg-transparent" : "bg-primary/20"}`} />
-        <div className="w-2 h-px bg-primary/20" />
+        <div className="w-3 h-px bg-primary/20" />
         <div className={`w-px flex-1 ${isLast ? "bg-transparent" : "bg-primary/20"}`} />
       </div>
 
       {/* Subcategory node */}
-      <div className="flex items-center gap-1.5 py-0.5">
+      <div className="flex items-center gap-2 py-1">
         <span
-          className={`text-[8px] font-sf-mono whitespace-nowrap px-1 py-0.5 border transition-all duration-150 ${
+          className={`text-xs font-sf-mono whitespace-nowrap px-2 py-1 border transition-all duration-150 ${
             isHovered
               ? "text-primary/80 border-primary/30 bg-primary/10"
               : "text-primary/40 border-primary/15 bg-primary/5"
@@ -120,10 +120,10 @@ function SubcategoryBranch({
         </span>
 
         {/* Horizontal connector to skills */}
-        <div className="w-1.5 h-px bg-primary/15" />
+        <div className="w-3 h-px bg-primary/15" />
 
         {/* Skills leaf nodes */}
-        <div className="flex flex-wrap gap-0.5 items-center">
+        <div className="flex flex-wrap gap-1.5 items-center">
           {items.map((item, idx) => (
             <SkillLeaf key={idx} name={item} index={idx} isHovered={isHovered} />
           ))}
@@ -160,7 +160,7 @@ function CategoryTree({
         onMouseLeave={() => setIsHovered(false)}
       >
         <div
-          className={`px-2 py-1 border text-[10px] font-sf-mono font-medium tracking-wide transition-all duration-150 ${
+          className={`px-3 py-1.5 border text-sm font-sf-mono font-medium tracking-wide transition-all duration-150 ${
             isHovered
               ? "border-primary/40 bg-primary/10 text-primary"
               : "border-primary/25 bg-primary/5 text-primary/70"
@@ -169,7 +169,7 @@ function CategoryTree({
           {title}
         </div>
         {/* Connector line from root */}
-        <div className="w-2 h-px bg-primary/20" />
+        <div className="w-4 h-px bg-primary/20" />
       </div>
 
       {/* Branches */}
@@ -186,8 +186,8 @@ function CategoryTree({
             />
           ))
         ) : items ? (
-          <div className="flex items-center gap-1 py-0.5">
-            <div className="flex flex-wrap gap-0.5">
+          <div className="flex items-center gap-2 py-1">
+            <div className="flex flex-wrap gap-1.5">
               {items.map((item, idx) => (
                 <SkillLeaf key={idx} name={item} index={idx} isHovered={isHovered} />
               ))}
@@ -202,7 +202,7 @@ function CategoryTree({
 export default function SkillsPage() {
   return (
     <PageLayout title="SKILLS" subtitle="TECHNICAL EXPERTISE">
-      <div className="flex flex-col gap-3 py-4 overflow-x-auto">
+      <div className="flex flex-col gap-5 py-6 overflow-x-auto">
         {/* Languages - flat items */}
         <CategoryTree title={skillsData.languages.title} items={skillsData.languages.items} index={0} />
 
@@ -228,7 +228,7 @@ export default function SkillsPage() {
 
         {/* Stats footer */}
         <motion.div
-          className="text-[9px] text-primary/30 font-sf-mono flex gap-4 pt-2 pl-1"
+          className="text-xs text-primary/30 font-sf-mono flex gap-4 pt-4 pl-1"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.3, delay: 0.5 }}
