@@ -26,7 +26,7 @@ export default function BlogPostPage() {
   const [originalRect, setOriginalRect] = useState<{ top: number; left: number; width: number; height: number } | null>(
     null,
   )
-  const [containerRect, setContainerRect] = useState<{
+  const [measuredContainerRect, setMeasuredContainerRect] = useState<{
     top: number
     left: number
     width: number
@@ -34,6 +34,7 @@ export default function BlogPostPage() {
   } | null>(null)
   const containerRef = useRef<HTMLDivElement>(null)
   const [reversePhase, setReversePhase] = useState<"idle" | "text-reverse" | "blank" | "nav-up" | "navigating">("idle")
+  const [hasMeasured, setHasMeasured] = useState(false)
 
   useEffect(() => {
     const stored = sessionStorage.getItem("expandRect")
@@ -48,16 +49,23 @@ export default function BlogPostPage() {
   }, [])
 
   useEffect(() => {
-    if (containerRef.current) {
-      const rect = containerRef.current.getBoundingClientRect()
-      setContainerRect({
-        top: rect.top,
-        left: rect.left,
-        width: rect.width,
-        height: rect.height,
+    if (containerRef.current && !hasMeasured) {
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          if (containerRef.current) {
+            const rect = containerRef.current.getBoundingClientRect()
+            setMeasuredContainerRect({
+              top: rect.top,
+              left: rect.left,
+              width: rect.width,
+              height: rect.height,
+            })
+            setHasMeasured(true)
+          }
+        })
       })
     }
-  }, [])
+  }, [hasMeasured])
 
   useEffect(() => {
     if (params.id) {
@@ -72,13 +80,13 @@ export default function BlogPostPage() {
   }, [params.id, router])
 
   useEffect(() => {
-    if (expandRect && animationPhase === "expanding") {
+    if (expandRect && animationPhase === "expanding" && measuredContainerRect) {
       const timer = setTimeout(() => {
         setAnimationPhase("revealing")
       }, 600)
       return () => clearTimeout(timer)
     }
-  }, [expandRect, animationPhase])
+  }, [expandRect, animationPhase, measuredContainerRect])
 
   useEffect(() => {
     if (animationPhase === "revealing") {
@@ -91,7 +99,6 @@ export default function BlogPostPage() {
 
   useEffect(() => {
     if (reversePhase === "text-reverse") {
-      // Text reverse animation takes 300ms
       const timer = setTimeout(() => {
         setReversePhase("blank")
       }, 300)
@@ -101,7 +108,6 @@ export default function BlogPostPage() {
 
   useEffect(() => {
     if (reversePhase === "blank") {
-      // Small delay then pull up nav
       const timer = setTimeout(() => {
         setReversePhase("nav-up")
       }, 50)
@@ -111,7 +117,6 @@ export default function BlogPostPage() {
 
   useEffect(() => {
     if (reversePhase === "nav-up") {
-      // Nav pulls up over 250ms, then navigate
       const timer = setTimeout(() => {
         setReversePhase("navigating")
         router.push("/updates")
@@ -121,20 +126,17 @@ export default function BlogPostPage() {
   }, [reversePhase, router])
 
   const handleBackToUpdates = () => {
-    if (originalRect && post) {
-      // Store data for updates page collapse animation
-      if (containerRef.current) {
-        const rect = containerRef.current.getBoundingClientRect()
-        sessionStorage.setItem(
-          "containerRect",
-          JSON.stringify({
-            top: rect.top,
-            left: rect.left,
-            width: rect.width,
-            height: rect.height,
-          }),
-        )
-      }
+    if (originalRect && post && containerRef.current) {
+      const rect = containerRef.current.getBoundingClientRect()
+      sessionStorage.setItem(
+        "containerRect",
+        JSON.stringify({
+          top: rect.top,
+          left: rect.left,
+          width: rect.width,
+          height: rect.height,
+        }),
+      )
       sessionStorage.setItem("collapseToRect", JSON.stringify(originalRect))
       sessionStorage.setItem("collapseFromPost", post.id)
       sessionStorage.setItem(
@@ -252,9 +254,9 @@ export default function BlogPostPage() {
       </motion.div>
 
       {/* Expansion animation box */}
-      {expandRect && animationPhase === "expanding" && containerRect && (
+      {expandRect && animationPhase === "expanding" && measuredContainerRect && (
         <motion.div
-          className="fixed z-40 pointer-events-none border border-primary/20 bg-background dark:bg-eerie-black"
+          className="fixed z-[60] pointer-events-none border border-primary/20 bg-background dark:bg-eerie-black"
           initial={{
             top: expandRect.top,
             left: expandRect.left,
@@ -262,10 +264,10 @@ export default function BlogPostPage() {
             height: expandRect.height,
           }}
           animate={{
-            top: containerRect.top,
-            left: containerRect.left,
-            width: containerRect.width,
-            height: containerRect.height,
+            top: measuredContainerRect.top,
+            left: measuredContainerRect.left,
+            width: measuredContainerRect.width,
+            height: measuredContainerRect.height,
           }}
           transition={{
             duration: 0.6,
@@ -274,19 +276,20 @@ export default function BlogPostPage() {
         />
       )}
 
-      {(reversePhase === "blank" || reversePhase === "nav-up" || reversePhase === "navigating") && containerRect && (
-        <motion.div
-          className="fixed z-[100] border border-primary/20 bg-background dark:bg-eerie-black"
-          style={{
-            top: containerRect.top,
-            left: containerRect.left,
-            width: containerRect.width,
-            height: containerRect.height,
-          }}
-          initial={{ opacity: 1 }}
-          animate={{ opacity: 1 }}
-        />
-      )}
+      {(reversePhase === "blank" || reversePhase === "nav-up" || reversePhase === "navigating") &&
+        measuredContainerRect && (
+          <motion.div
+            className="fixed z-[100] border border-primary/20 bg-background dark:bg-eerie-black"
+            style={{
+              top: measuredContainerRect.top,
+              left: measuredContainerRect.left,
+              width: measuredContainerRect.width,
+              height: measuredContainerRect.height,
+            }}
+            initial={{ opacity: 1 }}
+            animate={{ opacity: 1 }}
+          />
+        )}
 
       {/* Main content container */}
       <motion.div

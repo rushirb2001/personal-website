@@ -71,7 +71,7 @@ export default function UpdatesPage() {
       sessionStorage.removeItem("collapsePostData")
       sessionStorage.removeItem("containerRect")
 
-      requestAnimationFrame(() => {
+      setTimeout(() => {
         requestAnimationFrame(() => {
           const targetElement = articleRefs.current.get(collapsePostId)
           if (targetElement) {
@@ -125,7 +125,7 @@ export default function UpdatesPage() {
             }, 700)
           }
         })
-      })
+      }, 16)
     }
   }, [])
 
