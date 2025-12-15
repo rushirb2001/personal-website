@@ -158,22 +158,25 @@ export default function Home() {
               </motion.div>
 
               <motion.div
-                className="flex flex-col items-stretch gap-2 text-[10px] font-sf-mono w-full"
+                className="flex items-stretch gap-2 text-[10px] font-sf-mono w-full"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5, duration: 0.6 }}
               >
-                <div className="flex justify-between items-center border border-primary/20 px-4 py-2">
-                  <span className="text-primary/40">PROJECTS</span>
-                  <span className="font-bold">15+</span>
+                <div className="flex-1 flex flex-col items-center justify-center border border-primary/20 px-2 py-3">
+                  <span className="text-primary/40 mb-1">PROJECTS</span>
+                  <span className="font-bold text-sm">15+</span>
                 </div>
-                <div className="flex justify-between items-center border border-primary/20 px-4 py-2">
-                  <span className="text-primary/40">PUBLICATIONS</span>
-                  <span className="font-bold">3+</span>
+                <div className="flex-1 flex flex-col items-center justify-center border border-primary/20 px-2 py-3">
+                  <span className="text-primary/40 mb-1">PUBLICATIONS</span>
+                  <span className="font-bold text-sm">3+</span>
                 </div>
-                <div className="flex justify-between items-center border border-primary/20 px-4 py-2">
-                  <span className="text-primary/40">EXPERIENCE</span>
-                  <span className="font-bold">2+ YRS</span>
+                <div className="flex-1 flex flex-col items-center justify-center border border-primary/20 px-2 py-3">
+                  <span className="text-primary/40 mb-1">EXPERIENCE</span>
+                  <span className="font-bold text-sm flex items-center">
+                    <span className="w-1.5 h-1.5 rounded-full bg-green-500 mr-1.5 animate-[blink_0.5s_ease-in-out_infinite]"></span>
+                    2+ YRS
+                  </span>
                 </div>
               </motion.div>
 
