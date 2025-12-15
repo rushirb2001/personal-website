@@ -314,103 +314,119 @@ export default function Home() {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.2, duration: 0.8 }}
                   >
-                    <div className="flex items-center justify-between mb-2">
-                      {/* Title - left aligned */}
-                      <motion.h1
-                        className="relative font-black tracking-widest text-6xl"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{
-                          opacity: { delay: 0.3, duration: 0.8 },
-                        }}
-                      >
-                        RUSHIR BHAVSAR
-                      </motion.h1>
+                    <div className="border border-primary/20 p-4 mb-6">
+                      <div className="flex items-center justify-between mb-2">
+                        {/* Title - left aligned */}
+                        <motion.h1
+                          className="relative font-black tracking-widest text-6xl"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          transition={{
+                            opacity: { delay: 0.3, duration: 0.8 },
+                          }}
+                        >
+                          RUSHIR BHAVSAR
+                        </motion.h1>
 
-                      <div className="flex gap-2">
-                        <Link
-                          href="https://github.com/rushirb2001"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="w-14 h-14 flex items-center justify-center rounded-none group"
+                        <div className="flex gap-2">
+                          <Link
+                            href="https://github.com/rushirb2001"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="w-14 h-14 flex items-center justify-center rounded-none group"
+                          >
+                            <Github className="h-8 w-8 stroke-[2.5] text-purple-800 fill-purple-800/0 group-hover:fill-purple-800/100 group-hover:scale-115 transition-all duration-300 ease-out" />
+                          </Link>
+                          <Link
+                            href="https://linkedin.com/in/rushir-bhavsar/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="w-14 h-14 flex items-center justify-center rounded-none group"
+                          >
+                            <Linkedin className="h-8 w-8 stroke-[2.5] text-blue-700 fill-blue-700/0 group-hover:fill-blue-700/100 group-hover:scale-115 transition-all duration-300 ease-out" />
+                          </Link>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-between">
+                        {/* Role titles - left aligned */}
+                        <motion.p
+                          className="text-base md:text-lg font-sf-mono text-primary/70"
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{
+                            opacity: 1,
+                            y: 0,
+                            transition: {
+                              duration: 0.8,
+                              delay: 0.5,
+                              ease: [0.4, 0, 0.2, 1],
+                            },
+                          }}
                         >
-                          <Github className="h-8 w-8 stroke-[2.5] text-purple-800 fill-purple-800/0 group-hover:fill-purple-800/100 group-hover:scale-115 transition-all duration-300 ease-out" />
-                        </Link>
-                        <Link
-                          href="https://linkedin.com/in/rushir-bhavsar/"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="w-14 h-14 flex items-center justify-center rounded-none group"
+                          <motion.span
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1, transition: { duration: 0.3, delay: 0.6 } }}
+                          >
+                            DATA SCIENTIST
+                          </motion.span>
+                          <motion.span
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1, transition: { duration: 0.3, delay: 0.7 } }}
+                          >
+                            {" • "}
+                          </motion.span>
+                          <motion.span
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1, transition: { duration: 0.3, delay: 0.8 } }}
+                          >
+                            AI ENGINEER
+                          </motion.span>
+                          <motion.span
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1, transition: { duration: 0.3, delay: 0.9 } }}
+                          >
+                            {" • "}
+                          </motion.span>
+                          <motion.span
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1, transition: { duration: 0.3, delay: 1.0 } }}
+                          >
+                            ML RESEARCHER
+                          </motion.span>
+                        </motion.p>
+
+                        <Button
+                          variant="ghost"
+                          className="border border-primary/20 text-sm font-sf-mono group bg-primary/5 hover:bg-primary/15 font-normal tracking-wide transition-all duration-300 ease-out hover:scale-105 hover:shadow-lg hover:shadow-primary/10 rounded-none shadow-none"
+                          onClick={() => setIsResumeModalOpen(true)}
                         >
-                          <Linkedin className="h-8 w-8 stroke-[2.5] text-blue-700 fill-blue-700/0 group-hover:fill-blue-700/100 group-hover:scale-115 transition-all duration-300 ease-out" />
-                        </Link>
+                          <span className="flex items-center justify-center gap-2">
+                            <span className="relative">
+                              <FileText className="h-7 w-7 stroke-[1.5] text-primary/70 fill-primary/0 group-hover:fill-primary/20 group-hover:text-primary group-hover:scale-110 transition-all duration-300 ease-out" />
+                              <span className="absolute -top-1 -right-1 h-2 w-2 rounded-full bg-primary opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                            </span>
+                            <span className="text-primary/80 group-hover:text-primary font-medium transition-colors duration-300 tracking-tighter">
+                              VIEW RESUME
+                            </span>
+                            <ArrowRight className="h-4 w-4 text-primary/60 group-hover:translate-x-1.5 group-hover:text-primary transition-all duration-300" />
+                          </span>
+                        </Button>
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-between mb-6">
-                      {/* Role titles - left aligned */}
-                      <motion.p
-                        className="text-base md:text-lg font-sf-mono text-primary/70"
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{
-                          opacity: 1,
-                          y: 0,
-                          transition: {
-                            duration: 0.8,
-                            delay: 0.5,
-                            ease: [0.4, 0, 0.2, 1],
-                          },
-                        }}
-                      >
-                        <motion.span
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1, transition: { duration: 0.3, delay: 0.6 } }}
-                        >
-                          DATA SCIENTIST
-                        </motion.span>
-                        <motion.span
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1, transition: { duration: 0.3, delay: 0.7 } }}
-                        >
-                          {" • "}
-                        </motion.span>
-                        <motion.span
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1, transition: { duration: 0.3, delay: 0.8 } }}
-                        >
-                          AI ENGINEER
-                        </motion.span>
-                        <motion.span
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1, transition: { duration: 0.3, delay: 0.9 } }}
-                        >
-                          {" • "}
-                        </motion.span>
-                        <motion.span
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1, transition: { duration: 0.3, delay: 1.0 } }}
-                        >
-                          ML RESEARCHER
-                        </motion.span>
-                      </motion.p>
-
-                      <Button
-                        variant="ghost"
-                        className="border border-primary/20 text-sm font-sf-mono group bg-primary/5 hover:bg-primary/15 font-normal tracking-wide transition-all duration-300 ease-out hover:scale-105 hover:shadow-lg hover:shadow-primary/10 rounded-none shadow-none"
-                        onClick={() => setIsResumeModalOpen(true)}
-                      >
-                        <span className="flex items-center justify-center gap-2">
-                          <span className="relative">
-                            <FileText className="h-7 w-7 stroke-[1.5] text-primary/70 fill-primary/0 group-hover:fill-primary/20 group-hover:text-primary group-hover:scale-110 transition-all duration-300 ease-out" />
-                            <span className="absolute -top-1 -right-1 h-2 w-2 rounded-full bg-primary opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                          </span>
-                          <span className="text-primary/80 group-hover:text-primary font-medium transition-colors duration-300 tracking-tighter">
-                            VIEW RESUME
-                          </span>
-                          <ArrowRight className="h-4 w-4 text-primary/60 group-hover:translate-x-1.5 group-hover:text-primary transition-all duration-300" />
-                        </span>
-                      </Button>
-                    </div>
+                    <motion.div
+                      className="mb-6 text-sm leading-relaxed text-left border border-primary/20 p-4"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.7, duration: 0.8 }}
+                    >
+                      <p className="font-mono">
+                        Data Scientist and AI Engineer specializing in machine learning, deep learning, and AI systems
+                        development. Creating innovative solutions using cutting-edge AI technologies with experience
+                        across healthcare, astronomy, and enterprise AI domains. Expertise in transformer-based models,
+                        retrieval-augmented generation, and scalable ML pipelines.
+                      </p>
+                    </motion.div>
 
                     {/* Description */}
                     <motion.div
