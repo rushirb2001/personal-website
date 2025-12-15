@@ -4,32 +4,32 @@ import { motion } from "framer-motion"
 import { ArrowRight, Github, Linkedin, FileText, MapPin, Mail } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useNavigation } from "@/contexts/navigation-context"
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { ResumeModal } from "@/components/features/resume/resume-modal"
 import Image from "next/image"
 import Link from "next/link"
 
-const specializations = [
+const technologies = [
   "Deep Learning",
   "Computer Vision",
   "NLP",
   "LLM/RAG",
   "MLOps",
   "Distributed Training",
-  "Model Evaluations",
-  "Generative AI",
+  "Model Evaluation",
   "Transformers",
-  "PyTorch",
-  "TensorFlow",
-  "Kubernetes",
-  "AWS SageMaker",
+  "Generative AI",
+  "Reinforcement Learning",
+  "Time Series",
+  "Anomaly Detection",
+  "Feature Engineering",
+  "Model Optimization",
+  "Edge Deployment",
+  "Data Pipelines",
+  "A/B Testing",
   "Vector Databases",
   "Fine-Tuning",
-  "RLHF",
-  "Diffusion Models",
-  "Edge AI",
-  "Model Optimization",
-  "Data Engineering",
+  "Prompt Engineering",
 ]
 
 const featuredProject = {
@@ -45,17 +45,39 @@ const stats = [
   { label: "EXPERIENCE", value: "2+", sublabel: "YRS", hasIndicator: true },
 ]
 
+function InfiniteMarquee({ items }: { items: string[] }) {
+  // Duplicate items for seamless loop
+  const duplicatedItems = [...items, ...items]
+
+  return (
+    <div className="relative overflow-hidden bg-primary text-background py-2">
+      <motion.div
+        className="flex whitespace-nowrap"
+        animate={{
+          x: [0, -50 * items.length],
+        }}
+        transition={{
+          x: {
+            duration: 30,
+            repeat: Number.POSITIVE_INFINITY,
+            ease: "linear",
+          },
+        }}
+      >
+        {duplicatedItems.map((item, idx) => (
+          <div key={idx} className="flex items-center shrink-0">
+            <span className="text-[10px] sm:text-xs font-sf-mono font-medium tracking-wide px-4 sm:px-6">{item}</span>
+            <span className="text-green-400 text-xs">✦</span>
+          </div>
+        ))}
+      </motion.div>
+    </div>
+  )
+}
+
 export default function HomeSplitPage() {
   const { navigateTo } = useNavigation()
   const [isResumeModalOpen, setIsResumeModalOpen] = useState(false)
-  const [activeSpecIndex, setActiveSpecIndex] = useState(0)
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveSpecIndex((prev) => (prev + 1) % specializations.length)
-    }, 3000)
-    return () => clearInterval(interval)
-  }, [])
 
   return (
     <>
@@ -126,8 +148,8 @@ export default function HomeSplitPage() {
             >
               <div className="grid grid-cols-3 divide-x divide-primary/20">
                 {stats.map((stat, idx) => (
-                  <div key={idx} className="flex flex-col items-center justify-center py-4 px-2">
-                    <div className="flex items-center">
+                  <div key={idx} className="flex flex-col items-center justify-center py-3 sm:py-4 px-2">
+                    <div className="flex items-baseline">
                       {stat.hasIndicator && (
                         <span className="w-2 h-2 rounded-full bg-green-500 mr-2 animate-[blink_0.5s_ease-in-out_infinite]" />
                       )}
@@ -135,7 +157,9 @@ export default function HomeSplitPage() {
                         {stat.value}
                       </span>
                       {stat.sublabel && (
-                        <span className="text-xs font-sf-mono text-primary/50 ml-1 self-end mb-1">{stat.sublabel}</span>
+                        <span className="text-[10px] sm:text-xs font-sf-mono text-primary/50 ml-1">
+                          {stat.sublabel}
+                        </span>
                       )}
                     </div>
                     <span className="text-[9px] sm:text-[10px] font-sf-mono text-primary/40 uppercase tracking-wider mt-1">
@@ -146,7 +170,7 @@ export default function HomeSplitPage() {
               </div>
             </motion.div>
 
-            {/* Photo + About with Specializations Carousel */}
+            {/* Photo + About with Infinite Marquee */}
             <div className="flex flex-col md:flex-row gap-3 items-stretch">
               {/* Photo Block */}
               <motion.div
@@ -169,7 +193,7 @@ export default function HomeSplitPage() {
               </motion.div>
 
               <motion.div
-                className="border border-primary/20 bg-background flex-1 flex flex-col"
+                className="border border-primary/20 bg-background flex-1 flex flex-col overflow-hidden"
                 initial={{ opacity: 0, x: 10 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.3, delay: 0.15 }}
@@ -187,29 +211,12 @@ export default function HomeSplitPage() {
                     healthcare, astronomy, and enterprise AI domains.
                   </p>
 
-                  {/* Infinite Horizontal Carousel */}
                   <div className="mt-3 pt-3 border-t border-primary/10">
-                    <div className="relative overflow-hidden bg-primary py-2.5">
-                      <div className="flex animate-marquee whitespace-nowrap">
-                        {[...specializations, ...specializations].map((item, idx) => (
-                          <div key={idx} className="flex items-center">
-                            <span className="text-xs font-sf-mono font-medium text-background tracking-wide px-4">
-                              {item}
-                            </span>
-                            <span className="text-green-400 text-sm">✦</span>
-                          </div>
-                        ))}
-                      </div>
-                      <div className="absolute top-0 left-0 flex animate-marquee2 whitespace-nowrap py-2.5">
-                        {[...specializations, ...specializations].map((item, idx) => (
-                          <div key={idx} className="flex items-center">
-                            <span className="text-xs font-sf-mono font-medium text-background tracking-wide px-4">
-                              {item}
-                            </span>
-                            <span className="text-green-400 text-sm">✦</span>
-                          </div>
-                        ))}
-                      </div>
+                    <span className="text-[9px] font-sf-mono text-primary/40 uppercase tracking-wider block mb-2">
+                      SPECIALIZATIONS
+                    </span>
+                    <div className="border border-primary/20 overflow-hidden">
+                      <InfiniteMarquee items={technologies} />
                     </div>
                   </div>
                 </div>
