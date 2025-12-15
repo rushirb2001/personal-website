@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState, useRef } from "react"
+import { useEffect, useState } from "react"
 import { useParams, useRouter } from "next/navigation"
 import { motion } from "framer-motion"
 import { getPostById, type BlogPost } from "@/lib/blog-data"
@@ -16,14 +16,6 @@ export default function BlogPostPage() {
   const { navigateTo } = useNavigation()
   const [post, setPost] = useState<BlogPost | null>(null)
   const [loading, setLoading] = useState(true)
-
-  const containerRef = useRef<HTMLDivElement>(null)
-  const [containerRect, setContainerRect] = useState<{
-    top: number
-    left: number
-    width: number
-    height: number
-  } | null>(null)
 
   const [animationPhase, setAnimationPhase] = useState<"expanding" | "revealing" | "complete" | "collapsing">(
     "expanding",
@@ -47,27 +39,6 @@ export default function BlogPostPage() {
       setAnimationPhase("complete")
     }
   }, [])
-
-  useEffect(() => {
-    if (containerRef.current) {
-      const measureContainer = () => {
-        const rect = containerRef.current?.getBoundingClientRect()
-        if (rect) {
-          setContainerRect({
-            top: rect.top,
-            left: rect.left,
-            width: rect.width,
-            height: rect.height,
-          })
-        }
-      }
-
-      // Use double RAF to ensure layout is complete
-      requestAnimationFrame(() => {
-        requestAnimationFrame(measureContainer)
-      })
-    }
-  }, [loading, post])
 
   useEffect(() => {
     if (params.id) {
@@ -101,6 +72,7 @@ export default function BlogPostPage() {
 
   useEffect(() => {
     if (reversePhase === "text-reverse") {
+      // Text reverse animation takes 300ms
       const timer = setTimeout(() => {
         setReversePhase("blank")
       }, 300)
@@ -110,6 +82,7 @@ export default function BlogPostPage() {
 
   useEffect(() => {
     if (reversePhase === "blank") {
+      // Small delay then pull up nav
       const timer = setTimeout(() => {
         setReversePhase("nav-up")
       }, 50)
@@ -119,6 +92,7 @@ export default function BlogPostPage() {
 
   useEffect(() => {
     if (reversePhase === "nav-up") {
+      // Nav pulls up over 250ms, then navigate
       const timer = setTimeout(() => {
         setReversePhase("navigating")
         router.push("/updates")
@@ -129,9 +103,7 @@ export default function BlogPostPage() {
 
   const handleBackToUpdates = () => {
     if (originalRect && post) {
-      if (containerRect) {
-        sessionStorage.setItem("collapseContainerRect", JSON.stringify(containerRect))
-      }
+      // Store data for updates page collapse animation
       sessionStorage.setItem("collapseToRect", JSON.stringify(originalRect))
       sessionStorage.setItem("collapseFromPost", post.id)
       sessionStorage.setItem(
@@ -151,22 +123,64 @@ export default function BlogPostPage() {
     }
   }
 
-  const getTargetDimensions = () => {
-    if (containerRect) {
-      return containerRect
-    }
-    // Fallback calculation matching updates page exactly
-    const viewportWidth = typeof window !== "undefined" ? document.documentElement.clientWidth : 1024
-    const calculatedWidth = Math.min(viewportWidth - 32, 768)
-    return {
-      top: 152,
-      left: Math.max(16, (viewportWidth - calculatedWidth) / 2),
-      width: calculatedWidth,
-      height: typeof window !== "undefined" ? window.innerHeight - 152 - 64 : 500,
-    }
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.08,
+        delayChildren: 0.05,
+      },
+    },
+    exit: {
+      opacity: 0,
+      transition: {
+        staggerChildren: 0.05,
+        staggerDirection: -1,
+      },
+    },
   }
 
-  const targetDimensions = getTargetDimensions()
+  const itemVariants = {
+    hidden: { opacity: 0, y: 15, filter: "blur(4px)" },
+    visible: {
+      opacity: 1,
+      y: 0,
+      filter: "blur(0px)",
+      transition: {
+        duration: 0.35,
+        ease: [0.25, 0.46, 0.45, 0.94],
+      },
+    },
+    exit: {
+      opacity: 0,
+      y: 15,
+      filter: "blur(4px)",
+      transition: {
+        duration: 0.2,
+        ease: [0.55, 0, 1, 0.45],
+      },
+    },
+  }
+
+  if (loading) {
+    return (
+      <div className="fixed inset-0 pt-14 md:pt-16 pb-16 flex items-center justify-center">
+        <div className="text-sm font-sf-mono text-primary/70">LOADING RECORD...</div>
+      </div>
+    )
+  }
+
+  if (!post) {
+    return (
+      <div className="fixed inset-0 pt-14 md:pt-16 pb-16 flex items-center justify-center">
+        <div className="text-sm font-sf-mono text-primary/70">RECORD NOT FOUND</div>
+      </div>
+    )
+  }
+
+  const showContent = reversePhase === "idle" && (animationPhase === "revealing" || animationPhase === "complete")
+  const isReversing = reversePhase !== "idle"
 
   return (
     <>
@@ -178,10 +192,10 @@ export default function BlogPostPage() {
           y: reversePhase === "nav-up" || reversePhase === "navigating" ? -60 : 0,
           opacity: reversePhase === "nav-up" || reversePhase === "navigating" ? 0 : 1,
         }}
-        transition={{
-          duration: 0.25,
-          ease: [0.32, 0.72, 0, 1],
-          delay: reversePhase === "idle" ? 0.1 : reversePhase === "nav-up" || reversePhase === "navigating" ? 0 : 0.7,
+        transition={{ 
+          duration: 0.25, 
+          ease: [0.32, 0.72, 0, 1], 
+          delay: reversePhase === "idle" ? 0.1 : (reversePhase === "nav-up" || reversePhase === "navigating" ? 0 : 0.7)
         }}
       >
         <div className="container max-w-3xl mx-auto px-4 py-4 flex justify-between">
@@ -189,7 +203,7 @@ export default function BlogPostPage() {
             variant="outline"
             className="rounded-none border-primary/20 text-xs font-sf-mono flex items-center bg-transparent"
             onClick={handleBackToUpdates}
-            disabled={reversePhase !== "idle"}
+            disabled={isReversing}
           >
             <ArrowLeft className="mr-1 h-3 w-3" />
             BACK TO UPDATES
@@ -199,13 +213,14 @@ export default function BlogPostPage() {
             variant="outline"
             className="rounded-none border-primary/20 text-xs font-sf-mono bg-transparent"
             onClick={() => navigateTo("/")}
-            disabled={reversePhase !== "idle"}
+            disabled={isReversing}
           >
             RETURN TO MAIN SYSTEM
           </Button>
         </div>
       </motion.div>
 
+      {/* Expansion animation box */}
       {expandRect && animationPhase === "expanding" && (
         <motion.div
           className="fixed z-40 pointer-events-none border border-primary/20 bg-background dark:bg-eerie-black"
@@ -216,10 +231,11 @@ export default function BlogPostPage() {
             height: expandRect.height,
           }}
           animate={{
-            top: targetDimensions.top,
-            left: targetDimensions.left,
-            width: targetDimensions.width,
-            height: targetDimensions.height,
+            top: 152,
+            left: "50%",
+            x: "-50%",
+            width: "min(100vw - 2rem, 48rem)",
+            height: "calc(100vh - 9.5rem - 4rem)",
           }}
           transition={{
             duration: 0.6,
@@ -232,10 +248,11 @@ export default function BlogPostPage() {
         <motion.div
           className="fixed z-[100] border border-primary/20 bg-background dark:bg-eerie-black"
           style={{
-            top: targetDimensions.top,
-            left: targetDimensions.left,
-            width: targetDimensions.width,
-            height: targetDimensions.height,
+            top: 152,
+            left: "50%",
+            transform: "translateX(-50%)",
+            width: "min(100vw - 2rem, 48rem)",
+            height: "calc(100vh - 9.5rem - 4rem)",
           }}
           initial={{ opacity: 1 }}
           animate={{ opacity: 1 }}
@@ -255,29 +272,26 @@ export default function BlogPostPage() {
         }}
       >
         <div className="container max-w-3xl mx-auto px-4 h-full">
-          <div
-            ref={containerRef}
-            className="h-full border border-primary/20 bg-background dark:bg-eerie-black/50 overflow-hidden"
-          >
+          <div className="h-full border border-primary/20 bg-background dark:bg-eerie-black/50 overflow-hidden">
             {/* Scrollable Content Inside Window */}
             <div className="h-full overflow-y-auto p-6">
               <motion.div
-                className="flex flex-col space-y-4"
-                initial={{ opacity: 0, y: 15, filter: "blur(4px)" }}
-                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                exit={{ opacity: 0, y: 15, filter: "blur(4px)" }}
-                transition={{ duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
+                variants={containerVariants}
+                initial="hidden"
+                animate={showContent ? "visible" : isReversing ? "exit" : "hidden"}
               >
-                <motion.div className="flex items-center mb-4">
+                <motion.div variants={itemVariants} className="flex items-center mb-4">
                   <FileText className="h-4 w-4 mr-2 text-primary/70" />
                   <div className="text-xs font-sf-mono text-primary/70">
                     RECORD ID: {post.id} • {formatDate(new Date(post.date))}
                   </div>
                 </motion.div>
 
-                <motion.h1 className="text-xl font-sf-mono mb-4">{post.title}</motion.h1>
+                <motion.h1 variants={itemVariants} className="text-xl font-sf-mono mb-4">
+                  {post.title}
+                </motion.h1>
 
-                <motion.div className="flex items-center mb-6">
+                <motion.div variants={itemVariants} className="flex items-center mb-6">
                   <Tag className="h-3 w-3 mr-2 text-primary/50" />
                   <div className="flex flex-wrap gap-2">
                     {post.tags.map((tag) => (
@@ -292,7 +306,10 @@ export default function BlogPostPage() {
                 </motion.div>
 
                 {/* Blog content */}
-                <motion.div className="prose prose-sm dark:prose-invert max-w-none font-sf-mono">
+                <motion.div
+                  variants={itemVariants}
+                  className="prose prose-sm dark:prose-invert max-w-none font-sf-mono"
+                >
                   <BlogContent content={post.content} />
                 </motion.div>
               </motion.div>

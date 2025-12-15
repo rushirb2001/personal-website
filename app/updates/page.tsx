@@ -21,9 +21,19 @@ function getInitialReturningPostId(): string | null {
   return null
 }
 
+function getInitialSelectedTags(): string[] {
+  if (typeof window !== "undefined") {
+    const savedTags = sessionStorage.getItem("updatesFilterTags")
+    if (savedTags) {
+      return JSON.parse(savedTags)
+    }
+  }
+  return []
+}
+
 export default function UpdatesPage() {
   const posts = getPublishedPosts()
-  const [selectedTags, setSelectedTags] = useState<string[]>([])
+  const [selectedTags, setSelectedTags] = useState<string[]>(() => getInitialSelectedTags())
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const router = useRouter()
 
@@ -49,14 +59,17 @@ export default function UpdatesPage() {
     selectedTags.length > 0 ? posts.filter((post) => post.tags.some((tag) => selectedTags.includes(tag))) : posts
 
   const toggleTag = (tag: string) => {
-    setSelectedTags((prev) => (prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]))
+    setSelectedTags((prev) => {
+      const newTags = prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
+      sessionStorage.setItem("updatesFilterTags", JSON.stringify(newTags))
+      return newTags
+    })
   }
 
   useEffect(() => {
     const collapseRect = sessionStorage.getItem("collapseToRect")
     const collapsePostId = sessionStorage.getItem("collapseFromPost")
     const collapsePostData = sessionStorage.getItem("collapsePostData")
-    const collapseContainerRect = sessionStorage.getItem("collapseContainerRect")
 
     if (collapseRect && collapsePostId && collapsePostData) {
       const originalCardRect = JSON.parse(collapseRect)
@@ -68,61 +81,54 @@ export default function UpdatesPage() {
       sessionStorage.removeItem("collapseToRect")
       sessionStorage.removeItem("collapseFromPost")
       sessionStorage.removeItem("collapsePostData")
-      sessionStorage.removeItem("collapseContainerRect")
 
       requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          const targetElement = articleRefs.current.get(collapsePostId)
-          if (targetElement) {
-            const endRect = targetElement.getBoundingClientRect()
+        const targetElement = articleRefs.current.get(collapsePostId)
+        if (targetElement) {
+          const endRect = targetElement.getBoundingClientRect()
 
-            let startRect: { top: number; left: number; width: number; height: number }
+          // Calculate width to match "min(100vw - 2rem, 48rem)"
+          const viewportWidth = document.documentElement.clientWidth // This matches vw without scrollbar
+          const calculatedWidth = Math.min(viewportWidth - 32, 768)
 
-            if (collapseContainerRect) {
-              startRect = JSON.parse(collapseContainerRect)
-            } else {
-              const viewportWidth = document.documentElement.clientWidth
-              const calculatedWidth = Math.min(viewportWidth - 32, 768)
-              startRect = {
-                top: 152,
-                left: Math.max(16, (viewportWidth - calculatedWidth) / 2),
-                width: calculatedWidth,
-                height: window.innerHeight - 152 - 64,
-              }
-            }
+          const startRect = {
+            top: 152,
+            left: Math.max(16, (viewportWidth - calculatedWidth) / 2),
+            width: calculatedWidth,
+            height: window.innerHeight - 152 - 64,
+          }
 
-            setCollapseAnimation({
-              show: true,
-              startRect,
-              endRect: {
-                top: endRect.top,
-                left: endRect.left,
-                width: endRect.width,
-                height: endRect.height,
-              },
-              postData,
-            })
+          setCollapseAnimation({
+            show: true,
+            startRect,
+            endRect: {
+              top: endRect.top,
+              left: endRect.left,
+              width: endRect.width,
+              height: endRect.height,
+            },
+            postData,
+          })
+
+          setTimeout(() => {
+            setCollapseAnimation((prev) => ({ ...prev, show: false }))
+            setCardRevealed(collapsePostId)
 
             setTimeout(() => {
-              setCollapseAnimation((prev) => ({ ...prev, show: false }))
-              setCardRevealed(collapsePostId)
+              setCollapseStarted(false)
+              setReturningPostId(null)
+              setHighlightedPostId(collapsePostId)
 
               setTimeout(() => {
-                setCollapseStarted(false)
-                setReturningPostId(null)
-                setHighlightedPostId(collapsePostId)
-
-                setTimeout(() => {
-                  setHighlightedPostId(null)
-                  setCardRevealed(null)
-                }, 400)
-              }, 50)
-            }, 700)
-          } else {
-            setReturningPostId(null)
-            setCollapseStarted(false)
-          }
-        })
+                setHighlightedPostId(null)
+                setCardRevealed(null)
+              }, 400)
+            }, 50)
+          }, 700)
+        } else {
+          setReturningPostId(null)
+          setCollapseStarted(false)
+        }
       })
     }
   }, [])
@@ -151,6 +157,12 @@ export default function UpdatesPage() {
 
   const isCardHidden = (postId: string) => {
     return returningPostId === postId && collapseStarted && cardRevealed !== postId
+  }
+
+  const handleClearAllTags = () => {
+    setSelectedTags([])
+    sessionStorage.setItem("updatesFilterTags", JSON.stringify([]))
+    setIsDropdownOpen(false)
   }
 
   return (
@@ -275,10 +287,7 @@ export default function UpdatesPage() {
                     <div className="border-t border-primary/20 p-2 flex justify-between bg-card/20">
                       <span className="text-xs font-sf-mono text-primary/70">{selectedTags.length} SELECTED</span>
                       <button
-                        onClick={() => {
-                          setSelectedTags([])
-                          setIsDropdownOpen(false)
-                        }}
+                        onClick={handleClearAllTags}
                         className="text-xs font-sf-mono text-primary/70 hover:text-primary"
                       >
                         CLEAR ALL
