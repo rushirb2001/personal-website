@@ -14,7 +14,7 @@ const skillsData = {
   frameworks: {
     title: "FRAMEWORKS",
     subcategories: {
-      "Deep Learning": ["PyTorch", "TensorFlow", "Keras", "JAX"],
+      "Deep Learning": ["PyTorch", "TensorFlow", "JAX"],
       "Generative AI": ["Transformers", "LangGraph", "LangChain", "CrewAI", "Hugging Face"],
       "Traditional ML": ["Pandas", "Numpy", "Scikit-learn", "Matplotlib", "Seaborn", "NLTK"],
       "Computer Vision": ["OpenCV", "MediaPipe", "Albumentations", "YOLO"],
