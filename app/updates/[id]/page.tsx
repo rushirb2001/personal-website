@@ -38,7 +38,7 @@ export default function BlogPostPage() {
         setShowNavBar(true)
         setTimeout(() => {
           setShowContent(true)
-        }, 450)
+        }, 550)
       } else {
         router.push("/updates")
       }
@@ -110,7 +110,7 @@ export default function BlogPostPage() {
             borderRadius: 0,
           }}
           transition={{
-            duration: 0.45,
+            duration: 0.55,
             ease: [0.32, 0.72, 0, 1],
           }}
         >
@@ -118,7 +118,11 @@ export default function BlogPostPage() {
         </motion.div>
       )}
 
-      <div className="fixed top-[9.5rem] md:top-[9.5rem] left-0 right-0 bottom-16 z-30">
+      {/* Wrapped content container with invisible initial state, becomes visible during blur animation */}
+      <div
+        className="fixed top-[9.5rem] md:top-[9.5rem] left-0 right-0 bottom-16 z-30 opacity-0"
+        style={{ visibility: showContent ? "visible" : "hidden" }}
+      >
         <div className="container max-w-3xl mx-auto px-4 h-full">
           <div className="h-full border border-primary/20 bg-background dark:bg-eerie-black/50 overflow-hidden">
             {/* Scrollable Content Inside Window */}
@@ -129,7 +133,7 @@ export default function BlogPostPage() {
                   opacity: showContent ? 1 : 0,
                   filter: showContent ? "blur(0px)" : "blur(12px)",
                 }}
-                transition={{ duration: 0.4, ease: [0.32, 0.72, 0, 1] }}
+                transition={{ duration: 0.5, ease: [0.32, 0.72, 0, 1] }}
               >
                 <div className="flex items-center mb-4">
                   <FileText className="h-4 w-4 mr-2 text-primary/70" />
