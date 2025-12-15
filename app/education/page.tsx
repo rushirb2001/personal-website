@@ -1,10 +1,9 @@
 "use client"
 
 import { useState } from "react"
-import { MapPin } from "lucide-react"
+import { MapPin, Clock } from "lucide-react"
 import { PageLayout } from "@/components/layout/page-layout"
 import { AcademicRecordModal } from "@/components/features/education/academic-record-modal"
-import { Lock, CheckCircle, Clock } from "lucide-react"
 
 export default function EducationPage() {
   const [selectedRecord, setSelectedRecord] = useState<number | null>(null)
@@ -59,83 +58,87 @@ export default function EducationPage() {
 
   return (
     <PageLayout title="EDUCATION" subtitle="ACADEMIC BACKGROUND">
-      <div className="flex flex-col">
-        <div className="w-full max-w-2xl">
-          <div className="mb-6 border-b-2 border-primary pb-3 flex justify-between items-end">
-            <div className="flex items-baseline gap-4">
-              <span className="text-2xl font-sf-mono font-bold text-primary/20">[02]</span>
-              <div className="text-xs font-sf-mono uppercase tracking-widest">UNIVERSITY ACADEMICS</div>
-            </div>
-            <div className="text-[10px] font-sf-mono flex items-center gap-1 border border-primary/40 px-2 py-1">
-              <Lock className="h-3 w-3" />
-              <span>VERIFIED</span>
-            </div>
+      <div className="h-full flex flex-col">
+        <div className="flex justify-between items-center mb-3 pb-2">
+          <div className="text-xs font-sf-mono flex items-center">
+            <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse mr-2"></div>
+            <span>DEGREES</span>
           </div>
+          <div className="text-xs font-sf-mono">
+            SHOWING {education.length} RECORD{education.length !== 1 ? "S" : ""}
+          </div>
+        </div>
+        <div className="border-b border-primary/20 mb-3"></div>
 
-          <div className="space-y-4">
-            {education.map((edu, index) => (
-              <div
-                key={index}
-                onClick={() => handleOpenRecord(index)}
-                className="border-2 border-primary/40 hover:border-primary bg-transparent hover:bg-primary/5 transition-all duration-150 cursor-pointer group"
-              >
-                <div className="p-4">
-                  <div className="flex justify-between items-center mb-4 pb-2 border-b border-primary/20">
-                    <div className="flex items-center gap-3">
-                      <span className="text-lg font-sf-mono font-bold text-primary/30">
-                        {String(index + 1).padStart(2, "0")}
-                      </span>
-                      <div className="flex items-center text-[10px] font-sf-mono text-primary/60 uppercase tracking-wider">
-                        <MapPin className="mr-1 h-3 w-3" />
-                        {edu.id}
-                      </div>
-                    </div>
-                    <div className="flex items-center">
-                      {edu.status === "GRADUATED" ? (
-                        <div className="flex items-center gap-1 text-[10px] font-sf-mono uppercase tracking-wider bg-primary text-background px-2 py-0.5">
-                          <CheckCircle className="h-3 w-3" />
-                          <span>{edu.status}</span>
-                        </div>
-                      ) : (
-                        <div className="flex items-center gap-1 text-[10px] font-sf-mono uppercase tracking-wider border border-primary/40 px-2 py-0.5">
-                          <Clock className="h-3 w-3" />
-                          <span>{edu.status}</span>
-                        </div>
-                      )}
-                    </div>
+        <div className="flex-1 space-y-3">
+          {education.map((edu, index) => (
+            <div
+              key={index}
+              onClick={() => handleOpenRecord(index)}
+              className="border border-primary/20 hover:border-primary/50 bg-primary/5 hover:bg-primary/10 transition-all duration-200 cursor-pointer group p-3"
+            >
+              {/* Header Row */}
+              <div className="space-y-1 mb-2">
+                <div className="flex items-start justify-between gap-4">
+                  <h3 className="text-sm md:text-base font-medium leading-tight">{edu.institution}</h3>
+                  <div className="hidden sm:flex items-center gap-3 text-xs text-primary/60 font-sf-mono flex-shrink-0">
+                    <span className="flex items-center gap-1">
+                      <MapPin className="h-3 w-3" />
+                      {edu.id}
+                    </span>
+                    <span className="text-primary/40">|</span>
+                    <span className="flex items-center gap-1">
+                      <Clock className="h-3 w-3" />
+                      {edu.period}
+                    </span>
                   </div>
-
-                  <div className="grid grid-cols-[1fr_auto] gap-6">
-                    <div>
-                      <h3 className="text-sm font-bold uppercase tracking-wide mb-2">{edu.institution}</h3>
-                      <p className="text-xs font-sf-mono text-primary/80 uppercase tracking-wider">{edu.degree}</p>
-                      <p className="text-[10px] font-sf-mono text-primary/50 mt-2 tracking-widest">{edu.period}</p>
-                    </div>
-                    <div className="flex items-center">
-                      <div className="w-14 h-14 border-2 border-primary/60 flex items-center justify-center group-hover:bg-primary group-hover:text-background transition-all duration-150">
-                        <span className="text-xl font-sf-mono font-bold">{index === 0 ? "MS" : "BS"}</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="mt-4 pt-3 border-t border-primary/20 flex justify-between items-center">
-                    <div className="text-[10px] font-sf-mono text-primary/50 uppercase tracking-wider max-w-[60%]">
-                      {edu.field}
-                    </div>
-                    <div className="text-[10px] font-sf-mono uppercase tracking-wider group-hover:text-primary transition-colors flex items-center gap-1">
-                      <span>VIEW RECORD</span>
-                      <span className="group-hover:translate-x-0.5 transition-transform">&rarr;</span>
-                    </div>
+                  <div className="flex sm:hidden flex-col gap-1 text-xs text-primary/60 font-sf-mono text-right">
+                    <span className="flex items-center gap-1 justify-end">
+                      <MapPin className="h-3 w-3" />
+                      {edu.id}
+                    </span>
+                    <span className="flex items-center gap-1 justify-end">
+                      <Clock className="h-3 w-3" />
+                      {edu.period}
+                    </span>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
 
-          <div className="mt-6 pt-3 border-t-2 border-primary/30 flex justify-between text-[10px] text-primary/40 font-sf-mono uppercase tracking-widest">
-            <span>TOTAL RECORDS: {education.length}</span>
-            <span>LAST UPDATED: 05/01/2025</span>
-          </div>
+                {/* Degree badges */}
+                <div className="flex gap-1.5 flex-wrap">
+                  <span className="text-xs font-sf-mono bg-primary/10 border border-primary/20 px-2 py-0.5">
+                    {edu.degree}
+                  </span>
+                  <span
+                    className={`text-xs font-sf-mono px-2 py-0.5 ${
+                      edu.status === "GRADUATED"
+                        ? "bg-green-500/10 border border-green-500/30 text-green-600 dark:text-green-400"
+                        : "bg-primary/5 border border-primary/20"
+                    }`}
+                  >
+                    {edu.status}
+                  </span>
+                </div>
+              </div>
+
+              {/* Description */}
+              <p className="text-xs text-primary/70 mb-2 leading-relaxed">{edu.description}</p>
+
+              {/* Footer */}
+              <div className="flex items-center justify-between mt-2 pt-2 border-t border-primary/10 gap-2">
+                <div className="flex gap-1.5 min-w-0 flex-1">
+                  <div className="flex gap-1.5 flex-wrap max-h-[24px] overflow-hidden">
+                    <span className="text-xs font-sf-mono bg-primary/5 border border-primary/15 text-primary/60 px-1.5 py-0.5 whitespace-nowrap">
+                      {edu.field}
+                    </span>
+                  </div>
+                </div>
+                <span className="text-xs text-primary/50 group-hover:text-primary/70 transition-colors flex-shrink-0 whitespace-nowrap ml-2">
+                  VIEW FULL DETAILS →
+                </span>
+              </div>
+            </div>
+          ))}
         </div>
 
         {selectedRecord !== null && (
