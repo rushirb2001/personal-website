@@ -22,6 +22,7 @@ export default function UpdatesPage() {
   const [returningPostId, setReturningPostId] = useState<string | null>(null)
   const [highlightedPostId, setHighlightedPostId] = useState<string | null>(null)
   const isReturningFromArticle = useRef(false)
+  const [hideAllContent, setHideAllContent] = useState(false)
 
   const [collapseAnimation, setCollapseAnimation] = useState<{
     show: boolean
@@ -57,6 +58,7 @@ export default function UpdatesPage() {
       const postData = JSON.parse(collapsePostData)
 
       setReturningPostId(collapsePostId)
+      setHideAllContent(true)
 
       sessionStorage.removeItem("collapseToRect")
       sessionStorage.removeItem("collapseFromPost")
@@ -90,6 +92,7 @@ export default function UpdatesPage() {
             setTimeout(() => {
               setCollapseAnimation((prev) => ({ ...prev, show: false }))
               setReturningPostId(null)
+              setHideAllContent(false)
               setHighlightedPostId(collapsePostId)
 
               setTimeout(() => {
@@ -98,6 +101,7 @@ export default function UpdatesPage() {
             }, 700)
           } else {
             setReturningPostId(null)
+            setHideAllContent(false)
           }
         })
       })
@@ -197,7 +201,13 @@ export default function UpdatesPage() {
         )}
       </AnimatePresence>
 
-      <div className="container max-w-4xl mx-auto px-2 md:px-4">
+      <div
+        className="container max-w-4xl mx-auto px-2 md:px-4 transition-opacity duration-150"
+        style={{
+          opacity: hideAllContent ? 0 : 1,
+          visibility: hideAllContent ? "hidden" : "visible",
+        }}
+      >
         <div className="mb-8 border border-primary/20 p-2 md:p-4 bg-background dark:bg-eerie-black/50 -mx-2 md:mx-0">
           <div className="flex flex-col mb-4">
             <div className="flex items-center justify-between mb-2">
