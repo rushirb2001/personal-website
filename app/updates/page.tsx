@@ -10,6 +10,7 @@ import { ArrowRight, Calendar, Tag, Terminal } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { PageLayout } from "@/components/layout/page-layout"
 import { useRouter } from "next/navigation"
+import { useNavigation } from "@/contexts/navigation-context"
 
 function getInitialCollapseAnimation(): {
   show: boolean
@@ -63,6 +64,7 @@ export default function UpdatesPage() {
   const [selectedTags, setSelectedTags] = useState<string[]>(() => getInitialSelectedTags())
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const router = useRouter()
+  const { navigateTo } = useNavigation()
 
   const articleRefs = useRef<Map<string, HTMLDivElement>>(new Map())
 
@@ -142,7 +144,7 @@ export default function UpdatesPage() {
   }, [])
 
   const handleReturnToMain = () => {
-    router.push("/")
+    navigateTo("/")
   }
 
   const handleArticleClick = (e: React.MouseEvent, post: BlogPost) => {
