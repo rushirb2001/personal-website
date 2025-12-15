@@ -66,7 +66,7 @@ function calculateTotals() {
 function SkillTag({ name, delay }: { name: string; delay: number }) {
   return (
     <motion.span
-      className="inline-block px-1.5 py-0.5 text-[9px] sm:text-[10px] font-sf-mono uppercase tracking-wide border border-primary/20 bg-background text-primary/70 hover:bg-primary hover:text-background hover:border-primary transition-all duration-100"
+      className="inline-block px-1.5 py-0.5 text-[10px] sm:text-xs font-sf-mono uppercase tracking-wide border border-primary/20 bg-background text-primary/70 hover:bg-primary hover:text-background hover:border-primary transition-all duration-100"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.15, delay }}
@@ -96,7 +96,7 @@ function SubcategoryRow({
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.15, delay: baseDelay }}
     >
-      <span className="text-[8px] sm:text-[9px] font-sf-mono text-primary/40 uppercase tracking-wider w-full sm:w-24 shrink-0">
+      <span className="text-[9px] sm:text-[10px] font-sf-mono text-primary/40 uppercase tracking-wider w-full sm:w-28 shrink-0">
         {title}
       </span>
       <div className="flex flex-wrap gap-1">
@@ -130,8 +130,8 @@ function CategoryBlock({
     >
       <div className="border-b border-primary/20 px-2 py-1.5 bg-primary/5">
         <div className="flex items-center justify-between">
-          <h3 className="text-[10px] sm:text-xs font-sf-mono font-bold tracking-widest text-primary">{title}</h3>
-          <span className="text-[8px] sm:text-[9px] font-sf-mono text-primary/30">
+          <h3 className="text-xs sm:text-sm font-sf-mono font-bold tracking-widest text-primary">{title}</h3>
+          <span className="text-[9px] sm:text-[10px] font-sf-mono text-primary/30">
             [{String(index + 1).padStart(2, "0")}]
           </span>
         </div>
@@ -188,14 +188,14 @@ export default function SkillsPage() {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.2, delay: 0.5 }}
         >
-          <div className="flex gap-3 sm:gap-4 text-[8px] sm:text-[9px] font-sf-mono text-primary/40 uppercase tracking-wider">
+          <div className="flex gap-3 sm:gap-4 text-[9px] sm:text-[10px] font-sf-mono text-primary/40 uppercase tracking-wider">
             <span>5 CATEGORIES</span>
             <span className="text-primary/20">/</span>
             <span>{totalSubcategories} SUBCATEGORIES</span>
             <span className="text-primary/20">/</span>
             <span>{totalTech} TECHNOLOGIES</span>
           </div>
-          <div className="text-[8px] sm:text-[9px] font-sf-mono text-primary/30">LAST.UPDATED: 2024</div>
+          <div className="text-[9px] sm:text-[10px] font-sf-mono text-primary/30">LAST.UPDATED: 2024</div>
         </motion.div>
       </div>
     </PageLayout>
