@@ -52,9 +52,7 @@ export default function UpdatesPage() {
       setExpandRect(rect)
       setExpandingPost(post)
 
-      setTimeout(() => {
-        router.push(`/updates/${post.id}`)
-      }, 600)
+      router.push(`/updates/${post.id}`)
     }
   }
 
