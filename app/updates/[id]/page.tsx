@@ -16,8 +16,8 @@ export default function BlogPostPage() {
   const { navigateTo } = useNavigation()
   const [post, setPost] = useState<BlogPost | null>(null)
   const [loading, setLoading] = useState(true)
-  const [showNavBar, setShowNavBar] = useState(false)
-  const [showContent, setShowContent] = useState(false)
+
+  const [animationPhase, setAnimationPhase] = useState<"expanding" | "revealing" | "complete">("expanding")
   const [expandRect, setExpandRect] = useState<{ top: number; left: number; width: number; height: number } | null>(
     null,
   )
@@ -27,6 +27,9 @@ export default function BlogPostPage() {
     if (stored) {
       setExpandRect(JSON.parse(stored))
       sessionStorage.removeItem("expandRect")
+    } else {
+      // No stored rect means direct navigation, skip to complete
+      setAnimationPhase("complete")
     }
   }, [])
 
@@ -35,16 +38,32 @@ export default function BlogPostPage() {
       const postData = getPostById(params.id as string)
       if (postData) {
         setPost(postData)
-        setShowNavBar(true)
-        setTimeout(() => {
-          setShowContent(true)
-        }, 550)
       } else {
         router.push("/updates")
       }
       setLoading(false)
     }
   }, [params.id, router])
+
+  useEffect(() => {
+    if (expandRect && animationPhase === "expanding") {
+      // After expansion completes (600ms), start revealing
+      const timer = setTimeout(() => {
+        setAnimationPhase("revealing")
+      }, 600)
+      return () => clearTimeout(timer)
+    }
+  }, [expandRect, animationPhase])
+
+  useEffect(() => {
+    if (animationPhase === "revealing") {
+      // After blur reveal completes (500ms), mark complete
+      const timer = setTimeout(() => {
+        setAnimationPhase("complete")
+      }, 500)
+      return () => clearTimeout(timer)
+    }
+  }, [animationPhase])
 
   if (loading) {
     return (
@@ -68,8 +87,8 @@ export default function BlogPostPage() {
       <motion.div
         className="fixed top-14 md:top-16 left-0 right-0 z-50 bg-background dark:bg-eerie-black border-b border-primary/20"
         initial={{ y: -60, opacity: 0 }}
-        animate={{ y: showNavBar ? 0 : -60, opacity: showNavBar ? 1 : 0 }}
-        transition={{ duration: 0.35, ease: [0.32, 0.72, 0, 1] }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.4, ease: [0.32, 0.72, 0, 1], delay: 0.1 }}
       >
         <div className="container max-w-3xl mx-auto px-4 py-4 flex justify-between">
           <Button
@@ -91,47 +110,45 @@ export default function BlogPostPage() {
         </div>
       </motion.div>
 
-      {expandRect && (
+      {expandRect && animationPhase === "expanding" && (
         <motion.div
-          className="fixed z-40 overflow-hidden pointer-events-none"
+          className="fixed z-40 pointer-events-none border border-primary/20 bg-background dark:bg-eerie-black"
           initial={{
             top: expandRect.top,
             left: expandRect.left,
             width: expandRect.width,
             height: expandRect.height,
-            borderRadius: 0,
           }}
           animate={{
-            top: "9.5rem",
+            top: 152, // 9.5rem
             left: "50%",
             x: "-50%",
             width: "min(100vw - 2rem, 48rem)",
             height: "calc(100vh - 9.5rem - 4rem)",
-            borderRadius: 0,
           }}
           transition={{
-            duration: 0.55,
+            duration: 0.6,
             ease: [0.32, 0.72, 0, 1],
           }}
-        >
-          <div className="h-full w-full border border-primary/20 bg-background dark:bg-eerie-black/50 overflow-hidden" />
-        </motion.div>
+        />
       )}
 
-      {/* Wrapped content container with invisible initial state, becomes visible during blur animation */}
       <div
-        className="fixed top-[9.5rem] md:top-[9.5rem] left-0 right-0 bottom-16 z-30 opacity-0"
-        style={{ visibility: showContent ? "visible" : "hidden" }}
+        className="fixed top-[9.5rem] left-0 right-0 bottom-16 z-30"
+        style={{
+          opacity: animationPhase === "expanding" ? 0 : 1,
+          visibility: animationPhase === "expanding" ? "hidden" : "visible",
+        }}
       >
         <div className="container max-w-3xl mx-auto px-4 h-full">
           <div className="h-full border border-primary/20 bg-background dark:bg-eerie-black/50 overflow-hidden">
             {/* Scrollable Content Inside Window */}
             <div className="h-full overflow-y-auto p-6">
               <motion.div
-                initial={{ opacity: 0, filter: "blur(12px)" }}
+                initial={{ filter: "blur(12px)", opacity: 0 }}
                 animate={{
-                  opacity: showContent ? 1 : 0,
-                  filter: showContent ? "blur(0px)" : "blur(12px)",
+                  filter: animationPhase === "complete" ? "blur(0px)" : "blur(12px)",
+                  opacity: animationPhase !== "expanding" ? 1 : 0,
                 }}
                 transition={{ duration: 0.5, ease: [0.32, 0.72, 0, 1] }}
               >
