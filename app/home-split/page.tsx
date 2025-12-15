@@ -11,10 +11,21 @@ import Image from "next/image"
 import Link from "next/link"
 
 const specializations = [
-  { label: "LLM/RAG", desc: "Large Language Models & Retrieval-Augmented Generation" },
-  { label: "CV", desc: "Computer Vision & Image Processing" },
-  { label: "MLOps", desc: "ML Infrastructure & Deployment" },
-  { label: "GenAI", desc: "Generative AI & Diffusion Models" },
+  "Deep Learning",
+  "Computer Vision",
+  "NLP",
+  "LLM/RAG",
+  "MLOps",
+  "Distributed Training",
+  "Model Evaluation",
+  "Transformers",
+  "GenAI",
+  "PyTorch",
+  "TensorFlow",
+  "AWS",
+  "Kubernetes",
+  "Vector DBs",
+  "Fine-tuning",
 ]
 
 const featuredProject = {
@@ -33,7 +44,6 @@ const stats = [
 export default function HomeSplitPage() {
   const { navigateTo } = useNavigation()
   const [isResumeModalOpen, setIsResumeModalOpen] = useState(false)
-  const [activeSpec, setActiveSpec] = useState<number | null>(null)
 
   return (
     <>
@@ -41,9 +51,9 @@ export default function HomeSplitPage() {
         <div className="flex flex-col gap-3 h-full">
           {/* Top Section: Photo + About */}
           <div className="flex flex-col md:flex-row gap-3 items-stretch">
-            {/* Photo Block */}
+            {/* Photo Block - Increased size, removed social links */}
             <motion.div
-              className="border border-primary/20 bg-background p-2 md:w-[180px] lg:w-[200px] shrink-0"
+              className="border border-primary/20 bg-background p-2 md:w-[220px] lg:w-[260px] shrink-0"
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.3 }}
@@ -59,38 +69,16 @@ export default function HomeSplitPage() {
                   VERIFIED
                 </div>
               </div>
-              {/* Links under photo */}
-              <div className="flex items-center justify-between mt-2 pt-2 border-t border-primary/10">
-                <div className="flex gap-1">
-                  <Link
-                    href="https://github.com/rushirb2001"
-                    target="_blank"
-                    className="w-7 h-7 flex items-center justify-center border border-primary/20 hover:bg-primary hover:text-background transition-colors"
-                  >
-                    <Github className="h-3.5 w-3.5" />
-                  </Link>
-                  <Link
-                    href="https://linkedin.com/in/rushir-bhavsar/"
-                    target="_blank"
-                    className="w-7 h-7 flex items-center justify-center border border-primary/20 hover:bg-primary hover:text-background transition-colors"
-                  >
-                    <Linkedin className="h-3.5 w-3.5" />
-                  </Link>
-                  <Link
-                    href="mailto:rushirbhavsar@gmail.com"
-                    className="w-7 h-7 flex items-center justify-center border border-primary/20 hover:bg-primary hover:text-background transition-colors"
-                  >
-                    <Mail className="h-3.5 w-3.5" />
-                  </Link>
-                </div>
-                <div className="flex items-center text-[8px] font-sf-mono text-primary/50">
-                  <MapPin className="h-2.5 w-2.5 mr-0.5" />
-                  NYC
+              {/* Location only */}
+              <div className="flex items-center justify-center mt-2 pt-2 border-t border-primary/10">
+                <div className="flex items-center text-[9px] font-sf-mono text-primary/50">
+                  <MapPin className="h-3 w-3 mr-1" />
+                  NEW YORK CITY, USA
                 </div>
               </div>
             </motion.div>
 
-            {/* About Block */}
+            {/* About Block - Added social links beside buttons */}
             <motion.div
               className="border border-primary/20 bg-background flex-1 flex flex-col"
               initial={{ opacity: 0, x: 10 }}
@@ -110,33 +98,57 @@ export default function HomeSplitPage() {
                   healthcare, astronomy, and enterprise AI domains. Expertise in transformer-based models,
                   retrieval-augmented generation, and scalable ML pipelines.
                 </p>
-                <div className="flex items-center gap-2 mt-2 pt-2 border-t border-primary/10">
-                  <Button
-                    variant="ghost"
-                    className="h-7 px-2 border border-primary/20 text-[9px] font-sf-mono bg-transparent hover:bg-primary hover:text-background rounded-none transition-colors"
-                    onClick={() => setIsResumeModalOpen(true)}
-                  >
-                    <FileText className="h-3 w-3 mr-1" />
-                    RESUME
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    className="h-7 px-2 border border-primary/20 text-[9px] font-sf-mono bg-transparent hover:bg-primary hover:text-background rounded-none transition-colors"
-                    onClick={() => navigateTo("/contact")}
-                  >
-                    CONTACT
-                    <ArrowRight className="h-2.5 w-2.5 ml-1" />
-                  </Button>
+                <div className="flex items-center justify-between mt-2 pt-2 border-t border-primary/10">
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="ghost"
+                      className="h-7 px-2 border border-primary/20 text-[9px] font-sf-mono bg-transparent hover:bg-primary hover:text-background rounded-none transition-colors"
+                      onClick={() => setIsResumeModalOpen(true)}
+                    >
+                      <FileText className="h-3 w-3 mr-1" />
+                      RESUME
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      className="h-7 px-2 border border-primary/20 text-[9px] font-sf-mono bg-transparent hover:bg-primary hover:text-background rounded-none transition-colors"
+                      onClick={() => navigateTo("/contact")}
+                    >
+                      CONTACT
+                      <ArrowRight className="h-2.5 w-2.5 ml-1" />
+                    </Button>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Link
+                      href="https://github.com/rushirb2001"
+                      target="_blank"
+                      className="w-7 h-7 flex items-center justify-center border border-primary/20 hover:bg-primary hover:text-background transition-colors"
+                    >
+                      <Github className="h-3.5 w-3.5" />
+                    </Link>
+                    <Link
+                      href="https://linkedin.com/in/rushir-bhavsar/"
+                      target="_blank"
+                      className="w-7 h-7 flex items-center justify-center border border-primary/20 hover:bg-primary hover:text-background transition-colors"
+                    >
+                      <Linkedin className="h-3.5 w-3.5" />
+                    </Link>
+                    <Link
+                      href="mailto:rushirbhavsar@gmail.com"
+                      className="w-7 h-7 flex items-center justify-center border border-primary/20 hover:bg-primary hover:text-background transition-colors"
+                    >
+                      <Mail className="h-3.5 w-3.5" />
+                    </Link>
+                  </div>
                 </div>
               </div>
             </motion.div>
           </div>
 
-          {/* Middle Section: Stats + Specializations */}
+          {/* Middle Section: Stats + Specializations Marquee */}
           <div className="flex flex-col md:flex-row gap-3 items-stretch">
             {/* Stats Block */}
             <motion.div
-              className="border border-primary/20 bg-background md:w-[180px] lg:w-[200px] shrink-0"
+              className="border border-primary/20 bg-background md:w-[220px] lg:w-[260px] shrink-0"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: 0.15 }}
@@ -165,9 +177,8 @@ export default function HomeSplitPage() {
               </div>
             </motion.div>
 
-            {/* Specializations Block - Static Carousel */}
             <motion.div
-              className="border border-primary/20 bg-background flex-1"
+              className="border border-primary/20 bg-background flex-1 overflow-hidden"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: 0.2 }}
@@ -178,31 +189,13 @@ export default function HomeSplitPage() {
                   <span className="text-[9px] font-sf-mono text-primary/30">[03]</span>
                 </div>
               </div>
-              <div className="p-2">
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-                  {specializations.map((spec, idx) => (
-                    <motion.div
-                      key={idx}
-                      className={`border border-primary/20 p-2 cursor-pointer transition-all duration-150 ${
-                        activeSpec === idx ? "bg-primary text-background" : "bg-background hover:bg-primary/5"
-                      }`}
-                      onMouseEnter={() => setActiveSpec(idx)}
-                      onMouseLeave={() => setActiveSpec(null)}
-                      initial={{ opacity: 0, scale: 0.95 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ duration: 0.2, delay: 0.25 + idx * 0.05 }}
-                    >
-                      <div
-                        className={`text-xs font-sf-mono font-bold tracking-wider ${activeSpec === idx ? "text-background" : "text-primary"}`}
-                      >
-                        {spec.label}
-                      </div>
-                      <div
-                        className={`text-[8px] font-mono mt-1 leading-tight ${activeSpec === idx ? "text-background/80" : "text-primary/50"}`}
-                      >
-                        {spec.desc}
-                      </div>
-                    </motion.div>
+              <div className="py-3 overflow-hidden">
+                <div className="flex animate-[marquee_25s_linear_infinite]">
+                  {[...specializations, ...specializations].map((spec, idx) => (
+                    <div key={idx} className="flex items-center shrink-0">
+                      <span className="text-xs font-sf-mono text-primary/70 whitespace-nowrap px-4">{spec}</span>
+                      <span className="text-green-500 text-xs">✦</span>
+                    </div>
                   ))}
                 </div>
               </div>
@@ -252,7 +245,7 @@ export default function HomeSplitPage() {
 
             {/* Quick Actions */}
             <motion.div
-              className="border border-primary/20 bg-background md:w-[180px] lg:w-[200px] shrink-0"
+              className="border border-primary/20 bg-background md:w-[220px] lg:w-[260px] shrink-0"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: 0.35 }}
