@@ -99,19 +99,25 @@ export default function Home() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2, duration: 0.6 }}
               >
-                <h1 className="font-black text-3xl tracking-tight mb-1">RUSHIR BHAVSAR</h1>
-                <p className="text-[10px] font-sf-mono text-primary/70">DATA SCIENTIST • AI ENGINEER • ML RESEARCHER</p>
+                <h1 className="font-black text-4xl tracking-tight mb-2 w-full">RUSHIR BHAVSAR</h1>
+                <p className="text-xs font-sf-mono text-primary/70 w-full tracking-widest">
+                  DATA SCIENTIST • AI ENGINEER • ML RESEARCHER
+                </p>
               </motion.div>
 
-              {/* Photo - Full width with margin */}
               <motion.div
-                className="relative w-full aspect-square"
+                className="relative w-[75%] aspect-square"
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.3, duration: 0.6 }}
               >
                 <div className="relative border border-primary/20 bg-secondary/20 p-2 w-full h-full">
-                  <Image src="/images/personal_photo.png" alt="Profile" fill className="object-cover grayscale" />
+                  <Image
+                    src="/images/design-mode/new_personal_photo(1).png"
+                    alt="Profile"
+                    fill
+                    className="object-cover grayscale"
+                  />
                   <div className="absolute top-3 right-3 bg-background/80 border border-primary/30 px-2 py-1 text-[9px] font-sf-mono">
                     VERIFIED
                   </div>
