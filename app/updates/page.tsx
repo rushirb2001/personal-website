@@ -86,7 +86,7 @@ export default function UpdatesPage() {
             setTimeout(() => {
               setHighlightedPostId(null)
             }, 400)
-          }, 500)
+          }, 600)
         }
       })
     }
@@ -125,16 +125,23 @@ export default function UpdatesPage() {
               left: collapseAnimation.startRect.left,
               width: collapseAnimation.startRect.width,
               height: collapseAnimation.startRect.height,
+              scale: 1,
             }}
             animate={{
               top: collapseAnimation.endRect.top,
               left: collapseAnimation.endRect.left,
               width: collapseAnimation.endRect.width,
               height: collapseAnimation.endRect.height,
+              scale: 1,
             }}
-            transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+            transition={{ duration: 0.55, ease: [0.4, 0, 0.2, 1] }}
           >
-            <div className="p-4">
+            <motion.div
+              className="p-4"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.1, duration: 0.25, ease: "easeOut" }}
+            >
               <div className="flex justify-between items-start mb-2">
                 <h2 className="text-sm font-sf-mono font-medium">{collapseAnimation.postData.title}</h2>
                 <div className="flex items-center text-xs text-primary/60 font-sf-mono">
@@ -159,7 +166,7 @@ export default function UpdatesPage() {
                   <ArrowRight className="ml-1 h-3 w-3" />
                 </div>
               </div>
-            </div>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>

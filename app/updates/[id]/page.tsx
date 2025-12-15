@@ -73,7 +73,7 @@ export default function BlogPostPage() {
     if (animationPhase === "collapsing") {
       const timer = setTimeout(() => {
         router.push("/updates")
-      }, 150) // Reduced from 550ms to 150ms for near-instant navigation
+      }, 450) // Increased delay to 450ms for smoother visual transition
       return () => clearTimeout(timer)
     }
   }, [animationPhase, router])
@@ -213,16 +213,16 @@ export default function BlogPostPage() {
             height: originalRect.height,
           }}
           transition={{
-            duration: 0.35, // Reduced from 0.5s to 0.35s for faster collapse
-            ease: [0.32, 0.72, 0, 1],
+            duration: 0.55,
+            ease: [0.4, 0, 0.2, 1],
           }}
         >
           {/* Card preview content that appears during collapse */}
           <motion.div
             className="p-4 h-full"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.05, duration: 0.15 }} // Reduced delay and duration
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.15, duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
           >
             <div className="flex justify-between items-start mb-2">
               <h2 className="text-sm font-sf-mono font-medium line-clamp-1">{post.title}</h2>
