@@ -181,7 +181,7 @@ export default function HomeSplitPage() {
 
             {/* Specializations Block - Infinite Marquee */}
             <motion.div
-              className="border border-primary/20 bg-background flex-1 overflow-hidden"
+              className="border border-primary/20 bg-background flex-1 min-w-0 overflow-hidden"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: 0.2 }}
@@ -193,15 +193,14 @@ export default function HomeSplitPage() {
                 </div>
               </div>
               {/* Infinite Marquee */}
-              <div className="py-3 overflow-hidden">
-                <div className="relative w-full overflow-hidden">
+              <div className="py-3 w-full max-w-full overflow-hidden">
+                <div className="relative w-full max-w-full overflow-hidden">
                   {/* Fade edges for seamless appearance */}
                   <div className="absolute left-0 top-0 bottom-0 w-12 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
                   <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
 
                   {/* Marquee track - duplicated for seamless infinite loop */}
-                  <div className="flex animate-marquee hover:[animation-play-state:paused]">
-                    {/* First set of items */}
+                  <div className="flex animate-marquee hover:[animation-play-state:paused] w-max">
                     {specializations.map((item, idx) => (
                       <div key={`a-${idx}`} className="flex items-center shrink-0">
                         <span className="text-[10px] font-sf-mono text-primary/70 whitespace-nowrap px-4 uppercase tracking-widest">
@@ -216,7 +215,6 @@ export default function HomeSplitPage() {
                         />
                       </div>
                     ))}
-                    {/* Duplicate set for seamless infinite loop */}
                     {specializations.map((item, idx) => (
                       <div key={`b-${idx}`} className="flex items-center shrink-0">
                         <span className="text-[10px] font-sf-mono text-primary/70 whitespace-nowrap px-4 uppercase tracking-widest">
