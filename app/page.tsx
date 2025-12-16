@@ -23,37 +23,37 @@ const specializationsRow1 = [
   "Computer Vision",
   "Natural Language Processing",
   "Large Language Models",
-  "MLOps",
+  "Generative AI",
   "Neural Networks",
   "Transformers",
-  "Generative AI",
+  "MLOps",
   "Reinforcement Learning",
 ]
 
 const specializationsRow2 = [
   "PyTorch",
   "TensorFlow",
-  "Distributed Training",
-  "Model Optimization",
-  "Data Engineering",
-  "Cloud ML",
-  "Feature Engineering",
-  "Time Series Analysis",
-  "RAG Systems",
-  "Diffusion Models",
+  "JAX",
+  "Hugging Face",
+  "LangChain",
+  "DeepSpeed",
+  "Ray",
+  "vLLM",
+  "LoRA/QLoRA",
+  "CUDA",
 ]
 
 const specializationsRow3 = [
-  "Hugging Face",
-  "LangChain",
-  "Vector Databases",
   "AWS SageMaker",
+  "Apache Spark",
+  "Vector Databases",
   "Kubernetes",
   "Docker",
   "FastAPI",
-  "Prompt Engineering",
-  "CUDA",
-  "Model Serving",
+  "PostgreSQL",
+  "MLFlow",
+  "Databricks",
+  "Redis",
 ]
 
 const stats = [
