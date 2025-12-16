@@ -102,7 +102,6 @@ const techIconMap: Record<string, any> = {
   elasticsearch: SiElasticsearch,
   
   // Cloud
-  aws: SiAmazonaws,
   azure: SiMicrosoftazure,
   gcp: SiGooglecloud,
   vercel: SiVercel,
