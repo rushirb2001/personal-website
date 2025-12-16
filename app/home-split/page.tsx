@@ -38,6 +38,19 @@ const specializationsRow2 = [
   "Diffusion Models",
 ]
 
+const specializationsRow3 = [
+  "Hugging Face",
+  "LangChain",
+  "Vector Databases",
+  "AWS SageMaker",
+  "Kubernetes",
+  "Docker",
+  "FastAPI",
+  "Prompt Engineering",
+  "CUDA",
+  "Model Serving",
+]
+
 const featuredProject = {
   title: "AI-Powered Healthcare Diagnostics",
   description: "Transformer-based model for early disease detection achieving 94% accuracy",
@@ -57,8 +70,10 @@ export default function HomeSplitPage() {
 
   const marquee1Ref = useRef<HTMLDivElement>(null)
   const marquee2Ref = useRef<HTMLDivElement>(null)
+  const marquee3Ref = useRef<HTMLDivElement>(null)
   const [marquee1Offset, setMarquee1Offset] = useState(0)
   const [marquee2Offset, setMarquee2Offset] = useState(0)
+  const [marquee3Offset, setMarquee3Offset] = useState(0)
 
   const handleMarqueeHover = (
     e: React.MouseEvent<HTMLDivElement>,
@@ -266,6 +281,34 @@ export default function HomeSplitPage() {
                     style={{ transform: `translateX(${marquee2Offset}px)`, transition: "transform 0.3s ease-out" }}
                   >
                     {[...specializationsRow2, ...specializationsRow2].map((item, idx) => (
+                      <span key={idx} className="flex items-center shrink-0">
+                        <span className="text-[10px] font-sf-mono text-primary/70 px-3 uppercase tracking-wider">
+                          {item}
+                        </span>
+                        <span
+                          className="w-1 h-1 rounded-full bg-green-500/60 shrink-0 animate-[blink_1.5s_ease-in-out_infinite]"
+                          style={{ animationDelay: `${(idx % 5) * 0.3}s` }}
+                        />
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div
+                ref={marquee3Ref}
+                className="py-2 relative overflow-hidden cursor-pointer border-t border-primary/10"
+                onMouseMove={(e) => handleMarqueeHover(e, marquee3Ref, setMarquee3Offset, false)}
+                onMouseLeave={() => handleMarqueeLeave(setMarquee3Offset)}
+              >
+                <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
+                <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
+                <div className="overflow-hidden">
+                  <div
+                    className="flex items-center whitespace-nowrap animate-[marquee_25s_linear_infinite] hover:[animation-duration:50s]"
+                    style={{ transform: `translateX(${marquee3Offset}px)`, transition: "transform 0.3s ease-out" }}
+                  >
+                    {[...specializationsRow3, ...specializationsRow3].map((item, idx) => (
                       <span key={idx} className="flex items-center shrink-0">
                         <span className="text-[10px] font-sf-mono text-primary/70 px-3 uppercase tracking-wider">
                           {item}
