@@ -356,7 +356,7 @@ export default function HomeSplitPage() {
                           <button
                             key={idx}
                             onClick={() => setCurrentFeaturedIndex(idx)}
-                            className={`w-1.5 h-1.5 rounded-full transition-colors ${
+                            className={`w-1 h-1 rounded-full transition-colors ${
                               idx === currentFeaturedIndex ? "bg-primary" : "bg-primary/20 hover:bg-primary/40"
                             }`}
                           />
