@@ -68,7 +68,6 @@ const systemicTransition = {
 }
 
 export default function Home() {
-  const { navigateTo } = useNavigation()
 
   const [isResumeModalOpen, setIsResumeModalOpen] = useState(false)
 
