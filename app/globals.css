@@ -410,14 +410,6 @@ main,
   }
 }
 
-/* Last accessed timestamp */
-.last-accessed {
-  font-family: "SF Mono", SFMono-Regular, ui-monospace, monospace;
-  font-size: 0.55rem;
-  color: color-mix(in srgb, var(--primary) 40%, transparent);
-  letter-spacing: 0.02em;
-}
-
 /* Theme transition */
 html {
   transition: background-color 0.3s ease, color 0.3s ease;
