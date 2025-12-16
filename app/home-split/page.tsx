@@ -11,10 +11,26 @@ import Image from "next/image"
 import Link from "next/link"
 
 const specializations = [
-  { label: "LLM/RAG", desc: "Large Language Models & Retrieval-Augmented Generation" },
-  { label: "CV", desc: "Computer Vision & Image Processing" },
-  { label: "MLOps", desc: "ML Infrastructure & Deployment" },
-  { label: "GenAI", desc: "Generative AI & Diffusion Models" },
+  "Machine Learning",
+  "Deep Learning",
+  "Computer Vision",
+  "NLP",
+  "LLM/RAG",
+  "MLOps",
+  "Transformers",
+  "PyTorch",
+  "TensorFlow",
+  "Distributed Training",
+  "Model Evaluation",
+  "GenAI",
+  "Diffusion Models",
+  "Neural Networks",
+  "Data Engineering",
+  "Cloud ML",
+  "Model Optimization",
+  "Feature Engineering",
+  "Time Series",
+  "Reinforcement Learning",
 ]
 
 const featuredProject = {
@@ -33,7 +49,6 @@ const stats = [
 export default function HomeSplitPage() {
   const { navigateTo } = useNavigation()
   const [isResumeModalOpen, setIsResumeModalOpen] = useState(false)
-  const [activeSpec, setActiveSpec] = useState<number | null>(null)
 
   return (
     <>
@@ -164,9 +179,9 @@ export default function HomeSplitPage() {
               </div>
             </motion.div>
 
-            {/* Specializations Block - Static Carousel */}
+            {/* Specializations Block - Infinite Marquee */}
             <motion.div
-              className="border border-primary/20 bg-background flex-1"
+              className="border border-primary/20 bg-background flex-1 overflow-hidden"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: 0.2 }}
@@ -177,32 +192,46 @@ export default function HomeSplitPage() {
                   <span className="text-[9px] font-sf-mono text-primary/30">[03]</span>
                 </div>
               </div>
-              <div className="p-2">
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-                  {specializations.map((spec, idx) => (
-                    <motion.div
-                      key={idx}
-                      className={`border border-primary/20 p-2 cursor-pointer transition-all duration-150 ${
-                        activeSpec === idx ? "bg-primary text-background" : "bg-background hover:bg-primary/5"
-                      }`}
-                      onMouseEnter={() => setActiveSpec(idx)}
-                      onMouseLeave={() => setActiveSpec(null)}
-                      initial={{ opacity: 0, scale: 0.95 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ duration: 0.2, delay: 0.25 + idx * 0.05 }}
-                    >
-                      <div
-                        className={`text-xs font-sf-mono font-bold tracking-wider ${activeSpec === idx ? "text-background" : "text-primary"}`}
-                      >
-                        {spec.label}
+              {/* Infinite Marquee */}
+              <div className="py-3 overflow-hidden">
+                <div className="relative w-full overflow-hidden">
+                  {/* Fade edges for seamless appearance */}
+                  <div className="absolute left-0 top-0 bottom-0 w-12 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
+                  <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
+
+                  {/* Marquee track - duplicated for seamless infinite loop */}
+                  <div className="flex animate-marquee hover:[animation-play-state:paused]">
+                    {/* First set of items */}
+                    {specializations.map((item, idx) => (
+                      <div key={`a-${idx}`} className="flex items-center shrink-0">
+                        <span className="text-[10px] font-sf-mono text-primary/70 whitespace-nowrap px-4 uppercase tracking-widest">
+                          {item}
+                        </span>
+                        <span
+                          className="w-1 h-1 rounded-full bg-primary/50 shrink-0"
+                          style={{
+                            animation: `blink 2s ease-in-out infinite`,
+                            animationDelay: `${(idx % 5) * 0.4}s`,
+                          }}
+                        />
                       </div>
-                      <div
-                        className={`text-[8px] font-mono mt-1 leading-tight ${activeSpec === idx ? "text-background/80" : "text-primary/50"}`}
-                      >
-                        {spec.desc}
+                    ))}
+                    {/* Duplicate set for seamless infinite loop */}
+                    {specializations.map((item, idx) => (
+                      <div key={`b-${idx}`} className="flex items-center shrink-0">
+                        <span className="text-[10px] font-sf-mono text-primary/70 whitespace-nowrap px-4 uppercase tracking-widest">
+                          {item}
+                        </span>
+                        <span
+                          className="w-1 h-1 rounded-full bg-primary/50 shrink-0"
+                          style={{
+                            animation: `blink 2s ease-in-out infinite`,
+                            animationDelay: `${(idx % 5) * 0.4}s`,
+                          }}
+                        />
                       </div>
-                    </motion.div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
               </div>
             </motion.div>
