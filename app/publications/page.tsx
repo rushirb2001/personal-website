@@ -138,7 +138,7 @@ export default function PublicationsPage() {
               onMouseLeave={() => setHoveredId(null)}
               onClick={() => setSelectedPublication(selectedPublication?.id === pub.id ? null : pub)}
             >
-              <div className="hidden md:grid grid-cols-[1fr_180px_80px_60px_60px_40px] gap-4 px-3 py-3 items-center">
+              <div className="hidden md:grid grid-cols-[40px_1fr_180px_80px_60px_60px] gap-4 px-3 py-3 items-center">
                 <button
                   onClick={(e) => {
                     e.stopPropagation()
