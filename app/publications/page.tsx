@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo } from "react"
 import { PageLayout } from "@/components/layout/page-layout"
 import { motion, AnimatePresence } from "framer-motion"
-import { FileText, ExternalLink, X, ChevronRight } from "lucide-react"
+import { FileText, ExternalLink, ChevronDown, X, ChevronRight } from "lucide-react"
 import { useMediaQuery } from "@/hooks/use-media-query"
 
 interface Publication {
@@ -115,12 +115,13 @@ export default function PublicationsPage() {
   return (
     <PageLayout title="PUBLICATIONS" subtitle="RESEARCH OUTPUT">
       <div className="space-y-0">
-        <div className="hidden md:grid grid-cols-[1fr_180px_80px_60px_60px] gap-4 px-3 py-2 border-b border-primary/30 text-[10px] font-sf-mono text-primary/50 uppercase tracking-wider">
+        <div className="hidden md:grid grid-cols-[1fr_180px_80px_60px_60px_40px] gap-4 px-3 py-2 border-b border-primary/30 text-[10px] font-sf-mono text-primary/50 uppercase tracking-wider">
           <span>TITLE</span>
           <span>VENUE</span>
           <span>YEAR</span>
           <span>CIT</span>
           <span>LINK</span>
+          <span></span>
         </div>
 
         {/* Publication rows with inline expansion */}
@@ -137,7 +138,7 @@ export default function PublicationsPage() {
               onMouseLeave={() => setHoveredId(null)}
               onClick={() => setSelectedPublication(selectedPublication?.id === pub.id ? null : pub)}
             >
-              <div className="hidden md:grid grid-cols-[1fr_180px_80px_60px_60px] gap-4 px-3 py-3 items-center">
+              <div className="hidden md:grid grid-cols-[1fr_180px_80px_60px_60px_40px] gap-4 px-3 py-3 items-center">
                 <span className="text-xs font-sf-mono font-medium truncate pr-4">{pub.title}</span>
                 <span
                   className={`text-[10px] font-sf-mono truncate ${selectedPublication?.id === pub.id ? "text-background/70" : "text-primary/60"}`}
@@ -167,6 +168,28 @@ export default function PublicationsPage() {
                 >
                   <ExternalLink className="w-3 h-3" />
                 </a>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    setSelectedPublication(selectedPublication?.id === pub.id ? null : pub)
+                  }}
+                  className={`flex items-center justify-center w-8 h-8 border transition-all duration-200 ${
+                    selectedPublication?.id === pub.id
+                      ? "border-background/30 hover:bg-background/20"
+                      : "border-primary/20 hover:bg-primary/10 hover:border-primary/40"
+                  }`}
+                >
+                  <motion.div
+                    animate={{ rotate: selectedPublication?.id === pub.id ? 180 : 0 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    {selectedPublication?.id === pub.id ? (
+                      <X className="w-3 h-3" />
+                    ) : (
+                      <ChevronDown className="w-3 h-3" />
+                    )}
+                  </motion.div>
+                </button>
               </div>
 
               <div className="md:hidden px-3 py-3">
@@ -191,17 +214,39 @@ export default function PublicationsPage() {
                       {pub.venue}
                     </p>
                   </div>
-                  <a
-                    href={pub.pdfLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={(e) => e.stopPropagation()}
-                    className={`flex items-center justify-center w-8 h-8 border shrink-0 ${
-                      selectedPublication?.id === pub.id ? "border-background/30" : "border-primary/20"
-                    }`}
-                  >
-                    <ExternalLink className="w-3 h-3" />
-                  </a>
+                  <div className="flex items-center gap-1 shrink-0">
+                    <a
+                      href={pub.pdfLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                      className={`flex items-center justify-center w-8 h-8 border ${
+                        selectedPublication?.id === pub.id ? "border-background/30" : "border-primary/20"
+                      }`}
+                    >
+                      <ExternalLink className="w-3 h-3" />
+                    </a>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        setSelectedPublication(selectedPublication?.id === pub.id ? null : pub)
+                      }}
+                      className={`flex items-center justify-center w-8 h-8 border ${
+                        selectedPublication?.id === pub.id ? "border-background/30" : "border-primary/20"
+                      }`}
+                    >
+                      <motion.div
+                        animate={{ rotate: selectedPublication?.id === pub.id ? 180 : 0 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        {selectedPublication?.id === pub.id ? (
+                          <X className="w-3 h-3" />
+                        ) : (
+                          <ChevronDown className="w-3 h-3" />
+                        )}
+                      </motion.div>
+                    </button>
+                  </div>
                 </div>
               </div>
             </motion.div>
@@ -216,30 +261,18 @@ export default function PublicationsPage() {
                   className="overflow-hidden border-b border-primary/20"
                 >
                   <div className="bg-primary/5 p-4 md:p-6">
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="flex items-center gap-3">
-                        <span className="text-[10px] font-sf-mono px-2 py-0.5 border border-green-500/30 text-green-500 bg-green-500/10">
-                          {selectedPublication.status}
-                        </span>
-                        <span className="text-[10px] font-sf-mono text-primary/50">
-                          {selectedPublication.citations} CITATIONS
-                        </span>
-                      </div>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          setSelectedPublication(null)
-                        }}
-                        className="p-1 hover:bg-primary/10 transition-colors"
-                      >
-                        <X className="w-4 h-4 text-primary/50" />
-                      </button>
-                    </div>
-
                     <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-6">
                       {/* Left column */}
                       <div className="space-y-4">
                         <div>
+                          <div className="flex items-center gap-3 mb-2">
+                            <span className="text-[10px] font-sf-mono px-2 py-0.5 border border-green-500/30 text-green-500 bg-green-500/10">
+                              {selectedPublication.status}
+                            </span>
+                            <span className="text-[10px] font-sf-mono text-primary/50">
+                              {selectedPublication.citations} CITATIONS
+                            </span>
+                          </div>
                           <span className="text-[9px] font-sf-mono text-primary/40 uppercase tracking-wider">
                             TITLE
                           </span>
@@ -263,7 +296,12 @@ export default function PublicationsPage() {
                           </span>
                           <p className="text-[11px] font-sf-mono text-primary/70 mt-1">{selectedPublication.authors}</p>
                         </div>
-                        
+                        <div>
+                          <span className="text-[9px] font-sf-mono text-primary/40 uppercase tracking-wider">
+                            VENUE
+                          </span>
+                          <p className="text-[11px] font-sf-mono text-primary/70 mt-1">{selectedPublication.venue}</p>
+                        </div>
                         <div>
                           <span className="text-[9px] font-sf-mono text-primary/40 uppercase tracking-wider">DOI</span>
                           <p className="text-[10px] font-sf-mono text-primary/50 mt-1 break-all">
