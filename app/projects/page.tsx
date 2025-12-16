@@ -59,7 +59,6 @@ import {
   SiSqlite,
   SiSupabase,
   SiPrisma,
-  SiJax,
   SiNumpy,
   SiPandas,
   SiScikitlearn,
