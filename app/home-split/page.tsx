@@ -53,9 +53,9 @@ export default function HomeSplitPage() {
   return (
     <>
       <PageLayout title="RUSHIR BHAVSAR" subtitle="DATA SCIENTIST • AI ENGINEER • ML RESEARCHER">
-        <div className="flex flex-col gap-3 h-full">
+        <div className="flex flex-col gap-3 h-full min-w-0 overflow-hidden">
           {/* Top Section: Photo + About */}
-          <div className="flex flex-col md:flex-row gap-3 items-stretch">
+          <div className="flex flex-col md:flex-row gap-3 items-stretch min-w-0">
             {/* Photo Block */}
             <motion.div
               className="border border-primary/20 bg-background p-2 md:w-[180px] lg:w-[200px] shrink-0"
@@ -76,9 +76,9 @@ export default function HomeSplitPage() {
               </div>
             </motion.div>
 
-            {/* About Block */}
+            {/* About Block - Added min-w-0 to prevent text overflow */}
             <motion.div
-              className="border border-primary/20 bg-background flex-1 flex flex-col"
+              className="border border-primary/20 bg-background flex-1 min-w-0 flex flex-col"
               initial={{ opacity: 0, x: 10 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.3, delay: 0.1 }}
@@ -89,14 +89,13 @@ export default function HomeSplitPage() {
                   <span className="text-[9px] font-sf-mono text-primary/30">[01]</span>
                 </div>
               </div>
-              <div className="px-3 py-2 flex-1 flex flex-col justify-between">
+              <div className="px-3 py-2 flex-1 flex flex-col justify-between overflow-hidden">
                 <p className="text-[10px] sm:text-xs text-primary/70 leading-relaxed font-mono tracking-tight text-justify py-4 px-3.5">
                   Data Scientist and AI Engineer specializing in machine learning, deep learning, and AI systems
                   development. Creating innovative solutions using cutting-edge AI technologies with experience across
-                  healthcare, astronomy, and enterprise AI domains. Expertise in transformer-based models,
-                  retrieval-augmented generation, and scalable ML pipelines.
+                  healthcare, astronomy, and enterprise AI domains.
                 </p>
-                <div className="flex items-center justify-between mt-3 px-3.5 py-2">
+                <div className="flex flex-wrap items-center justify-between gap-2 mt-3 px-3.5 py-2">
                   <div className="flex items-center gap-1.5">
                     <Link
                       href="https://github.com/rushirb2001"
@@ -147,7 +146,7 @@ export default function HomeSplitPage() {
           </div>
 
           {/* Middle Section: Stats + Specializations */}
-          <div className="flex flex-col md:flex-row gap-3 items-stretch">
+          <div className="flex flex-col md:flex-row gap-3 items-stretch min-w-0">
             {/* Stats Block */}
             <motion.div
               className="border border-primary/20 bg-background md:w-[180px] lg:w-[200px] shrink-0"
@@ -181,7 +180,7 @@ export default function HomeSplitPage() {
 
             {/* Specializations Block - Infinite Marquee */}
             <motion.div
-              className="border border-primary/20 bg-background flex-1 min-w-0"
+              className="border border-primary/20 bg-background flex-1 min-w-0 overflow-hidden"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: 0.2 }}
@@ -192,34 +191,24 @@ export default function HomeSplitPage() {
                   <span className="text-[9px] font-sf-mono text-primary/30">[03]</span>
                 </div>
               </div>
-              <div className="py-3 relative w-full overflow-hidden">
-                {/* Fade edges for seamless appearance */}
-                <div className="absolute left-0 top-0 bottom-0 w-12 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
-                <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
+              <div className="py-3 relative overflow-hidden">
+                {/* Fade edges */}
+                <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
+                <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
 
-                {/* Marquee wrapper with clip */}
-                <div className="w-full overflow-hidden">
-                  {/* Marquee track - uses inline style for width calculation */}
-                  <div
-                    className="flex gap-0 hover:[animation-play-state:paused]"
-                    style={{
-                      animation: "marquee 40s linear infinite",
-                      width: "max-content",
-                    }}
-                  >
+                {/* Marquee container */}
+                <div className="overflow-hidden">
+                  <div className="flex items-center whitespace-nowrap animate-[marquee_40s_linear_infinite] hover:[animation-play-state:paused]">
                     {[...specializations, ...specializations].map((item, idx) => (
-                      <div key={idx} className="flex items-center shrink-0">
-                        <span className="text-[10px] font-sf-mono text-primary/70 whitespace-nowrap px-4 uppercase tracking-widest">
+                      <span key={idx} className="flex items-center shrink-0">
+                        <span className="text-[10px] font-sf-mono text-primary/70 px-3 uppercase tracking-wider">
                           {item}
                         </span>
                         <span
-                          className="w-1 h-1 rounded-full bg-primary/50 shrink-0"
-                          style={{
-                            animation: `blink 2s ease-in-out infinite`,
-                            animationDelay: `${(idx % 5) * 0.4}s`,
-                          }}
+                          className="w-1 h-1 rounded-full bg-primary/40 shrink-0 animate-[blink_2s_ease-in-out_infinite]"
+                          style={{ animationDelay: `${(idx % 5) * 0.4}s` }}
                         />
-                      </div>
+                      </span>
                     ))}
                   </div>
                 </div>
@@ -228,10 +217,10 @@ export default function HomeSplitPage() {
           </div>
 
           {/* Bottom Section: Featured Project + Quick Actions */}
-          <div className="flex flex-col md:flex-row gap-3 items-stretch">
+          <div className="flex flex-col md:flex-row gap-3 items-stretch min-w-0">
             {/* Featured Project Tile */}
             <motion.div
-              className="border border-primary/20 bg-background flex-1"
+              className="border border-primary/20 bg-background flex-1 min-w-0"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: 0.3 }}
@@ -246,7 +235,7 @@ export default function HomeSplitPage() {
                 <h4 className="text-sm font-sf-mono font-bold text-primary mb-1">{featuredProject.title}</h4>
                 <p className="text-[10px] font-mono text-primary/60 mb-2">{featuredProject.description}</p>
                 <div className="flex items-center justify-between">
-                  <div className="flex gap-1">
+                  <div className="flex gap-1 flex-wrap">
                     {featuredProject.tags.map((tag, idx) => (
                       <span
                         key={idx}
