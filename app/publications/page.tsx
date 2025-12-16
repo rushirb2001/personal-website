@@ -308,28 +308,23 @@ export default function PublicationsPage() {
           </motion.button>
         )}
 
-        <div className="border-t border-primary/30 mt-4 pt-4 px-3">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-            <div>
-              <span className="block text-lg md:text-xl font-sf-mono font-bold text-primary">{stats.total}</span>
-              <span className="text-[9px] font-sf-mono text-primary/40 uppercase tracking-wider">PUBLICATIONS</span>
-            </div>
-            <div>
-              <span className="block text-lg md:text-xl font-sf-mono font-bold text-primary">
-                {stats.totalCitations}
-              </span>
-              <span className="text-[9px] font-sf-mono text-primary/40 uppercase tracking-wider">TOTAL CITATIONS</span>
-            </div>
-            <div>
-              <span className="block text-lg md:text-xl font-sf-mono font-bold text-primary">{stats.venues}</span>
-              <span className="text-[9px] font-sf-mono text-primary/40 uppercase tracking-wider">VENUES</span>
-            </div>
-            <div>
-              <span className="block text-lg md:text-xl font-sf-mono font-bold text-primary">{stats.yearRange}</span>
-              <span className="text-[9px] font-sf-mono text-primary/40 uppercase tracking-wider">YEAR RANGE</span>
-            </div>
+        <motion.div
+          className="flex items-center justify-between border-t border-primary/20 pt-3 mt-4 px-3"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.2, delay: 0.3 }}
+        >
+          <div className="flex flex-wrap gap-2 sm:gap-3 md:gap-4 text-[9px] sm:text-[10px] font-sf-mono text-primary/40 uppercase tracking-wider">
+            <span>{stats.total} PUBLICATIONS</span>
+            <span className="text-primary/20">/</span>
+            <span>{stats.totalCitations} CITATIONS</span>
+            <span className="text-primary/20">/</span>
+            <span>{stats.venues} VENUES</span>
+            <span className="text-primary/20">/</span>
+            <span>{stats.yearRange}</span>
           </div>
-        </div>
+          <div className="text-[9px] sm:text-[10px] font-sf-mono text-primary/30">{"LAST.UPDATED: 2025"}</div>
+        </motion.div>
       </div>
     </PageLayout>
   )
