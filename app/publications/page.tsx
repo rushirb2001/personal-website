@@ -201,6 +201,7 @@ export default function PublicationsPage() {
   const visiblePublications = sortedPublications.slice(startIndex, startIndex + ITEMS_PER_PAGE)
   const canShowPrevious = startIndex > 0
   const canShowNext = startIndex + ITEMS_PER_PAGE < sortedPublications.length
+  const showPaginationControls = sortedPublications.length > ITEMS_PER_PAGE
 
   useEffect(() => {
     const handleEscKey = (event: KeyboardEvent) => {
@@ -215,7 +216,7 @@ export default function PublicationsPage() {
   return (
     <PageLayout title="PUBLICATIONS" subtitle="RESEARCH OUTPUT">
       <div className="space-y-0">
-        {(canShowPrevious || canShowNext) && (
+        {showPaginationControls && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -237,7 +238,9 @@ export default function PublicationsPage() {
               {sortedPublications.length}
             </span>
             <button
-              onClick={() => setStartIndex((prev) => prev + ITEMS_PER_PAGE)}
+              onClick={() =>
+                setStartIndex((prev) => Math.min(prev + ITEMS_PER_PAGE, sortedPublications.length - ITEMS_PER_PAGE))
+              }
               disabled={!canShowNext}
               className={`px-4 py-1.5 text-[10px] font-sf-mono uppercase tracking-wider border transition-all duration-150 w-32 ${
                 canShowNext
