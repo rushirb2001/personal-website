@@ -461,9 +461,9 @@ export default function HomeSplitPage() {
                   >
                     {item.label}
                     <ArrowRight
-                      className="h-3 w-3 group-hover:translate-x-1 transition-transform duration-300 animate-arrow-push-1"
+                      className="h-3 w-3 group-hover:translate-x-1 transition-transform duration-300"
                       style={{
-                        animation: `arrow-push 1.5s ease-in-out infinite`,
+                        animation: `animate-arrow-push-1`,
                         animationDelay: `${idx * 150}ms`,
                       }}
                     />
