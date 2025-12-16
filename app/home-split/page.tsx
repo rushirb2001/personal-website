@@ -456,14 +456,14 @@ export default function HomeSplitPage() {
                   <Button
                     key={idx}
                     variant="ghost"
-                    className="h-7 w-full justify-between text-[10px] font-sf-mono border border-primary/20 hover:bg-primary hover:text-background rounded-none transition-colors group"
+                    className="h-7 w-full justify-between text-[10px] font-sf-mono border border-primary/20 hover:bg-primary hover:text-background rounded-none transition-colors group animate-arrow-push-1"
                     onClick={() => navigateTo(item.path)}
                   >
                     {item.label}
                     <ArrowRight
                       className="h-3 w-3 group-hover:translate-x-1 transition-transform duration-300"
                       style={{
-                        animation: `animate-arrow-push-1`,
+                        animation: `arrow-push 1.5s ease-in-out infinite`,
                         animationDelay: `${idx * 150}ms`,
                       }}
                     />
