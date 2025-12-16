@@ -141,7 +141,7 @@ function CategoryBlock({
   return (
     <motion.div
       className={`border border-primary/20 flex flex-col transition-colors duration-150 ${fullWidth ? "col-span-1 md:col-span-2" : ""} ${
-        isContainerHovered ? "bg-primary/10 border-primary/40" : "bg-background"
+        isContainerHovered ? "bg-primary/5 border-primary/40" : "bg-background"
       }`}
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
