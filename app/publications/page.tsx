@@ -114,7 +114,7 @@ export default function PublicationsPage() {
       citations: 3,
     },
     {
-      id: "002",
+      id: "007",
       title: "CLASSIFICATION OF POTENTIALLY HAZARDOUS ASTEROIDS USING SUPERVISED QUANTUM MACHINE LEARNING",
       venue: "IEEE ACCESS",
       authors: "R. BHAVSAR, N. K. JADAV, U. BODKHE, R. GUPTA, S. TANWAR, G. SHARMA, P. N. BOKORO, R. SHARMA",
@@ -128,7 +128,7 @@ export default function PublicationsPage() {
       citations: 45,
     },
     {
-      id: "003",
+      id: "008",
       title: "METAHATE: AI-BASED HATE SPEECH DETECTION FOR SECURED ONLINE GAMING IN METAVERSE USING BLOCKCHAIN",
       venue: "SECURITY AND PRIVACY",
       authors:
@@ -143,7 +143,7 @@ export default function PublicationsPage() {
       citations: 28,
     },
     {
-      id: "004",
+      id: "009",
       title: "MACE-PINNS: MULTI-NETWORK DRIVEN DECOUPLING OF INTERDEPENDENT PHYSICS IN COUPLED PDE SYSTEMS",
       venue: "ARIZONA STATE UNIVERSITY DISSERTATIONS",
       authors: "R. BHAVSAR",
@@ -157,7 +157,7 @@ export default function PublicationsPage() {
       citations: 3,
     },
     {
-      id: "005",
+      id: "010",
       title: "MACE-PINNS: MULTI-NETWORK DRIVEN DECOUPLING OF INTERDEPENDENT PHYSICS IN COUPLED PDE SYSTEMS",
       venue: "ARIZONA STATE UNIVERSITY DISSERTATIONS",
       authors: "R. BHAVSAR",
@@ -171,7 +171,7 @@ export default function PublicationsPage() {
       citations: 3,
     },
     {
-      id: "006",
+      id: "011",
       title: "MACE-PINNS: MULTI-NETWORK DRIVEN DECOUPLING OF INTERDEPENDENT PHYSICS IN COUPLED PDE SYSTEMS",
       venue: "ARIZONA STATE UNIVERSITY DISSERTATIONS",
       authors: "R. BHAVSAR",
