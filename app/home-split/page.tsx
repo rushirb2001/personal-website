@@ -368,7 +368,7 @@ export default function HomeSplitPage() {
                     {featuredProjects.length > 1 && (
                       <button
                         onClick={goToPrevFeatured}
-                        className="w-5 h-5 flex items-center justify-center border border-primary/20 hover:bg-primary hover:text-background transition-colors"
+                        className="w-5 h-5 flex items-center justify-center border border-primary/20 hover:bg-primary hover:text-background transition-colors animate-[pulse_2.5s_ease-in-out_infinite]"
                       >
                         <ChevronLeft className="h-3 w-3" />
                       </button>
@@ -384,7 +384,7 @@ export default function HomeSplitPage() {
                     {featuredProjects.length > 1 && (
                       <button
                         onClick={goToNextFeatured}
-                        className="w-5 h-5 flex items-center justify-center border border-primary/20 hover:bg-primary hover:text-background transition-colors"
+                        className="w-5 h-5 flex items-center justify-center border border-primary/20 hover:bg-primary hover:text-background transition-colors animate-[pulse_2.5s_ease-in-out_infinite]"
                       >
                         <ChevronRight className="h-3 w-3" />
                       </button>
@@ -456,11 +456,11 @@ export default function HomeSplitPage() {
                   <Button
                     key={idx}
                     variant="ghost"
-                    className="h-7 w-full justify-between text-[10px] font-sf-mono border border-primary/20 hover:bg-primary hover:text-background rounded-none transition-colors"
+                    className="h-7 w-full justify-between text-[10px] font-sf-mono border border-primary/20 hover:bg-primary hover:text-background rounded-none transition-colors group"
                     onClick={() => navigateTo(item.path)}
                   >
                     {item.label}
-                    <ArrowRight className="h-3 w-3" />
+                    <ArrowRight className="h-3 w-3 group-hover:translate-x-0.5 transition-transform duration-300 animate-[pulse_2s_ease-in-out_infinite]" />
                   </Button>
                 ))}
               </div>
