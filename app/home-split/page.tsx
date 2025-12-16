@@ -447,7 +447,7 @@ export default function HomeSplitPage() {
                   <span className="text-[9px] font-sf-mono text-primary/30">[05]</span>
                 </div>
               </div>
-              <div className="p-2 flex flex-col gap-1.5">
+              <div className="p-2 flex flex-col gap-1.5 ">
                 {[
                   { label: "PROJECTS", path: "/projects" },
                   { label: "EXPERIENCE", path: "/experience" },
@@ -463,7 +463,7 @@ export default function HomeSplitPage() {
                     <ArrowRight
                       className="h-3 w-3 group-hover:translate-x-1 transition-transform duration-300"
                       style={{
-                        animation: `arrow-push 1.5s ease-in-out infinite animate-arrow-push-1`,
+                        animation: `arrow-push 1.5s ease-in-out infinite`,
                         animationDelay: `${idx * 150}ms`,
                       }}
                     />
