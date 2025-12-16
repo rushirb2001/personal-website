@@ -260,7 +260,7 @@ export default function HomeSplitPage() {
                 <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
                 <div className="overflow-hidden">
                   <div
-                    className="flex items-center whitespace-nowrap animate-[marquee_30s_linear_infinite] hover:[animation-duration:40s]"
+                    className="flex items-center whitespace-nowrap animate-[marquee_30s_linear_infinite] hover:[animation-duration:60s]"
                     style={{ transform: `translateX(${marquee1Offset}px)`, transition: "transform 0.3s ease-out" }}
                   >
                     {[...specializationsRow1, ...specializationsRow1].map((item, idx) => (
