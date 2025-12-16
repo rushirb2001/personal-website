@@ -32,7 +32,7 @@ export const projects: Project[] = [
       "Designed responsive UI with dark mode support",
       "Integrated user authentication and role-based access control",
     ],
-    feature: false,
+    feature: true,
   },
   {
     id: "proj_realtime_analytics_002",
@@ -50,7 +50,7 @@ export const projects: Project[] = [
       "Implemented WebSocket connections for live updates",
       "Achieved 99.9% uptime over 6 months",
     ],
-    feature: false,
+    feature: true,
   },
   {
     id: "proj_ml_pipeline_003",

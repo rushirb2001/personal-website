@@ -3,14 +3,15 @@
 import type React from "react"
 
 import { PageLayout } from "@/components/layout/page-layout"
-import { motion } from "framer-motion"
-import { ArrowRight, Github, Linkedin, FileText, MapPin, Mail } from "lucide-react"
+import { motion, AnimatePresence } from "framer-motion"
+import { ArrowRight, Github, Linkedin, FileText, MapPin, Mail, ChevronLeft, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useNavigation } from "@/contexts/navigation-context"
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect, useCallback } from "react"
 import { ResumeModal } from "@/components/features/resume/resume-modal"
 import Image from "next/image"
 import Link from "next/link"
+import { projects } from "@/app/projects/data"
 
 const specializationsRow1 = [
   "Machine Learning",
@@ -51,13 +52,6 @@ const specializationsRow3 = [
   "Model Serving",
 ]
 
-const featuredProject = {
-  title: "AI-Powered Healthcare Diagnostics",
-  description: "Transformer-based model for early disease detection achieving 94% accuracy",
-  tags: ["PyTorch", "Transformers", "AWS"],
-  link: "/projects",
-}
-
 const stats = [
   { label: "PROJECTS", value: "15+" },
   { label: "PUBLICATIONS", value: "3+" },
@@ -68,12 +62,29 @@ export default function HomeSplitPage() {
   const { navigateTo } = useNavigation()
   const [isResumeModalOpen, setIsResumeModalOpen] = useState(false)
 
+  const featuredProjects = projects.filter((p) => p.feature)
+  const [currentFeaturedIndex, setCurrentFeaturedIndex] = useState(0)
+
   const marquee1Ref = useRef<HTMLDivElement>(null)
   const marquee2Ref = useRef<HTMLDivElement>(null)
   const marquee3Ref = useRef<HTMLDivElement>(null)
   const [marquee1Offset, setMarquee1Offset] = useState(0)
   const [marquee2Offset, setMarquee2Offset] = useState(0)
   const [marquee3Offset, setMarquee3Offset] = useState(0)
+
+  const goToNextFeatured = useCallback(() => {
+    setCurrentFeaturedIndex((prev) => (prev + 1) % featuredProjects.length)
+  }, [featuredProjects.length])
+
+  const goToPrevFeatured = useCallback(() => {
+    setCurrentFeaturedIndex((prev) => (prev - 1 + featuredProjects.length) % featuredProjects.length)
+  }, [featuredProjects.length])
+
+  useEffect(() => {
+    if (featuredProjects.length <= 1) return
+    const interval = setInterval(goToNextFeatured, 3000)
+    return () => clearInterval(interval)
+  }, [featuredProjects.length, goToNextFeatured])
 
   const handleMarqueeHover = (
     e: React.MouseEvent<HTMLDivElement>,
@@ -87,7 +98,6 @@ export default function HomeSplitPage() {
     const centerX = rect.width / 2
     const direction = x < centerX ? -1 : 1
     const intensity = Math.abs(x - centerX) / centerX
-    // Reverse marquee moves opposite
     const finalDirection = isReverse ? -direction : direction
     setOffset(finalDirection * intensity * 30)
   }
@@ -95,6 +105,8 @@ export default function HomeSplitPage() {
   const handleMarqueeLeave = (setOffset: React.Dispatch<React.SetStateAction<number>>) => {
     setOffset(0)
   }
+
+  const currentFeatured = featuredProjects[currentFeaturedIndex]
 
   return (
     <>
@@ -329,35 +341,93 @@ export default function HomeSplitPage() {
           <div className="flex flex-col md:flex-row gap-3 items-stretch min-w-0">
             {/* Featured Project Tile */}
             <motion.div
-              className="border border-primary/20 bg-background flex-1 min-w-0"
+              className="border border-primary/20 bg-background flex-1 min-w-0 flex flex-col"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: 0.3 }}
             >
               <div className="border-b border-primary/20 px-3 py-1.5 bg-primary/5">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-xs font-sf-mono font-bold text-primary tracking-tighter">FEATURED PROJECT</h3>
-                  <span className="text-[9px] font-sf-mono text-primary/30">[04]</span>
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-xs font-sf-mono font-bold text-primary tracking-tighter">FEATURED PROJECT</h3>
+                    {featuredProjects.length > 1 && (
+                      <span className="text-[8px] font-sf-mono text-primary/40">
+                        {currentFeaturedIndex + 1}/{featuredProjects.length}
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-1">
+                    {featuredProjects.length > 1 && (
+                      <>
+                        <button
+                          onClick={goToPrevFeatured}
+                          className="w-5 h-5 flex items-center justify-center border border-primary/20 hover:bg-primary hover:text-background transition-colors"
+                        >
+                          <ChevronLeft className="h-3 w-3" />
+                        </button>
+                        <button
+                          onClick={goToNextFeatured}
+                          className="w-5 h-5 flex items-center justify-center border border-primary/20 hover:bg-primary hover:text-background transition-colors"
+                        >
+                          <ChevronRight className="h-3 w-3" />
+                        </button>
+                      </>
+                    )}
+                    <span className="text-[9px] font-sf-mono text-primary/30 ml-1">[04]</span>
+                  </div>
                 </div>
               </div>
-              <div className="p-3">
-                <h4 className="text-sm font-sf-mono font-bold text-primary mb-1">{featuredProject.title}</h4>
-                <p className="text-[10px] font-mono text-primary/60 mb-2">{featuredProject.description}</p>
-                <div className="flex items-center justify-between">
-                  <div className="flex gap-1 flex-wrap">
-                    {featuredProject.tags.map((tag, idx) => (
-                      <span
-                        key={idx}
-                        className="px-1.5 py-0.5 text-[8px] font-sf-mono border border-primary/20 text-primary/60"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
+              <div className="p-3 flex-1 flex flex-col justify-between relative overflow-hidden">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={currentFeatured?.id}
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                    transition={{ duration: 0.2 }}
+                    className="flex-1"
+                  >
+                    <h4 className="text-sm font-sf-mono font-bold text-primary mb-1 truncate">
+                      {currentFeatured?.title}
+                    </h4>
+                    <p className="text-[10px] font-mono text-primary/60 mb-2 line-clamp-2">
+                      {currentFeatured?.description}
+                    </p>
+                    <div className="flex gap-1 flex-wrap">
+                      {currentFeatured?.technologies.slice(0, 4).map((tech, idx) => (
+                        <span
+                          key={idx}
+                          className="px-1.5 py-0.5 text-[8px] font-sf-mono border border-primary/20 text-primary/60"
+                        >
+                          {tech}
+                        </span>
+                      ))}
+                      {currentFeatured?.technologies.length > 4 && (
+                        <span className="px-1.5 py-0.5 text-[8px] font-sf-mono text-primary/40">
+                          +{currentFeatured.technologies.length - 4}
+                        </span>
+                      )}
+                    </div>
+                  </motion.div>
+                </AnimatePresence>
+                <div className="flex items-center justify-between mt-2 pt-2 border-t border-primary/10">
+                  {featuredProjects.length > 1 && (
+                    <div className="flex gap-1">
+                      {featuredProjects.map((_, idx) => (
+                        <button
+                          key={idx}
+                          onClick={() => setCurrentFeaturedIndex(idx)}
+                          className={`w-1.5 h-1.5 rounded-full transition-colors ${
+                            idx === currentFeaturedIndex ? "bg-primary" : "bg-primary/20"
+                          }`}
+                        />
+                      ))}
+                    </div>
+                  )}
                   <Button
                     variant="ghost"
-                    className="h-6 px-2 text-[9px] font-sf-mono border border-primary/20 hover:bg-primary hover:text-background rounded-none"
-                    onClick={() => navigateTo(featuredProject.link)}
+                    className="h-6 px-2 text-[9px] font-sf-mono border border-primary/20 hover:bg-primary hover:text-background rounded-none ml-auto"
+                    onClick={() => navigateTo("/projects")}
                   >
                     VIEW ALL
                     <ArrowRight className="h-2.5 w-2.5 ml-1" />
