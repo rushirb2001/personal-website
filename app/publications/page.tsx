@@ -23,8 +23,7 @@ interface Publication {
 export default function PublicationsPage() {
   const [selectedPublication, setSelectedPublication] = useState<Publication | null>(null)
   const [hoveredId, setHoveredId] = useState<string | null>(null)
-  const [currentPage, setCurrentPage] = useState(0)
-  const ITEMS_PER_PAGE = 5
+  const [visibleCount, setVisibleCount] = useState(5)
   const isMobile = useMediaQuery("(max-width: 768px)")
 
   const publications: Publication[] = [
@@ -69,7 +68,7 @@ export default function PublicationsPage() {
       status: "RELEASED",
       doi: "10.1002/SPY2.343",
       pdfLink: "https://onlinelibrary.wiley.com/doi/abs/10.1002/spy2.343",
-      citations: 8,
+      citations: 28,
     },
     {
       id: "004",
@@ -91,13 +90,16 @@ export default function PublicationsPage() {
     return [...publications].sort((a, b) => b.citations - a.citations)
   }, [])
 
-  const totalPages = Math.ceil(sortedPublications.length / ITEMS_PER_PAGE)
-  const currentPublications = sortedPublications.slice(currentPage * ITEMS_PER_PAGE, (currentPage + 1) * ITEMS_PER_PAGE)
-  const hasMorePages = currentPage < totalPages - 1
+  const stats = useMemo(() => {
+    const totalCitations = publications.reduce((sum, pub) => sum + pub.citations, 0)
+    const years = publications.map((p) => Number.parseInt(p.year))
+    const yearRange = `${Math.min(...years)}-${Math.max(...years)}`
+    const venues = new Set(publications.map((p) => p.venue)).size
+    return { totalCitations, yearRange, venues, total: publications.length }
+  }, [])
 
-  const totalCitations = sortedPublications.reduce((sum, pub) => sum + pub.citations, 0)
-  const avgCitations = (totalCitations / sortedPublications.length).toFixed(1)
-  const yearRange = `${Math.min(...sortedPublications.map((p) => Number.parseInt(p.year)))}-${Math.max(...sortedPublications.map((p) => Number.parseInt(p.year)))}`
+  const visiblePublications = sortedPublications.slice(0, visibleCount)
+  const hasMore = visibleCount < sortedPublications.length
 
   // Handle ESC key press
   useEffect(() => {
@@ -113,17 +115,16 @@ export default function PublicationsPage() {
   return (
     <PageLayout title="PUBLICATIONS" subtitle="RESEARCH OUTPUT">
       <div className="space-y-0">
-        <div className="hidden md:grid grid-cols-[50px_1fr_140px_70px_50px_50px] gap-3 px-3 py-2 border-b border-primary/30 text-[10px] font-sf-mono text-primary/50 uppercase tracking-wider">
-          <span>NO.</span>
+        <div className="hidden md:grid grid-cols-[1fr_180px_80px_60px_60px] gap-4 px-3 py-2 border-b border-primary/30 text-[10px] font-sf-mono text-primary/50 uppercase tracking-wider">
+          <span>TITLE</span>
           <span>VENUE</span>
-          <span>AUTHORS</span>
           <span>YEAR</span>
           <span>CIT</span>
           <span>LINK</span>
         </div>
 
         {/* Publication rows with inline expansion */}
-        {currentPublications.map((pub, index) => (
+        {visiblePublications.map((pub, index) => (
           <div key={pub.id}>
             <motion.div
               initial={{ opacity: 0, x: -10 }}
@@ -136,30 +137,20 @@ export default function PublicationsPage() {
               onMouseLeave={() => setHoveredId(null)}
               onClick={() => setSelectedPublication(selectedPublication?.id === pub.id ? null : pub)}
             >
-              {/* Desktop row - removed title, added citations column */}
-              <div className="hidden md:grid grid-cols-[50px_1fr_140px_70px_50px_50px] gap-3 px-3 py-3 items-center">
+              <div className="hidden md:grid grid-cols-[1fr_180px_80px_60px_60px] gap-4 px-3 py-3 items-center">
+                <span className="text-xs font-sf-mono font-medium truncate pr-4">{pub.title}</span>
                 <span
-                  className={`text-xs font-sf-mono ${selectedPublication?.id === pub.id ? "text-background/70" : "text-primary/40"}`}
-                >
-                  [{pub.id}]
-                </span>
-                <span
-                  className={`text-[10px] font-sf-mono truncate ${selectedPublication?.id === pub.id ? "text-background/80" : "text-primary/70"}`}
+                  className={`text-[10px] font-sf-mono truncate ${selectedPublication?.id === pub.id ? "text-background/70" : "text-primary/60"}`}
                 >
                   {pub.venue}
                 </span>
                 <span
-                  className={`text-[10px] font-sf-mono truncate ${selectedPublication?.id === pub.id ? "text-background/60" : "text-primary/50"}`}
-                >
-                  {pub.authors.split(",")[0]}...
-                </span>
-                <span
                   className={`text-xs font-sf-mono ${selectedPublication?.id === pub.id ? "text-background/70" : "text-primary/50"}`}
                 >
-                  {pub.year}
+                  {pub.year}.{pub.month}
                 </span>
                 <span
-                  className={`text-xs font-sf-mono font-medium ${selectedPublication?.id === pub.id ? "text-background" : "text-primary"}`}
+                  className={`text-xs font-sf-mono font-medium ${selectedPublication?.id === pub.id ? "text-background" : "text-primary/70"}`}
                 >
                   {pub.citations}
                 </span>
@@ -178,29 +169,24 @@ export default function PublicationsPage() {
                 </a>
               </div>
 
-              {/* Mobile row */}
               <div className="md:hidden px-3 py-3">
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
-                      <span
-                        className={`text-[10px] font-sf-mono ${selectedPublication?.id === pub.id ? "text-background/60" : "text-primary/40"}`}
-                      >
-                        [{pub.id}]
-                      </span>
                       <span
                         className={`text-[10px] font-sf-mono ${selectedPublication?.id === pub.id ? "text-background/60" : "text-primary/50"}`}
                       >
                         {pub.year}
                       </span>
                       <span
-                        className={`text-[10px] font-sf-mono font-medium ${selectedPublication?.id === pub.id ? "text-background" : "text-primary"}`}
+                        className={`text-[10px] font-sf-mono ${selectedPublication?.id === pub.id ? "text-background/60" : "text-primary/40"}`}
                       >
-                        {pub.citations} cit
+                        {pub.citations} citations
                       </span>
                     </div>
+                    <h3 className="text-xs font-sf-mono font-medium line-clamp-2">{pub.title}</h3>
                     <p
-                      className={`text-[10px] font-sf-mono ${selectedPublication?.id === pub.id ? "text-background/70" : "text-primary/60"}`}
+                      className={`text-[10px] font-sf-mono mt-1 ${selectedPublication?.id === pub.id ? "text-background/60" : "text-primary/50"}`}
                     >
                       {pub.venue}
                     </p>
@@ -229,12 +215,14 @@ export default function PublicationsPage() {
                   transition={{ duration: 0.2 }}
                   className="overflow-hidden border-b border-primary/20"
                 >
-                  <div className="bg-primary/5 p-4 md:p-5">
-                    <div className="flex items-start justify-between mb-3">
+                  <div className="bg-primary/5 p-4 md:p-6">
+                    <div className="flex items-start justify-between mb-4">
                       <div className="flex items-center gap-3">
-                        <span className="text-[10px] font-sf-mono text-primary/50">[{selectedPublication.id}]</span>
                         <span className="text-[10px] font-sf-mono px-2 py-0.5 border border-green-500/30 text-green-500 bg-green-500/10">
                           {selectedPublication.status}
+                        </span>
+                        <span className="text-[10px] font-sf-mono text-primary/50">
+                          {selectedPublication.citations} CITATIONS
                         </span>
                       </div>
                       <button
@@ -248,49 +236,54 @@ export default function PublicationsPage() {
                       </button>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-6">
                       {/* Left column */}
-                      <div className="space-y-3">
+                      <div className="space-y-4">
                         <div>
                           <span className="text-[9px] font-sf-mono text-primary/40 uppercase tracking-wider">
                             TITLE
                           </span>
-                          <h2 className="text-xs font-sf-mono font-medium mt-1">{selectedPublication.title}</h2>
+                          <h2 className="text-sm font-sf-mono font-medium mt-1">{selectedPublication.title}</h2>
                         </div>
                         <div>
                           <span className="text-[9px] font-sf-mono text-primary/40 uppercase tracking-wider">
                             ABSTRACT
                           </span>
-                          <p className="text-[11px] font-sf-mono text-primary/70 mt-1 leading-relaxed border-l-2 border-primary/20 pl-3">
+                          <p className="text-xs font-sf-mono text-primary/70 mt-1 leading-relaxed border-l-2 border-primary/20 pl-3">
                             {selectedPublication.abstract}
                           </p>
                         </div>
                       </div>
 
                       {/* Right column */}
-                      <div className="space-y-2 md:border-l md:border-primary/10 md:pl-4">
+                      <div className="space-y-3 md:border-l md:border-primary/10 md:pl-6">
                         <div>
                           <span className="text-[9px] font-sf-mono text-primary/40 uppercase tracking-wider">
                             AUTHORS
                           </span>
-                          <p className="text-[10px] font-sf-mono text-primary/70 mt-1">{selectedPublication.authors}</p>
+                          <p className="text-[11px] font-sf-mono text-primary/70 mt-1">{selectedPublication.authors}</p>
+                        </div>
+                        <div>
+                          <span className="text-[9px] font-sf-mono text-primary/40 uppercase tracking-wider">
+                            VENUE
+                          </span>
+                          <p className="text-[11px] font-sf-mono text-primary/70 mt-1">{selectedPublication.venue}</p>
                         </div>
                         <div>
                           <span className="text-[9px] font-sf-mono text-primary/40 uppercase tracking-wider">DOI</span>
-                          <p className="text-[9px] font-sf-mono text-primary/50 mt-1 break-all">
+                          <p className="text-[10px] font-sf-mono text-primary/50 mt-1 break-all">
                             {selectedPublication.doi}
                           </p>
                         </div>
-                        <div className="pt-2 border-t border-primary/10">
+                        <div className="pt-3 border-t border-primary/10">
                           <a
                             href={selectedPublication.pdfLink}
                             target="_blank"
                             rel="noopener noreferrer"
-                            onClick={(e) => e.stopPropagation()}
-                            className="inline-flex items-center gap-2 text-[10px] font-sf-mono px-3 py-1.5 border border-primary/30 hover:bg-primary hover:text-background transition-all duration-150"
+                            className="inline-flex items-center gap-2 text-xs font-sf-mono px-3 py-2 border border-primary/30 hover:bg-primary hover:text-background transition-all duration-150"
                           >
                             <FileText className="w-3 h-3" />
-                            VIEW PDF
+                            VIEW PUBLICATION
                             <ExternalLink className="w-3 h-3" />
                           </a>
                         </div>
@@ -303,51 +296,38 @@ export default function PublicationsPage() {
           </div>
         ))}
 
-        {hasMorePages && (
+        {hasMore && (
           <motion.button
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            onClick={() => setCurrentPage((prev) => prev + 1)}
-            className="w-full py-3 border-b border-primary/10 text-[10px] font-sf-mono text-primary/60 hover:bg-primary/5 hover:text-primary transition-all duration-150 flex items-center justify-center gap-2"
+            onClick={() => setVisibleCount((prev) => prev + 5)}
+            className="w-full py-3 border-b border-primary/10 text-xs font-sf-mono text-primary/60 hover:bg-primary/5 hover:text-primary transition-all duration-150 flex items-center justify-center gap-2"
           >
-            SHOW NEXT {Math.min(ITEMS_PER_PAGE, sortedPublications.length - (currentPage + 1) * ITEMS_PER_PAGE)}
+            SHOW NEXT {Math.min(5, sortedPublications.length - visibleCount)} PUBLICATIONS
             <ChevronRight className="w-3 h-3" />
-          </motion.button>
-        )}
-
-        {/* Show previous button if not on first page */}
-        {currentPage > 0 && (
-          <motion.button
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            onClick={() => setCurrentPage((prev) => prev - 1)}
-            className="w-full py-2 text-[10px] font-sf-mono text-primary/40 hover:text-primary/60 transition-all duration-150"
-          >
-            ← PREVIOUS
           </motion.button>
         )}
 
         <div className="border-t border-primary/30 mt-4 pt-4 px-3">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
             <div>
-              <span className="block text-lg font-sf-mono font-bold text-primary">{sortedPublications.length}</span>
+              <span className="block text-lg md:text-xl font-sf-mono font-bold text-primary">{stats.total}</span>
               <span className="text-[9px] font-sf-mono text-primary/40 uppercase tracking-wider">PUBLICATIONS</span>
             </div>
             <div>
-              <span className="block text-lg font-sf-mono font-bold text-primary">{totalCitations}</span>
+              <span className="block text-lg md:text-xl font-sf-mono font-bold text-primary">
+                {stats.totalCitations}
+              </span>
               <span className="text-[9px] font-sf-mono text-primary/40 uppercase tracking-wider">TOTAL CITATIONS</span>
             </div>
             <div>
-              <span className="block text-lg font-sf-mono font-bold text-primary">{avgCitations}</span>
-              <span className="text-[9px] font-sf-mono text-primary/40 uppercase tracking-wider">AVG CITATIONS</span>
+              <span className="block text-lg md:text-xl font-sf-mono font-bold text-primary">{stats.venues}</span>
+              <span className="text-[9px] font-sf-mono text-primary/40 uppercase tracking-wider">VENUES</span>
             </div>
             <div>
-              <span className="block text-lg font-sf-mono font-bold text-primary">{yearRange}</span>
+              <span className="block text-lg md:text-xl font-sf-mono font-bold text-primary">{stats.yearRange}</span>
               <span className="text-[9px] font-sf-mono text-primary/40 uppercase tracking-wider">YEAR RANGE</span>
             </div>
-          </div>
-          <div className="text-center mt-3 text-[9px] font-sf-mono text-primary/30">
-            SORTED BY CITATIONS • CLICK ROW TO EXPAND
           </div>
         </div>
       </div>
