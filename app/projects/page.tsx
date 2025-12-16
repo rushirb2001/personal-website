@@ -222,7 +222,7 @@ export default function ProjectsPage() {
                       <>
                         <div className="flex items-center gap-2">
                           <Terminal className="h-3 w-3 text-primary/70" />
-                          <span className="text-xs font-sf-mono text-primary/70">{project.id}</span>
+                          <span className="text-xs font-sf-mono text-primary/70">{project.category.toUpperCase()}</span>
                         </div>
                         <div className={`text-xs font-sf-mono ${getStatusColor(project.status)}`}>{project.status}</div>
                       </>
@@ -259,14 +259,6 @@ export default function ProjectsPage() {
                       </h3>
                       <p className="text-xs text-primary/70 leading-relaxed h-10 line-clamp-2">{project.description}</p>
                     </div>
-
-                    {/* Category & Date */}
-                    {selectedCategory === "All" && (
-                      <div className="flex items-center justify-between text-xs font-sf-mono text-primary/50 pt-2 border-t border-primary/10">
-                        <span>{project.category.toUpperCase()}</span>
-                        <span>{project.date}</span>
-                      </div>
-                    )}
                   </div>
 
                   {/* Footer Action */}
