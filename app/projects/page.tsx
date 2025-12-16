@@ -84,7 +84,6 @@ const techIconMap: Record<string, any> = {
   // ML/AI
   pytorch: SiPytorch,
   tensorflow: SiTensorflow,
-  jax: SiJax,
   numpy: SiNumpy,
   pandas: SiPandas,
   sklearn: SiScikitlearn,
