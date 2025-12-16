@@ -97,15 +97,19 @@ function SubcategoryRow({
 
   return (
     <motion.div
-      className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 py-1 border-b border-primary/5 last:border-b-0"
+      className={`flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 py-1.5 px-1.5 -mx-1.5 border-b border-primary/5 last:border-b-0 transition-all duration-150 cursor-pointer ${
+        isHovered ? "bg-primary/5" : ""
+      }`}
       initial={{ opacity: 0, x: -5 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.15, delay: baseDelay }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
       <span
-        className="text-[9px] sm:text-[10px] font-sf-mono text-primary/40 uppercase tracking-wider w-full sm:w-28 shrink-0 cursor-pointer hover:text-primary/70 transition-colors duration-100"
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
+        className={`text-[9px] sm:text-[10px] font-sf-mono uppercase tracking-wider w-full sm:w-28 shrink-0 transition-colors duration-100 ${
+          isHovered ? "text-primary/70" : "text-primary/40"
+        }`}
       >
         {title}
       </span>
