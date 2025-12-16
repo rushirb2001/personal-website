@@ -263,12 +263,7 @@ export default function PublicationsPage() {
                           </span>
                           <p className="text-[11px] font-sf-mono text-primary/70 mt-1">{selectedPublication.authors}</p>
                         </div>
-                        <div>
-                          <span className="text-[9px] font-sf-mono text-primary/40 uppercase tracking-wider">
-                            VENUE
-                          </span>
-                          <p className="text-[11px] font-sf-mono text-primary/70 mt-1">{selectedPublication.venue}</p>
-                        </div>
+                        
                         <div>
                           <span className="text-[9px] font-sf-mono text-primary/40 uppercase tracking-wider">DOI</span>
                           <p className="text-[10px] font-sf-mono text-primary/50 mt-1 break-all">
