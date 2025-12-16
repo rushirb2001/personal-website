@@ -43,6 +43,8 @@ export function TransitionOverlay() {
               transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
             >
               <div className="relative w-24 h-24">
+                <div className="absolute inset-0 rounded-full bg-primary/5" />
+
                 {/* Outer ring - thicker */}
                 <motion.div
                   className="absolute inset-0 border-2 border-primary/40 rounded-full"
