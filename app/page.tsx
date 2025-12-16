@@ -120,27 +120,27 @@ export default function Home() {
 
   return (
     <>
-      <motion.div
+      {/* <motion.div
         className="fixed top-0 left-0 right-0 z-60"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
       >
         <Header />
-      </motion.div>
+      </motion.div> */}
 
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3, duration: 0.5 }}>
         <UpdatesBanner />
       </motion.div>
 
-      <motion.div
+      {/* <motion.div
         className="fixed bottom-0 left-0 right-0 z-60"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
       >
         <Footer />
-      </motion.div>
+      </motion.div> */}
 
       <PageLayout title="RUSHIR BHAVSAR" subtitle="DATA SCIENTIST • AI ENGINEER • ML RESEARCHER">
         <div className="flex flex-col gap-3 h-full min-w-0 overflow-hidden">
