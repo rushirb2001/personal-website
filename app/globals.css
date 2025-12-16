@@ -885,6 +885,16 @@ main {
   }
 }
 
+/* Add reverse marquee animation for second row */
+@keyframes marqueeReverse {
+  0% {
+    transform: translateX(-50%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
 .animate-marquee {
   animation: marquee 40s linear infinite;
 }

@@ -1,36 +1,41 @@
 "use client"
 
+import type React from "react"
+
 import { PageLayout } from "@/components/layout/page-layout"
 import { motion } from "framer-motion"
 import { ArrowRight, Github, Linkedin, FileText, MapPin, Mail } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useNavigation } from "@/contexts/navigation-context"
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { ResumeModal } from "@/components/features/resume/resume-modal"
 import Image from "next/image"
 import Link from "next/link"
 
-const specializations = [
+const specializationsRow1 = [
   "Machine Learning",
   "Deep Learning",
   "Computer Vision",
-  "NLP",
-  "LLM/RAG",
+  "Natural Language Processing",
+  "Large Language Models",
   "MLOps",
+  "Neural Networks",
   "Transformers",
+  "Generative AI",
+  "Reinforcement Learning",
+]
+
+const specializationsRow2 = [
   "PyTorch",
   "TensorFlow",
   "Distributed Training",
-  "Model Evaluation",
-  "GenAI",
-  "Diffusion Models",
-  "Neural Networks",
+  "Model Optimization",
   "Data Engineering",
   "Cloud ML",
-  "Model Optimization",
   "Feature Engineering",
-  "Time Series",
-  "Reinforcement Learning",
+  "Time Series Analysis",
+  "RAG Systems",
+  "Diffusion Models",
 ]
 
 const featuredProject = {
@@ -49,6 +54,32 @@ const stats = [
 export default function HomeSplitPage() {
   const { navigateTo } = useNavigation()
   const [isResumeModalOpen, setIsResumeModalOpen] = useState(false)
+
+  const marquee1Ref = useRef<HTMLDivElement>(null)
+  const marquee2Ref = useRef<HTMLDivElement>(null)
+  const [marquee1Offset, setMarquee1Offset] = useState(0)
+  const [marquee2Offset, setMarquee2Offset] = useState(0)
+
+  const handleMarqueeHover = (
+    e: React.MouseEvent<HTMLDivElement>,
+    ref: React.RefObject<HTMLDivElement>,
+    setOffset: React.Dispatch<React.SetStateAction<number>>,
+    isReverse: boolean,
+  ) => {
+    if (!ref.current) return
+    const rect = ref.current.getBoundingClientRect()
+    const x = e.clientX - rect.left
+    const centerX = rect.width / 2
+    const direction = x < centerX ? -1 : 1
+    const intensity = Math.abs(x - centerX) / centerX
+    // Reverse marquee moves opposite
+    const finalDirection = isReverse ? -direction : direction
+    setOffset(finalDirection * intensity * 30)
+  }
+
+  const handleMarqueeLeave = (setOffset: React.Dispatch<React.SetStateAction<number>>) => {
+    setOffset(0)
+  }
 
   return (
     <>
@@ -178,7 +209,6 @@ export default function HomeSplitPage() {
               </div>
             </motion.div>
 
-            {/* Specializations Block - Infinite Marquee */}
             <motion.div
               className="border border-primary/20 bg-background flex-1 min-w-0 overflow-hidden"
               initial={{ opacity: 0, y: 10 }}
@@ -191,22 +221,58 @@ export default function HomeSplitPage() {
                   <span className="text-[9px] font-sf-mono text-primary/30">[03]</span>
                 </div>
               </div>
-              <div className="py-3 relative overflow-hidden">
-                {/* Fade edges */}
+
+              {/* First Marquee - Left to Right */}
+              <div
+                ref={marquee1Ref}
+                className="py-2 relative overflow-hidden cursor-pointer"
+                onMouseMove={(e) => handleMarqueeHover(e, marquee1Ref, setMarquee1Offset, false)}
+                onMouseLeave={() => handleMarqueeLeave(setMarquee1Offset)}
+              >
                 <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
                 <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
-
-                {/* Marquee container */}
                 <div className="overflow-hidden">
-                  <div className="flex items-center whitespace-nowrap animate-[marquee_40s_linear_infinite] hover:[animation-play-state:paused]">
-                    {[...specializations, ...specializations].map((item, idx) => (
+                  <div
+                    className="flex items-center whitespace-nowrap animate-[marquee_30s_linear_infinite] hover:[animation-duration:60s]"
+                    style={{ transform: `translateX(${marquee1Offset}px)`, transition: "transform 0.3s ease-out" }}
+                  >
+                    {[...specializationsRow1, ...specializationsRow1].map((item, idx) => (
                       <span key={idx} className="flex items-center shrink-0">
                         <span className="text-[10px] font-sf-mono text-primary/70 px-3 uppercase tracking-wider">
                           {item}
                         </span>
                         <span
-                          className="w-1 h-1 rounded-full bg-primary/40 shrink-0 animate-[blink_2s_ease-in-out_infinite]"
-                          style={{ animationDelay: `${(idx % 5) * 0.4}s` }}
+                          className="w-1 h-1 rounded-full bg-green-500/60 shrink-0 animate-[blink_1.5s_ease-in-out_infinite]"
+                          style={{ animationDelay: `${(idx % 5) * 0.3}s` }}
+                        />
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Second Marquee - Right to Left (Reverse) */}
+              <div
+                ref={marquee2Ref}
+                className="py-2 relative overflow-hidden cursor-pointer border-t border-primary/10"
+                onMouseMove={(e) => handleMarqueeHover(e, marquee2Ref, setMarquee2Offset, true)}
+                onMouseLeave={() => handleMarqueeLeave(setMarquee2Offset)}
+              >
+                <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
+                <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
+                <div className="overflow-hidden">
+                  <div
+                    className="flex items-center whitespace-nowrap animate-[marqueeReverse_35s_linear_infinite] hover:[animation-duration:70s]"
+                    style={{ transform: `translateX(${marquee2Offset}px)`, transition: "transform 0.3s ease-out" }}
+                  >
+                    {[...specializationsRow2, ...specializationsRow2].map((item, idx) => (
+                      <span key={idx} className="flex items-center shrink-0">
+                        <span className="text-[10px] font-sf-mono text-primary/70 px-3 uppercase tracking-wider">
+                          {item}
+                        </span>
+                        <span
+                          className="w-1 h-1 rounded-full bg-green-500/60 shrink-0 animate-[blink_1.5s_ease-in-out_infinite]"
+                          style={{ animationDelay: `${(idx % 5) * 0.3}s` }}
                         />
                       </span>
                     ))}
