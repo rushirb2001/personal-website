@@ -2,11 +2,10 @@
 
 import type React from "react"
 
-import { motion } from "framer-motion"
+import { motion, AnimatePresence } from "framer-motion"
 import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
 import { PageLayout } from "@/components/layout/page-layout"
-import { motion, AnimatePresence } from "framer-motion"
 import { ArrowRight, Github, Linkedin, FileText, MapPin, Mail, ChevronLeft, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useNavigation } from "@/contexts/navigation-context"
@@ -62,7 +61,7 @@ const stats = [
   { label: "EXPERIENCE", value: "2+ YRS", hasIndicator: true },
 ]
 
-export default function HomeSplitPage() {
+export default function Home() {
   const { navigateTo } = useNavigation()
   const [isResumeModalOpen, setIsResumeModalOpen] = useState(false)
 
@@ -112,16 +111,6 @@ export default function HomeSplitPage() {
 
   const currentFeatured = featuredProjects[currentFeaturedIndex]
 
-const systemicTransition = {
-  duration: 0.25,
-  ease: [0.5, 0, 1, 1],
-}
-
-export default function Home() {
-  const { navigateTo } = useNavigation()
-
-  const [isResumeModalOpen, setIsResumeModalOpen] = useState(false)
-
   return (
     <>
       <motion.div
@@ -170,7 +159,7 @@ export default function Home() {
               </div>
             </motion.div>
 
-            {/* About Block - Added min-w-0 to prevent text overflow */}
+            {/* About Block */}
             <motion.div
               className="border border-primary/20 bg-background flex-1 min-w-0 flex flex-col"
               initial={{ opacity: 0, x: 10 }}
@@ -272,6 +261,7 @@ export default function Home() {
               </div>
             </motion.div>
 
+            {/* Specializations Block */}
             <motion.div
               className="border border-primary/20 bg-background flex-1 min-w-0 overflow-hidden"
               initial={{ opacity: 0, y: 10 }}
@@ -343,6 +333,7 @@ export default function Home() {
                 </div>
               </div>
 
+              {/* Third Marquee - Left to Right */}
               <div
                 ref={marquee3Ref}
                 className="py-2 relative overflow-hidden cursor-pointer border-t border-primary/10"
@@ -428,42 +419,36 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-              <div className="p-3 flex-1 flex relative overflow-hidden">
+              <div className="p-3 flex-1 flex flex-col justify-between relative overflow-hidden">
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={currentFeatured?.id}
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: -20 }}
-                    transition={{ duration: 0.2 }}
-                    className="flex-1 flex"
+                    transition={{ duration: 0.3 }}
+                    className="flex flex-col md:flex-row gap-3"
                   >
-                    <div className="flex gap-3 w-full">
-                      {/* Left: Title + Description */}
-                      <div className="flex-1 flex flex-col justify-center min-w-0">
-                        <h4 className="text-sm font-sf-mono font-bold text-primary mb-1 truncate">
-                          {currentFeatured?.title}
-                        </h4>
-                        <p className="text-[10px] font-mono text-primary/60 line-clamp-2">
-                          {currentFeatured?.description}
-                        </p>
-                      </div>
-                      {/* Right: Technologies stacked vertically */}
-                      <div className="flex flex-col gap-1 items-end justify-center shrink-0">
-                        {currentFeatured?.technologies.slice(0, 3).map((tech, idx) => (
-                          <span
-                            key={idx}
-                            className="px-1.5 py-0.5 text-[8px] font-sf-mono border border-primary/20 text-primary/60 whitespace-nowrap"
-                          >
-                            {tech}
-                          </span>
-                        ))}
-                        {currentFeatured?.technologies && currentFeatured.technologies.length > 3 && (
-                          <span className="px-1.5 py-0.5 text-[8px] font-sf-mono text-primary/40">
-                            +{currentFeatured.technologies.length - 3} more
-                          </span>
-                        )}
-                      </div>
+                    <div className="flex-1 min-w-0">
+                      <h4 className="text-sm font-sf-mono font-bold text-primary tracking-tight">
+                        {currentFeatured?.title}
+                      </h4>
+                      <p className="text-[10px] text-primary/60 mt-1 line-clamp-2">{currentFeatured?.description}</p>
+                    </div>
+                    <div className="flex flex-col gap-1 items-end shrink-0">
+                      {currentFeatured?.technologies.slice(0, 3).map((tech, idx) => (
+                        <span
+                          key={idx}
+                          className="text-[8px] font-sf-mono text-primary/50 border border-primary/10 px-1.5 py-0.5"
+                        >
+                          {tech}
+                        </span>
+                      ))}
+                      {currentFeatured?.technologies && currentFeatured.technologies.length > 3 && (
+                        <span className="text-[8px] font-sf-mono text-primary/30">
+                          +{currentFeatured.technologies.length - 3} more
+                        </span>
+                      )}
                     </div>
                   </motion.div>
                 </AnimatePresence>
@@ -480,34 +465,48 @@ export default function Home() {
               <div className="border-b border-primary/20 px-3 py-1.5 bg-primary/5">
                 <div className="flex items-center justify-between">
                   <h3 className="text-xs font-sf-mono font-bold text-primary tracking-tighter">EXPLORE</h3>
-                  <span className="text-[9px] font-sf-mono text-primary/30">[05]</span>
+                  <span className="text-[9px] font-sf-mono text-primary/30">[04]</span>
                 </div>
               </div>
-              <div className="p-2 flex flex-col gap-1.5 ">
+              <div className="p-2 flex flex-col gap-1">
                 {[
-                  { label: "PROJECTS", path: "/projects" },
-                  { label: "EXPERIENCE", path: "/experience" },
-                  { label: "PUBLICATIONS", path: "/publications" },
-                ].map((item, idx) => (
+                  { label: "PROJECTS", href: "/projects", delay: 0 },
+                  { label: "EXPERIENCE", href: "/experience", delay: 150 },
+                  { label: "PUBLICATIONS", href: "/publications", delay: 300 },
+                ].map((item) => (
                   <Button
-                    key={idx}
+                    key={item.label}
                     variant="ghost"
-                    className="h-7 w-full justify-between text-[10px] font-sf-mono border border-primary/20 hover:bg-primary hover:text-background rounded-none transition-colors group animate-arrow-push-1"
-                    onClick={() => navigateTo(item.path)}
+                    className="w-full h-7 justify-between px-2 border border-primary/10 text-[9px] font-sf-mono bg-transparent hover:bg-primary hover:text-background rounded-none transition-colors group"
+                    onClick={() => navigateTo(item.href)}
                   >
                     {item.label}
                     <ArrowRight
-                      className="h-3 w-3 group-hover:translate-x-1 transition-transform duration-300"
-                      style={{
-                        animation: `arrow-push 1.5s ease-in-out infinite`,
-                        animationDelay: `${idx * 150}ms`,
-                      }}
+                      className="h-3 w-3 animate-[arrow-push_1.5s_ease-in-out_infinite] group-hover:animate-none"
+                      style={{ animationDelay: `${item.delay}ms` }}
                     />
                   </Button>
                 ))}
               </div>
             </motion.div>
           </div>
+
+          {/* Status Footer */}
+          <motion.div
+            className="flex items-center justify-between text-[8px] font-sf-mono text-primary/30 pt-2"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3, delay: 0.4 }}
+          >
+            <div className="flex items-center gap-2">
+              <span>STATUS: AVAILABLE</span>
+              <span className="flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-[blink_0.5s_ease-in-out_infinite]" />
+                SEEKING FULL-TIME ML ROLES
+              </span>
+            </div>
+            <span>LAST.UPDATED: 2025</span>
+          </motion.div>
         </div>
       </PageLayout>
 
