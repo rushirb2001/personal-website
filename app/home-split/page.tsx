@@ -194,42 +194,26 @@ export default function HomeSplitPage() {
               </div>
               {/* Infinite Marquee */}
               <div className="py-3 overflow-hidden relative">
-                <div className="relative overflow-hidden">
-                  {/* Fade edges for seamless appearance */}
-                  <div className="absolute left-0 top-0 bottom-0 w-12 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
-                  <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
+                {/* Fade edges for seamless appearance */}
+                <div className="absolute left-0 top-0 bottom-0 w-12 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
+                <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
 
-                  {/* Marquee track - duplicated for seamless infinite loop */}
-                  <div className="flex animate-marquee hover:[animation-play-state:paused]">
-                    {specializations.map((item, idx) => (
-                      <div key={`a-${idx}`} className="flex items-center shrink-0">
-                        <span className="text-[10px] font-sf-mono text-primary/70 whitespace-nowrap px-4 uppercase tracking-widest">
-                          {item}
-                        </span>
-                        <span
-                          className="w-1 h-1 rounded-full bg-primary/50 shrink-0"
-                          style={{
-                            animation: `blink 2s ease-in-out infinite`,
-                            animationDelay: `${(idx % 5) * 0.4}s`,
-                          }}
-                        />
-                      </div>
-                    ))}
-                    {specializations.map((item, idx) => (
-                      <div key={`b-${idx}`} className="flex items-center shrink-0">
-                        <span className="text-[10px] font-sf-mono text-primary/70 whitespace-nowrap px-4 uppercase tracking-widest">
-                          {item}
-                        </span>
-                        <span
-                          className="w-1 h-1 rounded-full bg-primary/50 shrink-0"
-                          style={{
-                            animation: `blink 2s ease-in-out infinite`,
-                            animationDelay: `${(idx % 5) * 0.4}s`,
-                          }}
-                        />
-                      </div>
-                    ))}
-                  </div>
+                {/* Marquee track - duplicated for seamless infinite loop */}
+                <div className="flex gap-0 animate-marquee hover:[animation-play-state:paused]">
+                  {[...specializations, ...specializations].map((item, idx) => (
+                    <div key={idx} className="flex items-center shrink-0">
+                      <span className="text-[10px] font-sf-mono text-primary/70 whitespace-nowrap px-4 uppercase tracking-widest">
+                        {item}
+                      </span>
+                      <span
+                        className="w-1 h-1 rounded-full bg-primary/50 shrink-0"
+                        style={{
+                          animation: `blink 2s ease-in-out infinite`,
+                          animationDelay: `${(idx % 5) * 0.4}s`,
+                        }}
+                      />
+                    </div>
+                  ))}
                 </div>
               </div>
             </motion.div>
