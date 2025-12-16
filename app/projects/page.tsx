@@ -27,7 +27,6 @@ import {
   SiMongodb,
   SiMysql,
   SiRedis,
-  SiAmazonaws,
   SiMicrosoftazure,
   SiGooglecloud,
   SiDocker,
