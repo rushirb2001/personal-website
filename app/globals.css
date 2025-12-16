@@ -903,6 +903,29 @@ main {
   animation-play-state: paused;
 }
 
+/* Arrow push animation for navigation buttons */
+@keyframes arrowPush {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(2px);
+  }
+}
+
+.animate-arrow-push-1 {
+  animation: arrowPush 1.5s ease-in-out infinite;
+}
+
+.animate-arrow-push-2 {
+  animation: arrowPush 1.5s ease-in-out infinite 100ms;
+}
+
+.animate-arrow-push-3 {
+  animation: arrowPush 1.5s ease-in-out infinite 200ms;
+}
+
 /* Mobile-specific styles */
 @media (max-width: 640px) {
   .section-title {

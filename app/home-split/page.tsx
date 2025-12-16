@@ -368,14 +368,14 @@ export default function HomeSplitPage() {
                     {featuredProjects.length > 1 && (
                       <button
                         onClick={goToPrevFeatured}
-                        className="w-5 h-5 flex items-center justify-center border border-primary/20 hover:bg-primary hover:text-background transition-colors animate-[pulse_2.5s_ease-in-out_infinite]"
+                        className="w-5 h-5 flex items-center justify-center border border-primary/20 hover:bg-primary hover:text-background transition-colors animate-arrow-push-1"
                       >
                         <ChevronLeft className="h-3 w-3" />
                       </button>
                     )}
                     <Button
                       variant="ghost"
-                      className="h-5 px-2 border border-primary/20 text-[8px] font-sf-mono bg-transparent hover:bg-primary hover:text-background rounded-none transition-colors"
+                      className="h-5 px-2 border border-primary/20 text-[8px] font-sf-mono bg-transparent hover:bg-primary hover:text-background rounded-none transition-colors animate-arrow-push-2"
                       onClick={() => navigateTo("/projects")}
                     >
                       VIEW ALL
@@ -384,7 +384,7 @@ export default function HomeSplitPage() {
                     {featuredProjects.length > 1 && (
                       <button
                         onClick={goToNextFeatured}
-                        className="w-5 h-5 flex items-center justify-center border border-primary/20 hover:bg-primary hover:text-background transition-colors animate-[pulse_2.5s_ease-in-out_infinite]"
+                        className="w-5 h-5 flex items-center justify-center border border-primary/20 hover:bg-primary hover:text-background transition-colors animate-arrow-push-3"
                       >
                         <ChevronRight className="h-3 w-3" />
                       </button>
