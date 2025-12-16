@@ -19,7 +19,7 @@ export const CONTACT_INFO = {
   phone: "+1 (480) 875-6417",
   location: "ARIZONA, USA",
   linkedin: "https://linkedin.com/in/rushir-bhavsar/",
-  github: "https://rushirbhavsar.me",
+  github: "https://github.com/rushirb2001",
 }
 
 export const TERMINAL_COMMANDS = {
