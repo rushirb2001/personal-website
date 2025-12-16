@@ -1,6 +1,7 @@
 "use client"
 import { PageLayout } from "@/components/layout/page-layout"
 import { motion } from "framer-motion"
+import { useState } from "react"
 
 const skillsData = {
   languages: {
@@ -63,10 +64,14 @@ function calculateTotals() {
   return { totalTech, totalSubcategories }
 }
 
-function SkillTag({ name, delay }: { name: string; delay: number }) {
+function SkillTag({ name, delay, isHighlighted }: { name: string; delay: number; isHighlighted?: boolean }) {
   return (
     <motion.span
-      className="inline-block px-1.5 py-0.5 text-[10px] sm:text-xs font-sf-mono uppercase tracking-wide border border-primary/20 bg-background text-primary/70 hover:bg-primary hover:text-background hover:border-primary transition-all duration-100"
+      className={`inline-block px-1.5 py-0.5 text-[10px] sm:text-xs font-sf-mono uppercase tracking-wide border border-primary/20 bg-background text-primary/70 transition-all duration-100 ${
+        isHighlighted
+          ? "bg-primary text-background border-primary"
+          : "hover:bg-primary hover:text-background hover:border-primary"
+      }`}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.15, delay }}
@@ -88,6 +93,7 @@ function SubcategoryRow({
   index: number
 }) {
   const baseDelay = categoryDelay + index * 0.03
+  const [isHovered, setIsHovered] = useState(false)
 
   return (
     <motion.div
@@ -96,12 +102,16 @@ function SubcategoryRow({
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.15, delay: baseDelay }}
     >
-      <span className="text-[9px] sm:text-[10px] font-sf-mono text-primary/40 uppercase tracking-wider w-full sm:w-28 shrink-0">
+      <span
+        className="text-[9px] sm:text-[10px] font-sf-mono text-primary/40 uppercase tracking-wider w-full sm:w-28 shrink-0 cursor-pointer hover:text-primary/70 transition-colors duration-100"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
         {title}
       </span>
       <div className="flex flex-wrap gap-1">
         {items.map((item, idx) => (
-          <SkillTag key={idx} name={item} delay={baseDelay + idx * 0.01} />
+          <SkillTag key={idx} name={item} delay={baseDelay + idx * 0.01} isHighlighted={isHovered} />
         ))}
       </div>
     </motion.div>
@@ -155,7 +165,6 @@ export default function SkillsPage() {
     <PageLayout title="SKILLS" subtitle="TECHNICAL EXPERTISE">
       <div className="flex flex-col gap-2 sm:gap-3 h-full">
         <div className="flex flex-col md:flex-row gap-2 sm:gap-3 items-stretch">
-          {/* Left column - Languages + Frameworks stacked */}
           <div className="flex flex-col gap-2 sm:gap-3 flex-1">
             <CategoryBlock
               title={skillsData.languages.title}
@@ -168,7 +177,6 @@ export default function SkillsPage() {
               index={2}
             />
           </div>
-          {/* Right column - Train/Eval/Infer + Databases stacked */}
           <div className="flex flex-col gap-2 sm:gap-3 flex-1">
             <CategoryBlock
               title={skillsData.trainEvalInfer.title}
@@ -182,7 +190,6 @@ export default function SkillsPage() {
             />
           </div>
         </div>
-        {/* Cloud section stays full width */}
         <CategoryBlock
           title={skillsData.cloud.title}
           subcategories={skillsData.cloud.subcategories}
