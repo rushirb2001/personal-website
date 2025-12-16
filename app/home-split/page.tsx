@@ -357,7 +357,7 @@ export default function HomeSplitPage() {
                             key={idx}
                             onClick={() => setCurrentFeaturedIndex(idx)}
                             className={`w-1.5 h-1.5 rounded-full transition-colors ${
-                              idx === currentFeaturedIndex ? "bg-green-500" : "bg-primary/20 hover:bg-primary/40"
+                              idx === currentFeaturedIndex ? "bg-primary" : "bg-primary/20 hover:bg-primary/40"
                             }`}
                           />
                         ))}
