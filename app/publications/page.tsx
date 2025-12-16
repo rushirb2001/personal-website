@@ -139,6 +139,28 @@ export default function PublicationsPage() {
               onClick={() => setSelectedPublication(selectedPublication?.id === pub.id ? null : pub)}
             >
               <div className="hidden md:grid grid-cols-[1fr_180px_80px_60px_60px_40px] gap-4 px-3 py-3 items-center">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    setSelectedPublication(selectedPublication?.id === pub.id ? null : pub)
+                  }}
+                  className={`flex items-center justify-center w-8 h-8 border transition-all duration-200 ${
+                    selectedPublication?.id === pub.id
+                      ? "border-background/30 hover:bg-background/20"
+                      : "border-primary/20 hover:bg-primary/10 hover:border-primary/40"
+                  }`}
+                >
+                  <motion.div
+                    animate={{ rotate: selectedPublication?.id === pub.id ? 180 : 0 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    {selectedPublication?.id === pub.id ? (
+                      <X className="w-3 h-3" />
+                    ) : (
+                      <ChevronDown className="w-3 h-3" />
+                    )}
+                  </motion.div>
+                </button>
                 <span className="text-xs font-sf-mono font-medium truncate pr-4">{pub.title}</span>
                 <span
                   className={`text-[10px] font-sf-mono truncate ${selectedPublication?.id === pub.id ? "text-background/70" : "text-primary/60"}`}
@@ -168,28 +190,6 @@ export default function PublicationsPage() {
                 >
                   <ExternalLink className="w-3 h-3" />
                 </a>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    setSelectedPublication(selectedPublication?.id === pub.id ? null : pub)
-                  }}
-                  className={`flex items-center justify-center w-8 h-8 border transition-all duration-200 ${
-                    selectedPublication?.id === pub.id
-                      ? "border-background/30 hover:bg-background/20"
-                      : "border-primary/20 hover:bg-primary/10 hover:border-primary/40"
-                  }`}
-                >
-                  <motion.div
-                    animate={{ rotate: selectedPublication?.id === pub.id ? 180 : 0 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    {selectedPublication?.id === pub.id ? (
-                      <X className="w-3 h-3" />
-                    ) : (
-                      <ChevronDown className="w-3 h-3" />
-                    )}
-                  </motion.div>
-                </button>
               </div>
 
               <div className="md:hidden px-3 py-3">
