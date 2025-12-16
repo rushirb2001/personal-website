@@ -10,6 +10,7 @@ export interface Project {
   github?: string
   demo?: string
   highlights: string[]
+  feature: boolean
 }
 
 export const projects: Project[] = [
@@ -31,6 +32,7 @@ export const projects: Project[] = [
       "Designed responsive UI with dark mode support",
       "Integrated user authentication and role-based access control",
     ],
+    feature: false,
   },
   {
     id: "proj_realtime_analytics_002",
@@ -48,6 +50,7 @@ export const projects: Project[] = [
       "Implemented WebSocket connections for live updates",
       "Achieved 99.9% uptime over 6 months",
     ],
+    feature: false,
   },
   {
     id: "proj_ml_pipeline_003",
@@ -66,6 +69,7 @@ export const projects: Project[] = [
       "Built RESTful API for model inference",
       "Containerized deployment with Docker",
     ],
+    feature: true,
   },
   {
     id: "proj_mobile_fitness_004",
@@ -83,6 +87,7 @@ export const projects: Project[] = [
       "Built custom animation system for smooth UX",
       "Integrated with wearable device APIs",
     ],
+    feature: false,
   },
 ]
 
