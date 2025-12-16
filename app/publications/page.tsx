@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo } from "react"
 import { PageLayout } from "@/components/layout/page-layout"
 import { motion, AnimatePresence } from "framer-motion"
-import { FileText, ExternalLink, ChevronDown, X, ChevronRight } from "lucide-react"
+import { FileText, ExternalLink, ChevronDown, X } from "lucide-react"
 import { useMediaQuery } from "@/hooks/use-media-query"
 
 interface Publication {
@@ -23,7 +23,8 @@ interface Publication {
 export default function PublicationsPage() {
   const [selectedPublication, setSelectedPublication] = useState<Publication | null>(null)
   const [hoveredId, setHoveredId] = useState<string | null>(null)
-  const [visibleCount, setVisibleCount] = useState(5)
+  const [startIndex, setStartIndex] = useState(0)
+  const ITEMS_PER_PAGE = 5
   const isMobile = useMediaQuery("(max-width: 768px)")
 
   const publications: Publication[] = [
@@ -197,10 +198,10 @@ export default function PublicationsPage() {
     return { totalCitations, yearRange, venues, total: publications.length }
   }, [])
 
-  const visiblePublications = sortedPublications.slice(0, visibleCount)
-  const hasMore = visibleCount < sortedPublications.length
+  const visiblePublications = sortedPublications.slice(startIndex, startIndex + ITEMS_PER_PAGE)
+  const canShowPrevious = startIndex > 0
+  const canShowNext = startIndex + ITEMS_PER_PAGE < sortedPublications.length
 
-  // Handle ESC key press
   useEffect(() => {
     const handleEscKey = (event: KeyboardEvent) => {
       if (event.key === "Escape" && selectedPublication) {
@@ -214,6 +215,41 @@ export default function PublicationsPage() {
   return (
     <PageLayout title="PUBLICATIONS" subtitle="RESEARCH OUTPUT">
       <div className="space-y-0">
+        {(canShowPrevious || canShowNext) && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="flex items-center justify-center gap-2 py-3 mb-2"
+          >
+            <button
+              onClick={() => setStartIndex((prev) => Math.max(0, prev - ITEMS_PER_PAGE))}
+              disabled={!canShowPrevious}
+              className={`px-4 py-1.5 text-[10px] font-sf-mono uppercase tracking-wider border transition-all duration-150 w-32 ${
+                canShowPrevious
+                  ? "border-primary/30 text-primary/70 hover:bg-primary/10 hover:border-primary/50"
+                  : "border-primary/10 text-primary/20 cursor-not-allowed opacity-0 pointer-events-none"
+              }`}
+            >
+              ← PREVIOUS
+            </button>
+            <span className="text-[9px] font-sf-mono text-primary/40 px-2">
+              {startIndex + 1}-{Math.min(startIndex + ITEMS_PER_PAGE, sortedPublications.length)} OF{" "}
+              {sortedPublications.length}
+            </span>
+            <button
+              onClick={() => setStartIndex((prev) => prev + ITEMS_PER_PAGE)}
+              disabled={!canShowNext}
+              className={`px-4 py-1.5 text-[10px] font-sf-mono uppercase tracking-wider border transition-all duration-150 w-32 ${
+                canShowNext
+                  ? "border-primary/30 text-primary/70 hover:bg-primary/10 hover:border-primary/50"
+                  : "border-primary/10 text-primary/20 cursor-not-allowed opacity-0 pointer-events-none"
+              }`}
+            >
+              NEXT →
+            </button>
+          </motion.div>
+        )}
+
         <div className="hidden md:grid grid-cols-[40px_1fr_180px_80px_60px_60px] gap-4 px-3 py-2 border-b border-primary/30 text-[10px] font-sf-mono text-primary/50 uppercase tracking-wider">
           <span></span>
           <span>TITLE</span>
@@ -223,7 +259,6 @@ export default function PublicationsPage() {
           <span>LINK</span>
         </div>
 
-        {/* Publication rows with inline expansion */}
         {visiblePublications.map((pub, index) => (
           <div key={pub.id}>
             <motion.div
@@ -361,7 +396,6 @@ export default function PublicationsPage() {
                 >
                   <div className="bg-primary/5 p-4 md:p-6">
                     <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-6">
-                      {/* Left column */}
                       <div className="space-y-4">
                         <div>
                           <div className="flex items-center gap-3 mb-2">
@@ -387,7 +421,6 @@ export default function PublicationsPage() {
                         </div>
                       </div>
 
-                      {/* Right column */}
                       <div className="space-y-3 md:border-l md:border-primary/10 md:pl-6">
                         <div>
                           <span className="text-[9px] font-sf-mono text-primary/40 uppercase tracking-wider">
@@ -427,18 +460,6 @@ export default function PublicationsPage() {
             </AnimatePresence>
           </div>
         ))}
-
-        {hasMore && (
-          <motion.button
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            onClick={() => setVisibleCount((prev) => prev + 5)}
-            className="w-full py-3 border-b border-primary/10 text-xs font-sf-mono text-primary/60 hover:bg-primary/5 hover:text-primary transition-all duration-150 flex items-center justify-center gap-2"
-          >
-            SHOW NEXT {Math.min(5, sortedPublications.length - visibleCount)} PUBLICATIONS
-            <ChevronRight className="w-3 h-3" />
-          </motion.button>
-        )}
 
         <motion.div
           className="flex items-center justify-between border-t border-primary/20 pt-3 mt-4 px-3"
