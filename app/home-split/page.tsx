@@ -158,7 +158,7 @@ export default function HomeSplitPage() {
                     <Link
                       href="https://github.com/rushirb2001"
                       target="_blank"
-                      className="w-7 h-7 flex items-center justify-center border border-primary/20 hover:bg-[#1f2937] hover:border-[#1f2937] hover:text-white transition-colors"
+                      className="w-7 h-7 flex items-center justify-center border border-primary/20 hover:bg-[#6B21A8] hover:border-[#6B21A8] hover:text-white transition-colors"
                     >
                       <Github className="h-3.5 w-3.5" />
                     </Link>
