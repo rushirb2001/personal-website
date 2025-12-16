@@ -158,14 +158,14 @@ export default function HomeSplitPage() {
                     <Link
                       href="https://github.com/rushirb2001"
                       target="_blank"
-                      className="w-7 h-7 flex items-center justify-center border border-primary/20 hover:bg-primary hover:text-background transition-colors"
+                      className="w-7 h-7 flex items-center justify-center border border-primary/20 hover:bg-[#1f2937] hover:border-[#1f2937] hover:text-white transition-colors"
                     >
                       <Github className="h-3.5 w-3.5" />
                     </Link>
                     <Link
                       href="https://linkedin.com/in/rushir-bhavsar/"
                       target="_blank"
-                      className="w-7 h-7 flex items-center justify-center border border-primary/20 hover:bg-primary hover:text-background transition-colors"
+                      className="w-7 h-7 flex items-center justify-center border border-primary/20 hover:bg-[#0A66C2] hover:border-[#0A66C2] hover:text-white transition-colors"
                     >
                       <Linkedin className="h-3.5 w-3.5" />
                     </Link>
