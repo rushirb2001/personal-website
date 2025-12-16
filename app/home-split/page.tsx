@@ -351,33 +351,48 @@ export default function HomeSplitPage() {
                   <div className="flex items-center gap-2">
                     <h3 className="text-xs font-sf-mono font-bold text-primary tracking-tighter">FEATURED PROJECT</h3>
                     {featuredProjects.length > 1 && (
-                      <span className="text-[8px] font-sf-mono text-primary/40">
-                        {currentFeaturedIndex + 1}/{featuredProjects.length}
-                      </span>
+                      <div className="flex gap-1">
+                        {featuredProjects.map((_, idx) => (
+                          <button
+                            key={idx}
+                            onClick={() => setCurrentFeaturedIndex(idx)}
+                            className={`w-1.5 h-1.5 rounded-full transition-colors ${
+                              idx === currentFeaturedIndex ? "bg-green-500" : "bg-primary/20 hover:bg-primary/40"
+                            }`}
+                          />
+                        ))}
+                      </div>
                     )}
                   </div>
                   <div className="flex items-center gap-1">
                     {featuredProjects.length > 1 && (
-                      <>
-                        <button
-                          onClick={goToPrevFeatured}
-                          className="w-5 h-5 flex items-center justify-center border border-primary/20 hover:bg-primary hover:text-background transition-colors"
-                        >
-                          <ChevronLeft className="h-3 w-3" />
-                        </button>
-                        <button
-                          onClick={goToNextFeatured}
-                          className="w-5 h-5 flex items-center justify-center border border-primary/20 hover:bg-primary hover:text-background transition-colors"
-                        >
-                          <ChevronRight className="h-3 w-3" />
-                        </button>
-                      </>
+                      <button
+                        onClick={goToPrevFeatured}
+                        className="w-5 h-5 flex items-center justify-center border border-primary/20 hover:bg-primary hover:text-background transition-colors"
+                      >
+                        <ChevronLeft className="h-3 w-3" />
+                      </button>
                     )}
-                    <span className="text-[9px] font-sf-mono text-primary/30 ml-1">[04]</span>
+                    <Button
+                      variant="ghost"
+                      className="h-5 px-2 border border-primary/20 text-[8px] font-sf-mono bg-transparent hover:bg-primary hover:text-background rounded-none transition-colors"
+                      onClick={() => navigateTo("/projects")}
+                    >
+                      VIEW ALL
+                      <ArrowRight className="h-2.5 w-2.5 ml-1" />
+                    </Button>
+                    {featuredProjects.length > 1 && (
+                      <button
+                        onClick={goToNextFeatured}
+                        className="w-5 h-5 flex items-center justify-center border border-primary/20 hover:bg-primary hover:text-background transition-colors"
+                      >
+                        <ChevronRight className="h-3 w-3" />
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>
-              <div className="p-3 flex-1 flex flex-col justify-between relative overflow-hidden">
+              <div className="p-3 flex-1 flex relative overflow-hidden">
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={currentFeatured?.id}
@@ -385,9 +400,9 @@ export default function HomeSplitPage() {
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: -20 }}
                     transition={{ duration: 0.2 }}
-                    className="flex-1"
+                    className="flex-1 flex"
                   >
-                    <div className="flex gap-3 h-full">
+                    <div className="flex gap-3 w-full">
                       {/* Left: Title + Description */}
                       <div className="flex-1 flex flex-col justify-center min-w-0">
                         <h4 className="text-sm font-sf-mono font-bold text-primary mb-1 truncate">
@@ -408,7 +423,7 @@ export default function HomeSplitPage() {
                           </span>
                         ))}
                         {currentFeatured?.technologies && currentFeatured.technologies.length > 3 && (
-                          <span className="px-1.5 py-0.5 text-[8px] font-sf-mono text-primary/40 whitespace-nowrap">
+                          <span className="px-1.5 py-0.5 text-[8px] font-sf-mono text-primary/40">
                             +{currentFeatured.technologies.length - 3} more
                           </span>
                         )}
@@ -416,30 +431,6 @@ export default function HomeSplitPage() {
                     </div>
                   </motion.div>
                 </AnimatePresence>
-                <div className="flex items-center justify-between mt-2 pt-2 border-t border-primary/10">
-                  {featuredProjects.length > 1 && (
-                    <div className="flex gap-1">
-                      {featuredProjects.map((_, idx) => (
-                        <button
-                          key={idx}
-                          onClick={() => setCurrentFeaturedIndex(idx)}
-                          className={`w-1.5 h-1.5 rounded-full transition-colors ${
-                            idx === currentFeaturedIndex ? "bg-primary" : "bg-primary/20"
-                          }`}
-                        />
-                      ))}
-                    </div>
-                  )}
-                  {featuredProjects.length <= 1 && <div />}
-                  <Button
-                    variant="ghost"
-                    className="h-6 px-2 text-[9px] font-sf-mono hover:bg-primary hover:text-background rounded-none border border-primary/20 transition-colors"
-                    onClick={() => navigateTo("/projects")}
-                  >
-                    VIEW ALL
-                    <ArrowRight className="h-2.5 w-2.5 ml-1" />
-                  </Button>
-                </div>
               </div>
             </motion.div>
 
