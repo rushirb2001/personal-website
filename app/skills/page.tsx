@@ -86,30 +86,32 @@ function SubcategoryRow({
   items,
   categoryDelay,
   index,
+  isContainerHovered = false,
 }: {
   title: string
   items: string[]
   categoryDelay: number
   index: number
+  isContainerHovered?: boolean
 }) {
   const baseDelay = categoryDelay + index * 0.03
   const [isHovered, setIsHovered] = useState(false)
 
   return (
     <motion.div
-      className={`flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 py-1.5 px-1.5 -mx-1.5 border-b border-primary/5 last:border-b-0 transition-all duration-150 cursor-pointer ${
-        isHovered ? "bg-primary/5" : ""
+      className={`flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 py-1 border-b last:border-b-0 transition-colors duration-150 ${
+        isContainerHovered ? "border-primary/10" : "border-primary/5"
       }`}
       initial={{ opacity: 0, x: -5 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.15, delay: baseDelay }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
     >
       <span
-        className={`text-[9px] sm:text-[10px] font-sf-mono uppercase tracking-wider w-full sm:w-28 shrink-0 transition-colors duration-100 ${
-          isHovered ? "text-primary/70" : "text-primary/40"
+        className={`text-[9px] sm:text-[10px] font-sf-mono uppercase tracking-wider w-full sm:w-28 shrink-0 cursor-pointer transition-colors duration-100 ${
+          isContainerHovered || isHovered ? "text-primary/70" : "text-primary/40"
         }`}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
       >
         {title}
       </span>
@@ -134,18 +136,37 @@ function CategoryBlock({
   fullWidth?: boolean
 }) {
   const categoryDelay = index * 0.08
+  const [isContainerHovered, setIsContainerHovered] = useState(false)
 
   return (
     <motion.div
-      className={`border border-primary/20 bg-background flex flex-col ${fullWidth ? "col-span-1 md:col-span-2" : ""}`}
+      className={`border border-primary/20 flex flex-col transition-colors duration-150 ${fullWidth ? "col-span-1 md:col-span-2" : ""} ${
+        isContainerHovered ? "bg-primary/10 border-primary/40" : "bg-background"
+      }`}
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.2, delay: categoryDelay }}
+      onMouseEnter={() => setIsContainerHovered(true)}
+      onMouseLeave={() => setIsContainerHovered(false)}
     >
-      <div className="border-b border-primary/20 px-2 py-1.5 bg-primary/5">
+      <div
+        className={`border-b border-primary/20 px-2 py-1.5 transition-colors duration-150 ${
+          isContainerHovered ? "bg-primary/15" : "bg-primary/5"
+        }`}
+      >
         <div className="flex items-center justify-between">
-          <h3 className="text-xs sm:text-sm font-sf-mono font-bold tracking-widest text-primary">{title}</h3>
-          <span className="text-[9px] sm:text-[10px] font-sf-mono text-primary/30">
+          <h3
+            className={`text-xs sm:text-sm font-sf-mono font-bold tracking-widest transition-colors duration-150 ${
+              isContainerHovered ? "text-primary" : "text-primary"
+            }`}
+          >
+            {title}
+          </h3>
+          <span
+            className={`text-[9px] sm:text-[10px] font-sf-mono transition-colors duration-150 ${
+              isContainerHovered ? "text-primary/50" : "text-primary/30"
+            }`}
+          >
             [{String(index + 1).padStart(2, "0")}]
           </span>
         </div>
@@ -154,7 +175,14 @@ function CategoryBlock({
       <div className="px-2 py-1.5 flex-1">
         <div className="flex flex-col">
           {Object.entries(subcategories).map(([subcat, subItems], idx) => (
-            <SubcategoryRow key={subcat} title={subcat} items={subItems} categoryDelay={categoryDelay} index={idx} />
+            <SubcategoryRow
+              key={subcat}
+              title={subcat}
+              items={subItems}
+              categoryDelay={categoryDelay}
+              index={idx}
+              isContainerHovered={isContainerHovered}
+            />
           ))}
         </div>
       </div>
