@@ -115,13 +115,13 @@ export default function PublicationsPage() {
   return (
     <PageLayout title="PUBLICATIONS" subtitle="RESEARCH OUTPUT">
       <div className="space-y-0">
-        <div className="hidden md:grid grid-cols-[1fr_180px_80px_60px_60px_40px] gap-4 px-3 py-2 border-b border-primary/30 text-[10px] font-sf-mono text-primary/50 uppercase tracking-wider">
+        <div className="hidden md:grid grid-cols-[40px_1fr_180px_80px_60px_60px] gap-4 px-3 py-2 border-b border-primary/30 text-[10px] font-sf-mono text-primary/50 uppercase tracking-wider">
+          <span></span>
           <span>TITLE</span>
           <span>VENUE</span>
           <span>YEAR</span>
           <span>CIT</span>
           <span>LINK</span>
-          <span></span>
         </div>
 
         {/* Publication rows with inline expansion */}
