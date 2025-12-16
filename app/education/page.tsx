@@ -120,7 +120,7 @@ export default function EducationPage() {
                   <div className="mt-3 pt-2 border-t border-primary/10 flex justify-between items-center">
                     <div className="text-xs font-sf-mono text-primary/50">{edu.field}</div>
                     <div className="text-xs font-sf-mono text-primary/50 group-hover:text-primary/70 transition-colors flex items-center">
-                      <span className="mr-1">VIEW COMPLETE RECORD</span>
+                      <span className="mr-1">CLICK TO SEE COURSEWORK   </span>
                       <FileText className="h-3 w-3" />
                     </div>
                   </div>
