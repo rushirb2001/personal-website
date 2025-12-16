@@ -387,26 +387,32 @@ export default function HomeSplitPage() {
                     transition={{ duration: 0.2 }}
                     className="flex-1"
                   >
-                    <h4 className="text-sm font-sf-mono font-bold text-primary mb-1 truncate">
-                      {currentFeatured?.title}
-                    </h4>
-                    <p className="text-[10px] font-mono text-primary/60 mb-2 line-clamp-2">
-                      {currentFeatured?.description}
-                    </p>
-                    <div className="flex gap-1 flex-wrap">
-                      {currentFeatured?.technologies.slice(0, 4).map((tech, idx) => (
-                        <span
-                          key={idx}
-                          className="px-1.5 py-0.5 text-[8px] font-sf-mono border border-primary/20 text-primary/60"
-                        >
-                          {tech}
-                        </span>
-                      ))}
-                      {currentFeatured?.technologies.length > 4 && (
-                        <span className="px-1.5 py-0.5 text-[8px] font-sf-mono text-primary/40">
-                          +{currentFeatured.technologies.length - 4}
-                        </span>
-                      )}
+                    <div className="flex gap-3 h-full">
+                      {/* Left: Title + Description */}
+                      <div className="flex-1 flex flex-col justify-center min-w-0">
+                        <h4 className="text-sm font-sf-mono font-bold text-primary mb-1 truncate">
+                          {currentFeatured?.title}
+                        </h4>
+                        <p className="text-[10px] font-mono text-primary/60 line-clamp-2">
+                          {currentFeatured?.description}
+                        </p>
+                      </div>
+                      {/* Right: Technologies stacked vertically */}
+                      <div className="flex flex-col gap-1 items-end justify-center shrink-0">
+                        {currentFeatured?.technologies.slice(0, 3).map((tech, idx) => (
+                          <span
+                            key={idx}
+                            className="px-1.5 py-0.5 text-[8px] font-sf-mono border border-primary/20 text-primary/60 whitespace-nowrap"
+                          >
+                            {tech}
+                          </span>
+                        ))}
+                        {currentFeatured?.technologies && currentFeatured.technologies.length > 3 && (
+                          <span className="px-1.5 py-0.5 text-[8px] font-sf-mono text-primary/40 whitespace-nowrap">
+                            +{currentFeatured.technologies.length - 3} more
+                          </span>
+                        )}
+                      </div>
                     </div>
                   </motion.div>
                 </AnimatePresence>
@@ -424,9 +430,10 @@ export default function HomeSplitPage() {
                       ))}
                     </div>
                   )}
+                  {featuredProjects.length <= 1 && <div />}
                   <Button
                     variant="ghost"
-                    className="h-6 px-2 text-[9px] font-sf-mono border border-primary/20 hover:bg-primary hover:text-background rounded-none ml-auto"
+                    className="h-6 px-2 text-[9px] font-sf-mono hover:bg-primary hover:text-background rounded-none border border-primary/20 transition-colors"
                     onClick={() => navigateTo("/projects")}
                   >
                     VIEW ALL
