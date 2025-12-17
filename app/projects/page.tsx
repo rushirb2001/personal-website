@@ -15,6 +15,7 @@ import {
   Cloud,
   Smartphone,
   Zap,
+  X,
 } from "lucide-react"
 import { projects, categories, Project } from "./data"
 import { useMediaQuery } from "@/hooks/use-media-query"
@@ -532,7 +533,7 @@ export default function ProjectsPage() {
                       </a>
                     )}
                     {selectedProject.demo && (
-                      <a
+                      <
                         href={selectedProject.demo}
                         target="_blank"
                         rel="noopener noreferrer"
