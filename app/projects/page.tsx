@@ -438,59 +438,60 @@ export default function ProjectsPage() {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="w-full max-w-3xl bg-background border border-primary/30 shadow-lg max-h-[90vh] overflow-hidden flex flex-col"
+              className="w-full max-w-5xl bg-background border border-primary/30 shadow-lg max-h-[90vh] overflow-hidden flex flex-col"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Header */}
-              <div className="border-b border-primary/20 px-4 py-3 flex justify-between items-center bg-primary/5">
+              <div className="border-b border-primary/20 px-3 md:px-4 py-2 md:py-3 flex justify-between items-center bg-primary/5">
                 <div className="flex items-center gap-2">
-                  <Terminal className="h-4 w-4 text-primary" />
-                  <span className="text-sm font-sf-mono font-bold uppercase tracking-wider text-primary">
+                  <Terminal className="h-3 w-3 md:h-4 md:w-4 text-primary" />
+                  <span className="text-[10px] md:text-sm font-sf-mono font-bold uppercase tracking-wider text-primary line-clamp-1">
                     {selectedProject.title}
                   </span>
                 </div>
                 <button
                   onClick={closeModal}
-                  className="text-primary/50 hover:text-primary transition-colors text-[10px] font-sf-mono border border-primary/20 px-2 py-1 hover:bg-primary/10"
+                  className="text-primary/50 hover:text-primary transition-colors text-[10px] font-sf-mono border border-primary/20 px-2 py-1 hover:bg-primary/10 flex items-center justify-center"
                 >
-                  ESC
+                  <span className="hidden md:inline">ESC</span>
+                  <X className="w-3 h-3 md:hidden" />
                 </button>
               </div>
 
               {/* Content - Single Column */}
-              <div className="p-6 overflow-y-auto flex-1 space-y-5">
+              <div className="p-4 md:p-6 overflow-y-auto flex-1 space-y-4 md:space-y-5">
                 {/* Description */}
                 <div>
-                  <div className="flex items-center gap-2 mb-3 pb-2 border-b border-primary/10">
+                  <div className="flex items-center gap-2 mb-2 md:mb-3 pb-2 border-b border-primary/10">
                     <div className="w-5 h-5 border border-primary/30 bg-primary/10 flex items-center justify-center text-[10px] font-sf-mono text-primary/70">
                       01
                     </div>
-                    <span className="text-[10px] font-sf-mono text-primary/50 uppercase tracking-wider">
+                    <span className="text-[9px] md:text-[10px] font-sf-mono text-primary/50 uppercase tracking-wider">
                       DESCRIPTION
                     </span>
                   </div>
-                  <p className="text-[11px] font-sf-mono text-primary/70 leading-relaxed">
+                  <p className="text-[10px] md:text-[11px] font-sf-mono text-primary/70 leading-relaxed">
                     {selectedProject.fullDescription}
                   </p>
                 </div>
 
                 {/* Highlights */}
                 <div>
-                  <div className="flex items-center gap-2 mb-3 pb-2 border-b border-primary/10">
+                  <div className="flex items-center gap-2 mb-2 md:mb-3 pb-2 border-b border-primary/10">
                     <div className="w-5 h-5 border border-primary/30 bg-primary/10 flex items-center justify-center text-[10px] font-sf-mono text-primary/70">
                       02
                     </div>
-                    <span className="text-[10px] font-sf-mono text-primary/50 uppercase tracking-wider">
+                    <span className="text-[9px] md:text-[10px] font-sf-mono text-primary/50 uppercase tracking-wider">
                       KEY HIGHLIGHTS
                     </span>
                   </div>
-                  <div className="space-y-3">
+                  <div className="space-y-2 md:space-y-3">
                     {selectedProject.highlights.map((highlight, i) => (
                       <div key={i} className="flex gap-2">
                         <div className="w-5 h-5 border border-primary/20 bg-primary/5 flex items-center justify-center text-[9px] font-sf-mono text-primary/60 flex-shrink-0">
                           {i + 1}
                         </div>
-                        <p className="text-[11px] font-sf-mono text-primary/70 leading-relaxed">
+                        <p className="text-[10px] md:text-[11px] font-sf-mono text-primary/70 leading-relaxed">
                           {highlight}
                         </p>
                       </div>
@@ -500,23 +501,23 @@ export default function ProjectsPage() {
               </div>
 
               {/* Footer - Inline Layout */}
-              <div className="border-t border-primary/20 px-4 py-3 bg-primary/5 flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
+              <div className="border-t border-primary/20 px-3 md:px-4 py-2 md:py-3 bg-primary/5 flex flex-col md:flex-row items-start md:items-center justify-between gap-2 md:gap-3">
                 {/* Technologies - Inline */}
-                <div className="flex items-center gap-2 flex-wrap flex-1">
+                <div className="flex items-center gap-1 md:gap-2 flex-wrap flex-1">
                   <span className="text-[9px] font-sf-mono text-primary/50 uppercase tracking-wider">
                     TECH STACK:
                   </span>
                   {selectedProject.technologies.map((tech) => (
                     <span
                       key={tech}
-                      className="text-[9px] font-sf-mono border border-primary/20 bg-background text-primary/70 px-2 py-1 hover:bg-primary hover:text-background transition-colors"
+                      className="text-[9px] font-sf-mono border border-primary/20 bg-background text-primary/70 px-1.5 md:px-2 py-1 hover:bg-primary hover:text-background transition-colors"
                     >
                       {tech.toUpperCase()}
                     </span>
                   ))}
                 </div>
 
-                {/* Action Buttons */}
+                {/* Action Buttons - Icons only on mobile */}
                 {(selectedProject.github || selectedProject.demo) && (
                   <div className="flex gap-2 flex-shrink-0">
                     {selectedProject.github && (
@@ -524,10 +525,10 @@ export default function ProjectsPage() {
                         href={selectedProject.github}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center gap-2 text-[10px] font-sf-mono border border-primary bg-primary text-background hover:bg-primary/90 transition-all duration-150 px-4 py-2"
+                        className="flex items-center gap-2 text-[10px] font-sf-mono border border-primary bg-primary text-background hover:bg-primary/90 transition-all duration-150 px-3 md:px-4 py-2"
                       >
                         <Github className="h-3 w-3" />
-                        <span>SOURCE</span>
+                        <span className="hidden md:inline">SOURCE</span>
                       </a>
                     )}
                     {selectedProject.demo && (
@@ -535,10 +536,10 @@ export default function ProjectsPage() {
                         href={selectedProject.demo}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center gap-2 text-[10px] font-sf-mono border border-primary bg-primary text-background hover:bg-primary/90 transition-all duration-150 px-4 py-2"
+                        className="flex items-center gap-2 text-[10px] font-sf-mono border border-primary bg-primary text-background hover:bg-primary/90 transition-all duration-150 px-3 md:px-4 py-2"
                       >
                         <ExternalLink className="h-3 w-3" />
-                        <span>DEMO</span>
+                        <span className="hidden md:inline">DEMO</span>
                       </a>
                     )}
                   </div>
