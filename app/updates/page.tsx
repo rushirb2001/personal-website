@@ -1,394 +1,280 @@
 "use client"
 
-import type React from "react"
-
-import { useState, useEffect, useRef } from "react"
+import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { getPublishedPosts, type BlogPost } from "@/lib/blog-data"
+import { getPublishedPosts } from "@/lib/blog-data"
 import { formatDate } from "@/lib/utils"
-import { ArrowRight, Calendar, Tag, Terminal } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { ArrowRight, Calendar, Tag, ChevronDown, X } from "lucide-react"
 import { PageLayout } from "@/components/layout/page-layout"
 import { useRouter } from "next/navigation"
-import { useNavigation } from "@/contexts/navigation-context"
+import { useMediaQuery } from "@/hooks/use-media-query"
 
-function getInitialCollapseAnimation(): {
-  show: boolean
-  startRect: { top: number; left: number; width: number; height: number }
-  endRect: { top: number; left: number; width: number; height: number } | null
-  postData: BlogPost | null
-} {
-  if (typeof window !== "undefined") {
-    const containerRect = sessionStorage.getItem("collapseContainerRect")
-    const collapseRect = sessionStorage.getItem("collapseToRect")
-    const collapsePostData = sessionStorage.getItem("collapsePostData")
-
-    if (containerRect && collapseRect && collapsePostData) {
-      const startRect = JSON.parse(containerRect)
-      const endRect = JSON.parse(collapseRect)
-      const postData = JSON.parse(collapsePostData)
-
-      return {
-        show: true,
-        startRect,
-        endRect,
-        postData,
-      }
-    }
-  }
-  return { show: false, startRect: { top: 0, left: 0, width: 0, height: 0 }, endRect: null, postData: null }
-}
-
-function getInitialReturningPostId(): string | null {
-  if (typeof window !== "undefined") {
-    const collapsePostId = sessionStorage.getItem("collapseFromPost")
-    if (collapsePostId) {
-      return collapsePostId
-    }
-  }
-  return null
-}
-
-function getInitialSelectedTags(): string[] {
-  if (typeof window !== "undefined") {
-    const savedTags = sessionStorage.getItem("updatesFilterTags")
-    if (savedTags) {
-      return JSON.parse(savedTags)
-    }
-  }
-  return []
-}
+const ITEMS_PER_PAGE = 5
 
 export default function UpdatesPage() {
   const posts = getPublishedPosts()
-  const [selectedTags, setSelectedTags] = useState<string[]>(() => getInitialSelectedTags())
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const router = useRouter()
-  const { navigateTo } = useNavigation()
-
-  const articleRefs = useRef<Map<string, HTMLDivElement>>(new Map())
-
-  const [returningPostId, setReturningPostId] = useState<string | null>(() => getInitialReturningPostId())
-  const [highlightedPostId, setHighlightedPostId] = useState<string | null>(null)
-  const isReturningFromArticle = useRef(returningPostId !== null)
-
-  const [collapseAnimation, setCollapseAnimation] = useState(() => getInitialCollapseAnimation())
-
-  const [cardRevealed, setCardRevealed] = useState<string | null>(null)
-  const [collapseStarted, setCollapseStarted] = useState(() => {
-    if (typeof window !== "undefined") {
-      return sessionStorage.getItem("collapseFromPost") !== null
-    }
-    return false
-  })
+  const isMobile = useMediaQuery("(max-width: 768px)")
+  
+  const [selectedTags, setSelectedTags] = useState<string[]>([])
+  const [isFilterOpen, setIsFilterOpen] = useState(false)
+  const [selectedPost, setSelectedPost] = useState<string | null>(null)
+  const [hoveredId, setHoveredId] = useState<string | null>(null)
+  const [startIndex, setStartIndex] = useState(0)
 
   const allTags = Array.from(new Set(posts.flatMap((post) => post.tags)))
 
   const filteredPosts =
-    selectedTags.length > 0 ? posts.filter((post) => post.tags.some((tag) => selectedTags.includes(tag))) : posts
+    selectedTags.length > 0 
+      ? posts.filter((post) => post.tags.some((tag) => selectedTags.includes(tag))) 
+      : posts
+
+  const visiblePosts = filteredPosts.slice(startIndex, startIndex + ITEMS_PER_PAGE)
+  const canShowPrevious = startIndex > 0
+  const canShowNext = startIndex + ITEMS_PER_PAGE < filteredPosts.length
+  const showPaginationControls = filteredPosts.length > ITEMS_PER_PAGE
 
   const toggleTag = (tag: string) => {
-    setSelectedTags((prev) => {
-      const newTags = prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
-      sessionStorage.setItem("updatesFilterTags", JSON.stringify(newTags))
-      return newTags
-    })
+    setSelectedTags((prev) => 
+      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
+    )
+    setStartIndex(0)
   }
 
-  useEffect(() => {
-    const collapsePostId = sessionStorage.getItem("collapseFromPost")
-
-    if (collapsePostId && collapseAnimation.show) {
-      // Clear sessionStorage
-      sessionStorage.removeItem("collapseContainerRect")
-      sessionStorage.removeItem("collapseToRect")
-      sessionStorage.removeItem("collapseFromPost")
-      sessionStorage.removeItem("collapsePostData")
-
-      // Update endRect with actual card position after render
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          const targetElement = articleRefs.current.get(collapsePostId)
-          if (targetElement) {
-            const endRect = targetElement.getBoundingClientRect()
-            setCollapseAnimation((prev) => ({
-              ...prev,
-              endRect: {
-                top: endRect.top,
-                left: endRect.left,
-                width: endRect.width,
-                height: endRect.height,
-              },
-            }))
-          }
-        })
-      })
-
-      // Animation completion timer
-      setTimeout(() => {
-        setCollapseAnimation((prev) => ({ ...prev, show: false }))
-        setCardRevealed(collapsePostId)
-
-        setTimeout(() => {
-          setCollapseStarted(false)
-          setReturningPostId(null)
-          setHighlightedPostId(collapsePostId)
-
-          setTimeout(() => {
-            setHighlightedPostId(null)
-            setCardRevealed(null)
-          }, 400)
-        }, 50)
-      }, 700)
-    }
-  }, [])
-
-  const handleReturnToMain = () => {
-    navigateTo("/")
-  }
-
-  const handleArticleClick = (e: React.MouseEvent, post: BlogPost) => {
-    e.preventDefault()
-    const element = articleRefs.current.get(post.id)
-    if (element) {
-      const rect = element.getBoundingClientRect()
-      sessionStorage.setItem(
-        "expandRect",
-        JSON.stringify({
-          top: rect.top,
-          left: rect.left,
-          width: rect.width,
-          height: rect.height,
-        }),
-      )
-      router.push(`/updates/${post.id}`)
-    }
-  }
-
-  const isCardHidden = (postId: string) => {
-    return returningPostId === postId && collapseStarted && cardRevealed !== postId
-  }
-
-  const handleClearAllTags = () => {
+  const clearTags = () => {
     setSelectedTags([])
-    sessionStorage.setItem("updatesFilterTags", JSON.stringify([]))
-    setIsDropdownOpen(false)
+    setIsFilterOpen(false)
+    setStartIndex(0)
   }
 
   return (
-    <PageLayout title="BLOG" subtitle="ARTICLES, DAILY BLOGS AND LIFE UPDATES">
-      <AnimatePresence>
-        {collapseAnimation.show && collapseAnimation.endRect && collapseAnimation.postData && (
-          <motion.div
-            className="fixed z-[100] border border-primary/20 bg-background dark:bg-eerie-black overflow-hidden pointer-events-none"
-            initial={{
-              top: collapseAnimation.startRect.top,
-              left: collapseAnimation.startRect.left,
-              width: collapseAnimation.startRect.width,
-              height: collapseAnimation.startRect.height,
-              opacity: 1,
-            }}
-            animate={{
-              top: collapseAnimation.endRect.top,
-              left: collapseAnimation.endRect.left,
-              width: collapseAnimation.endRect.width,
-              height: collapseAnimation.endRect.height,
-              opacity: 1,
-            }}
-            exit={{ opacity: 0, transition: { duration: 0.08 } }}
-            transition={{
-              duration: 0.7,
-              ease: [0.22, 1, 0.36, 1],
-            }}
+    <PageLayout title="BLOG" subtitle="ARTICLES & UPDATES">
+      <div className="space-y-0 max-w-3xl mx-auto">
+        
+        {/* Filter Header */}
+        <div className="border border-primary/20 mb-3">
+          <button
+            onClick={() => setIsFilterOpen(!isFilterOpen)}
+            className="w-full flex items-center justify-between px-3 py-2 bg-primary/5 hover:bg-primary/10 transition-colors"
           >
+            <span className="text-[10px] font-sf-mono text-primary/60">
+              {selectedTags.length > 0 
+                ? `FILTER: ${selectedTags.length} TAG${selectedTags.length !== 1 ? "S" : ""}`
+                : "FILTER BY TAG"
+              }
+            </span>
             <motion.div
-              className="p-4 h-full"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.3, duration: 0.35, ease: "easeOut" }}
+              animate={{ rotate: isFilterOpen ? 180 : 0 }}
+              transition={{ duration: 0.2 }}
             >
-              <div className="flex justify-between items-start mb-2">
-                <h2 className="text-sm font-sf-mono font-medium line-clamp-1">{collapseAnimation.postData.title}</h2>
-                <div className="flex items-center text-xs text-primary/60 font-sf-mono whitespace-nowrap ml-2">
-                  <Calendar className="h-3 w-3 mr-1" />
-                  {formatDate(new Date(collapseAnimation.postData.date))}
-                </div>
-              </div>
-
-              <p className="text-xs text-primary/70 mb-3 font-sf-mono line-clamp-2">
-                {collapseAnimation.postData.summary}
-              </p>
-
-              <div className="flex justify-between items-center">
-                <div className="flex items-center gap-1">
-                  <Tag className="h-3 w-3 text-primary/50" />
-                  <div className="flex gap-1">
-                    {collapseAnimation.postData.tags.slice(0, 3).map((tag: string) => (
-                      <span key={tag} className="text-xs text-primary/50 font-sf-mono">
-                        {tag}
-                      </span>
-                    ))}
-                    {collapseAnimation.postData.tags.length > 3 && (
-                      <span className="text-xs text-primary/50 font-sf-mono">
-                        +{collapseAnimation.postData.tags.length - 3}
-                      </span>
-                    )}
-                  </div>
-                </div>
-
-                <div className="text-xs font-sf-mono text-primary/70 flex items-center">
-                  READ ENTRY
-                  <ArrowRight className="ml-1 h-3 w-3" />
-                </div>
-              </div>
+              <ChevronDown className="w-3 h-3 text-primary/50" />
             </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          </button>
 
-      <div className="container max-w-4xl mx-auto px-2 md:px-4">
-        <div className="mb-8 border border-primary/20 p-2 md:p-4 bg-background dark:bg-eerie-black/50 -mx-2 md:mx-0">
-          <div className="flex flex-col mb-4">
-            <div className="flex items-center justify-between mb-2 py-2 px-2">
-              <div className="flex items-center">
-                <Terminal className="h-4 w-4 mr-2 text-primary/70" />
-                <h1 className="text-lg font-sf-mono">BLOG ARTICLES </h1>
-              </div>
-              <div className="text-xs font-sf-mono text-primary/70">
-                DISPLAYING {filteredPosts.length} ARTICLE{filteredPosts.length !== 1 ? "S" : ""}
-              </div>
-            </div>
-
-            <div className="relative w-full border border-primary/20 mb-4 mt-2 bg-card/10">
-              <button
-                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                className="w-full flex items-center justify-between px-3 py-2 text-xs font-sf-mono bg-card/20"
+          <AnimatePresence>
+            {isFilterOpen && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                className="overflow-hidden border-t border-primary/10"
               >
-                <span className="text-primary/70">
-                  {selectedTags.length > 0
-                    ? `FILTER: ${selectedTags.length} TAG${selectedTags.length !== 1 ? "S" : ""} SELECTED`
-                    : "FILTER BY TAG"}
-                </span>
-                <span className="text-primary/70">{isDropdownOpen ? "▲" : "▼"}</span>
-              </button>
-
-              {isDropdownOpen && (
-                <div className="absolute z-10 w-full bg-background dark:bg-eerie-black/90 border border-primary/20 border-t-0 max-h-60 overflow-y-auto">
-                  <div className="p-2 grid grid-cols-2 gap-1">
+                <div className="p-3">
+                  <div className="flex flex-wrap gap-1.5">
                     {allTags.map((tag) => (
-                      <div key={tag} className="flex items-center">
-                        <input
-                          type="checkbox"
-                          id={`tag-${tag}`}
-                          checked={selectedTags.includes(tag)}
-                          onChange={() => {
-                            toggleTag(tag)
-                            setIsDropdownOpen(false)
-                          }}
-                          className="mr-2 accent-primary"
-                        />
-                        <label htmlFor={`tag-${tag}`} className="text-xs font-sf-mono cursor-pointer">
-                          {tag.toUpperCase()}
-                        </label>
-                      </div>
+                      <button
+                        key={tag}
+                        onClick={() => toggleTag(tag)}
+                        className={`px-2 py-1 text-[9px] font-sf-mono border transition-colors ${
+                          selectedTags.includes(tag)
+                            ? "bg-primary text-background border-primary"
+                            : "border-primary/20 text-primary/60 hover:border-primary/40"
+                        }`}
+                      >
+                        {tag.toUpperCase()}
+                      </button>
                     ))}
                   </div>
                   {selectedTags.length > 0 && (
-                    <div className="border-t border-primary/20 p-2 flex justify-between bg-card/20">
-                      <span className="text-xs font-sf-mono text-primary/70">{selectedTags.length} SELECTED</span>
-                      <button
-                        onClick={handleClearAllTags}
-                        className="text-xs font-sf-mono text-primary/70 hover:text-primary"
-                      >
-                        CLEAR ALL
-                      </button>
-                    </div>
+                    <button
+                      onClick={clearTags}
+                      className="mt-2 text-[9px] font-sf-mono text-primary/50 hover:text-primary flex items-center gap-1"
+                    >
+                      <X className="w-3 h-3" />
+                      CLEAR ALL
+                    </button>
                   )}
                 </div>
-              )}
-            </div>
-          </div>
-
-          <div className="space-y-4">
-            {filteredPosts.map((post, index) => (
-              <motion.div
-                key={post.id}
-                ref={(el) => {
-                  if (el) articleRefs.current.set(post.id, el)
-                }}
-                initial={{
-                  opacity: isReturningFromArticle.current ? 1 : 0,
-                  y: isReturningFromArticle.current ? 0 : 20,
-                }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{
-                  delay: isReturningFromArticle.current ? 0 : index * 0.1,
-                  duration: isReturningFromArticle.current ? 0 : 0.5,
-                }}
-                className={`border transition-all duration-300 cursor-pointer ${
-                  highlightedPostId === post.id
-                    ? "border-primary/60 bg-primary/10"
-                    : "border-primary/20 hover:border-primary/40"
-                }`}
-                style={{
-                  opacity: isCardHidden(post.id) ? 0 : undefined,
-                  visibility: isCardHidden(post.id) ? "hidden" : undefined,
-                }}
-                onClick={(e) => handleArticleClick(e, post)}
-              >
-                <div className="p-4 hover:bg-primary/5 transition-colors">
-                  <div className="flex justify-between items-start mb-2">
-                    <h2 className="text-sm font-sf-mono font-medium">{post.title}</h2>
-                    <div className="flex items-center text-xs text-primary/60 font-sf-mono">
-                      <Calendar className="h-3 w-3 mr-1" />
-                      {formatDate(new Date(post.date))}
-                    </div>
-                  </div>
-
-                  <p className="text-xs text-primary/70 mb-3 font-sf-mono">{post.summary}</p>
-
-                  <div className="flex justify-between items-center">
-                    <div className="flex items-center gap-1">
-                      <Tag className="h-3 w-3 text-primary/50" />
-                      <div className="flex gap-1">
-                        {post.tags.slice(0, 3).map((tag) => (
-                          <span key={tag} className="text-xs text-primary/50 font-sf-mono">
-                            {tag}
-                          </span>
-                        ))}
-                        {post.tags.length > 3 && (
-                          <span className="text-xs text-primary/50 font-sf-mono">+{post.tags.length - 3}</span>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="text-xs font-sf-mono text-primary/70 flex items-center">
-                      READ ENTRY
-                      <ArrowRight className="ml-1 h-3 w-3" />
-                    </div>
-                  </div>
-                </div>
               </motion.div>
-            ))}
-          </div>
-
-          {filteredPosts.length === 0 && (
-            <div className="text-center py-8 border border-primary/10 mt-4">
-              <div className="text-sm font-sf-mono text-primary/50 mb-2">NO RECORDS FOUND</div>
-              <div className="text-xs font-sf-mono text-primary/40">Try adjusting your filter criteria</div>
-            </div>
-          )}
+            )}
+          </AnimatePresence>
         </div>
 
-        <div className="flex justify-center mt-8">
-          <Button
-            variant="outline"
-            className="rounded-none border-primary/20 text-xs font-sf-mono bg-transparent"
-            onClick={handleReturnToMain}
+        {/* Pagination Controls */}
+        {showPaginationControls && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="flex flex-col md:flex-row items-center justify-center gap-2 py-3 mb-2"
           >
-            BACK TO HOME 
-          </Button>
+            <div className="flex items-center gap-2 w-full md:w-auto justify-center">
+              <button
+                onClick={() => setStartIndex((prev) => Math.max(0, prev - ITEMS_PER_PAGE))}
+                disabled={!canShowPrevious}
+                className={`px-3 md:px-4 py-1.5 text-[10px] font-sf-mono uppercase tracking-wider border transition-all duration-150 flex-1 md:flex-none md:w-32 ${
+                  canShowPrevious
+                    ? "border-primary/30 text-primary/70 hover:bg-primary/10 hover:border-primary/50"
+                    : "border-primary/10 text-primary/20 cursor-not-allowed"
+                }`}
+              >
+                ← PREVIOUS
+              </button>
+              <button
+                onClick={() => setStartIndex((prev) => prev + ITEMS_PER_PAGE)}
+                disabled={!canShowNext}
+                className={`px-3 md:px-4 py-1.5 text-[10px] font-sf-mono uppercase tracking-wider border transition-all duration-150 flex-1 md:flex-none md:w-32 ${
+                  canShowNext
+                    ? "border-primary/30 text-primary/70 hover:bg-primary/10 hover:border-primary/50"
+                    : "border-primary/10 text-primary/20 cursor-not-allowed"
+                }`}
+              >
+                NEXT →
+              </button>
+            </div>
+            <span className="text-[9px] font-sf-mono text-primary/40 md:px-2">
+              {startIndex + 1}-{Math.min(startIndex + ITEMS_PER_PAGE, filteredPosts.length)} OF {filteredPosts.length}
+            </span>
+          </motion.div>
+        )}
+
+        {/* Table Header - Desktop Only */}
+        <div className="hidden md:grid grid-cols-[1fr_120px_100px_40px] gap-2 px-3 py-2 border-b border-primary/30 text-[10px] font-sf-mono text-primary/50 uppercase tracking-wider">
+          <span>TITLE</span>
+          <span>DATE</span>
+          <span>TAGS</span>
+          <span></span>
         </div>
+
+        {/* Posts List */}
+        {visiblePosts.length > 0 ? (
+          visiblePosts.map((post, index) => (
+            <motion.div
+              key={post.id}
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.15, delay: index * 0.05 }}
+              className={`border-b border-primary/10 cursor-pointer transition-all duration-150 ${
+                selectedPost === post.id
+                  ? hoveredId === post.id
+                    ? "bg-primary/90 text-background"
+                    : "bg-primary text-background"
+                  : hoveredId === post.id
+                    ? "bg-primary/10"
+                    : ""
+              }`}
+              onMouseEnter={() => setHoveredId(post.id)}
+              onMouseLeave={() => setHoveredId(null)}
+              onClick={() => router.push(`/updates/${post.id}`)}
+            >
+              {/* Desktop Row */}
+              <div className="hidden md:grid grid-cols-[1fr_120px_100px_40px] gap-2 px-3 py-3 items-center">
+                <div>
+                  <span className="text-xs font-sf-mono font-medium">{post.title}</span>
+                  <p className={`text-[10px] font-sf-mono mt-0.5 line-clamp-1 ${
+                    selectedPost === post.id ? "text-background/60" : "text-primary/50"
+                  }`}>
+                    {post.summary}
+                  </p>
+                </div>
+                <span className={`text-[10px] font-sf-mono ${
+                  selectedPost === post.id ? "text-background/70" : "text-primary/50"
+                }`}>
+                  {formatDate(new Date(post.date))}
+                </span>
+                <div className="flex gap-1">
+                  {post.tags.slice(0, 2).map((tag) => (
+                    <span
+                      key={tag}
+                      className={`text-[8px] font-sf-mono px-1 py-0.5 border ${
+                        selectedPost === post.id 
+                          ? "border-background/30 text-background/70" 
+                          : "border-primary/20 text-primary/50"
+                      }`}
+                    >
+                      {tag.toUpperCase()}
+                    </span>
+                  ))}
+                  {post.tags.length > 2 && (
+                    <span className={`text-[8px] font-sf-mono ${
+                      selectedPost === post.id ? "text-background/50" : "text-primary/30"
+                    }`}>
+                      +{post.tags.length - 2}
+                    </span>
+                  )}
+                </div>
+                <ArrowRight className={`w-3 h-3 ${
+                  selectedPost === post.id ? "text-background/70" : "text-primary/30"
+                }`} />
+              </div>
+
+              {/* Mobile Row */}
+              <div className="md:hidden px-3 py-3">
+                <div className="flex items-start justify-between gap-2">
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-[11px] font-sf-mono font-medium">{post.title}</h3>
+                    <p className={`text-[10px] font-sf-mono mt-0.5 line-clamp-1 ${
+                      selectedPost === post.id ? "text-background/60" : "text-primary/50"
+                    }`}>
+                      {post.summary}
+                    </p>
+                    <div className="flex items-center gap-2 mt-1.5">
+                      <span className={`text-[9px] font-sf-mono ${
+                        selectedPost === post.id ? "text-background/50" : "text-primary/40"
+                      }`}>
+                        {formatDate(new Date(post.date))}
+                      </span>
+                      <span className={`text-[9px] font-sf-mono ${
+                        selectedPost === post.id ? "text-background/40" : "text-primary/30"
+                      }`}>
+                        •
+                      </span>
+                      <span className={`text-[9px] font-sf-mono ${
+                        selectedPost === post.id ? "text-background/50" : "text-primary/40"
+                      }`}>
+                        {post.tags[0]?.toUpperCase()}
+                      </span>
+                    </div>
+                  </div>
+                  <ArrowRight className={`w-3 h-3 flex-shrink-0 mt-1 ${
+                    selectedPost === post.id ? "text-background/70" : "text-primary/30"
+                  }`} />
+                </div>
+              </div>
+            </motion.div>
+          ))
+        ) : (
+          <div className="flex items-center justify-center py-12 border border-primary/10">
+            <p className="text-xs font-sf-mono text-primary/50">NO POSTS FOUND</p>
+          </div>
+        )}
+
+        {/* Footer Stats */}
+        <motion.div
+          className="flex items-center justify-between border-t border-primary/20 pt-3 mt-4"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.2, delay: 0.3 }}
+        >
+          <div className="flex gap-1 sm:gap-2 text-[9px] sm:text-[10px] font-sf-mono text-primary/40 uppercase tracking-wider">
+            <span>{posts.length} {isMobile ? "POSTS" : "ARTICLES"}</span>
+            <span className="text-primary/20">/</span>
+            <span>{allTags.length} {isMobile ? "TAGS" : "TOPICS"}</span>
+            <span className="text-primary/20">/</span>
+            <span>{filteredPosts.length} {isMobile ? "SHOWN" : "FILTERED"}</span>
+          </div>
+          <div className="text-[9px] sm:text-[10px] font-sf-mono text-primary/30">LAST.UPDATED: 2025</div>
+        </motion.div>
       </div>
     </PageLayout>
   )
