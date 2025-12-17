@@ -163,7 +163,7 @@ function MobileCollapsibleCategory({
         }`}
       >
         <div className="flex items-center gap-2">
-          <h3 className="font-sf-mono font-bold tracking-widest text-primary text-sm">{title}</h3>
+          <h3 className="font-sf-mono font-bold tracking-widest text-primary text-xs">{title}</h3>
           <span className="text-[8px] font-sf-mono text-primary/30">[{String(index + 1).padStart(2, "0")}]</span>
         </div>
         <motion.div
