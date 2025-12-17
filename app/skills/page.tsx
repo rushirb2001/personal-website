@@ -148,7 +148,7 @@ function MobileCollapsibleCategory({
 
   return (
     <motion.div
-      className={`border border-primary/20 transition-colors duration-150 ${
+      className={`border border-primary/20 transition-colors duration-150 py-0 ${
         isExpanded ? "bg-primary/5 border-primary/30" : "bg-background"
       }`}
       initial={{ opacity: 0, y: 10 }}
@@ -295,7 +295,7 @@ export default function SkillsPage() {
     <PageLayout title="SKILLS" subtitle="TECHNICAL EXPERTISE">
       <div className="flex flex-col gap-1 sm:gap-2 md:gap-3 h-full">
         {isMobile ? (
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-col gap-1 py-3.5">
             {categoryKeys.map((key, idx) => (
               <MobileCollapsibleCategory
                 key={key}
