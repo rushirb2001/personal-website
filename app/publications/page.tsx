@@ -154,7 +154,7 @@ export default function PublicationsPage() {
           </motion.div>
         )}
 
-        <div className="hidden md:grid grid-cols-[25px_1fr_180px_80px_25px_25px] gap-4 px-3 py-2 border-b border-primary/30 text-[10px] font-sf-mono text-primary/50 uppercase tracking-wider">
+        <div className="hidden md:grid grid-cols-[40px_1fr_180px_80px_40px_40px] gap-4 px-3 py-2 border-b border-primary/30 text-[10px] font-sf-mono text-primary/50 uppercase tracking-wider">
           <span></span>
           <span>TITLE</span>
           <span>VENUE</span>
@@ -176,7 +176,7 @@ export default function PublicationsPage() {
               onMouseLeave={() => setHoveredId(null)}
               onClick={() => setSelectedPublication(selectedPublication?.id === pub.id ? null : pub)}
             >
-              <div className="hidden md:grid grid-cols-[25px_1fr_180px_80px_25px_25px] gap-4 px-3 py-3 items-center">
+              <div className="hidden md:grid grid-cols-[40px_1fr_180px_80px_40px_40px] gap-4 px-3 py-3 items-center">
                 <button
                   onClick={(e) => {
                     e.stopPropagation()
