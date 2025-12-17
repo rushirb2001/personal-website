@@ -213,10 +213,7 @@ export default function ExperiencePage() {
                       <div className="flex-1 min-w-0">
                         <h3 className="text-[11px] font-sf-mono font-medium">{exp.title}</h3>
                         <p className={`text-[10px] font-sf-mono ${selectedExp === actualIndex ? "text-background/60" : "text-primary/50"}`}>
-                          {exp.company} • {exp.location}
-                        </p>
-                        <p className={`text-[9px] font-sf-mono ${selectedExp === actualIndex ? "text-background/50" : "text-primary/40"}`}>
-                          {exp.period}
+                          {exp.company} • {exp.location} • {exp.period}
                         </p>
                       </div>
                       <button
