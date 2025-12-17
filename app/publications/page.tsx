@@ -172,7 +172,7 @@ export default function PublicationsPage() {
               className={`border-b border-primary/10 transition-all duration-150 cursor-pointer ${
                 selectedPublication?.id === pub.id 
                   ? hoveredId === pub.id 
-                    ? "bg-primary/90 text-background" 
+                    ? "bg-primary/70 text-background" 
                     : "bg-primary text-background"
                   : hoveredId === pub.id 
                     ? "bg-primary/10" 
