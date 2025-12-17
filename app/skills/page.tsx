@@ -158,7 +158,7 @@ function MobileCollapsibleCategory({
       {/* Collapsible Header */}
       <button
         onClick={() => onToggle(categoryKey)}
-        className={`w-full border-b border-primary/20 px-2 py-1.5 flex items-center justify-between transition-colors duration-150 ${
+        className={`w-full border-primary/20 px-2 py-1.5 flex items-center justify-between transition-colors duration-150 border-b-0 ${
           isExpanded ? "bg-primary/10" : "bg-primary/5"
         }`}
       >
