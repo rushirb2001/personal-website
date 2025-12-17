@@ -444,7 +444,7 @@ export default function ProjectsPage() {
                     </span>
                     <div className="flex gap-2 mt-2">
                       {selectedProject.github && (
-                        
+                        <a
                           href={selectedProject.github}
                           target="_blank"
                           rel="noopener noreferrer"
@@ -455,7 +455,7 @@ export default function ProjectsPage() {
                         </a>
                       )}
                       {selectedProject.demo && (
-                        
+                        <a
                           href={selectedProject.demo}
                           target="_blank"
                           rel="noopener noreferrer"
