@@ -174,6 +174,7 @@ export default function ProjectsPage() {
   const [hoveredId, setHoveredId] = useState<string | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [startIndex, setStartIndex] = useState(0)
+  const [isCategoryOpen, setIsCategoryOpen] = useState(false)
   const isMobile = useMediaQuery("(max-width: 768px)")
 
   const ITEMS_PER_PAGE = isMobile ? ITEMS_PER_PAGE_MOBILE : ITEMS_PER_PAGE_DESKTOP
