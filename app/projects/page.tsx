@@ -457,76 +457,70 @@ export default function ProjectsPage() {
                 </button>
               </div>
 
-              {/* Content */}
-              <div className="p-6 overflow-y-auto flex-1">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  {/* Description */}
-                  <div>
-                    <div className="flex items-center gap-2 mb-3 pb-2 border-b border-primary/10">
-                      <div className="w-5 h-5 border border-primary/30 bg-primary/10 flex items-center justify-center text-[10px] font-sf-mono text-primary/70">
-                        01
-                      </div>
-                      <span className="text-[10px] font-sf-mono text-primary/50 uppercase tracking-wider">
-                        DESCRIPTION
-                      </span>
+              {/* Content - Single Column */}
+              <div className="p-6 overflow-y-auto flex-1 space-y-5">
+                {/* Description */}
+                <div>
+                  <div className="flex items-center gap-2 mb-3 pb-2 border-b border-primary/10">
+                    <div className="w-5 h-5 border border-primary/30 bg-primary/10 flex items-center justify-center text-[10px] font-sf-mono text-primary/70">
+                      01
                     </div>
-                    <p className="text-[11px] font-sf-mono text-primary/70 leading-relaxed uppercase tracking-tight">
-                      {selectedProject.fullDescription}
-                    </p>
+                    <span className="text-[10px] font-sf-mono text-primary/50 uppercase tracking-wider">
+                      DESCRIPTION
+                    </span>
                   </div>
+                  <p className="text-[11px] font-sf-mono text-primary/70 leading-relaxed">
+                    {selectedProject.fullDescription}
+                  </p>
+                </div>
 
-                  {/* Highlights */}
-                  <div>
-                    <div className="flex items-center gap-2 mb-3 pb-2 border-b border-primary/10">
-                      <div className="w-5 h-5 border border-primary/30 bg-primary/10 flex items-center justify-center text-[10px] font-sf-mono text-primary/70">
-                        02
-                      </div>
-                      <span className="text-[10px] font-sf-mono text-primary/50 uppercase tracking-wider">
-                        KEY HIGHLIGHTS
-                      </span>
+                {/* Highlights */}
+                <div>
+                  <div className="flex items-center gap-2 mb-3 pb-2 border-b border-primary/10">
+                    <div className="w-5 h-5 border border-primary/30 bg-primary/10 flex items-center justify-center text-[10px] font-sf-mono text-primary/70">
+                      02
                     </div>
-                    <div className="space-y-3">
-                      {selectedProject.highlights.map((highlight, i) => (
-                        <div key={i} className="flex gap-2">
-                          <div className="w-5 h-5 border border-primary/20 bg-primary/5 flex items-center justify-center text-[9px] font-sf-mono text-primary/60 flex-shrink-0">
-                            {i + 1}
-                          </div>
-                          <p className="text-[11px] font-sf-mono text-primary/70 leading-relaxed uppercase tracking-tight">
-                            {highlight}
-                          </p>
+                    <span className="text-[10px] font-sf-mono text-primary/50 uppercase tracking-wider">
+                      KEY HIGHLIGHTS
+                    </span>
+                  </div>
+                  <div className="space-y-3">
+                    {selectedProject.highlights.map((highlight, i) => (
+                      <div key={i} className="flex gap-2">
+                        <div className="w-5 h-5 border border-primary/20 bg-primary/5 flex items-center justify-center text-[9px] font-sf-mono text-primary/60 flex-shrink-0">
+                          {i + 1}
                         </div>
-                      ))}
-                    </div>
+                        <p className="text-[11px] font-sf-mono text-primary/70 leading-relaxed">
+                          {highlight}
+                        </p>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
 
-              {/* Footer */}
+              {/* Footer - Inline Layout */}
               <div className="border-t border-primary/20 px-4 py-3 bg-primary/5 flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
-                {/* Left - Technologies */}
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="text-[9px] font-sf-mono text-primary/50 uppercase tracking-wider">
-                      TECH STACK
+                {/* Technologies - Inline */}
+                <div className="flex items-center gap-2 flex-wrap flex-1">
+                  <span className="text-[9px] font-sf-mono text-primary/50 uppercase tracking-wider">
+                    TECH STACK:
+                  </span>
+                  {selectedProject.technologies.map((tech) => (
+                    <span
+                      key={tech}
+                      className="text-[9px] font-sf-mono border border-primary/20 bg-background text-primary/70 px-2 py-1 hover:bg-primary hover:text-background transition-colors"
+                    >
+                      {tech.toUpperCase()}
                     </span>
-                  </div>
-                  <div className="flex flex-wrap gap-1">
-                    {selectedProject.technologies.map((tech) => (
-                      <span
-                        key={tech}
-                        className="text-[9px] font-sf-mono border border-primary/20 bg-background text-primary/70 px-2 py-1 hover:bg-primary hover:text-background transition-colors"
-                      >
-                        {tech.toUpperCase()}
-                      </span>
-                    ))}
-                  </div>
+                  ))}
                 </div>
 
-                {/* Right - Action Buttons */}
+                {/* Action Buttons */}
                 {(selectedProject.github || selectedProject.demo) && (
                   <div className="flex gap-2 flex-shrink-0">
                     {selectedProject.github && (
-                      <a
+                      
                         href={selectedProject.github}
                         target="_blank"
                         rel="noopener noreferrer"
@@ -537,7 +531,7 @@ export default function ProjectsPage() {
                       </a>
                     )}
                     {selectedProject.demo && (
-                      <a
+                      
                         href={selectedProject.demo}
                         target="_blank"
                         rel="noopener noreferrer"
