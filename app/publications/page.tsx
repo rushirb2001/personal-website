@@ -334,12 +334,7 @@ export default function PublicationsPage() {
                       <span
                         className={`text-[9px] font-sf-mono ${selectedPublication?.id === pub.id ? "text-background/60" : "text-primary/50"}`}
                       >
-                        {pub.year}
-                      </span>
-                      <span
-                        className={`text-[9px] font-sf-mono ${selectedPublication?.id === pub.id ? "text-background/60" : "text-primary/40"}`}
-                      >
-                        {pub.citations} CIT
+                        {pub.year} | {pub.citations} CIT
                       </span>
                     </div>
                   </div>
