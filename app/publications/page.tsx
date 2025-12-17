@@ -115,7 +115,7 @@ export default function PublicationsPage() {
   }, [selectedPublication])
 
   return (
-    <PageLayout title="PUBLICATIONS" subtitle="RESEARCH OUTPUT">
+    <PageLayout title="PUBLICATIONS" subtitle="RESEARCH & PAPERS">
       <div className="space-y-0">
         {showPaginationControls && (
           <motion.div
