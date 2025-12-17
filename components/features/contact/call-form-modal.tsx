@@ -50,25 +50,30 @@ export function CallFormModal({
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.95, opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="w-full max-w-[95%] md:max-w-2xl bg-background dark:bg-eerie-black border border-primary/30 shadow-lg overflow-hidden"
+            className="w-full max-w-[95%] md:max-w-4xl bg-background dark:bg-eerie-black border border-primary/30 shadow-lg overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex justify-between items-center p-3 md:p-4 border-b border-primary/20">
-              <div className="text-xs md:text-sm font-sf-mono">SCHEDULE A CALL</div>
-              <button onClick={onClose} className="text-primary/70 hover:text-primary font-sf-mono text-xs">
+            <div className="flex justify-between items-center p-2 md:p-3 border-b border-primary/20">
+              <div className="text-[10px] md:text-xs font-sf-mono">SCHEDULE A CALL</div>
+              <button onClick={onClose} className="text-primary/70 hover:text-primary font-sf-mono text-[10px] md:text-xs">
                 [ CLOSE ]
               </button>
             </div>
 
-            <iframe
-              key={calTheme}
-              src={calUrl}
-              width="100%"
-              height="650"
-              frameBorder="0"
-              title="Schedule a call"
-              className={calTheme === "dark" ? "bg-neutral-900" : "bg-white"}
-            />
+            <div className="relative overflow-hidden" style={{ height: "450px" }}>
+              <iframe
+                key={calTheme}
+                src={calUrl}
+                title="Schedule a call"
+                className={`absolute top-0 left-0 border-0 ${calTheme === "dark" ? "bg-neutral-900" : "bg-white"}`}
+                style={{
+                  width: "125%",
+                  height: "125%",
+                  transform: "scale(0.8)",
+                  transformOrigin: "top left",
+                }}
+              />
+            </div>
           </motion.div>
         </motion.div>
       )}
