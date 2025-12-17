@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { PageLayout } from "@/components/layout/page-layout"
 import {
+  ChevronLeft,
   ChevronRight,
   ExternalLink,
   Github,
@@ -125,16 +126,14 @@ const fallbackIconMap: Record<string, React.ComponentType<{ className?: string }
 
 const getTechIcon = (tech: string) => {
   const techLower = tech.toLowerCase()
-  const iconClass = "w-5 h-5"
+  const iconClass = "w-4 h-4"
 
-  // Check main icons
   const mainKey = Object.keys(techIconMap).find((key) => techLower.includes(key))
   if (mainKey) {
     const Icon = techIconMap[mainKey]
     return <Icon className={iconClass} />
   }
 
-  // Check fallback icons
   const fallbackKey = Object.keys(fallbackIconMap).find((key) => techLower.includes(key))
   if (fallbackKey) {
     const Icon = fallbackIconMap[fallbackKey]
@@ -166,12 +165,27 @@ const mobileLabels: Record<string, string> = {
   Other: "OTHER",
 }
 
+const ITEMS_PER_PAGE = 4
+
 export default function ProjectsPage() {
   const [selectedCategory, setSelectedCategory] = useState("All")
   const [selectedProject, setSelectedProject] = useState<Project | null>(null)
   const [hoveredId, setHoveredId] = useState<string | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [startIndex, setStartIndex] = useState(0)
   const isMobile = useMediaQuery("(max-width: 768px)")
+
+  const filteredProjects =
+    selectedCategory === "All" ? projects : projects.filter((p) => p.category === selectedCategory)
+
+  const visibleProjects = filteredProjects.slice(startIndex, startIndex + ITEMS_PER_PAGE)
+  const canShowPrevious = startIndex > 0
+  const canShowNext = startIndex + ITEMS_PER_PAGE < filteredProjects.length
+  const showPaginationControls = filteredProjects.length > ITEMS_PER_PAGE
+
+  useEffect(() => {
+    setStartIndex(0)
+  }, [selectedCategory])
 
   useEffect(() => {
     const handleEscKey = (e: KeyboardEvent) => {
@@ -182,9 +196,6 @@ export default function ProjectsPage() {
     window.addEventListener("keydown", handleEscKey)
     return () => window.removeEventListener("keydown", handleEscKey)
   }, [isModalOpen])
-
-  const filteredProjects =
-    selectedCategory === "All" ? projects : projects.filter((p) => p.category === selectedCategory)
 
   const openModal = (project: Project) => {
     setSelectedProject(project)
@@ -217,78 +228,107 @@ export default function ProjectsPage() {
           ))}
         </div>
 
-        {/* Projects Grid */}
-        <div className="overflow-y-auto">
-          {filteredProjects.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              {filteredProjects.map((project, index) => (
-                <motion.div
-                  key={project.id}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.05 }}
-                  onClick={() => openModal(project)}
-                  onMouseEnter={() => setHoveredId(project.id)}
-                  onMouseLeave={() => setHoveredId(null)}
-                  className={`border border-primary/20 bg-background transition-all duration-150 cursor-pointer ${
-                    hoveredId === project.id ? "border-primary/40 bg-primary/5" : ""
-                  }`}
-                >
-                  {/* Header */}
-                  <div className="border-b border-primary/20 px-3 py-2 flex items-center justify-between bg-primary/5">
-                    <div className="flex items-center gap-2">
-                      <Terminal className="h-3 w-3 text-primary/50" />
-                      <span className="text-[10px] font-sf-mono text-primary/50">
-                        {project.category.toUpperCase()}
+        {/* Projects Grid with Side Navigation */}
+        <div className="flex items-center gap-2">
+          {/* Left Arrow */}
+          <button
+            onClick={() => setStartIndex((prev) => Math.max(0, prev - ITEMS_PER_PAGE))}
+            disabled={!canShowPrevious}
+            className={`flex-shrink-0 w-8 h-8 md:w-10 md:h-10 border flex items-center justify-center transition-all duration-150 ${
+              canShowPrevious
+                ? "border-primary/30 text-primary/70 hover:bg-primary/10 hover:border-primary/50"
+                : "border-primary/10 text-primary/10 cursor-not-allowed"
+            }`}
+          >
+            <ChevronLeft className="w-4 h-4" />
+          </button>
+
+          {/* Grid Container - Fixed Height */}
+          <div className="flex-1 min-h-[480px] md:min-h-[520px]">
+            {visibleProjects.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 h-full">
+                {visibleProjects.map((project, index) => (
+                  <motion.div
+                    key={project.id}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.05 }}
+                    onClick={() => openModal(project)}
+                    onMouseEnter={() => setHoveredId(project.id)}
+                    onMouseLeave={() => setHoveredId(null)}
+                    className={`border border-primary/20 bg-background transition-all duration-150 cursor-pointer flex flex-col ${
+                      hoveredId === project.id ? "border-primary/40 bg-primary/5" : ""
+                    }`}
+                  >
+                    {/* Header */}
+                    <div className="border-b border-primary/20 px-3 py-2 flex items-center justify-between bg-primary/5">
+                      <div className="flex items-center gap-2">
+                        <Terminal className="h-3 w-3 text-primary/50" />
+                        <span className="text-[10px] font-sf-mono text-primary/50">
+                          {project.category.toUpperCase()}
+                        </span>
+                      </div>
+                      <span className={`text-[10px] font-sf-mono ${getStatusColor(project.status)}`}>
+                        {project.status}
                       </span>
                     </div>
-                    <span className={`text-[10px] font-sf-mono ${getStatusColor(project.status)}`}>
-                      {project.status}
-                    </span>
-                  </div>
 
-                  {/* Tech Icons */}
-                  <div className="border-b border-primary/10 px-3 py-2 flex gap-1.5">
-                    {project.technologies.slice(0, 5).map((tech) => (
-                      <div
-                        key={tech}
-                        className="w-8 h-8 border border-primary/20 bg-primary/5 flex items-center justify-center text-primary/60 hover:bg-primary/10 hover:text-primary transition-colors"
-                        title={tech}
-                      >
-                        {getTechIcon(tech)}
-                      </div>
-                    ))}
-                    {project.technologies.length > 5 && (
-                      <div className="w-8 h-8 border border-primary/20 bg-primary/5 flex items-center justify-center text-[9px] font-sf-mono text-primary/50">
-                        +{project.technologies.length - 5}
-                      </div>
-                    )}
-                  </div>
+                    {/* Tech Icons */}
+                    <div className="border-b border-primary/10 px-3 py-2 flex gap-1.5">
+                      {project.technologies.slice(0, 5).map((tech) => (
+                        <div
+                          key={tech}
+                          className="w-7 h-7 border border-primary/20 bg-primary/5 flex items-center justify-center text-primary/60 hover:bg-primary/10 hover:text-primary transition-colors"
+                          title={tech}
+                        >
+                          {getTechIcon(tech)}
+                        </div>
+                      ))}
+                      {project.technologies.length > 5 && (
+                        <div className="w-7 h-7 border border-primary/20 bg-primary/5 flex items-center justify-center text-[8px] font-sf-mono text-primary/50">
+                          +{project.technologies.length - 5}
+                        </div>
+                      )}
+                    </div>
 
-                  {/* Content */}
-                  <div className="p-3">
-                    <h3 className="text-xs font-sf-mono font-medium mb-1 line-clamp-2">{project.title}</h3>
-                    <p className="text-[10px] font-sf-mono text-primary/60 leading-relaxed line-clamp-2">
-                      {project.description}
-                    </p>
-                  </div>
+                    {/* Content */}
+                    <div className="p-3 flex-1">
+                      <h3 className="text-xs font-sf-mono font-medium mb-1 line-clamp-2">{project.title}</h3>
+                      <p className="text-[10px] font-sf-mono text-primary/60 leading-relaxed line-clamp-2">
+                        {project.description}
+                      </p>
+                    </div>
 
-                  {/* Footer */}
-                  <div className="border-t border-primary/20 px-3 py-2 flex items-center justify-between bg-primary/5">
-                    <span className="text-[10px] font-sf-mono text-primary/50">VIEW DETAILS</span>
-                    <ChevronRight className="h-3 w-3 text-primary/50" />
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          ) : (
-            <div className="flex items-center justify-center py-12">
-              <div className="flex items-center gap-2">
-                <Terminal className="w-4 h-4 text-primary/50" />
-                <p className="text-xs font-sf-mono text-primary/50">NO PROJECTS IN THIS CATEGORY</p>
+                    {/* Footer */}
+                    <div className="border-t border-primary/20 px-3 py-2 flex items-center justify-between bg-primary/5 mt-auto">
+                      <span className="text-[10px] font-sf-mono text-primary/50">VIEW DETAILS</span>
+                      <ChevronRight className="h-3 w-3 text-primary/50" />
+                    </div>
+                  </motion.div>
+                ))}
               </div>
-            </div>
-          )}
+            ) : (
+              <div className="flex items-center justify-center h-full min-h-[480px] md:min-h-[520px]">
+                <div className="flex items-center gap-2">
+                  <Terminal className="w-4 h-4 text-primary/50" />
+                  <p className="text-xs font-sf-mono text-primary/50">NO PROJECTS IN THIS CATEGORY</p>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Right Arrow */}
+          <button
+            onClick={() => setStartIndex((prev) => prev + ITEMS_PER_PAGE)}
+            disabled={!canShowNext}
+            className={`flex-shrink-0 w-8 h-8 md:w-10 md:h-10 border flex items-center justify-center transition-all duration-150 ${
+              canShowNext
+                ? "border-primary/30 text-primary/70 hover:bg-primary/10 hover:border-primary/50"
+                : "border-primary/10 text-primary/10 cursor-not-allowed"
+            }`}
+          >
+            <ChevronRight className="w-4 h-4" />
+          </button>
         </div>
 
         {/* Footer Stats */}
@@ -303,13 +343,20 @@ export default function ProjectsPage() {
             <span className="text-primary/20">/</span>
             <span>{categories.length - 1} {isMobile ? "CAT" : "CATEGORIES"}</span>
             <span className="text-primary/20">/</span>
-            <span>{filteredProjects.length} {isMobile ? "SHOWN" : "SHOWING"}</span>
+            <span>{filteredProjects.length} {isMobile ? "SHOWN" : "FILTERED"}</span>
           </div>
-          <div className="text-[9px] sm:text-[10px] font-sf-mono text-primary/30">LAST.UPDATED: 2025</div>
+          {showPaginationControls && (
+            <span className="text-[9px] sm:text-[10px] font-sf-mono text-primary/30">
+              {startIndex + 1}-{Math.min(startIndex + ITEMS_PER_PAGE, filteredProjects.length)} OF {filteredProjects.length}
+            </span>
+          )}
+          {!showPaginationControls && (
+            <div className="text-[9px] sm:text-[10px] font-sf-mono text-primary/30">LAST.UPDATED: 2025</div>
+          )}
         </motion.div>
       </div>
 
-      {/* Modal */}
+      {/* Modal - Improved Readability */}
       <AnimatePresence>
         {isModalOpen && selectedProject && (
           <motion.div
@@ -324,49 +371,49 @@ export default function ProjectsPage() {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="w-full max-w-2xl bg-background dark:bg-eerie-black border border-primary/30 shadow-lg max-h-[85vh] overflow-hidden flex flex-col"
+              className="w-full max-w-xl bg-background dark:bg-eerie-black border border-primary/30 shadow-lg max-h-[85vh] overflow-hidden flex flex-col"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Header */}
-              <div className="bg-primary/5 px-3 py-2 flex justify-between items-center border-b border-primary/20 flex-shrink-0">
+              <div className="bg-primary text-background px-4 py-3 flex justify-between items-center flex-shrink-0">
                 <div className="flex items-center gap-2">
-                  <Terminal className="h-3 w-3 text-primary/50" />
-                  <span className="text-[10px] font-sf-mono text-primary/50 uppercase truncate max-w-[200px] md:max-w-none">
+                  <Terminal className="h-4 w-4" />
+                  <span className="text-sm font-sf-mono font-medium truncate max-w-[250px] md:max-w-none">
                     {selectedProject.title}
                   </span>
                 </div>
                 <button
                   onClick={closeModal}
-                  className="text-primary/50 hover:text-primary transition-colors text-[10px] font-sf-mono"
+                  className="text-background/70 hover:text-background transition-colors text-xs font-sf-mono"
                 >
                   [ ESC ]
                 </button>
               </div>
 
               {/* Content */}
-              <div className="p-4 overflow-y-auto flex-1 space-y-4">
+              <div className="p-4 md:p-6 overflow-y-auto flex-1 space-y-5">
                 {/* Description */}
                 <div>
-                  <span className="text-[9px] font-sf-mono text-primary/40 uppercase tracking-wider">
+                  <span className="text-[10px] font-sf-mono text-primary/50 uppercase tracking-wider">
                     DESCRIPTION
                   </span>
-                  <p className="text-xs font-sf-mono text-primary/70 mt-1 leading-relaxed">
+                  <p className="text-sm font-sf-mono text-primary/80 mt-2 leading-relaxed">
                     {selectedProject.fullDescription}
                   </p>
                 </div>
 
                 {/* Highlights */}
                 <div>
-                  <span className="text-[9px] font-sf-mono text-primary/40 uppercase tracking-wider">
+                  <span className="text-[10px] font-sf-mono text-primary/50 uppercase tracking-wider">
                     KEY HIGHLIGHTS
                   </span>
-                  <div className="space-y-2 mt-2">
+                  <div className="space-y-2.5 mt-3">
                     {selectedProject.highlights.map((highlight, i) => (
-                      <div key={i} className="flex gap-2">
-                        <div className="w-4 h-4 border border-primary/20 bg-primary/5 flex items-center justify-center text-[9px] font-sf-mono text-primary/50 flex-shrink-0">
+                      <div key={i} className="flex gap-3">
+                        <div className="w-5 h-5 border border-primary/30 bg-primary/10 flex items-center justify-center text-[10px] font-sf-mono text-primary/70 flex-shrink-0">
                           {i + 1}
                         </div>
-                        <p className="text-[10px] font-sf-mono text-primary/70 leading-relaxed">{highlight}</p>
+                        <p className="text-xs font-sf-mono text-primary/70 leading-relaxed">{highlight}</p>
                       </div>
                     ))}
                   </div>
@@ -374,14 +421,14 @@ export default function ProjectsPage() {
 
                 {/* Technologies */}
                 <div>
-                  <span className="text-[9px] font-sf-mono text-primary/40 uppercase tracking-wider">
+                  <span className="text-[10px] font-sf-mono text-primary/50 uppercase tracking-wider">
                     TECHNOLOGIES
                   </span>
-                  <div className="flex flex-wrap gap-1 mt-2">
+                  <div className="flex flex-wrap gap-1.5 mt-2">
                     {selectedProject.technologies.map((tech) => (
                       <span
                         key={tech}
-                        className="text-[9px] font-sf-mono border border-primary/20 bg-primary/5 text-primary/60 px-1.5 py-0.5 hover:bg-primary hover:text-background transition-colors"
+                        className="text-[10px] font-sf-mono border border-primary/20 bg-primary/5 text-primary/70 px-2 py-1 hover:bg-primary hover:text-background transition-colors"
                       >
                         {tech.toUpperCase()}
                       </span>
@@ -391,30 +438,30 @@ export default function ProjectsPage() {
 
                 {/* Links */}
                 {(selectedProject.github || selectedProject.demo) && (
-                  <div className="pt-3 border-t border-primary/10">
-                    <span className="text-[9px] font-sf-mono text-primary/40 uppercase tracking-wider">
+                  <div className="pt-4 border-t border-primary/10">
+                    <span className="text-[10px] font-sf-mono text-primary/50 uppercase tracking-wider">
                       LINKS
                     </span>
                     <div className="flex gap-2 mt-2">
                       {selectedProject.github && (
-                        <a
+                        
                           href={selectedProject.github}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex items-center gap-2 text-[10px] font-sf-mono border border-primary/20 text-primary/60 hover:bg-primary hover:text-background transition-colors px-3 py-2"
+                          className="flex items-center gap-2 text-xs font-sf-mono border border-primary/30 text-primary/70 hover:bg-primary hover:text-background transition-colors px-4 py-2"
                         >
-                          <Github className="h-3 w-3" />
+                          <Github className="h-4 w-4" />
                           SOURCE
                         </a>
                       )}
                       {selectedProject.demo && (
-                        <a
+                        
                           href={selectedProject.demo}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex items-center gap-2 text-[10px] font-sf-mono border border-primary/20 text-primary/60 hover:bg-primary hover:text-background transition-colors px-3 py-2"
+                          className="flex items-center gap-2 text-xs font-sf-mono border border-primary/30 text-primary/70 hover:bg-primary hover:text-background transition-colors px-4 py-2"
                         >
-                          <ExternalLink className="h-3 w-3" />
+                          <ExternalLink className="h-4 w-4" />
                           DEMO
                         </a>
                       )}
@@ -424,9 +471,9 @@ export default function ProjectsPage() {
               </div>
 
               {/* Footer */}
-              <div className="border-t border-primary/20 px-3 py-2 bg-primary/5 flex justify-between items-center flex-shrink-0">
-                <span className="text-[9px] font-sf-mono text-primary/40">{selectedProject.category.toUpperCase()}</span>
-                <span className={`text-[9px] font-sf-mono ${getStatusColor(selectedProject.status)}`}>
+              <div className="border-t border-primary/20 px-4 py-2 bg-primary/5 flex justify-between items-center flex-shrink-0">
+                <span className="text-[10px] font-sf-mono text-primary/50">{selectedProject.category.toUpperCase()}</span>
+                <span className={`text-[10px] font-sf-mono ${getStatusColor(selectedProject.status)}`}>
                   {selectedProject.status}
                 </span>
               </div>
