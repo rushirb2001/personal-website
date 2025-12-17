@@ -85,6 +85,48 @@ export default function PublicationsPage() {
       pdfLink: "https://keep.lib.asu.edu/items/201211",
       citations: 3,
     },
+    {
+      id: "005",
+      title: "MACE-PINNS: MULTI-NETWORK DRIVEN DECOUPLING OF INTERDEPENDENT PHYSICS IN COUPLED PDE SYSTEMS",
+      venue: "ARIZONA STATE UNIVERSITY DISSERTATIONS",
+      authors: "R. BHAVSAR",
+      abstract:
+        "Introducing Multi-network Architecture for Coupled Equations Physics-Informed Neural Networks (MACE-PINNs), employing parallel subnetworks to independently approximate coupled variables with L2 errors ranging from 10−3 to 10−2.",
+      year: "2025",
+      month: "01",
+      status: "RELEASED",
+      doi: "10.48550/DISSERTATION.31994438",
+      pdfLink: "https://keep.lib.asu.edu/items/201211",
+      citations: 3,
+    },
+    {
+      id: "006",
+      title: "MACE-PINNS: MULTI-NETWORK DRIVEN DECOUPLING OF INTERDEPENDENT PHYSICS IN COUPLED PDE SYSTEMS",
+      venue: "ARIZONA STATE UNIVERSITY DISSERTATIONS",
+      authors: "R. BHAVSAR",
+      abstract:
+        "Introducing Multi-network Architecture for Coupled Equations Physics-Informed Neural Networks (MACE-PINNs), employing parallel subnetworks to independently approximate coupled variables with L2 errors ranging from 10−3 to 10−2.",
+      year: "2025",
+      month: "01",
+      status: "RELEASED",
+      doi: "10.48550/DISSERTATION.31994438",
+      pdfLink: "https://keep.lib.asu.edu/items/201211",
+      citations: 3,
+    },
+    {
+      id: "007",
+      title: "MACE-PINNS: MULTI-NETWORK DRIVEN DECOUPLING OF INTERDEPENDENT PHYSICS IN COUPLED PDE SYSTEMS",
+      venue: "ARIZONA STATE UNIVERSITY DISSERTATIONS",
+      authors: "R. BHAVSAR",
+      abstract:
+        "Introducing Multi-network Architecture for Coupled Equations Physics-Informed Neural Networks (MACE-PINNs), employing parallel subnetworks to independently approximate coupled variables with L2 errors ranging from 10−3 to 10−2.",
+      year: "2025",
+      month: "01",
+      status: "RELEASED",
+      doi: "10.48550/DISSERTATION.31994438",
+      pdfLink: "https://keep.lib.asu.edu/items/201211",
+      citations: 3,
+    },
   ]
 
   const sortedPublications = useMemo(() => {
