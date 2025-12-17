@@ -252,7 +252,7 @@ export default function PublicationsPage() {
                         {pub.citations} citations
                       </span>
                     </div>
-                    <h3 className="text-xs font-sf-mono font-medium line-clamp-2">{pub.title}</h3>
+                    <h3 className="text-xs font-sf-mono font-medium line-clamp-2 text-left">{pub.title}</h3>
                     <p
                       className={`text-[10px] font-sf-mono mt-1 ${selectedPublication?.id === pub.id ? "text-background/60" : "text-primary/50"}`}
                     >
