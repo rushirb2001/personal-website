@@ -540,7 +540,7 @@ export default function ProjectsPage() {
                 {(selectedProject.github || selectedProject.demo) && (
                   <div className="flex gap-2 justify-end md:justify-start">
                     {selectedProject.github && (
-                      
+                      <a
                         href={selectedProject.github}
                         target="_blank"
                         rel="noopener noreferrer"
@@ -551,7 +551,7 @@ export default function ProjectsPage() {
                       </a>
                     )}
                     {selectedProject.demo && (
-                      
+                      <a
                         href={selectedProject.demo}
                         target="_blank"
                         rel="noopener noreferrer"
