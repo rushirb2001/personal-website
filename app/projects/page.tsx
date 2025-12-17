@@ -277,7 +277,7 @@ export default function ProjectsPage() {
                     {/* Body: Two Column Layout */}
                     <div className="flex">
                       {/* Left Column - 60% */}
-                      <div className="flex-[7] border-r border-primary/10">
+                      <div className="flex-[6.5] border-r border-primary/10">
                         {/* Tech Icons */}
                         <div className="border-b border-primary/10 px-3 py-2 flex gap-1.5">
                           {project.technologies.slice(0, 5).map((tech) => (
@@ -306,7 +306,7 @@ export default function ProjectsPage() {
                       </div>
 
                       {/* Right Column - 40% */}
-                      <div className="flex-[3] flex flex-col">
+                      <div className="flex-[2.5] flex flex-col">
                         {/* GitHub Button */}
                         <a
                           href={project.github || "#"}
