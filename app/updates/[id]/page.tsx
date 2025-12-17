@@ -1,45 +1,19 @@
 "use client"
 
-import { useEffect, useState, useRef } from "react"
+import { useEffect, useState } from "react"
 import { useParams, useRouter } from "next/navigation"
 import { motion } from "framer-motion"
 import { getPostById, type BlogPost } from "@/lib/blog-data"
 import { formatDate } from "@/lib/utils"
-import { ArrowLeft, FileText, Tag } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { useNavigation } from "@/contexts/navigation-context"
+import { ArrowLeft, Calendar, Tag } from "lucide-react"
+import { PageLayout } from "@/components/layout/page-layout"
 import { BlogContent } from "@/components/features/blog/blog-content"
 
 export default function BlogPostPage() {
   const params = useParams()
   const router = useRouter()
-  const { navigateTo } = useNavigation()
   const [post, setPost] = useState<BlogPost | null>(null)
   const [loading, setLoading] = useState(true)
-  const containerRef = useRef<HTMLDivElement>(null)
-
-  const [animationPhase, setAnimationPhase] = useState<"expanding" | "revealing" | "complete" | "collapsing">(
-    "expanding",
-  )
-  const [expandRect, setExpandRect] = useState<{ top: number; left: number; width: number; height: number } | null>(
-    null,
-  )
-  const [originalRect, setOriginalRect] = useState<{ top: number; left: number; width: number; height: number } | null>(
-    null,
-  )
-  const [reversePhase, setReversePhase] = useState<"idle" | "text-reverse" | "blank" | "nav-up" | "navigating">("idle")
-
-  useEffect(() => {
-    const stored = sessionStorage.getItem("expandRect")
-    if (stored) {
-      const rect = JSON.parse(stored)
-      setExpandRect(rect)
-      setOriginalRect(rect)
-      sessionStorage.removeItem("expandRect")
-    } else {
-      setAnimationPhase("complete")
-    }
-  }, [])
 
   useEffect(() => {
     if (params.id) {
@@ -53,288 +27,123 @@ export default function BlogPostPage() {
     }
   }, [params.id, router])
 
-  useEffect(() => {
-    if (expandRect && animationPhase === "expanding") {
-      const timer = setTimeout(() => {
-        setAnimationPhase("revealing")
-      }, 600)
-      return () => clearTimeout(timer)
-    }
-  }, [expandRect, animationPhase])
-
-  useEffect(() => {
-    if (animationPhase === "revealing") {
-      const timer = setTimeout(() => {
-        setAnimationPhase("complete")
-      }, 400)
-      return () => clearTimeout(timer)
-    }
-  }, [animationPhase])
-
-  useEffect(() => {
-    if (reversePhase === "text-reverse") {
-      // Text reverse animation takes 300ms
-      const timer = setTimeout(() => {
-        setReversePhase("blank")
-      }, 300)
-      return () => clearTimeout(timer)
-    }
-  }, [reversePhase])
-
-  useEffect(() => {
-    if (reversePhase === "blank") {
-      // Small delay then pull up nav
-      const timer = setTimeout(() => {
-        setReversePhase("nav-up")
-      }, 50)
-      return () => clearTimeout(timer)
-    }
-  }, [reversePhase])
-
-  useEffect(() => {
-    if (reversePhase === "nav-up") {
-      // Nav pulls up over 250ms, then navigate
-      const timer = setTimeout(() => {
-        setReversePhase("navigating")
-        router.push("/updates")
-      }, 250)
-      return () => clearTimeout(timer)
-    }
-  }, [reversePhase, router])
-
-  const handleBackToUpdates = () => {
-    if (originalRect && post) {
-      // Measure the current container element
-      if (containerRef.current) {
-        const containerRect = containerRef.current.getBoundingClientRect()
-        sessionStorage.setItem(
-          "collapseContainerRect",
-          JSON.stringify({
-            top: containerRect.top,
-            left: containerRect.left,
-            width: containerRect.width,
-            height: containerRect.height,
-          }),
-        )
-      }
-
-      // Store original card rect for the end position
-      sessionStorage.setItem("collapseToRect", JSON.stringify(originalRect))
-      sessionStorage.setItem("collapseFromPost", post.id)
-      sessionStorage.setItem(
-        "collapsePostData",
-        JSON.stringify({
-          id: post.id,
-          title: post.title,
-          date: post.date,
-          summary: post.summary,
-          tags: post.tags,
-        }),
-      )
-
-      setReversePhase("text-reverse")
-    } else {
-      router.push("/updates")
-    }
-  }
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.08,
-        delayChildren: 0.05,
-      },
-    },
-    exit: {
-      opacity: 0,
-      transition: {
-        staggerChildren: 0.05,
-        staggerDirection: -1,
-      },
-    },
-  }
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 15, filter: "blur(4px)" },
-    visible: {
-      opacity: 1,
-      y: 0,
-      filter: "blur(0px)",
-      transition: {
-        duration: 0.35,
-        ease: [0.25, 0.46, 0.45, 0.94],
-      },
-    },
-    exit: {
-      opacity: 0,
-      y: 15,
-      filter: "blur(4px)",
-      transition: {
-        duration: 0.2,
-        ease: [0.55, 0, 1, 0.45],
-      },
-    },
-  }
-
   if (loading) {
     return (
-      <div className="fixed inset-0 pt-14 md:pt-16 pb-16 flex items-center justify-center">
-        <div className="text-sm font-sf-mono text-primary/70">LOADING RECORD...</div>
-      </div>
+      <PageLayout title="LOADING" subtitle="...">
+        <div className="flex items-center justify-center py-20">
+          <span className="text-xs font-sf-mono text-primary/50">LOADING ARTICLE...</span>
+        </div>
+      </PageLayout>
     )
   }
 
   if (!post) {
     return (
-      <div className="fixed inset-0 pt-14 md:pt-16 pb-16 flex items-center justify-center">
-        <div className="text-sm font-sf-mono text-primary/70">RECORD NOT FOUND</div>
-      </div>
+      <PageLayout title="NOT FOUND" subtitle="ARTICLE DOES NOT EXIST">
+        <div className="flex flex-col items-center justify-center py-20 gap-4">
+          <span className="text-xs font-sf-mono text-primary/50">ARTICLE NOT FOUND</span>
+          <button
+            onClick={() => router.push("/updates")}
+            className="text-[10px] font-sf-mono border border-primary/20 px-3 py-1.5 hover:bg-primary hover:text-background transition-colors"
+          >
+            ← BACK TO BLOG
+          </button>
+        </div>
+      </PageLayout>
     )
   }
 
-  const showContent = reversePhase === "idle" && (animationPhase === "revealing" || animationPhase === "complete")
-  const isReversing = reversePhase !== "idle"
-
   return (
-    <>
-      {/* Navigation bar drops down from top */}
-      <motion.div
-        className="fixed top-14 md:top-16 left-0 right-0 z-40 bg-background dark:bg-eerie-black border-b border-primary/20"
-        initial={{ y: -60, opacity: 0 }}
-        animate={{
-          y: reversePhase === "nav-up" || reversePhase === "navigating" ? -60 : 0,
-          opacity: reversePhase === "nav-up" || reversePhase === "navigating" ? 0 : 1,
-        }}
-        transition={{
-          duration: 0.25,
-          ease: [0.32, 0.72, 0, 1],
-          delay: reversePhase === "idle" ? 0.1 : reversePhase === "nav-up" || reversePhase === "navigating" ? 0 : 0.7,
-        }}
-      >
-        <div className="container max-w-3xl mx-auto px-4 py-4 flex justify-between">
-          <Button
-            variant="outline"
-            className="rounded-none border-primary/20 text-xs font-sf-mono flex items-center bg-transparent"
-            onClick={handleBackToUpdates}
-            disabled={isReversing}
-          >
-            <ArrowLeft className="mr-1 h-3 w-3" />
-            BACK TO UPDATES
-          </Button>
-
-          <Button
-            variant="outline"
-            className="rounded-none border-primary/20 text-xs font-sf-mono bg-transparent"
-            onClick={() => navigateTo("/")}
-            disabled={isReversing}
-          >
-            BACK TO HOME  
-          </Button>
-        </div>
-      </motion.div>
-
-      {/* Expansion animation box */}
-      {expandRect && animationPhase === "expanding" && (
+    <PageLayout title="BLOG" subtitle={post.title.toUpperCase()}>
+      <div className="max-w-3xl mx-auto">
+        {/* Back Button & Meta */}
         <motion.div
-          className="fixed z-40 pointer-events-none border border-primary/20 bg-background dark:bg-eerie-black"
-          initial={{
-            top: expandRect.top,
-            left: expandRect.left,
-            width: expandRect.width,
-            height: expandRect.height,
-          }}
-          animate={{
-            top: 152,
-            left: "50%",
-            x: "-50%",
-            width: "min(100vw - 2rem, 48rem)",
-            height: "calc(100vh - 9.5rem - 4rem)",
-          }}
-          transition={{
-            duration: 0.6,
-            ease: [0.32, 0.72, 0, 1],
-          }}
-        />
-      )}
-
-      {(reversePhase === "blank" || reversePhase === "nav-up" || reversePhase === "navigating") && (
-        <motion.div
-          className="fixed z-[100] border border-primary/20 bg-background dark:bg-eerie-black"
-          style={{
-            top: 152,
-            left: "50%",
-            transform: "translateX(-50%)",
-            width: "min(100vw - 2rem, 48rem)",
-            height: "calc(100vh - 9.5rem - 4rem)",
-          }}
-          initial={{ opacity: 1 }}
-          animate={{ opacity: 1 }}
-        />
-      )}
-
-      {/* Main content container */}
-      <motion.div
-        className="fixed top-[9.5rem] left-0 right-0 bottom-16 z-30"
-        initial={{ opacity: 0 }}
-        animate={{
-          opacity: animationPhase === "expanding" ? 0 : 1,
-        }}
-        transition={{ duration: 0.15 }}
-        style={{
-          visibility: animationPhase === "expanding" ? "hidden" : "visible",
-        }}
-      >
-        <div className="container max-w-3xl mx-auto px-4 h-full">
-          <div
-            className="h-full border border-primary/20 bg-background dark:bg-eerie-black/50 overflow-hidden"
-            ref={containerRef}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.2 }}
+          className="flex items-center justify-between mb-4 pb-3 border-b border-primary/20"
+        >
+          <button
+            onClick={() => router.push("/updates")}
+            className="flex items-center gap-1 text-[10px] font-sf-mono text-primary/60 hover:text-primary transition-colors"
           >
-            {/* Scrollable Content Inside Window */}
-            <div className="h-full overflow-y-auto p-6">
-              <motion.div
-                variants={containerVariants}
-                initial="hidden"
-                animate={showContent ? "visible" : isReversing ? "exit" : "hidden"}
-              >
-                <motion.div variants={itemVariants} className="flex items-center mb-4">
-                  <FileText className="h-4 w-4 mr-2 text-primary/70" />
-                  <div className="text-xs font-sf-mono text-primary/70">
-                    RECORD ID: {post.id} • {formatDate(new Date(post.date))}
-                  </div>
-                </motion.div>
-
-                <motion.h1 variants={itemVariants} className="text-xl font-sf-mono mb-4">
-                  {post.title}
-                </motion.h1>
-
-                <motion.div variants={itemVariants} className="flex items-center mb-6">
-                  <Tag className="h-3 w-3 mr-2 text-primary/50" />
-                  <div className="flex flex-wrap gap-2">
-                    {post.tags.map((tag) => (
-                      <span
-                        key={tag}
-                        className="text-xs font-sf-mono px-2 py-0.5 border border-primary/20 text-primary/70"
-                      >
-                        {tag.toUpperCase()}
-                      </span>
-                    ))}
-                  </div>
-                </motion.div>
-
-                {/* Blog content */}
-                <motion.div
-                  variants={itemVariants}
-                  className="prose prose-sm dark:prose-invert max-w-none font-sf-mono"
-                >
-                  <BlogContent content={post.content} />
-                </motion.div>
-              </motion.div>
-            </div>
+            <ArrowLeft className="w-3 h-3" />
+            BACK TO BLOG
+          </button>
+          <div className="flex items-center gap-1 text-[10px] font-sf-mono text-primary/50">
+            <Calendar className="w-3 h-3" />
+            {formatDate(new Date(post.date))}
           </div>
-        </div>
-      </motion.div>
-    </>
+        </motion.div>
+
+        {/* Title */}
+        <motion.h1
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.2, delay: 0.05 }}
+          className="text-lg md:text-xl font-sf-mono font-bold mb-4"
+        >
+          {post.title}
+        </motion.h1>
+
+        {/* Tags */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.2, delay: 0.1 }}
+          className="flex items-center gap-2 mb-6"
+        >
+          <Tag className="w-3 h-3 text-primary/40" />
+          <div className="flex flex-wrap gap-1">
+            {post.tags.map((tag) => (
+              <span
+                key={tag}
+                className="text-[9px] font-sf-mono px-2 py-0.5 border border-primary/20 text-primary/60"
+              >
+                {tag.toUpperCase()}
+              </span>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* Summary */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.2, delay: 0.15 }}
+          className="border-l-2 border-primary/30 pl-4 mb-6"
+        >
+          <p className="text-xs font-sf-mono text-primary/60 italic">{post.summary}</p>
+        </motion.div>
+
+        {/* Content */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.2, delay: 0.2 }}
+          className="border border-primary/20 p-4 md:p-6"
+        >
+          <div className="prose prose-sm dark:prose-invert max-w-none font-sf-mono text-sm leading-relaxed">
+            <BlogContent content={post.content} />
+          </div>
+        </motion.div>
+
+        {/* Footer */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.2, delay: 0.3 }}
+          className="flex items-center justify-between mt-6 pt-3 border-t border-primary/20"
+        >
+          <span className="text-[9px] font-sf-mono text-primary/30">ID: {post.id}</span>
+          <button
+            onClick={() => router.push("/updates")}
+            className="text-[10px] font-sf-mono border border-primary/20 px-3 py-1.5 hover:bg-primary hover:text-background transition-colors"
+          >
+            ← ALL ARTICLES
+          </button>
+        </motion.div>
+      </div>
+    </PageLayout>
   )
 }
