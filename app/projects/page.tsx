@@ -313,7 +313,7 @@ export default function ProjectsPage() {
               <div className="flex items-center justify-center h-full min-h-[415px] md:min-h-[415px]">
                 <div className="flex items-center gap-2">
                   <Terminal className="w-4 h-4 text-primary/50" />
-                  <p className="text-xs font-sf-mono text-primary/50">NO PROJECTS IN THIS CATEGORY</p>
+                  <p className="text-xs font-sf-mono text-primary/50">CHECK BACK AGAIN SOON, MORE PROJECTS TO COME...</p>
                 </div>
               </div>
             )}
