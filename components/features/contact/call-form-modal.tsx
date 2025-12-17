@@ -69,7 +69,7 @@ export function CallFormModal({
                 style={{
                   width: "125%",
                   height: "125%",
-                  transform: "scale(0.8)",
+                  transform: "scale(0.7)",
                   transformOrigin: "top left",
                 }}
               />
