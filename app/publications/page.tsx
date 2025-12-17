@@ -185,12 +185,11 @@ export default function PublicationsPage() {
               ← PREVIOUS
             </button>
             <span className="text-[9px] font-sf-mono text-primary/40 px-2">
-              {currentStart}-{currentEnd} OF {sortedPublications.length}
+              {startIndex + 1}-{Math.min(startIndex + ITEMS_PER_PAGE, sortedPublications.length)} OF{" "}
+              {sortedPublications.length}
             </span>
             <button
-              onClick={() =>
-                setStartIndex((prev) => Math.min(prev + ITEMS_PER_PAGE, sortedPublications.length - ITEMS_PER_PAGE))
-              }
+              onClick={() => setStartIndex((prev) => prev + ITEMS_PER_PAGE)}
               disabled={!canShowNext}
               className={`px-4 py-1.5 text-[10px] font-sf-mono uppercase tracking-wider border transition-all duration-150 w-32 ${
                 canShowNext
