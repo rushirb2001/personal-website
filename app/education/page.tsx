@@ -50,6 +50,8 @@ export default function EducationPage() {
     setExpandedIndex(expandedIndex === index ? null : index)
   }
 
+  const isMobile = useMediaQuery("(max-width: 768px)")
+
   return (
     <PageLayout title="EDUCATION" subtitle="DEGREES & COURSEWORK">
       <div className="space-y-3 max-w-3xl mx-auto">
@@ -158,12 +160,12 @@ export default function EducationPage() {
           transition={{ duration: 0.2, delay: 0.3 }}
           className="flex items-center justify-between border-t border-primary/20 pt-3"
         >
-          <div className="flex gap-2 text-[10px] font-sf-mono text-primary/40 uppercase tracking-wider">
-            <span>2 DEGREES</span>
+          <div className="flex gap-1 sm:gap-2 text-[9px] sm:text-[10px] font-sf-mono text-primary/40 uppercase tracking-wider">
+            <span>2 {isMobile ? "DEG" : "DEGREES"}</span>
             <span className="text-primary/20">/</span>
-            <span>2 INSTITUTIONS</span>
+            <span>2 {isMobile ? "INST" : "INSTITUTIONS"}</span>
             <span className="text-primary/20">/</span>
-            <span>2019-2025</span>
+            <span>2019-25</span>
           </div>
           <div className="text-[10px] font-sf-mono text-primary/30">LAST.UPDATED: 2025</div>
         </motion.div>
