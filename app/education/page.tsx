@@ -19,9 +19,9 @@ export default function EducationPage() {
       status: "GRADUATED",
       gpa: "3.8/4.0",
       courses: [
-        "Artificial Intelligence",
         "Data Mining", 
         "Convex Optimisation",
+        "Artificial Intelligence",
         "Statistical Machine Learning",
         "Knowledge Representation",
         "Data Visualization",
