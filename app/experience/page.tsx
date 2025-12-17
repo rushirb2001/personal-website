@@ -36,7 +36,7 @@ export default function ExperiencePage() {
         "Enhanced Custom AI Chatbot deployment efficiency by implementing Transformer-based models with OpenAI API and Mistral Big within the LangChain framework",
         "Accelerated supply-chain query handling by 12%, achieving sub-second latencies and an 86% increase in data throughput by applying Retrieval-Augmented Generation (RAG) techniques",
       ],
-      skills: ["AWS", "AZURE", "DOCKER", "KUBERNETES", "LANGCHAIN", "RAG"],
+      skills: ["AWS", "AZURE", "DOCKER", "LANGCHAIN", "RAG"],
     },
     {
       title: "AI RESEARCH INTERN",
