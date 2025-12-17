@@ -251,7 +251,7 @@ export default function ExperiencePage() {
                       className="overflow-hidden"
                     >
                       <div className="bg-primary/5 p-3 md:p-6">
-                        <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-4 md:gap-6">
+                        <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-2 md:gap-6">
                           {/* Left: Responsibilities */}
                           <div>
                             <span className="text-[9px] font-sf-mono text-primary/40 uppercase tracking-wider">
