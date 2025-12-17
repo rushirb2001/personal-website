@@ -308,7 +308,7 @@ export default function ProjectsPage() {
                       {/* Right Column - 40% */}
                       <div className="flex-[4] flex flex-col">
                         {/* GitHub Button */}
-                        
+                        <a
                           href={project.github || "#"}
                           target="_blank"
                           rel="noopener noreferrer"
