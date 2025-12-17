@@ -438,7 +438,7 @@ export default function ProjectsPage() {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="w-full max-w-2xl bg-background border border-primary/30 shadow-lg max-h-[90vh] overflow-hidden flex flex-col"
+              className="w-full max-w-3xl bg-background border border-primary/30 shadow-lg max-h-[90vh] overflow-hidden flex flex-col"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Header */}
