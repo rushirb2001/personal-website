@@ -68,7 +68,7 @@ function calculateTotals() {
 function SkillTag({ name, delay, isHighlighted }: { name: string; delay: number; isHighlighted?: boolean }) {
   return (
     <motion.span
-      className={`inline-block px-1 py-0.5 text-[8px] sm:text-[9px] md:text-xs font-sf-mono uppercase tracking-wide border transition-all duration-100 ${
+      className={`inline-block px-0.5 sm:px-1 py-px sm:py-0.5 text-[7px] sm:text-[9px] md:text-xs font-sf-mono uppercase tracking-wide border transition-all duration-100 ${
         isHighlighted
           ? "bg-primary text-background border-primary"
           : "bg-background text-primary/70 border-primary/20 hover:bg-primary hover:text-background hover:border-primary"
@@ -100,7 +100,7 @@ function SubcategoryRow({
 
   return (
     <motion.div
-      className={`flex flex-col sm:flex-row sm:items-center gap-0.5 sm:gap-2 py-0.5 sm:py-1 border-b last:border-b-0 transition-colors duration-150 ${
+      className={`flex flex-col sm:flex-row sm:items-center gap-px sm:gap-2 py-px sm:py-1 border-b last:border-b-0 transition-colors duration-150 ${
         isContainerHovered ? "border-primary/10" : "border-primary/5"
       }`}
       initial={{ opacity: 0, x: -5 }}
@@ -108,7 +108,7 @@ function SubcategoryRow({
       transition={{ duration: 0.15, delay: baseDelay }}
     >
       <span
-        className={`text-[8px] sm:text-[10px] font-sf-mono uppercase tracking-wider w-full sm:w-28 shrink-0 cursor-pointer transition-colors duration-100 ${
+        className={`text-[7px] sm:text-[10px] font-sf-mono uppercase tracking-wider w-full sm:w-28 shrink-0 cursor-pointer transition-colors duration-100 leading-tight ${
           isContainerHovered || isHovered ? "text-primary/70" : "text-primary/40"
         }`}
         onMouseEnter={() => setIsHovered(true)}
@@ -116,7 +116,7 @@ function SubcategoryRow({
       >
         {title}
       </span>
-      <div className="flex flex-wrap gap-0.5">
+      <div className="flex flex-wrap gap-px sm:gap-0.5">
         {items.map((item, idx) => (
           <SkillTag key={idx} name={item} delay={baseDelay + idx * 0.01} isHighlighted={isHovered} />
         ))}
@@ -151,20 +151,20 @@ function CategoryBlock({
       onMouseLeave={() => setIsContainerHovered(false)}
     >
       <div
-        className={`border-b border-primary/20 px-1.5 py-0.5 sm:py-1.5 transition-colors duration-150 ${
+        className={`border-b border-primary/20 px-1 sm:px-1.5 py-px sm:py-1.5 transition-colors duration-150 ${
           isContainerHovered ? "bg-primary/15" : "bg-primary/5"
         }`}
       >
         <div className="flex items-center justify-between">
           <h3
-            className={`text-[10px] sm:text-sm font-sf-mono font-bold tracking-widest transition-colors duration-150 ${
+            className={`text-[9px] sm:text-sm font-sf-mono font-bold tracking-widest transition-colors duration-150 ${
               isContainerHovered ? "text-primary" : "text-primary"
             }`}
           >
             {title}
           </h3>
           <span
-            className={`text-[8px] sm:text-[10px] font-sf-mono transition-colors duration-150 ${
+            className={`text-[7px] sm:text-[10px] font-sf-mono transition-colors duration-150 ${
               isContainerHovered ? "text-primary/50" : "text-primary/30"
             }`}
           >
@@ -173,7 +173,7 @@ function CategoryBlock({
         </div>
       </div>
 
-      <div className="px-1.5 py-0.5 sm:py-1.5 flex-1">
+      <div className="px-1 sm:px-1.5 py-px sm:py-1.5 flex-1">
         <div className="flex flex-col">
           {Object.entries(subcategories).map(([subcat, subItems], idx) => (
             <SubcategoryRow
@@ -197,9 +197,9 @@ export default function SkillsPage() {
 
   return (
     <PageLayout title="SKILLS" subtitle="TECHNICAL EXPERTISE">
-      <div className="flex flex-col gap-1 sm:gap-2 md:gap-3 h-full">
-        <div className="flex flex-col md:flex-row gap-1 sm:gap-2 md:gap-3 items-stretch">
-          <div className="flex flex-col gap-1 sm:gap-2 md:gap-3 flex-1">
+      <div className="flex flex-col gap-0.5 sm:gap-2 md:gap-3 h-full">
+        <div className="flex flex-col md:flex-row gap-0.5 sm:gap-2 md:gap-3 items-stretch">
+          <div className="flex flex-col gap-0.5 sm:gap-2 md:gap-3 flex-1">
             <CategoryBlock
               title={skillsData.languages.title}
               subcategories={skillsData.languages.subcategories}
@@ -211,7 +211,7 @@ export default function SkillsPage() {
               index={2}
             />
           </div>
-          <div className="flex flex-col gap-1 sm:gap-2 md:gap-3 flex-1">
+          <div className="flex flex-col gap-0.5 sm:gap-2 md:gap-3 flex-1">
             <CategoryBlock
               title={skillsData.trainEvalInfer.title}
               subcategories={skillsData.trainEvalInfer.subcategories}
@@ -231,12 +231,12 @@ export default function SkillsPage() {
           fullWidth
         />
         <motion.div
-          className="flex items-center justify-between border-t border-primary/20 pt-1 sm:pt-2"
+          className="flex items-center justify-between border-t border-primary/20 pt-0.5 sm:pt-2"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.2, delay: 0.5 }}
         >
-          <div className="flex gap-1 sm:gap-3 md:gap-4 text-[8px] sm:text-[10px] font-sf-mono text-primary/40 uppercase tracking-wider">
+          <div className="flex gap-0.5 sm:gap-3 md:gap-4 text-[7px] sm:text-[10px] font-sf-mono text-primary/40 uppercase tracking-wider">
             <span>5 {isMobile ? "CAT" : "CATEGORIES"}</span>
             <span className="text-primary/20">/</span>
             <span>
@@ -247,7 +247,7 @@ export default function SkillsPage() {
               {totalTech} {isMobile ? "TECH" : "TECHNOLOGIES"}
             </span>
           </div>
-          <div className="text-[8px] sm:text-[10px] font-sf-mono text-primary/30">
+          <div className="text-[7px] sm:text-[10px] font-sf-mono text-primary/30">
             {isMobile ? "2025" : "LAST.UPDATED: 2025"}
           </div>
         </motion.div>
