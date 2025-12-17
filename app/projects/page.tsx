@@ -501,21 +501,21 @@ export default function ProjectsPage() {
                 </div>
               </div>
 
-              {/* Footer - Inline Layout */}
-              <div className="border-t border-primary/20 px-3 md:px-4 py-2 md:py-3 bg-primary/5 flex flex-col md:flex-row items-start md:items-center justify-between gap-2 md:gap-3">
-                {/* Technologies - Icons on mobile, tags on desktop */}
-                <div className="flex items-center gap-1 md:gap-2 flex-wrap flex-1">
+              {/* Footer - Improved Layout */}
+              <div className="border-t border-primary/20 px-3 md:px-4 py-2 md:py-3 bg-primary/5 flex flex-col gap-3">
+                {/* Technologies Row */}
+                <div className="flex items-center gap-1 md:gap-2 flex-wrap">
                   {/* Label - Desktop only */}
                   <span className="hidden md:inline text-[9px] font-sf-mono text-primary/50 uppercase tracking-wider">
                     TECH STACK:
                   </span>
                   
-                  {/* Mobile - Icons */}
-                  <div className="flex md:hidden gap-1">
+                  {/* Mobile - Black themed icons */}
+                  <div className="flex md:hidden gap-1 flex-wrap">
                     {selectedProject.technologies.map((tech) => (
                       <div
                         key={tech}
-                        className="w-6 h-6 border border-primary/20 bg-background flex items-center justify-center text-primary/60 hover:bg-primary/10 hover:text-primary transition-colors"
+                        className="w-7 h-7 border border-primary bg-primary text-background flex items-center justify-center hover:bg-primary/90 transition-colors"
                         title={tech}
                       >
                         {getTechIcon(tech)}
@@ -536,11 +536,11 @@ export default function ProjectsPage() {
                   </div>
                 </div>
 
-                {/* Action Buttons - Icons only on mobile */}
+                {/* Action Buttons Row */}
                 {(selectedProject.github || selectedProject.demo) && (
-                  <div className="flex gap-2 flex-shrink-0">
+                  <div className="flex gap-2 justify-end md:justify-start">
                     {selectedProject.github && (
-                      <a
+                      
                         href={selectedProject.github}
                         target="_blank"
                         rel="noopener noreferrer"
@@ -551,7 +551,7 @@ export default function ProjectsPage() {
                       </a>
                     )}
                     {selectedProject.demo && (
-                      <a
+                      
                         href={selectedProject.demo}
                         target="_blank"
                         rel="noopener noreferrer"
