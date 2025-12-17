@@ -378,9 +378,9 @@ export default function PublicationsPage() {
           transition={{ duration: 0.2, delay: 0.3 }}
         >
           <div className="flex flex-wrap gap-2 sm:gap-3 md:gap-4 text-[9px] sm:text-[10px] font-sf-mono text-primary/40 uppercase tracking-wider">
-            <span>{stats.total} PUBLICATIONS</span>
+            <span>{stats.total} {isMobile ? "PUB" : "PUBLICATIONS"}</span>
             <span className="text-primary/20">/</span>
-            <span>{stats.totalCitations} CITATIONS</span>
+            <span>{stats.totalCitations} {isMobile ? "CIT" : "CITATIONS"}</span>
             <span className="text-primary/20">/</span>
             <span>{stats.venues} VENUES</span>
             <span className="text-primary/20">/</span>
