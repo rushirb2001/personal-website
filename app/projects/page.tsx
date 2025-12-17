@@ -501,30 +501,15 @@ export default function ProjectsPage() {
                 </div>
               </div>
 
-              {/* Footer - Improved Layout */}
-              <div className="border-t border-primary/20 px-3 md:px-4 py-2 md:py-3 bg-primary/5 flex flex-col gap-3">
-                {/* Technologies Row */}
-                <div className="flex items-center gap-1 md:gap-2 flex-wrap">
-                  {/* Label - Desktop only */}
-                  <span className="hidden md:inline text-[9px] font-sf-mono text-primary/50 uppercase tracking-wider">
-                    TECH STACK:
-                  </span>
-                  
-                  {/* Mobile - Black themed icons */}
-                  <div className="flex md:hidden gap-1 flex-wrap">
-                    {selectedProject.technologies.map((tech) => (
-                      <div
-                        key={tech}
-                        className="w-7 h-7 border border-primary bg-primary text-background flex items-center justify-center hover:bg-primary/90 transition-colors"
-                        title={tech}
-                      >
-                        {getTechIcon(tech)}
-                      </div>
-                    ))}
-                  </div>
-                  
-                  {/* Desktop - Text tags */}
-                  <div className="hidden md:flex gap-2 flex-wrap">
+              {/* Footer - Proper Alignment */}
+              <div className="border-t border-primary/20 px-3 md:px-4 py-2 md:py-3 bg-primary/5">
+                {/* Desktop Layout - Stacked */}
+                <div className="hidden md:flex md:flex-col gap-3">
+                  {/* Technologies Row */}
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="text-[9px] font-sf-mono text-primary/50 uppercase tracking-wider">
+                      TECH STACK:
+                    </span>
                     {selectedProject.technologies.map((tech) => (
                       <span
                         key={tech}
@@ -534,35 +519,82 @@ export default function ProjectsPage() {
                       </span>
                     ))}
                   </div>
+
+                  {/* Action Buttons Row */}
+                  {(selectedProject.github || selectedProject.demo) && (
+                    <div className="flex gap-2">
+                      {selectedProject.github && (
+                        
+                          href={selectedProject.github}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-2 text-[10px] font-sf-mono border border-primary bg-primary text-background hover:bg-primary/90 transition-all duration-150 px-4 py-2"
+                        >
+                          <Github className="h-3 w-3" />
+                          <span>SOURCE</span>
+                        </a>
+                      )}
+                      {selectedProject.demo && (
+                        
+                          href={selectedProject.demo}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-2 text-[10px] font-sf-mono border border-primary bg-primary text-background hover:bg-primary/90 transition-all duration-150 px-4 py-2"
+                        >
+                          <ExternalLink className="h-3 w-3" />
+                          <span>DEMO</span>
+                        </a>
+                      )}
+                    </div>
+                  )}
                 </div>
 
-                {/* Action Buttons Row */}
-                {(selectedProject.github || selectedProject.demo) && (
-                  <div className="flex gap-2 justify-end md:justify-start">
-                    {selectedProject.github && (
-                      <a
-                        href={selectedProject.github}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-2 text-[10px] font-sf-mono border border-primary bg-primary text-background hover:bg-primary/90 transition-all duration-150 px-3 md:px-4 py-2"
+                {/* Mobile Layout - Single Row */}
+                <div className="flex md:hidden items-center justify-between">
+                  {/* Tech Icons - Left */}
+                  <div className="flex gap-1 flex-wrap">
+                    {selectedProject.technologies.slice(0, 5).map((tech) => (
+                      <div
+                        key={tech}
+                        className="w-7 h-7 border border-primary bg-primary text-background flex items-center justify-center hover:bg-primary/90 transition-colors"
+                        title={tech}
                       >
-                        <Github className="h-3 w-3" />
-                        <span className="hidden md:inline">SOURCE</span>
-                      </a>
-                    )}
-                    {selectedProject.demo && (
-                      <a
-                        href={selectedProject.demo}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-2 text-[10px] font-sf-mono border border-primary bg-primary text-background hover:bg-primary/90 transition-all duration-150 px-3 md:px-4 py-2"
-                      >
-                        <ExternalLink className="h-3 w-3" />
-                        <span className="hidden md:inline">DEMO</span>
-                      </a>
+                        {getTechIcon(tech)}
+                      </div>
+                    ))}
+                    {selectedProject.technologies.length > 5 && (
+                      <div className="w-7 h-7 border border-primary bg-primary text-background flex items-center justify-center text-[8px] font-sf-mono">
+                        +{selectedProject.technologies.length - 5}
+                      </div>
                     )}
                   </div>
-                )}
+
+                  {/* Action Buttons - Right */}
+                  {(selectedProject.github || selectedProject.demo) && (
+                    <div className="flex gap-2 flex-shrink-0">
+                      {selectedProject.github && (
+                        
+                          href={selectedProject.github}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="w-10 h-7 border border-primary bg-primary text-background hover:bg-primary/90 transition-all duration-150 flex items-center justify-center"
+                        >
+                          <Github className="h-3 w-3" />
+                        </a>
+                      )}
+                      {selectedProject.demo && (
+                        
+                          href={selectedProject.demo}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="w-10 h-7 border border-primary bg-primary text-background hover:bg-primary/90 transition-all duration-150 flex items-center justify-center"
+                        >
+                          <ExternalLink className="h-3 w-3" />
+                        </a>
+                      )}
+                    </div>
+                  )}
+                </div>
               </div>
             </motion.div>
           </motion.div>
