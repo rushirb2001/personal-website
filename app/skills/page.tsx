@@ -68,7 +68,7 @@ function calculateTotals() {
 function SkillTag({ name, delay, isHighlighted }: { name: string; delay: number; isHighlighted?: boolean }) {
   return (
     <motion.span
-      className={`inline-block px-1.5 sm:px-1 py-0.5 text-[8px] sm:text-[9px] md:text-xs font-sf-mono uppercase tracking-wide border transition-all duration-100 text-center flex-1 sm:flex-initial min-w-0 ${
+      className={`inline-block px-1.5 py-0.5 text-[8px] sm:text-[9px] md:text-xs font-sf-mono uppercase tracking-wide border transition-all duration-100 whitespace-nowrap ${
         isHighlighted
           ? "bg-primary text-background border-primary"
           : "bg-background text-primary/70 border-primary/20 hover:bg-primary hover:text-background hover:border-primary"
@@ -100,7 +100,7 @@ function SubcategoryRow({
 
   return (
     <motion.div
-      className={`flex flex-col sm:flex-row sm:items-center gap-0.5 sm:gap-2 py-0.5 sm:py-1 border-b last:border-b-0 transition-colors duration-150 ${
+      className={`flex flex-wrap items-center gap-1 py-0.5 sm:py-1 border-b last:border-b-0 transition-colors duration-150 ${
         isContainerHovered ? "border-primary/10" : "border-primary/5"
       }`}
       initial={{ opacity: 0, x: -5 }}
@@ -108,19 +108,17 @@ function SubcategoryRow({
       transition={{ duration: 0.15, delay: baseDelay }}
     >
       <span
-        className={`text-[8px] sm:text-[10px] font-sf-mono uppercase tracking-wider w-full sm:w-28 shrink-0 cursor-pointer transition-colors duration-100 ${
+        className={`text-[8px] sm:text-[9px] font-sf-mono uppercase tracking-wider cursor-pointer transition-colors duration-100 mr-1 ${
           isContainerHovered || isHovered ? "text-primary/70" : "text-primary/40"
         }`}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        {title}
+        {title}:
       </span>
-      <div className="flex flex-wrap gap-0.5 w-full">
-        {items.map((item, idx) => (
-          <SkillTag key={idx} name={item} delay={baseDelay + idx * 0.01} isHighlighted={isHovered} />
-        ))}
-      </div>
+      {items.map((item, idx) => (
+        <SkillTag key={idx} name={item} delay={baseDelay + idx * 0.01} isHighlighted={isHovered} />
+      ))}
     </motion.div>
   )
 }
@@ -151,13 +149,13 @@ function CategoryBlock({
       onMouseLeave={() => setIsContainerHovered(false)}
     >
       <div
-        className={`border-b border-primary/20 px-1.5 py-0.5 sm:py-1.5 transition-colors duration-150 ${
+        className={`border-b border-primary/20 px-2 py-1 transition-colors duration-150 ${
           isContainerHovered ? "bg-primary/15" : "bg-primary/5"
         }`}
       >
         <div className="flex items-center justify-between">
           <h3
-            className={`text-[10px] sm:text-sm font-sf-mono font-bold tracking-widest transition-colors duration-150 ${
+            className={`text-[9px] sm:text-sm font-sf-mono font-bold tracking-widest transition-colors duration-150 ${
               isContainerHovered ? "text-primary" : "text-primary"
             }`}
           >
@@ -173,8 +171,8 @@ function CategoryBlock({
         </div>
       </div>
 
-      <div className="px-1.5 py-0.5 sm:py-1.5 flex-1">
-        <div className="flex flex-col">
+      <div className="px-2 py-1 flex-1">
+        <div className="flex flex-col gap-0">
           {Object.entries(subcategories).map(([subcat, subItems], idx) => (
             <SubcategoryRow
               key={subcat}
