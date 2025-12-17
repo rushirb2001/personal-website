@@ -533,7 +533,7 @@ export default function ProjectsPage() {
                       </a>
                     )}
                     {selectedProject.demo && (
-                      <
+                      <a
                         href={selectedProject.demo}
                         target="_blank"
                         rel="noopener noreferrer"
