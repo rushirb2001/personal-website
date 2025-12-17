@@ -14,7 +14,7 @@ interface Publication {
   abstract: string
   year: string
   month: string
-  status: "RELEASED" | "PENDING" | "RESTRICTED"
+  status: "PUBLISHED" | "IN-REVIEW" | "PAY-LOCK"
   doi: string
   pdfLink: string
   citations: number
