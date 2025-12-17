@@ -189,7 +189,7 @@ export default function BlogPostPage() {
             <ArrowLeft className="h-3 w-3" />
             BACK
           </button>
-          <div className="flex items-center gap-2 text-[9px] font-sf-mono text-primary/50">
+          <div className="flex items-center gap-2 font-sf-mono text-primary/50 text-xs font-normal">
             <Calendar className="h-3 w-3" />
             {formatDate(new Date(post.date))}
           </div>
