@@ -40,7 +40,7 @@ export default function EducationPage() {
         "Machine Learning",
         "Natural Language Processing",
         "Scientific Computing",
-        "Data Structures & Algorithms",
+        "Ethical Hacking",
         "Database Management Systems",
       ],
     },
