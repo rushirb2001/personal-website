@@ -162,7 +162,23 @@ export default function ExperiencePage() {
                 onClick={() => setSelectedExp(selectedExp === actualIndex ? null : actualIndex)}
               >
                 {/* Desktop Row */}
-                <div className="hidden md:grid grid-cols-[40px_1fr_180px_140px_120px] gap-4 px-3 py-3 items-center">
+                <div className="hidden md:grid grid-cols-[1fr_180px_180px_140px_40px] gap-4 px-3 py-3 items-center">
+                  <span className="text-xs font-sf-mono font-medium pr-4">{exp.title}</span>
+                  <span
+                    className={`text-[10px] font-sf-mono ${selectedExp === actualIndex ? "text-background/70" : "text-primary/60"}`}
+                  >
+                    {exp.company}
+                  </span>
+                  <span
+                    className={`text-xs font-sf-mono ${selectedExp === actualIndex ? "text-background/70" : "text-primary/50"}`}
+                  >
+                    {exp.period}
+                  </span>
+                  <span
+                    className={`text-xs font-sf-mono ${selectedExp === actualIndex ? "text-background/70" : "text-primary/50"}`}
+                  >
+                    {exp.location}
+                  </span>
                   <button
                     onClick={(e) => {
                       e.stopPropagation()
@@ -185,22 +201,6 @@ export default function ExperiencePage() {
                       )}
                     </motion.div>
                   </button>
-                  <span className="text-xs font-sf-mono font-medium pr-4">{exp.title}</span>
-                  <span
-                    className={`text-[10px] font-sf-mono ${selectedExp === actualIndex ? "text-background/70" : "text-primary/60"}`}
-                  >
-                    {exp.company}
-                  </span>
-                  <span
-                    className={`text-xs font-sf-mono ${selectedExp === actualIndex ? "text-background/70" : "text-primary/50"}`}
-                  >
-                    {exp.period}
-                  </span>
-                  <span
-                    className={`text-xs font-sf-mono ${selectedExp === actualIndex ? "text-background/70" : "text-primary/50"}`}
-                  >
-                    {exp.location}
-                  </span>
                 </div>
 
                 {/* Mobile Row */}
