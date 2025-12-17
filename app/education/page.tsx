@@ -145,7 +145,7 @@ export default function EducationPage() {
                       {edu.courses.map((course, idx) => (
                         <span
                           key={idx}
-                          className="px-2 py-1 text-[10px] font-sf-mono border border-primary/20 bg-primary/5 hover:bg-primary hover:text-background transition-colors"
+                          className="px-2 py-1 text-[10px] font-sf-mono border border-primary/20 bg-primary/5 hover:bg-primary hover:text-background transition-colors tracking-[-0.075em]"
                         >
                           {course.toUpperCase()}
                         </span>
