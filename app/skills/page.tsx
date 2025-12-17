@@ -74,7 +74,7 @@ function calculateTotals() {
 function SkillTag({ name, delay, isHighlighted }: { name: string; delay: number; isHighlighted?: boolean }) {
   return (
     <motion.span
-      className={`inline-block px-1.5 py-0.5 text-[8px] sm:text-[9px] md:text-xs font-sf-mono uppercase tracking-wide border transition-all duration-100 whitespace-nowrap ${
+      className={`inline-block px-1.5 py-0.5 sm:text-[9px] md:text-xs font-sf-mono uppercase tracking-wide border transition-all duration-100 whitespace-nowrap text-sm ${
         isHighlighted
           ? "bg-primary text-background border-primary"
           : "bg-background text-primary/70 border-primary/20 hover:bg-primary hover:text-background hover:border-primary"
@@ -114,7 +114,7 @@ function SubcategoryRow({
       transition={{ duration: 0.15, delay: baseDelay }}
     >
       <span
-        className={`text-[8px] sm:text-[9px] font-sf-mono uppercase tracking-wider cursor-pointer transition-colors duration-100 mr-1 ${
+        className={`sm:text-[9px] font-sf-mono uppercase tracking-wider cursor-pointer transition-colors duration-100 mr-1 text-xs ${
           isContainerHovered || isHovered ? "text-primary/70" : "text-primary/40"
         }`}
         onMouseEnter={() => setIsHovered(true)}
@@ -163,7 +163,7 @@ function MobileCollapsibleCategory({
         }`}
       >
         <div className="flex items-center gap-2">
-          <h3 className="text-[10px] font-sf-mono font-bold tracking-widest text-primary">{title}</h3>
+          <h3 className="font-sf-mono font-bold tracking-widest text-primary text-sm">{title}</h3>
           <span className="text-[8px] font-sf-mono text-primary/30">[{String(index + 1).padStart(2, "0")}]</span>
         </div>
         <motion.div
