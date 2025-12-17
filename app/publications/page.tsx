@@ -257,7 +257,7 @@ export default function PublicationsPage() {
                 </button>
                 <span className="text-xs font-sf-mono font-medium pr-4">{pub.title}</span>
                 <span
-                  className={`text-[10px] font-sf-mono truncate ${selectedPublication?.id === pub.id ? "text-background/70" : "text-primary/60"}`}
+                  className={`text-[10px] font-sf-mono ${selectedPublication?.id === pub.id ? "text-background/70" : "text-primary/60"}`}
                 >
                   {pub.venue}
                 </span>
