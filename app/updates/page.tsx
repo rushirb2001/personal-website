@@ -167,23 +167,24 @@ export default function UpdatesPage() {
               left: collapseAnimation.startRect.left,
               width: collapseAnimation.startRect.width,
               height: collapseAnimation.startRect.height,
-              opacity: 1,
             }}
             animate={{
               top: collapseAnimation.endRect.top,
               left: collapseAnimation.endRect.left,
               width: collapseAnimation.endRect.width,
               height: collapseAnimation.endRect.height,
-              opacity: 1,
             }}
             exit={{ opacity: 0, transition: { duration: 0.08 } }}
-            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ 
+              duration: 0.5, 
+              ease: [0.4, 0, 0.2, 1]  // Standard ease-out, no overshoot
+            }}
           >
             <motion.div
               className="p-3 h-full"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 0.3, duration: 0.35, ease: "easeOut" }}
+              transition={{ delay: 0.2, duration: 0.25, ease: "easeOut" }}
             >
               <h2 className="text-xs font-sf-mono font-medium line-clamp-1 mb-1">
                 {collapseAnimation.postData.title}
