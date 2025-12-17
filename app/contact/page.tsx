@@ -11,6 +11,7 @@ import { motion } from "framer-motion"
 
 export default function ContactPage() {
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isCallModalOpen, setIsCallModalOpen] = useState(false)
 
   return (
     <PageLayout title="CONTACT" subtitle="GET IN TOUCH">
