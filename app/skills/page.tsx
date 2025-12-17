@@ -2,6 +2,7 @@
 import { PageLayout } from "@/components/layout/page-layout"
 import { motion } from "framer-motion"
 import { useState } from "react"
+import { useMediaQuery } from "@/hooks/use-media-query"
 
 const skillsData = {
   languages: {
@@ -67,7 +68,7 @@ function calculateTotals() {
 function SkillTag({ name, delay, isHighlighted }: { name: string; delay: number; isHighlighted?: boolean }) {
   return (
     <motion.span
-      className={`inline-block px-1.5 py-0.5 text-[10px] sm:text-xs font-sf-mono uppercase tracking-wide border transition-all duration-100 ${
+      className={`inline-block px-1 sm:px-1.5 py-0.5 text-[9px] sm:text-[10px] md:text-xs font-sf-mono uppercase tracking-wide border transition-all duration-100 ${
         isHighlighted
           ? "bg-primary text-background border-primary"
           : "bg-background text-primary/70 border-primary/20 hover:bg-primary hover:text-background hover:border-primary"
@@ -115,7 +116,7 @@ function SubcategoryRow({
       >
         {title}
       </span>
-      <div className="flex flex-wrap gap-1">
+      <div className="flex flex-wrap gap-0.5 sm:gap-1">
         {items.map((item, idx) => (
           <SkillTag key={idx} name={item} delay={baseDelay + idx * 0.01} isHighlighted={isHovered} />
         ))}
@@ -150,7 +151,7 @@ function CategoryBlock({
       onMouseLeave={() => setIsContainerHovered(false)}
     >
       <div
-        className={`border-b border-primary/20 px-2 py-1.5 transition-colors duration-150 ${
+        className={`border-b border-primary/20 px-1.5 sm:px-2 py-1 sm:py-1.5 transition-colors duration-150 ${
           isContainerHovered ? "bg-primary/15" : "bg-primary/5"
         }`}
       >
@@ -172,7 +173,7 @@ function CategoryBlock({
         </div>
       </div>
 
-      <div className="px-2 py-1.5 flex-1">
+      <div className="px-1.5 sm:px-2 py-1 sm:py-1.5 flex-1">
         <div className="flex flex-col">
           {Object.entries(subcategories).map(([subcat, subItems], idx) => (
             <SubcategoryRow
@@ -192,12 +193,13 @@ function CategoryBlock({
 
 export default function SkillsPage() {
   const { totalTech, totalSubcategories } = calculateTotals()
+  const isMobile = useMediaQuery("(max-width: 768px)")
 
   return (
     <PageLayout title="SKILLS" subtitle="TECHNICAL EXPERTISE">
-      <div className="flex flex-col gap-2 sm:gap-3 h-full">
-        <div className="flex flex-col md:flex-row gap-2 sm:gap-3 items-stretch">
-          <div className="flex flex-col gap-2 sm:gap-3 flex-1">
+      <div className="flex flex-col gap-1.5 sm:gap-2 md:gap-3 h-full">
+        <div className="flex flex-col md:flex-row gap-1.5 sm:gap-2 md:gap-3 items-stretch">
+          <div className="flex flex-col gap-1.5 sm:gap-2 md:gap-3 flex-1">
             <CategoryBlock
               title={skillsData.languages.title}
               subcategories={skillsData.languages.subcategories}
@@ -209,7 +211,7 @@ export default function SkillsPage() {
               index={2}
             />
           </div>
-          <div className="flex flex-col gap-2 sm:gap-3 flex-1">
+          <div className="flex flex-col gap-1.5 sm:gap-2 md:gap-3 flex-1">
             <CategoryBlock
               title={skillsData.trainEvalInfer.title}
               subcategories={skillsData.trainEvalInfer.subcategories}
@@ -229,19 +231,19 @@ export default function SkillsPage() {
           fullWidth
         />
         <motion.div
-          className="flex items-center justify-between border-t border-primary/20 pt-2"
+          className="flex items-center justify-between border-t border-primary/20 pt-1.5 sm:pt-2"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.2, delay: 0.5 }}
         >
-          <div className="flex gap-3 sm:gap-4 text-[9px] sm:text-[10px] font-sf-mono text-primary/40 uppercase tracking-wider">
-            <span>5 CATEGORIES</span>
+          <div className="flex gap-1 sm:gap-3 md:gap-4 text-[9px] sm:text-[10px] font-sf-mono text-primary/40 uppercase tracking-wider">
+            <span>5 {isMobile ? "CAT" : "CATEGORIES"}</span>
             <span className="text-primary/20">/</span>
-            <span>{totalSubcategories} SUBCATEGORIES</span>
+            <span>{totalSubcategories} {isMobile ? "SUB" : "SUBCATEGORIES"}</span>
             <span className="text-primary/20">/</span>
-            <span>{totalTech} TECHNOLOGIES</span>
+            <span>{totalTech} {isMobile ? "TECH" : "TECHNOLOGIES"}</span>
           </div>
-          <div className="text-[9px] sm:text-[10px] font-sf-mono text-primary/30">{"LAST.UPDATED: 2025"}</div>
+          <div className="text-[9px] sm:text-[10px] font-sf-mono text-primary/30">{isMobile ? "2025" : "LAST.UPDATED: 2025"}</div>
         </motion.div>
       </div>
     </PageLayout>
