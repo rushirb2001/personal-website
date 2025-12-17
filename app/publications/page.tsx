@@ -137,7 +137,9 @@ export default function PublicationsPage() {
     const totalCitations = publications.reduce((sum, pub) => sum + pub.citations, 0)
     const years = publications.map((p) => Number.parseInt(p.year))
     const yearRangeDesktop = `${Math.min(...years)}-${Math.max(...years)}`
-    const yearRangeMobile = `${Math.min(...years)}-${Math.max(...years).toString().slice(-2)}`
+    const yearRangeMobile = `${Math.min(...years)}-${Math.max(...years)
+      .toString()
+      .slice(-2)}`
     const venues = new Set(publications.map((p) => p.venue)).size
     return { totalCitations, yearRangeDesktop, yearRangeMobile, venues, total: publications.length }
   }, [])
@@ -218,12 +220,12 @@ export default function PublicationsPage() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.15, delay: index * 0.05 }}
               className={`border-b border-primary/10 transition-all duration-150 cursor-pointer ${
-                selectedPublication?.id === pub.id 
-                  ? hoveredId === pub.id 
-                    ? "bg-primary/70 text-background" 
+                selectedPublication?.id === pub.id
+                  ? hoveredId === pub.id
+                    ? "bg-primary/70 text-background"
                     : "bg-primary text-background"
-                  : hoveredId === pub.id 
-                    ? "bg-primary/10" 
+                  : hoveredId === pub.id
+                    ? "bg-primary/10"
                     : ""
               }`}
               onMouseEnter={() => setHoveredId(pub.id)}
@@ -296,7 +298,7 @@ export default function PublicationsPage() {
                   </div>
                   <div className="flex flex-col items-end gap-1 shrink-0">
                     <div className="flex items-center gap-1">
-                      
+                      <a
                         href={pub.pdfLink}
                         target="_blank"
                         rel="noopener noreferrer"
@@ -428,11 +430,17 @@ export default function PublicationsPage() {
           transition={{ duration: 0.2, delay: 0.3 }}
         >
           <div className="flex flex-wrap gap-1 sm:gap-2 md:gap-4 text-[9px] sm:text-[10px] font-sf-mono text-primary/40 uppercase tracking-wider">
-            <span>{stats.total} {isMobile ? "PUB" : "PUBLICATIONS"}</span>
+            <span>
+              {stats.total} {isMobile ? "PUB" : "PUBLICATIONS"}
+            </span>
             <span className="text-primary/20">/</span>
-            <span>{stats.totalCitations} {isMobile ? "CIT" : "CITATIONS"}</span>
+            <span>
+              {stats.totalCitations} {isMobile ? "CIT" : "CITATIONS"}
+            </span>
             <span className="text-primary/20">/</span>
-            <span>{stats.venues} {isMobile ? "VEN" : "VENUES"}</span>
+            <span>
+              {stats.venues} {isMobile ? "VEN" : "VENUES"}
+            </span>
             <span className="text-primary/20">/</span>
             <span>{isMobile ? stats.yearRangeMobile : stats.yearRangeDesktop}</span>
           </div>
