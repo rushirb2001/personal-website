@@ -308,7 +308,7 @@ export default function ProjectsPage() {
                 ))}
               </div>
             ) : (
-              <div className="flex items-center justify-center h-full min-h-[480px] md:min-h-[520px]">
+              <div className="flex items-center justify-center h-full min-h-[360px] md:min-h-[360px]">
                 <div className="flex items-center gap-2">
                   <Terminal className="w-4 h-4 text-primary/50" />
                   <p className="text-xs font-sf-mono text-primary/50">NO PROJECTS IN THIS CATEGORY</p>
