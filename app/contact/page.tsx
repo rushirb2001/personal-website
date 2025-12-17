@@ -131,6 +131,9 @@ export default function ContactPage() {
 
       {/* Contact Form Modal */}
       <ContactFormModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+
+      {/* Calendly Form Modal */}
+      <CallFormModal isOpen={isCallModalOpen} onClose={() => setIsCallModalOpen(false)} calendlyUrl="https://calendly.com/YOUR_USERNAME" />
     </PageLayout>
   )
 }
