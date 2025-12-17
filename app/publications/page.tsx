@@ -213,7 +213,7 @@ export default function PublicationsPage() {
           <span>LINK</span>
         </div>
 
-        <div className="min-h-[600px] md:min-h-[500px]">
+        <div className="min-h-[400px] md:min-h-[300px]">
           {visiblePublications.map((pub, index) => (
             <div key={pub.id}>
               <motion.div
