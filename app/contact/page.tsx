@@ -27,15 +27,15 @@ export default function ContactPage() {
               <span className="text-[10px] font-sf-mono text-primary/30">[01]</span>
             </div>
           </div>
-          <div className="p-6 flex flex-col items-center justify-center">
-            <p className="text-xs font-sf-mono text-primary/60 mb-6 text-center max-w-md">
+          <div className="p-4 flex items-center justify-between">
+            <p className="text-xs font-sf-mono text-primary/60">
               SEND ME A DETAILED EMAIL OR DROP A CALL
             </p>
             <Button
               onClick={() => setIsModalOpen(true)}
-              className="rounded-none bg-primary text-background border-none hover:bg-primary/90 font-sf-mono text-xs tracking-widest px-8 py-5"
+              className="rounded-none bg-primary text-background border-none hover:bg-primary/90 font-sf-mono text-[10px] tracking-widest px-4 py-2 h-auto"
             >
-              COMPOSE EMAIL {'->'} 
+              {"COMPOSE EMAIL →"}
             </Button>
           </div>
         </motion.div>
