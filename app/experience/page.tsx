@@ -273,21 +273,31 @@ export default function ExperiencePage() {
                           </div>
 
                           {/* Right: Skills */}
-                          <div className="md:border-l md:border-primary/10 md:pl-6">
-                            <span className="text-[9px] font-sf-mono text-primary/40 uppercase tracking-wider">
-                              TECH STACK
-                            </span>
-                            <div className="flex flex-wrap gap-1 mt-2">
-                              {exp.skills.map((skill, idx) => (
-                                <span
-                                  key={idx}
-                                  className="px-1.5 py-0.5 text-[9px] font-sf-mono border border-primary/20 bg-primary/5 hover:bg-primary hover:text-background transition-colors"
-                                >
-                                  {skill}
+                            <div className="md:border-l md:border-primary/10 md:pl-6">
+                              <span className="text-[9px] font-sf-mono text-primary/40 uppercase tracking-wider">
+                                TECH STACK
+                              </span>
+                              <div className="flex flex-wrap gap-1 mt-2">
+                                {exp.skills.map((skill, idx) => (
+                                  <span
+                                    key={idx}
+                                    className="px-1.5 py-0.5 text-[9px] font-sf-mono border border-primary/20 bg-primary/5 hover:bg-primary hover:text-background transition-colors"
+                                  >
+                                    {skill}
+                                  </span>
+                                ))}
+                              </div>
+
+                              {/* Overview - Desktop Only */}
+                              <div className="hidden md:block mt-4 pt-4 border-t border-primary/10">
+                                <span className="text-[9px] font-sf-mono text-primary/40 uppercase tracking-wider">
+                                  OVERVIEW
                                 </span>
-                              ))}
+                                <p className="text-[11px] font-sf-mono text-primary/60 mt-2 leading-relaxed">
+                                  {exp.description}
+                                </p>
+                              </div>
                             </div>
-                          </div>
                         </div>
                       </div>
                     </motion.div>
