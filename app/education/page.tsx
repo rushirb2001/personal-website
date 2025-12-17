@@ -4,6 +4,7 @@ import { useState } from "react"
 import { PageLayout } from "@/components/layout/page-layout"
 import { motion, AnimatePresence } from "framer-motion"
 import { ChevronDown, X, MapPin, Calendar, BookOpen } from "lucide-react"
+import { useMediaQuery } from "@/hooks/use-media-query"
 
 export default function EducationPage() {
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null)
