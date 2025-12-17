@@ -12,7 +12,7 @@ interface CallFormModalProps {
 export function CallFormModal({ 
   isOpen, 
   onClose, 
-  calendlyUrl = "https://calendly.com/YOUR_USERNAME" // Replace with your Calendly URL
+  calendlyUrl = "https://calendly.com/bhavsarrushir/30min"
 }: CallFormModalProps) {
   
   // Close on escape key
