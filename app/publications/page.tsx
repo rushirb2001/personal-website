@@ -142,10 +142,17 @@ export default function PublicationsPage() {
     return { totalCitations, yearRangeDesktop, yearRangeMobile, venues, total: publications.length }
   }, [])
 
+  // Sliding window pagination: show ITEMS_PER_PAGE items at a time
   const visiblePublications = sortedPublications.slice(startIndex, startIndex + ITEMS_PER_PAGE)
+
+  // Pagination controls
   const canShowPrevious = startIndex > 0
   const canShowNext = startIndex + ITEMS_PER_PAGE < sortedPublications.length
   const showPaginationControls = sortedPublications.length > ITEMS_PER_PAGE
+
+  // Calculate current page info
+  const currentStart = startIndex + 1
+  const currentEnd = Math.min(startIndex + ITEMS_PER_PAGE, sortedPublications.length)
 
   useEffect(() => {
     const handleEscKey = (event: KeyboardEvent) => {
