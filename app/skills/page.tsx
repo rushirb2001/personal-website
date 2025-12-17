@@ -1,8 +1,9 @@
 "use client"
 import { PageLayout } from "@/components/layout/page-layout"
-import { motion } from "framer-motion"
+import { motion, AnimatePresence } from "framer-motion"
 import { useState } from "react"
 import { useMediaQuery } from "@/hooks/use-media-query"
+import { ChevronDown } from "lucide-react"
 
 const skillsData = {
   languages: {
@@ -47,6 +48,11 @@ const skillsData = {
     },
   },
 }
+
+const categoryKeys = ["languages", "frameworks", "trainEvalInfer", "databases", "cloud"] as const
+type CategoryKey = (typeof categoryKeys)[number]
+
+const DEFAULT_EXPANDED: CategoryKey[] = ["languages", "frameworks"]
 
 function calculateTotals() {
   let totalTech = 0
@@ -123,6 +129,84 @@ function SubcategoryRow({
   )
 }
 
+function MobileCollapsibleCategory({
+  categoryKey,
+  title,
+  subcategories,
+  index,
+  isExpanded,
+  onToggle,
+}: {
+  categoryKey: CategoryKey
+  title: string
+  subcategories: Record<string, string[]>
+  index: number
+  isExpanded: boolean
+  onToggle: (key: CategoryKey) => void
+}) {
+  const categoryDelay = index * 0.05
+
+  return (
+    <motion.div
+      className={`border border-primary/20 transition-colors duration-150 ${
+        isExpanded ? "bg-primary/5 border-primary/30" : "bg-background"
+      }`}
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.2, delay: categoryDelay }}
+    >
+      {/* Collapsible Header */}
+      <button
+        onClick={() => onToggle(categoryKey)}
+        className={`w-full border-b border-primary/20 px-2 py-1.5 flex items-center justify-between transition-colors duration-150 ${
+          isExpanded ? "bg-primary/10" : "bg-primary/5"
+        }`}
+      >
+        <div className="flex items-center gap-2">
+          <h3 className="text-[10px] font-sf-mono font-bold tracking-widest text-primary">{title}</h3>
+          <span className="text-[8px] font-sf-mono text-primary/30">[{String(index + 1).padStart(2, "0")}]</span>
+        </div>
+        <motion.div
+          animate={{ rotate: isExpanded ? 180 : 0 }}
+          transition={{ duration: 0.2 }}
+          className={isExpanded ? "" : "animate-bounce"}
+          style={{ animationDuration: isExpanded ? "0s" : "2s" }}
+        >
+          <ChevronDown className={`w-4 h-4 ${isExpanded ? "text-primary" : "text-primary/40"}`} />
+        </motion.div>
+      </button>
+
+      {/* Collapsible Content */}
+      <AnimatePresence>
+        {isExpanded && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="overflow-hidden"
+          >
+            <div className="px-2 py-1">
+              <div className="flex flex-col gap-0">
+                {Object.entries(subcategories).map(([subcat, subItems], idx) => (
+                  <SubcategoryRow
+                    key={subcat}
+                    title={subcat}
+                    items={subItems}
+                    categoryDelay={0}
+                    index={idx}
+                    isContainerHovered={false}
+                  />
+                ))}
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
+  )
+}
+
 function CategoryBlock({
   title,
   subcategories,
@@ -193,41 +277,75 @@ export default function SkillsPage() {
   const { totalTech, totalSubcategories } = calculateTotals()
   const isMobile = useMediaQuery("(max-width: 768px)")
 
+  const [expandedSections, setExpandedSections] = useState<CategoryKey[]>(DEFAULT_EXPANDED)
+
+  const handleToggle = (key: CategoryKey) => {
+    setExpandedSections((prev) => {
+      if (prev.includes(key)) {
+        // If already expanded, collapse it
+        return prev.filter((k) => k !== key)
+      } else {
+        // Expand this one, collapse others (only one open at a time after initial state)
+        return [key]
+      }
+    })
+  }
+
   return (
     <PageLayout title="SKILLS" subtitle="TECHNICAL EXPERTISE">
       <div className="flex flex-col gap-1 sm:gap-2 md:gap-3 h-full">
-        <div className="flex flex-col md:flex-row gap-1 sm:gap-2 md:gap-3 items-stretch">
-          <div className="flex flex-col gap-1 sm:gap-2 md:gap-3 flex-1">
-            <CategoryBlock
-              title={skillsData.languages.title}
-              subcategories={skillsData.languages.subcategories}
-              index={0}
-            />
-            <CategoryBlock
-              title={skillsData.frameworks.title}
-              subcategories={skillsData.frameworks.subcategories}
-              index={2}
-            />
+        {isMobile ? (
+          <div className="flex flex-col gap-1">
+            {categoryKeys.map((key, idx) => (
+              <MobileCollapsibleCategory
+                key={key}
+                categoryKey={key}
+                title={skillsData[key].title}
+                subcategories={skillsData[key].subcategories}
+                index={idx}
+                isExpanded={expandedSections.includes(key)}
+                onToggle={handleToggle}
+              />
+            ))}
           </div>
-          <div className="flex flex-col gap-1 sm:gap-2 md:gap-3 flex-1">
+        ) : (
+          /* Desktop layout - unchanged */
+          <>
+            <div className="flex flex-col md:flex-row gap-1 sm:gap-2 md:gap-3 items-stretch">
+              <div className="flex flex-col gap-1 sm:gap-2 md:gap-3 flex-1">
+                <CategoryBlock
+                  title={skillsData.languages.title}
+                  subcategories={skillsData.languages.subcategories}
+                  index={0}
+                />
+                <CategoryBlock
+                  title={skillsData.frameworks.title}
+                  subcategories={skillsData.frameworks.subcategories}
+                  index={2}
+                />
+              </div>
+              <div className="flex flex-col gap-1 sm:gap-2 md:gap-3 flex-1">
+                <CategoryBlock
+                  title={skillsData.trainEvalInfer.title}
+                  subcategories={skillsData.trainEvalInfer.subcategories}
+                  index={1}
+                />
+                <CategoryBlock
+                  title={skillsData.databases.title}
+                  subcategories={skillsData.databases.subcategories}
+                  index={3}
+                />
+              </div>
+            </div>
             <CategoryBlock
-              title={skillsData.trainEvalInfer.title}
-              subcategories={skillsData.trainEvalInfer.subcategories}
-              index={1}
+              title={skillsData.cloud.title}
+              subcategories={skillsData.cloud.subcategories}
+              index={4}
+              fullWidth
             />
-            <CategoryBlock
-              title={skillsData.databases.title}
-              subcategories={skillsData.databases.subcategories}
-              index={3}
-            />
-          </div>
-        </div>
-        <CategoryBlock
-          title={skillsData.cloud.title}
-          subcategories={skillsData.cloud.subcategories}
-          index={4}
-          fullWidth
-        />
+          </>
+        )}
+
         <motion.div
           className="flex items-center justify-between border-t border-primary/20 pt-1 sm:pt-2"
           initial={{ opacity: 0 }}
