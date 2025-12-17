@@ -1,7 +1,7 @@
 "use client"
 
 import { PageLayout } from "@/components/layout/page-layout"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { MapPin, Calendar, ChevronDown, X } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import { useMediaQuery } from "@/hooks/use-media-query"
@@ -17,7 +17,8 @@ interface Experience {
 }
 
 export default function ExperiencePage() {
-  const [expandedIndex, setExpandedIndex] = useState<number | null>(null)
+  const [selectedExp, setSelectedExp] = useState<number | null>(null)
+  const [hoveredId, setHoveredId] = useState<number | null>(null)
   const [startIndex, setStartIndex] = useState(0)
   const ITEMS_PER_PAGE = 5
   const isMobile = useMediaQuery("(max-width: 768px)")
@@ -72,24 +73,19 @@ export default function ExperiencePage() {
   const canShowNext = startIndex + ITEMS_PER_PAGE < experiences.length
   const showPaginationControls = experiences.length > ITEMS_PER_PAGE
 
-  const toggleExpand = (index: number) => {
-    setExpandedIndex(expandedIndex === index ? null : index)
-  }
-
-  // Reset expanded state when paginating
-  const handlePrevious = () => {
-    setExpandedIndex(null)
-    setStartIndex((prev) => Math.max(0, prev - ITEMS_PER_PAGE))
-  }
-
-  const handleNext = () => {
-    setExpandedIndex(null)
-    setStartIndex((prev) => prev + ITEMS_PER_PAGE)
-  }
+  useEffect(() => {
+    const handleEscKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && selectedExp !== null) {
+        setSelectedExp(null)
+      }
+    }
+    document.addEventListener("keydown", handleEscKey)
+    return () => document.removeEventListener("keydown", handleEscKey)
+  }, [selectedExp])
 
   return (
     <PageLayout title="EXPERIENCE" subtitle="WORK HISTORY">
-      <div className="space-y-3 max-w-3xl mx-auto">
+      <div className="space-y-0">
         {/* Pagination Controls */}
         {showPaginationControls && (
           <motion.div
@@ -99,7 +95,10 @@ export default function ExperiencePage() {
           >
             <div className="flex items-center gap-2 w-full md:w-auto justify-center">
               <button
-                onClick={handlePrevious}
+                onClick={() => {
+                  setSelectedExp(null)
+                  setStartIndex((prev) => Math.max(0, prev - ITEMS_PER_PAGE))
+                }}
                 disabled={!canShowPrevious}
                 className={`px-3 md:px-4 py-1.5 text-[10px] font-sf-mono uppercase tracking-wider border transition-all duration-150 flex-1 md:flex-none md:w-32 ${
                   canShowPrevious
@@ -110,7 +109,10 @@ export default function ExperiencePage() {
                 ← PREVIOUS
               </button>
               <button
-                onClick={handleNext}
+                onClick={() => {
+                  setSelectedExp(null)
+                  setStartIndex((prev) => prev + ITEMS_PER_PAGE)
+                }}
                 disabled={!canShowNext}
                 className={`px-3 md:px-4 py-1.5 text-[10px] font-sf-mono uppercase tracking-wider border transition-all duration-150 flex-1 md:flex-none md:w-32 ${
                   canShowNext
@@ -118,7 +120,7 @@ export default function ExperiencePage() {
                     : "border-primary/10 text-primary/20 cursor-not-allowed opacity-0 pointer-events-none"
                 }`}
               >
-                NEXT →
+                {"NEXT →"}
               </button>
             </div>
             <span className="text-[9px] font-sf-mono text-primary/40 md:px-2">
@@ -127,135 +129,200 @@ export default function ExperiencePage() {
           </motion.div>
         )}
 
+        {/* Table Header - Desktop Only */}
+        <div className="hidden md:grid grid-cols-[40px_1fr_180px_140px_120px] gap-4 px-3 py-2 border-b border-primary/30 text-[10px] font-sf-mono text-primary/50 uppercase tracking-wider">
+          <span></span>
+          <span>POSITION</span>
+          <span>COMPANY</span>
+          <span>PERIOD</span>
+          <span>LOCATION</span>
+        </div>
+
         {/* Experience List */}
         {visibleExperiences.map((exp, index) => {
           const actualIndex = startIndex + index
 
           return (
-            <motion.div
-              key={actualIndex}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.2, delay: index * 0.1 }}
-              className="border border-primary/20 bg-background"
-            >
-              {/* Header */}
-              <div className="border-b border-primary/20 px-3 py-2 bg-primary/5">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-sf-mono font-bold tracking-widest">{exp.company}</span>
-                  <span className="text-[10px] font-sf-mono text-primary/30">[{String(actualIndex + 1).padStart(2, "0")}]</span>
-                </div>
-              </div>
-
-              {/* Main Content - Clickable */}
-              <div
-                onClick={() => toggleExpand(actualIndex)}
-                className={`p-4 cursor-pointer transition-all duration-200 ${
-                  expandedIndex === actualIndex 
-                    ? "bg-primary text-background" 
-                    : "hover:bg-primary/5"
+            <div key={actualIndex}>
+              <motion.div
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.15, delay: index * 0.05 }}
+                className={`border-b border-primary/10 transition-all duration-150 cursor-pointer ${
+                  selectedExp === actualIndex
+                    ? hoveredId === actualIndex
+                      ? "bg-primary/90 text-background"
+                      : "bg-primary text-background"
+                    : hoveredId === actualIndex
+                      ? "bg-primary/10"
+                      : ""
                 }`}
+                onMouseEnter={() => setHoveredId(actualIndex)}
+                onMouseLeave={() => setHoveredId(null)}
+                onClick={() => setSelectedExp(selectedExp === actualIndex ? null : actualIndex)}
               >
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex-1">
-                    <h3 className="text-sm font-sf-mono font-medium mb-2">{exp.title}</h3>
-                    <p className={`text-xs font-sf-mono mb-3 ${expandedIndex === actualIndex ? "text-background/70" : "text-primary/60"}`}>
-                      {exp.description}
-                    </p>
-                    
-                    <div className={`flex flex-wrap gap-x-4 gap-y-1 text-[10px] font-sf-mono ${expandedIndex === actualIndex ? "text-background/60" : "text-primary/50"}`}>
-                      <span className="flex items-center gap-1">
-                        <Calendar className="h-3 w-3" />
-                        {exp.period}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <MapPin className="h-3 w-3" />
-                        {exp.location}
-                      </span>
-                    </div>
-                  </div>
-
+                {/* Desktop Row */}
+                <div className="hidden md:grid grid-cols-[40px_1fr_180px_140px_120px] gap-4 px-3 py-3 items-center">
                   <button
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      setSelectedExp(selectedExp === actualIndex ? null : actualIndex)
+                    }}
                     className={`flex items-center justify-center w-8 h-8 border transition-all duration-200 ${
-                      expandedIndex === actualIndex
+                      selectedExp === actualIndex
                         ? "border-background/30 hover:bg-background/20"
-                        : "border-primary/20 hover:border-primary/40"
+                        : "border-primary/20 hover:bg-primary/10 hover:border-primary/40"
                     }`}
                   >
                     <motion.div
-                      animate={{ rotate: expandedIndex === actualIndex ? 180 : 0 }}
+                      animate={{ rotate: selectedExp === actualIndex ? 180 : 0 }}
                       transition={{ duration: 0.2 }}
                     >
-                      {expandedIndex === actualIndex ? (
+                      {selectedExp === actualIndex ? (
                         <X className="w-3 h-3" />
                       ) : (
                         <ChevronDown className="w-3 h-3" />
                       )}
                     </motion.div>
                   </button>
+                  <span className="text-xs font-sf-mono font-medium pr-4">{exp.title}</span>
+                  <span
+                    className={`text-[10px] font-sf-mono ${selectedExp === actualIndex ? "text-background/70" : "text-primary/60"}`}
+                  >
+                    {exp.company}
+                  </span>
+                  <span
+                    className={`text-xs font-sf-mono ${selectedExp === actualIndex ? "text-background/70" : "text-primary/50"}`}
+                  >
+                    {exp.period}
+                  </span>
+                  <span
+                    className={`text-xs font-sf-mono ${selectedExp === actualIndex ? "text-background/70" : "text-primary/50"}`}
+                  >
+                    {exp.location}
+                  </span>
                 </div>
-              </div>
+
+                {/* Mobile Row */}
+                <div className="md:hidden px-3 py-3">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-xs font-sf-mono font-medium text-left mb-2">{exp.title}</h3>
+                      <p
+                        className={`text-[10px] font-sf-mono ${selectedExp === actualIndex ? "text-background/60" : "text-primary/50"}`}
+                      >
+                        {exp.company}
+                      </p>
+                    </div>
+                    <div className="flex flex-col items-end gap-1 shrink-0">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          setSelectedExp(selectedExp === actualIndex ? null : actualIndex)
+                        }}
+                        className={`flex items-center justify-center w-8 h-8 border ${
+                          selectedExp === actualIndex ? "border-background/30" : "border-primary/20"
+                        }`}
+                      >
+                        <motion.div
+                          animate={{ rotate: selectedExp === actualIndex ? 180 : 0 }}
+                          transition={{ duration: 0.2 }}
+                        >
+                          {selectedExp === actualIndex ? (
+                            <X className="w-3 h-3" />
+                          ) : (
+                            <ChevronDown className="w-3 h-3" />
+                          )}
+                        </motion.div>
+                      </button>
+                      <div className="flex flex-col items-end gap-0.5 text-right">
+                        <span
+                          className={`text-[9px] font-sf-mono ${selectedExp === actualIndex ? "text-background/60" : "text-primary/50"}`}
+                        >
+                          {exp.period}
+                        </span>
+                        <span
+                          className={`text-[9px] font-sf-mono ${selectedExp === actualIndex ? "text-background/60" : "text-primary/40"}`}
+                        >
+                          {exp.location}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
 
               {/* Expandable Details */}
               <AnimatePresence>
-                {expandedIndex === actualIndex && (
+                {selectedExp === actualIndex && (
                   <motion.div
                     initial={{ height: 0, opacity: 0 }}
                     animate={{ height: "auto", opacity: 1 }}
                     exit={{ height: 0, opacity: 0 }}
                     transition={{ duration: 0.2 }}
-                    className="overflow-hidden"
+                    className="overflow-hidden border-b border-primary/20"
                   >
-                    <div className="px-4 pb-4 pt-2 border-t border-primary/10 space-y-4">
-                      {/* Responsibilities */}
-                      <div>
-                        <span className="text-[9px] font-sf-mono text-primary/40 uppercase tracking-wider">
-                          KEY ACHIEVEMENTS
-                        </span>
-                        <div className="space-y-2 mt-2">
-                          {exp.responsibilities.map((resp, idx) => (
-                            <div key={idx} className="flex gap-3">
-                              <div className="w-5 h-5 border border-primary/20 bg-primary/5 flex items-center justify-center text-[10px] font-sf-mono text-primary/50 flex-shrink-0">
-                                {idx + 1}
+                    <div className="bg-primary/5 p-4 md:p-6">
+                      <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-6">
+                        {/* Left: Responsibilities */}
+                        <div>
+                          <span className="text-[9px] font-sf-mono text-primary/40 uppercase tracking-wider">
+                            KEY ACHIEVEMENTS
+                          </span>
+                          <div className="space-y-3 mt-2">
+                            {exp.responsibilities.map((resp, idx) => (
+                              <div key={idx} className="flex gap-3">
+                                <div className="w-5 h-5 border border-primary/20 bg-primary/5 flex items-center justify-center text-[10px] font-sf-mono text-primary/50 flex-shrink-0">
+                                  {idx + 1}
+                                </div>
+                                <p className="text-xs font-sf-mono text-primary/70 leading-relaxed">{resp}</p>
                               </div>
-                              <p className="text-xs font-sf-mono text-primary/70 leading-relaxed">{resp}</p>
-                            </div>
-                          ))}
+                            ))}
+                          </div>
                         </div>
-                      </div>
 
-                      {/* Skills */}
-                      <div>
-                        <span className="text-[9px] font-sf-mono text-primary/40 uppercase tracking-wider">
-                          TECHNOLOGIES USED
-                        </span>
-                        <div className="flex flex-wrap gap-1.5 mt-2">
-                          {exp.skills.map((skill, idx) => (
-                            <span
-                              key={idx}
-                              className="px-2 py-1 text-[10px] font-sf-mono border border-primary/20 bg-primary/5 hover:bg-primary hover:text-background transition-colors"
-                            >
-                              {skill}
+                        {/* Right: Skills */}
+                        <div className="md:border-l md:border-primary/10 md:pl-6">
+                          <span className="text-[9px] font-sf-mono text-primary/40 uppercase tracking-wider">
+                            TECHNOLOGIES USED
+                          </span>
+                          <div className="flex flex-wrap gap-1.5 mt-2">
+                            {exp.skills.map((skill, idx) => (
+                              <span
+                                key={idx}
+                                className="px-2 py-1 text-[10px] font-sf-mono border border-primary/20 bg-primary/5 hover:bg-primary hover:text-background transition-colors"
+                              >
+                                {skill}
+                              </span>
+                            ))}
+                          </div>
+
+                          <div className="mt-4 pt-4 border-t border-primary/10">
+                            <span className="text-[9px] font-sf-mono text-primary/40 uppercase tracking-wider">
+                              OVERVIEW
                             </span>
-                          ))}
+                            <p className="text-[11px] font-sf-mono text-primary/60 mt-2 leading-relaxed">
+                              {exp.description}
+                            </p>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </motion.div>
                 )}
               </AnimatePresence>
-            </motion.div>
+            </div>
           )
         })}
 
         {/* Footer Stats */}
         <motion.div
+          className="flex items-center justify-between border-t border-primary/20 pt-3 mt-4 px-3"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.2, delay: 0.4 }}
-          className="flex items-center justify-between border-t border-primary/20 pt-3"
+          transition={{ duration: 0.2, delay: 0.3 }}
         >
-          <div className="flex gap-1 sm:gap-2 text-[9px] sm:text-[10px] font-sf-mono text-primary/40 uppercase tracking-wider">
+          <div className="flex flex-wrap gap-1 sm:gap-2 md:gap-4 text-[9px] sm:text-[10px] font-sf-mono text-primary/40 uppercase tracking-wider">
             <span>{experiences.length} {isMobile ? "ROLES" : "POSITIONS"}</span>
             <span className="text-primary/20">/</span>
             <span>{experiences.length} {isMobile ? "CO" : "COMPANIES"}</span>
