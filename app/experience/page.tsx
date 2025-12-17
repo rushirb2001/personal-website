@@ -204,53 +204,39 @@ export default function ExperiencePage() {
               </div>
 
                 {/* Mobile Row */}
-                <div className="md:hidden px-3 py-3">
-                  <div className="flex items-start justify-between gap-2">
-                    <div className="flex-1 min-w-0">
-                      <h3 className="text-xs font-sf-mono font-medium text-left mb-2">{exp.title}</h3>
-                      <p
-                        className={`text-[10px] font-sf-mono ${selectedExp === actualIndex ? "text-background/60" : "text-primary/50"}`}
-                      >
-                        {exp.company}
-                      </p>
-                    </div>
-                    <div className="flex flex-col items-end gap-1 shrink-0">
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          setSelectedExp(selectedExp === actualIndex ? null : actualIndex)
-                        }}
-                        className={`flex items-center justify-center w-8 h-8 border ${
-                          selectedExp === actualIndex ? "border-background/30" : "border-primary/20"
-                        }`}
-                      >
-                        <motion.div
-                          animate={{ rotate: selectedExp === actualIndex ? 180 : 0 }}
-                          transition={{ duration: 0.2 }}
-                        >
-                          {selectedExp === actualIndex ? (
-                            <X className="w-3 h-3" />
-                          ) : (
-                            <ChevronDown className="w-3 h-3" />
-                          )}
-                        </motion.div>
-                      </button>
-                      <div className="flex flex-col items-end gap-0.5 text-right">
-                        <span
-                          className={`text-[9px] font-sf-mono ${selectedExp === actualIndex ? "text-background/60" : "text-primary/50"}`}
-                        >
-                          {exp.period}
-                        </span>
-                        <span
-                          className={`text-[9px] font-sf-mono ${selectedExp === actualIndex ? "text-background/60" : "text-primary/40"}`}
-                        >
-                          {exp.location}
-                        </span>
-                      </div>
-                    </div>
+              <div className="md:hidden px-3 py-2">
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-[11px] font-sf-mono font-medium">{exp.title}</h3>
+                    <p className={`text-[10px] font-sf-mono ${selectedExp === actualIndex ? "text-background/60" : "text-primary/50"}`}>
+                      {exp.company} • {exp.location}
+                    </p>
+                    <p className={`text-[9px] font-sf-mono ${selectedExp === actualIndex ? "text-background/50" : "text-primary/40"}`}>
+                      {exp.period}
+                    </p>
                   </div>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      setSelectedExp(selectedExp === actualIndex ? null : actualIndex)
+                    }}
+                    className={`flex items-center justify-center w-7 h-7 border flex-shrink-0 ${
+                      selectedExp === actualIndex ? "border-background/30" : "border-primary/20"
+                    }`}
+                  >
+                    <motion.div
+                      animate={{ rotate: selectedExp === actualIndex ? 180 : 0 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      {selectedExp === actualIndex ? (
+                        <X className="w-3 h-3" />
+                      ) : (
+                        <ChevronDown className="w-3 h-3" />
+                      )}
+                    </motion.div>
+                  </button>
                 </div>
-              </motion.div>
+              </div>
 
               {/* Expandable Details */}
               <AnimatePresence>
