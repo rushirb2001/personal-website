@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Github, Linkedin, Mail, MapPin, Phone } from "lucide-react"
 import { useState } from "react"
 import { ContactFormModal } from "@/components/features/contact/contact-form-modal"
+import { CallFormModal } from "@/components/features/contact/call-form-modal"
 import { CONTACT_INFO } from "@/lib/constants"
 import { motion } from "framer-motion"
 
@@ -36,6 +37,32 @@ export default function ContactPage() {
               className="rounded-none bg-primary text-background border-none hover:bg-primary/90 font-sf-mono text-[10px] tracking-widest px-4 py-2 h-auto"
             >
               {"COMPOSE EMAIL →"}
+            </Button>
+          </div>
+        </motion.div>
+
+        {/* Book a Call */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.2, delay: 0.05 }}
+          className="border border-primary/20 bg-background"
+        >
+          <div className="border-b border-primary/20 px-3 py-2 bg-primary/5">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-sf-mono font-bold tracking-widest">BOOK A CALL</span>
+              <span className="text-[10px] font-sf-mono text-primary/30">[02]</span>
+            </div>
+          </div>
+          <div className="p-4 flex items-center justify-between">
+            <p className="text-xs font-sf-mono text-primary/60">
+              SCHEDULE A 30-MIN CALL WITH ME
+            </p>
+            <Button
+              onClick={() => setIsCallModalOpen(true)}
+              className="rounded-none bg-primary text-background border-none hover:bg-primary/90 font-sf-mono text-[10px] tracking-widest px-4 py-2 h-auto"
+            >
+              {"BOOK CALL →"}
             </Button>
           </div>
         </motion.div>
