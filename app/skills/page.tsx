@@ -3,7 +3,7 @@ import { PageLayout } from "@/components/layout/page-layout"
 import { motion, AnimatePresence } from "framer-motion"
 import { useState } from "react"
 import { useMediaQuery } from "@/hooks/use-media-query"
-import { ChevronDown } from "lucide-react"
+import { ChevronDown, X } from "lucide-react"
 
 const skillsData = {
   languages: {
@@ -52,8 +52,6 @@ const skillsData = {
 const categoryKeys = ["languages", "frameworks", "trainEvalInfer", "databases", "cloud"] as const
 type CategoryKey = (typeof categoryKeys)[number]
 
-const DEFAULT_EXPANDED: CategoryKey[] = ["languages", "frameworks"]
-
 function calculateTotals() {
   let totalTech = 0
   let totalSubcategories = 0
@@ -71,50 +69,39 @@ function calculateTotals() {
   return { totalTech, totalSubcategories }
 }
 
-function SkillTag({ name, delay, isHighlighted }: { name: string; delay: number; isHighlighted?: boolean }) {
+function SkillTag({ name, isHighlighted }: { name: string; isHighlighted?: boolean }) {
   return (
-    <motion.span
-      className={`inline-block px-1.5 py-0.5 sm:text-[9px] md:text-xs font-sf-mono uppercase tracking-wide border transition-all duration-100 whitespace-nowrap text-xs ${
+    <span
+      className={`inline-block px-1.5 py-0.5 text-[9px] md:text-[10px] font-sf-mono uppercase tracking-wide border transition-all duration-100 whitespace-nowrap ${
         isHighlighted
           ? "bg-primary text-background border-primary"
           : "bg-background text-primary/70 border-primary/20 hover:bg-primary hover:text-background hover:border-primary"
       }`}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.15, delay }}
     >
       {name}
-    </motion.span>
+    </span>
   )
 }
 
 function SubcategoryRow({
   title,
   items,
-  categoryDelay,
-  index,
   isContainerHovered = false,
 }: {
   title: string
   items: string[]
-  categoryDelay: number
-  index: number
   isContainerHovered?: boolean
 }) {
-  const baseDelay = categoryDelay + index * 0.03
   const [isHovered, setIsHovered] = useState(false)
 
   return (
-    <motion.div
-      className={`flex flex-wrap items-center gap-1 py-0.5 sm:py-1 border-b last:border-b-0 transition-colors duration-150 ${
+    <div
+      className={`flex flex-wrap items-center gap-1 py-1 border-b last:border-b-0 transition-colors duration-150 ${
         isContainerHovered ? "border-primary/10" : "border-primary/5"
       }`}
-      initial={{ opacity: 0, x: -5 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.15, delay: baseDelay }}
     >
       <span
-        className={`sm:text-[9px] font-sf-mono uppercase tracking-wider cursor-pointer transition-colors duration-100 mr-1 text-xs ${
+        className={`text-[9px] font-sf-mono uppercase tracking-wider cursor-pointer transition-colors duration-100 mr-1 ${
           isContainerHovered || isHovered ? "text-primary/70" : "text-primary/40"
         }`}
         onMouseEnter={() => setIsHovered(true)}
@@ -123,9 +110,9 @@ function SubcategoryRow({
         {title}:
       </span>
       {items.map((item, idx) => (
-        <SkillTag key={idx} name={item} delay={baseDelay + idx * 0.01} isHighlighted={isHovered} />
+        <SkillTag key={idx} name={item} isHighlighted={isHovered} />
       ))}
-    </motion.div>
+    </div>
   )
 }
 
@@ -144,39 +131,40 @@ function MobileCollapsibleCategory({
   isExpanded: boolean
   onToggle: (key: CategoryKey) => void
 }) {
-  const categoryDelay = index * 0.05
-
   return (
-    <motion.div
-      className={`border border-primary/20 transition-colors duration-150 py-0 ${
+    <div
+      className={`border border-primary/20 transition-colors duration-150 ${
         isExpanded ? "bg-primary/5 border-primary/30" : "bg-background"
       }`}
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.2, delay: categoryDelay }}
     >
-      {/* Collapsible Header */}
+      {/* Header */}
       <button
         onClick={() => onToggle(categoryKey)}
-        className={`w-full border-primary/20 px-2 py-1.5 flex items-center justify-between transition-colors duration-150 border-b-0 ${
-          isExpanded ? "bg-primary/10" : "bg-primary/5"
+        className={`w-full px-3 py-2 flex items-center justify-between transition-colors duration-150 ${
+          isExpanded ? "bg-primary text-background" : "bg-primary/5 hover:bg-primary/10"
         }`}
       >
         <div className="flex items-center gap-2">
-          <h3 className="font-sf-mono font-bold tracking-widest text-primary text-xs">{title}</h3>
-          <span className="text-[8px] font-sf-mono text-primary/30">[{String(index + 1).padStart(2, "0")}]</span>
+          <h3 className="text-xs font-sf-mono font-bold tracking-widest">{title}</h3>
         </div>
-        <motion.div
-          animate={{ rotate: isExpanded ? 180 : 0 }}
-          transition={{ duration: 0.2 }}
-          className={isExpanded ? "" : "animate-bounce"}
-          style={{ animationDuration: isExpanded ? "0s" : "2s" }}
-        >
-          <ChevronDown className={`w-4 h-4 ${isExpanded ? "text-primary" : "text-primary/40"}`} />
-        </motion.div>
+        <div className="flex items-center gap-2">
+          <span className={`text-[9px] font-sf-mono ${isExpanded ? "text-background/50" : "text-primary/30"}`}>
+            [{String(index + 1).padStart(2, "0")}]
+          </span>
+          <motion.div
+            animate={{ rotate: isExpanded ? 180 : 0 }}
+            transition={{ duration: 0.2 }}
+          >
+            {isExpanded ? (
+              <X className="w-3 h-3" />
+            ) : (
+              <ChevronDown className="w-3 h-3" />
+            )}
+          </motion.div>
+        </div>
       </button>
 
-      {/* Collapsible Content */}
+      {/* Content */}
       <AnimatePresence>
         {isExpanded && (
           <motion.div
@@ -186,24 +174,20 @@ function MobileCollapsibleCategory({
             transition={{ duration: 0.2 }}
             className="overflow-hidden"
           >
-            <div className="px-2 py-1">
-              <div className="flex flex-col gap-0">
-                {Object.entries(subcategories).map(([subcat, subItems], idx) => (
-                  <SubcategoryRow
-                    key={subcat}
-                    title={subcat}
-                    items={subItems}
-                    categoryDelay={0}
-                    index={idx}
-                    isContainerHovered={false}
-                  />
-                ))}
-              </div>
+            <div className="px-3 py-2">
+              {Object.entries(subcategories).map(([subcat, subItems], idx) => (
+                <SubcategoryRow
+                  key={subcat}
+                  title={subcat}
+                  items={subItems}
+                  isContainerHovered={false}
+                />
+              ))}
             </div>
           </motion.div>
         )}
       </AnimatePresence>
-    </motion.div>
+    </div>
   )
 }
 
@@ -218,7 +202,6 @@ function CategoryBlock({
   index: number
   fullWidth?: boolean
 }) {
-  const categoryDelay = index * 0.08
   const [isContainerHovered, setIsContainerHovered] = useState(false)
 
   return (
@@ -228,25 +211,21 @@ function CategoryBlock({
       }`}
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.2, delay: categoryDelay }}
+      transition={{ duration: 0.2, delay: index * 0.08 }}
       onMouseEnter={() => setIsContainerHovered(true)}
       onMouseLeave={() => setIsContainerHovered(false)}
     >
       <div
-        className={`border-b border-primary/20 px-2 py-1 transition-colors duration-150 ${
+        className={`border-b border-primary/20 px-3 py-2 transition-colors duration-150 ${
           isContainerHovered ? "bg-primary/15" : "bg-primary/5"
         }`}
       >
         <div className="flex items-center justify-between">
-          <h3
-            className={`text-[9px] sm:text-sm font-sf-mono font-bold tracking-widest transition-colors duration-150 ${
-              isContainerHovered ? "text-primary" : "text-primary"
-            }`}
-          >
+          <h3 className="text-xs font-sf-mono font-bold tracking-widest text-primary">
             {title}
           </h3>
           <span
-            className={`text-[8px] sm:text-[10px] font-sf-mono transition-colors duration-150 ${
+            className={`text-[9px] font-sf-mono transition-colors duration-150 ${
               isContainerHovered ? "text-primary/50" : "text-primary/30"
             }`}
           >
@@ -255,19 +234,15 @@ function CategoryBlock({
         </div>
       </div>
 
-      <div className="px-2 py-1 flex-1">
-        <div className="flex flex-col gap-0">
-          {Object.entries(subcategories).map(([subcat, subItems], idx) => (
-            <SubcategoryRow
-              key={subcat}
-              title={subcat}
-              items={subItems}
-              categoryDelay={categoryDelay}
-              index={idx}
-              isContainerHovered={isContainerHovered}
-            />
-          ))}
-        </div>
+      <div className="px-3 py-2 flex-1">
+        {Object.entries(subcategories).map(([subcat, subItems]) => (
+          <SubcategoryRow
+            key={subcat}
+            title={subcat}
+            items={subItems}
+            isContainerHovered={isContainerHovered}
+          />
+        ))}
       </div>
     </motion.div>
   )
@@ -276,26 +251,18 @@ function CategoryBlock({
 export default function SkillsPage() {
   const { totalTech, totalSubcategories } = calculateTotals()
   const isMobile = useMediaQuery("(max-width: 768px)")
-
-  const [expandedSections, setExpandedSections] = useState<CategoryKey[]>(DEFAULT_EXPANDED)
+  const [expandedSection, setExpandedSection] = useState<CategoryKey | null>("languages")
 
   const handleToggle = (key: CategoryKey) => {
-    setExpandedSections((prev) => {
-      if (prev.includes(key)) {
-        // If already expanded, collapse it
-        return prev.filter((k) => k !== key)
-      } else {
-        // Expand this one, collapse others (only one open at a time after initial state)
-        return [key]
-      }
-    })
+    setExpandedSection(expandedSection === key ? null : key)
   }
 
   return (
     <PageLayout title="SKILLS" subtitle="TECHNICAL EXPERTISE">
-      <div className="flex flex-col gap-1 sm:gap-2 md:gap-3 h-full">
+      <div className="flex flex-col gap-2 md:gap-3 h-full">
         {isMobile ? (
-          <div className="flex flex-col gap-1 py-3.5">
+          /* Mobile: Accordion */
+          <div className="flex flex-col gap-1.5">
             {categoryKeys.map((key, idx) => (
               <MobileCollapsibleCategory
                 key={key}
@@ -303,16 +270,16 @@ export default function SkillsPage() {
                 title={skillsData[key].title}
                 subcategories={skillsData[key].subcategories}
                 index={idx}
-                isExpanded={expandedSections.includes(key)}
+                isExpanded={expandedSection === key}
                 onToggle={handleToggle}
               />
             ))}
           </div>
         ) : (
-          /* Desktop layout - unchanged */
+          /* Desktop: Grid */
           <>
-            <div className="flex flex-col md:flex-row gap-1 sm:gap-2 md:gap-3 items-stretch">
-              <div className="flex flex-col gap-1 sm:gap-2 md:gap-3 flex-1">
+            <div className="flex flex-col md:flex-row gap-2 md:gap-3 items-stretch">
+              <div className="flex flex-col gap-2 md:gap-3 flex-1">
                 <CategoryBlock
                   title={skillsData.languages.title}
                   subcategories={skillsData.languages.subcategories}
@@ -324,7 +291,7 @@ export default function SkillsPage() {
                   index={2}
                 />
               </div>
-              <div className="flex flex-col gap-1 sm:gap-2 md:gap-3 flex-1">
+              <div className="flex flex-col gap-2 md:gap-3 flex-1">
                 <CategoryBlock
                   title={skillsData.trainEvalInfer.title}
                   subcategories={skillsData.trainEvalInfer.subcategories}
@@ -346,24 +313,21 @@ export default function SkillsPage() {
           </>
         )}
 
+        {/* Footer Stats */}
         <motion.div
-          className="flex items-center justify-between border-t border-primary/20 pt-1 sm:pt-2"
+          className="flex items-center justify-between border-t border-primary/20 pt-2"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.2, delay: 0.5 }}
         >
-          <div className="flex gap-1 sm:gap-3 md:gap-4 text-[8px] sm:text-[10px] font-sf-mono text-primary/40 uppercase tracking-wider">
+          <div className="flex gap-1 sm:gap-2 md:gap-4 text-[9px] sm:text-[10px] font-sf-mono text-primary/40 uppercase tracking-wider">
             <span>5 {isMobile ? "CAT" : "CATEGORIES"}</span>
             <span className="text-primary/20">/</span>
-            <span>
-              {totalSubcategories} {isMobile ? "SUB" : "SUBCATEGORIES"}
-            </span>
+            <span>{totalSubcategories} {isMobile ? "SUB" : "SUBCATEGORIES"}</span>
             <span className="text-primary/20">/</span>
-            <span>
-              {totalTech} {isMobile ? "TECH" : "TECHNOLOGIES"}
-            </span>
+            <span>{totalTech} {isMobile ? "TECH" : "TECHNOLOGIES"}</span>
           </div>
-          <div className="text-[8px] sm:text-[10px] font-sf-mono text-primary/30">
+          <div className="text-[9px] sm:text-[10px] font-sf-mono text-primary/30">
             {isMobile ? "2025" : "LAST.UPDATED: 2025"}
           </div>
         </motion.div>
