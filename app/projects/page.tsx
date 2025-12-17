@@ -244,7 +244,7 @@ export default function ProjectsPage() {
           </button>
 
           {/* Grid Container - Fixed Height */}
-          <div className="flex-1 min-h-[480px] md:min-h-[520px]">
+          <div className="flex-1 min-h-[360px] md:min-h-[520px]">
             {visibleProjects.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3 h-full">
                 {visibleProjects.map((project, index) => (
