@@ -255,10 +255,9 @@ export default function ProjectsPage() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.05 }}
-                    onClick={() => openModal(project)}
                     onMouseEnter={() => setHoveredId(project.id)}
                     onMouseLeave={() => setHoveredId(null)}
-                    className={`border border-primary/20 bg-background transition-all duration-150 cursor-pointer flex flex-col ${
+                    className={`border border-primary/20 bg-background transition-all duration-150 cursor-pointer ${
                       hoveredId === project.id ? "border-primary/40 bg-primary/5" : ""
                     }`}
                   >
@@ -275,36 +274,66 @@ export default function ProjectsPage() {
                       </span>
                     </div>
 
-                    {/* Tech Icons */}
-                    <div className="border-b border-primary/10 px-3 py-2 flex gap-1.5">
-                      {project.technologies.slice(0, 5).map((tech) => (
-                        <div
-                          key={tech}
-                          className="w-7 h-7 border border-primary/20 bg-primary/5 flex items-center justify-center text-primary/60 hover:bg-primary/10 hover:text-primary transition-colors"
-                          title={tech}
+                    {/* Body: Two Column Layout */}
+                    <div className="flex">
+                      {/* Left Column - 60% */}
+                      <div className="flex-[6] border-r border-primary/10">
+                        {/* Tech Icons */}
+                        <div className="border-b border-primary/10 px-3 py-2 flex gap-1.5">
+                          {project.technologies.slice(0, 5).map((tech) => (
+                            <div
+                              key={tech}
+                              className="w-7 h-7 border border-primary/20 bg-primary/5 flex items-center justify-center text-primary/60 hover:bg-primary/10 hover:text-primary transition-colors"
+                              title={tech}
+                            >
+                              {getTechIcon(tech)}
+                            </div>
+                          ))}
+                          {project.technologies.length > 5 && (
+                            <div className="w-7 h-7 border border-primary/20 bg-primary/5 flex items-center justify-center text-[8px] font-sf-mono text-primary/50">
+                              +{project.technologies.length - 5}
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Content */}
+                        <div className="p-3">
+                          <h3 className="text-xs font-sf-mono font-medium mb-1 line-clamp-2">{project.title}</h3>
+                          <p className="text-[10px] font-sf-mono text-primary/60 leading-relaxed line-clamp-2">
+                            {project.description}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Right Column - 40% */}
+                      <div className="flex-[4] flex flex-col">
+                        {/* GitHub Button */}
+                        
+                          href={project.github || "#"}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            if (!project.github) e.preventDefault()
+                          }}
+                          className={`flex-1 flex items-center justify-center border-b border-primary/10 transition-colors ${
+                            project.github
+                              ? "hover:bg-primary hover:text-background text-primary/60"
+                              : "text-primary/20 cursor-not-allowed"
+                          }`}
                         >
-                          {getTechIcon(tech)}
-                        </div>
-                      ))}
-                      {project.technologies.length > 5 && (
-                        <div className="w-7 h-7 border border-primary/20 bg-primary/5 flex items-center justify-center text-[8px] font-sf-mono text-primary/50">
-                          +{project.technologies.length - 5}
-                        </div>
-                      )}
-                    </div>
+                          <Github className="w-5 h-5" />
+                        </a>
 
-                    {/* Content */}
-                    <div className="p-3 flex-1">
-                      <h3 className="text-xs font-sf-mono font-medium mb-1 line-clamp-2">{project.title}</h3>
-                      <p className="text-[10px] font-sf-mono text-primary/60 leading-relaxed line-clamp-2">
-                        {project.description}
-                      </p>
-                    </div>
-
-                    {/* Footer */}
-                    <div className="border-t border-primary/20 px-3 py-2 flex items-center justify-between bg-primary/5 mt-auto">
-                      <span className="text-[10px] font-sf-mono text-primary/50">VIEW DETAILS</span>
-                      <ChevronRight className="h-3 w-3 text-primary/50" />
+                        {/* View Details Button */}
+                        <button
+                          onClick={() => openModal(project)}
+                          className="flex-1 flex items-center justify-center gap-2 hover:bg-primary hover:text-background text-primary/60 transition-colors"
+                        >
+                          <span className="text-[9px] font-sf-mono">DETAILS</span>
+                          <ChevronRight className="w-3 h-3" />
+                        </button>
+                      </div>
                     </div>
                   </motion.div>
                 ))}
