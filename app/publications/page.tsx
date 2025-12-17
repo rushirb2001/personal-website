@@ -170,8 +170,14 @@ export default function PublicationsPage() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.15, delay: index * 0.05 }}
               className={`border-b border-primary/10 transition-all duration-150 cursor-pointer ${
-                hoveredId === pub.id ? "bg-primary/10" : ""
-              } ${selectedPublication?.id === pub.id ? "bg-primary text-background" : ""}`}
+                selectedPublication?.id === pub.id 
+                  ? hoveredId === pub.id 
+                    ? "bg-primary/90 text-background" 
+                    : "bg-primary text-background"
+                  : hoveredId === pub.id 
+                    ? "bg-primary/10" 
+                    : ""
+              }`}
               onMouseEnter={() => setHoveredId(pub.id)}
               onMouseLeave={() => setHoveredId(null)}
               onClick={() => setSelectedPublication(selectedPublication?.id === pub.id ? null : pub)}
