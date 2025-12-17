@@ -382,7 +382,7 @@ export default function PublicationsPage() {
             <span className="text-primary/20">/</span>
             <span>{stats.totalCitations} {isMobile ? "CIT" : "CITATIONS"}</span>
             <span className="text-primary/20">/</span>
-            <span>{stats.venues} VENUES</span>
+            <span>{stats.venues} {isMobile ? "VEN" : "VENUES"}</span>
             <span className="text-primary/20">/</span>
             <span>{stats.yearRange}</span>
           </div>
