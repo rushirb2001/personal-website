@@ -423,14 +423,14 @@ export default function ProjectsPage() {
         </motion.div>
       </div>
 
-      {/* Modal - Improved Readability */}
+      {/* Modal - Wide Horizontal Layout */}
       <AnimatePresence>
         {isModalOpen && selectedProject && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-3 md:p-4"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-3 md:p-6"
             onClick={closeModal}
           >
             <motion.div
@@ -438,64 +438,83 @@ export default function ProjectsPage() {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="w-full max-w-xl bg-background dark:bg-eerie-black border border-primary/30 shadow-lg max-h-[85vh] overflow-hidden flex flex-col"
+              className="w-full max-w-5xl bg-background border border-primary/30 shadow-lg max-h-[90vh] overflow-hidden flex flex-col"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Header */}
-              <div className="bg-primary text-background px-4 py-3 flex justify-between items-center flex-shrink-0">
+              <div className="border-b border-primary/20 px-4 py-3 flex justify-between items-center bg-primary/5">
                 <div className="flex items-center gap-2">
-                  <Terminal className="h-4 w-4" />
-                  <span className="text-sm font-sf-mono font-medium truncate max-w-[250px] md:max-w-none">
+                  <Terminal className="h-4 w-4 text-primary" />
+                  <span className="text-sm font-sf-mono font-bold uppercase tracking-wider text-primary">
                     {selectedProject.title}
                   </span>
                 </div>
                 <button
                   onClick={closeModal}
-                  className="text-background/70 hover:text-background transition-colors text-xs font-sf-mono"
+                  className="text-primary/50 hover:text-primary transition-colors text-[10px] font-sf-mono border border-primary/20 px-2 py-1 hover:bg-primary/10"
                 >
-                  [ ESC ]
+                  ESC
                 </button>
               </div>
 
               {/* Content */}
-              <div className="p-4 md:p-6 overflow-y-auto flex-1 space-y-5">
-                {/* Description */}
-                <div>
-                  <span className="text-[10px] font-sf-mono text-primary/50 uppercase tracking-wider">
-                    DESCRIPTION
-                  </span>
-                  <p className="text-sm font-sf-mono text-primary/80 mt-2 leading-relaxed">
-                    {selectedProject.fullDescription}
-                  </p>
-                </div>
-
-                {/* Highlights */}
-                <div>
-                  <span className="text-[10px] font-sf-mono text-primary/50 uppercase tracking-wider">
-                    KEY HIGHLIGHTS
-                  </span>
-                  <div className="space-y-2.5 mt-3">
-                    {selectedProject.highlights.map((highlight, i) => (
-                      <div key={i} className="flex gap-3">
-                        <div className="w-5 h-5 border border-primary/30 bg-primary/10 flex items-center justify-center text-[10px] font-sf-mono text-primary/70 flex-shrink-0">
-                          {i + 1}
-                        </div>
-                        <p className="text-xs font-sf-mono text-primary/70 leading-relaxed">{highlight}</p>
+              <div className="p-6 overflow-y-auto flex-1">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {/* Description */}
+                  <div>
+                    <div className="flex items-center gap-2 mb-3 pb-2 border-b border-primary/10">
+                      <div className="w-5 h-5 border border-primary/30 bg-primary/10 flex items-center justify-center text-[10px] font-sf-mono text-primary/70">
+                        01
                       </div>
-                    ))}
+                      <span className="text-[10px] font-sf-mono text-primary/50 uppercase tracking-wider">
+                        DESCRIPTION
+                      </span>
+                    </div>
+                    <p className="text-[11px] font-sf-mono text-primary/70 leading-relaxed uppercase tracking-tight">
+                      {selectedProject.fullDescription}
+                    </p>
+                  </div>
+
+                  {/* Highlights */}
+                  <div>
+                    <div className="flex items-center gap-2 mb-3 pb-2 border-b border-primary/10">
+                      <div className="w-5 h-5 border border-primary/30 bg-primary/10 flex items-center justify-center text-[10px] font-sf-mono text-primary/70">
+                        02
+                      </div>
+                      <span className="text-[10px] font-sf-mono text-primary/50 uppercase tracking-wider">
+                        KEY HIGHLIGHTS
+                      </span>
+                    </div>
+                    <div className="space-y-3">
+                      {selectedProject.highlights.map((highlight, i) => (
+                        <div key={i} className="flex gap-2">
+                          <div className="w-5 h-5 border border-primary/20 bg-primary/5 flex items-center justify-center text-[9px] font-sf-mono text-primary/60 flex-shrink-0">
+                            {i + 1}
+                          </div>
+                          <p className="text-[11px] font-sf-mono text-primary/70 leading-relaxed uppercase tracking-tight">
+                            {highlight}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
+              </div>
 
-                {/* Technologies */}
-                <div>
-                  <span className="text-[10px] font-sf-mono text-primary/50 uppercase tracking-wider">
-                    TECHNOLOGIES
-                  </span>
-                  <div className="flex flex-wrap gap-1.5 mt-2">
+              {/* Footer */}
+              <div className="border-t border-primary/20 px-4 py-3 bg-primary/5 flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
+                {/* Left - Technologies */}
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="text-[9px] font-sf-mono text-primary/50 uppercase tracking-wider">
+                      TECH STACK
+                    </span>
+                  </div>
+                  <div className="flex flex-wrap gap-1">
                     {selectedProject.technologies.map((tech) => (
                       <span
                         key={tech}
-                        className="text-[10px] font-sf-mono border border-primary/20 bg-primary/5 text-primary/70 px-2 py-1 hover:bg-primary hover:text-background transition-colors"
+                        className="text-[9px] font-sf-mono border border-primary/20 bg-background text-primary/70 px-2 py-1 hover:bg-primary hover:text-background transition-colors"
                       >
                         {tech.toUpperCase()}
                       </span>
@@ -503,46 +522,33 @@ export default function ProjectsPage() {
                   </div>
                 </div>
 
-                {/* Links */}
+                {/* Right - Action Buttons */}
                 {(selectedProject.github || selectedProject.demo) && (
-                  <div className="pt-4 border-t border-primary/10">
-                    <span className="text-[10px] font-sf-mono text-primary/50 uppercase tracking-wider">
-                      LINKS
-                    </span>
-                    <div className="flex gap-2 mt-2">
-                      {selectedProject.github && (
-                        <a
-                          href={selectedProject.github}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center gap-2 text-xs font-sf-mono border border-primary/30 text-primary/70 hover:bg-primary hover:text-background transition-colors px-4 py-2"
-                        >
-                          <Github className="h-4 w-4" />
-                          SOURCE
-                        </a>
-                      )}
-                      {selectedProject.demo && (
-                        <a
-                          href={selectedProject.demo}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center gap-2 text-xs font-sf-mono border border-primary/30 text-primary/70 hover:bg-primary hover:text-background transition-colors px-4 py-2"
-                        >
-                          <ExternalLink className="h-4 w-4" />
-                          DEMO
-                        </a>
-                      )}
-                    </div>
+                  <div className="flex gap-2 flex-shrink-0">
+                    {selectedProject.github && (
+                      
+                        href={selectedProject.github}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 text-[10px] font-sf-mono border border-primary bg-primary text-background hover:bg-primary/90 transition-all duration-150 px-4 py-2"
+                      >
+                        <Github className="h-3 w-3" />
+                        <span>SOURCE</span>
+                      </a>
+                    )}
+                    {selectedProject.demo && (
+                      
+                        href={selectedProject.demo}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 text-[10px] font-sf-mono border border-primary bg-primary text-background hover:bg-primary/90 transition-all duration-150 px-4 py-2"
+                      >
+                        <ExternalLink className="h-3 w-3" />
+                        <span>DEMO</span>
+                      </a>
+                    )}
                   </div>
                 )}
-              </div>
-
-              {/* Footer */}
-              <div className="border-t border-primary/20 px-4 py-2 bg-primary/5 flex justify-between items-center flex-shrink-0">
-                <span className="text-[10px] font-sf-mono text-primary/50">{selectedProject.category.toUpperCase()}</span>
-                <span className={`text-[10px] font-sf-mono ${getStatusColor(selectedProject.status)}`}>
-                  {selectedProject.status}
-                </span>
               </div>
             </motion.div>
           </motion.div>
