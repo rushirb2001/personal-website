@@ -28,7 +28,7 @@ export default function ExperiencePage() {
       title: "GENAI ENGINEERING INTERN",
       company: "TALIN LABS INC",
       location: "REMOTE",
-      period: "MAY 2024 - SEP 2024",
+      period: "MAY'24 - SEP'24",
       description:
         "Developed and deployed AI pipelines and systems for enterprise applications, focusing on reliability, scalability, and performance optimization.",
       responsibilities: [
@@ -42,7 +42,7 @@ export default function ExperiencePage() {
       title: "AI RESEARCH INTERN",
       company: "GIOSTAR.AI",
       location: "PHOENIX, AZ",
-      period: "NOV 2023 - MAY 2024",
+      period: "NOV'23 - MAY'24",
       description:
         "Conducted research and development in AI applications for healthcare, focusing on EEG processing and medical imaging analysis.",
       responsibilities: [
@@ -56,7 +56,7 @@ export default function ExperiencePage() {
       title: "AI/ML ENGINEER",
       company: "NIRMA UNIVERSITY",
       location: "AHMEDABAD, INDIA",
-      period: "AUG 2022 - AUG 2023",
+      period: "AUG'22 - AUG'23",
       description:
         "Developed and optimized computer vision models for license plate detection and recognition, focusing on accuracy and performance improvements.",
       responsibilities: [
