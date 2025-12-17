@@ -94,9 +94,10 @@ export default function PublicationsPage() {
   const stats = useMemo(() => {
     const totalCitations = publications.reduce((sum, pub) => sum + pub.citations, 0)
     const years = publications.map((p) => Number.parseInt(p.year))
-    const yearRange = `${Math.min(...years)}-${Math.max(...years)}`
+    const yearRangeDesktop = `${Math.min(...years)}-${Math.max(...years)}`
+    const yearRangeMobile = `${Math.min(...years)}-${Math.max(...years).toString().slice(-2)}`
     const venues = new Set(publications.map((p) => p.venue)).size
-    return { totalCitations, yearRange, venues, total: publications.length }
+    return { totalCitations, yearRangeDesktop, yearRangeMobile, venues, total: publications.length }
   }, [])
 
   const visiblePublications = sortedPublications.slice(startIndex, startIndex + ITEMS_PER_PAGE)
@@ -384,7 +385,7 @@ export default function PublicationsPage() {
             <span className="text-primary/20">/</span>
             <span>{stats.venues} {isMobile ? "VEN" : "VENUES"}</span>
             <span className="text-primary/20">/</span>
-            <span>{stats.yearRange}</span>
+            <span>{isMobile ? stats.yearRangeMobile : stats.yearRangeDesktop}</span>
           </div>
           <div className="text-[9px] sm:text-[10px] font-sf-mono text-primary/30">{"LAST.UPDATED: 2025"}</div>
         </motion.div>
