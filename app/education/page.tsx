@@ -75,9 +75,10 @@ export default function EducationPage() {
                 expandedIndex === index ? "bg-primary/5" : "hover:bg-primary/5"
               }`}
             >
-              <div className="flex-1">
-                <h3 className="text-sm font-sf-mono font-medium mb-2">{edu.field}</h3>
-                <p className="text-xs font-sf-mono text-primary/60 mb-3">{edu.institution}</p>
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex-1">
+                  <h3 className="text-sm font-sf-mono font-medium mb-2">{edu.field}</h3>
+                  <p className="text-xs font-sf-mono text-primary/60 mb-3">{edu.institution}</p>
                   
                   <div className="flex flex-wrap gap-x-4 gap-y-1 text-[10px] font-sf-mono text-primary/50">
                     <span className="flex items-center gap-1">
