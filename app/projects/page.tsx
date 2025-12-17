@@ -261,54 +261,46 @@ export default function ProjectsPage() {
                       hoveredId === project.id ? "border-primary/40 bg-primary/5" : ""
                     }`}
                   >
-                    {/* Header */}
-                    <div className="border-b border-primary/20 px-3 py-2 flex items-center justify-between bg-primary/5">
+                    {/* Header - Lighter with inline tags */}
+                    <div className="border-b border-primary/20 px-3 py-2 flex items-center justify-between bg-transparent">
                       <div className="flex items-center gap-2">
-                        <Terminal className="h-3 w-3 text-primary/50" />
-                        <span className="text-[10px] font-sf-mono text-primary/50">
+                        <Terminal className="h-3 w-3 text-primary" />
+                        <span className="text-[10px] font-sf-mono font-bold text-primary tracking-wider">
                           {project.category.toUpperCase()}
                         </span>
                       </div>
-                      <span className={`text-[10px] font-sf-mono ${getStatusColor(project.status)}`}>
-                        {project.status}
-                      </span>
+                      <div className="flex gap-1">
+                        {project.technologies.slice(0, 3).map((tech) => (
+                          <span
+                            key={tech}
+                            className="text-[9px] font-sf-mono border border-primary/20 text-primary/60 px-1.5 py-0.5"
+                          >
+                            {tech.toUpperCase()}
+                          </span>
+                        ))}
+                        {project.technologies.length > 3 && (
+                          <span className="text-[9px] font-sf-mono border border-primary/20 text-primary/50 px-1.5 py-0.5">
+                            +{project.technologies.length - 3}
+                          </span>
+                        )}
+                      </div>
                     </div>
 
-                    {/* Body: Two Column Layout */}
+                    {/* Body - Content with vertical button stack */}
                     <div className="flex">
-                      {/* Left Column - 60% */}
-                      <div className="flex-[6.5] border-r border-primary/10">
-                        {/* Tech Icons */}
-                        <div className="border-b border-primary/10 px-3 py-2 flex gap-1.5">
-                          {project.technologies.slice(0, 5).map((tech) => (
-                            <div
-                              key={tech}
-                              className="w-7 h-7 border border-primary/20 bg-primary/5 flex items-center justify-center text-primary/60 hover:bg-primary/10 hover:text-primary transition-colors"
-                              title={tech}
-                            >
-                              {getTechIcon(tech)}
-                            </div>
-                          ))}
-                          {project.technologies.length > 5 && (
-                            <div className="w-7 h-7 border border-primary/20 bg-primary/5 flex items-center justify-center text-[8px] font-sf-mono text-primary/50">
-                              +{project.technologies.length - 5}
-                            </div>
-                          )}
-                        </div>
-
-                        {/* Content */}
-                        <div className="p-3">
-                          <h3 className="text-xs font-sf-mono font-medium mb-1 line-clamp-2">{project.title}</h3>
-                          <p className="text-[10px] font-sf-mono text-primary/60 leading-relaxed line-clamp-2">
-                            {project.description}
-                          </p>
-                        </div>
+                      {/* Content Area */}
+                      <div className="flex-1 p-3">
+                        <h3 className="text-xs font-sf-mono font-bold uppercase mb-2 tracking-wider">
+                          {project.title}
+                        </h3>
+                        <p className="text-[10px] font-sf-mono text-primary/60 leading-relaxed line-clamp-3 uppercase tracking-tight">
+                          {project.description}
+                        </p>
                       </div>
 
-                      {/* Right Column - 40% */}
-                      <div className="flex-[2.5] flex flex-col">
-                        {/* GitHub Button */}
-                        <a
+                      {/* Buttons - Vertically centered, fixed height */}
+                      <div className="flex flex-col justify-center gap-2 px-3 py-3">
+                        
                           href={project.github || "#"}
                           target="_blank"
                           rel="noopener noreferrer"
@@ -316,22 +308,26 @@ export default function ProjectsPage() {
                             e.stopPropagation()
                             if (!project.github) e.preventDefault()
                           }}
-                          className={`flex-1 flex items-center justify-center border-b border-primary/10 transition-colors ${
+                          className={`px-3 py-2 border transition-all duration-150 ${
                             project.github
-                              ? "hover:bg-primary hover:text-background text-primary/60"
-                              : "text-primary/20 cursor-not-allowed"
+                              ? "bg-primary text-background border-primary hover:bg-primary/90"
+                              : "bg-primary/10 text-primary/30 border-primary/20 cursor-not-allowed"
                           }`}
                         >
-                          <Github className="w-5 h-5" />
+                          <div className="flex items-center justify-center gap-1.5">
+                            <Github className="w-3 h-3" />
+                            <span className="text-[9px] font-sf-mono">CODE</span>
+                          </div>
                         </a>
 
-                        {/* View Details Button */}
                         <button
                           onClick={() => openModal(project)}
-                          className="flex-1 flex items-center justify-center gap-2 hover:bg-primary hover:text-background text-primary/60 transition-colors"
+                          className="px-3 py-2 border bg-primary text-background border-primary hover:bg-primary/90 transition-all duration-150"
                         >
-                          <span className="text-[9px] font-sf-mono">DETAILS</span>
-                          <ChevronRight className="w-3 h-3" />
+                          <div className="flex items-center justify-center gap-1.5">
+                            <ChevronRight className="w-3 h-3" />
+                            <span className="text-[9px] font-sf-mono">VIEW</span>
+                          </div>
                         </button>
                       </div>
                     </div>
