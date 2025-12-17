@@ -22,9 +22,9 @@ export default function EducationPage() {
         "Data Mining", 
         "Statistical Machine Learning",
         "Convex Optimisation",
+        "Data Visualization",
         "Artificial Intelligence",
         "Knowledge Representation",
-        "Data Visualization",
       ],
     },
     {
