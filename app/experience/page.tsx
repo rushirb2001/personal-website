@@ -55,7 +55,7 @@ export default function ExperiencePage() {
     {
       title: "AI/ML ENGINEER",
       company: "NIRMA UNIVERSITY",
-      location: "AHMEDABAD, INDIA",
+      location: "AHMEDABAD, GJ",
       period: "AUG'22 - AUG'23",
       description:
         "Developed and optimized computer vision models for license plate detection and recognition, focusing on accuracy and performance improvements.",
