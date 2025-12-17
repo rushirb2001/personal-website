@@ -540,7 +540,7 @@ export default function ProjectsPage() {
                 {(selectedProject.github || selectedProject.demo) && (
                   <div className="flex gap-2 flex-shrink-0">
                     {selectedProject.github && (
-                      
+                      <a
                         href={selectedProject.github}
                         target="_blank"
                         rel="noopener noreferrer"
@@ -551,7 +551,7 @@ export default function ProjectsPage() {
                       </a>
                     )}
                     {selectedProject.demo && (
-                      
+                      <a
                         href={selectedProject.demo}
                         target="_blank"
                         rel="noopener noreferrer"
