@@ -287,57 +287,59 @@ export default function PublicationsPage() {
               <div className="md:hidden px-3 py-3">
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
-                      <span
-                        className={`text-[10px] font-sf-mono ${selectedPublication?.id === pub.id ? "text-background/60" : "text-primary/50"}`}
-                      >
-                        {pub.year}
-                      </span>
-                      <span
-                        className={`text-[10px] font-sf-mono ${selectedPublication?.id === pub.id ? "text-background/60" : "text-primary/40"}`}
-                      >
-                        {pub.citations} citations
-                      </span>
-                    </div>
-                    <h3 className="text-xs font-sf-mono font-medium line-clamp-2 text-left">{pub.title}</h3>
+                    <h3 className="text-xs font-sf-mono font-medium line-clamp-2 text-left mb-2">{pub.title}</h3>
                     <p
-                      className={`text-[10px] font-sf-mono mt-1 ${selectedPublication?.id === pub.id ? "text-background/60" : "text-primary/50"}`}
+                      className={`text-[10px] font-sf-mono ${selectedPublication?.id === pub.id ? "text-background/60" : "text-primary/50"}`}
                     >
                       {pub.venue}
                     </p>
                   </div>
-                  <div className="flex items-center gap-1 shrink-0">
-                    <a
-                      href={pub.pdfLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={(e) => e.stopPropagation()}
-                      className={`flex items-center justify-center w-8 h-8 border ${
-                        selectedPublication?.id === pub.id ? "border-background/30" : "border-primary/20"
-                      }`}
-                    >
-                      <ExternalLink className="w-3 h-3" />
-                    </a>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        setSelectedPublication(selectedPublication?.id === pub.id ? null : pub)
-                      }}
-                      className={`flex items-center justify-center w-8 h-8 border ${
-                        selectedPublication?.id === pub.id ? "border-background/30" : "border-primary/20"
-                      }`}
-                    >
-                      <motion.div
-                        animate={{ rotate: selectedPublication?.id === pub.id ? 180 : 0 }}
-                        transition={{ duration: 0.2 }}
+                  <div className="flex flex-col items-end gap-1 shrink-0">
+                    <div className="flex items-center gap-1">
+                      
+                        href={pub.pdfLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={(e) => e.stopPropagation()}
+                        className={`flex items-center justify-center w-8 h-8 border ${
+                          selectedPublication?.id === pub.id ? "border-background/30" : "border-primary/20"
+                        }`}
                       >
-                        {selectedPublication?.id === pub.id ? (
-                          <X className="w-3 h-3" />
-                        ) : (
-                          <ChevronDown className="w-3 h-3" />
-                        )}
-                      </motion.div>
-                    </button>
+                        <ExternalLink className="w-3 h-3" />
+                      </a>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          setSelectedPublication(selectedPublication?.id === pub.id ? null : pub)
+                        }}
+                        className={`flex items-center justify-center w-8 h-8 border ${
+                          selectedPublication?.id === pub.id ? "border-background/30" : "border-primary/20"
+                        }`}
+                      >
+                        <motion.div
+                          animate={{ rotate: selectedPublication?.id === pub.id ? 180 : 0 }}
+                          transition={{ duration: 0.2 }}
+                        >
+                          {selectedPublication?.id === pub.id ? (
+                            <X className="w-3 h-3" />
+                          ) : (
+                            <ChevronDown className="w-3 h-3" />
+                          )}
+                        </motion.div>
+                      </button>
+                    </div>
+                    <div className="flex flex-col items-end gap-0.5 text-right">
+                      <span
+                        className={`text-[9px] font-sf-mono ${selectedPublication?.id === pub.id ? "text-background/60" : "text-primary/50"}`}
+                      >
+                        {pub.year}
+                      </span>
+                      <span
+                        className={`text-[9px] font-sf-mono ${selectedPublication?.id === pub.id ? "text-background/60" : "text-primary/40"}`}
+                      >
+                        {pub.citations} CIT
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
