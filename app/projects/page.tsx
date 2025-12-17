@@ -503,10 +503,10 @@ export default function ProjectsPage() {
 
               {/* Footer - Proper Alignment */}
               <div className="border-t border-primary/20 px-3 md:px-4 py-2 md:py-3 bg-primary/5">
-                {/* Desktop Layout - Stacked */}
-                <div className="hidden md:flex md:flex-col gap-3">
-                  {/* Technologies Row */}
-                  <div className="flex items-center gap-2 flex-wrap">
+                {/* Desktop Layout - Single Row */}
+                <div className="hidden md:flex items-center justify-between gap-3">
+                  {/* Technologies - Left */}
+                  <div className="flex items-center gap-2 flex-wrap flex-1">
                     <span className="text-[9px] font-sf-mono text-primary/50 uppercase tracking-wider">
                       TECH STACK:
                     </span>
@@ -520,11 +520,11 @@ export default function ProjectsPage() {
                     ))}
                   </div>
 
-                  {/* Action Buttons Row */}
+                  {/* Action Buttons - Right */}
                   {(selectedProject.github || selectedProject.demo) && (
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 flex-shrink-0">
                       {selectedProject.github && (
-                        <a
+                        
                           href={selectedProject.github}
                           target="_blank"
                           rel="noopener noreferrer"
@@ -535,7 +535,7 @@ export default function ProjectsPage() {
                         </a>
                       )}
                       {selectedProject.demo && (
-                        <a
+                        
                           href={selectedProject.demo}
                           target="_blank"
                           rel="noopener noreferrer"
