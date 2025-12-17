@@ -136,7 +136,7 @@ export default function EducationPage() {
                         KEY COURSEWORK
                       </span>
                       {edu.gpa && (
-                        <span className="text-[9px] font-sf-mono text-primary/40 uppercase tracking-wider">
+                        <span className="text-[9px] font-sf-mono text-primary/40 uppercase tracking-wider font-black">
                           GPA: {edu.gpa}
                         </span>
                       )}
