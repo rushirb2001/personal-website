@@ -302,14 +302,6 @@ export default function PublicationsPage() {
                     <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-6">
                       <div className="space-y-4">
                         <div>
-                          <div className="flex items-center gap-3 mb-2">
-                            <span className="text-[10px] font-sf-mono px-2 py-0.5 border border-green-500/30 text-green-500 bg-green-500/10">
-                              {selectedPublication.status}
-                            </span>
-                            <span className="text-[10px] font-sf-mono text-primary/50">
-                              {selectedPublication.citations} CITATIONS
-                            </span>
-                          </div>
                           <span className="text-[9px] font-sf-mono text-primary/40 uppercase tracking-wider">
                             TITLE
                           </span>
@@ -322,6 +314,14 @@ export default function PublicationsPage() {
                           <p className="text-xs font-sf-mono text-primary/70 mt-1 leading-relaxed border-l-2 border-primary/20 pl-3">
                             {selectedPublication.abstract}
                           </p>
+                          <div className="flex items-center gap-3 mb-2">
+                            <span className="text-[10px] font-sf-mono px-2 py-0.5 border border-green-500/30 text-green-500 bg-green-500/10">
+                              {selectedPublication.status}
+                            </span>
+                            <span className="text-[10px] font-sf-mono text-primary/50">
+                              {selectedPublication.citations} CITATIONS
+                            </span>
+                          </div>
                         </div>
                       </div>
 
