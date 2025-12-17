@@ -299,7 +299,7 @@ export default function ProjectsPage() {
       </div>
 
       {/* Projects Grid - No Side Navigation */}
-      <div className="min-h-[360px] md:min-h-[360px]">
+      <div className="min-h-[300px] md:min-h-[300px]">
         {visibleProjects.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 h-full">
             {visibleProjects.map((project, index) => (
@@ -389,7 +389,7 @@ export default function ProjectsPage() {
             ))}
           </div>
         ) : (
-          <div className="flex items-center justify-center h-full min-h-[360px] md:min-h-[360px]">
+          <div className="flex items-center justify-center h-full min-h-[300px] md:min-h-[300px]">
             <div className="flex items-center gap-2">
               <Terminal className="w-4 h-4 text-primary/50" />
               <p className="text-xs font-sf-mono text-primary/50">CHECK BACK AGAIN SOON, MORE PROJECTS TO COME...</p>
