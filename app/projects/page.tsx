@@ -353,7 +353,7 @@ export default function ProjectsPage() {
 
                   {/* Buttons - Vertically centered, fixed height */}
                   <div className="flex flex-col justify-center gap-2 px-3 py-3">
-                    
+                    <a
                       href={project.github || "#"}
                       target="_blank"
                       rel="noopener noreferrer"
