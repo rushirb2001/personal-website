@@ -270,18 +270,19 @@ export default function ProjectsPage() {
                         </span>
                       </div>
                       <div className="flex gap-1">
-                        {project.technologies.slice(0, 3).map((tech) => (
-                          <span
+                        {project.technologies.slice(0, 4).map((tech) => (
+                          <div
                             key={tech}
-                            className="text-[9px] font-sf-mono border border-primary/20 text-primary/60 px-1.5 py-0.5"
+                            className="w-6 h-6 border border-primary/20 flex items-center justify-center text-primary/60 hover:bg-primary/10 hover:text-primary transition-colors"
+                            title={tech}
                           >
-                            {tech.toUpperCase()}
-                          </span>
+                            {getTechIcon(tech)}
+                          </div>
                         ))}
-                        {project.technologies.length > 3 && (
-                          <span className="text-[9px] font-sf-mono border border-primary/20 text-primary/50 px-1.5 py-0.5">
-                            +{project.technologies.length - 3}
-                          </span>
+                        {project.technologies.length > 4 && (
+                          <div className="w-6 h-6 border border-primary/20 flex items-center justify-center text-[8px] font-sf-mono text-primary/50">
+                            +{project.technologies.length - 4}
+                          </div>
                         )}
                       </div>
                     </div>
