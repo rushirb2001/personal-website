@@ -248,20 +248,20 @@ export default function ExperiencePage() {
                     transition={{ duration: 0.2 }}
                     className="overflow-hidden border-b border-primary/20"
                   >
-                    <div className="bg-primary/5 p-4 md:p-6">
-                      <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-6">
+                    <div className="bg-primary/5 p-3 md:p-6">
+                      <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-4 md:gap-6">
                         {/* Left: Responsibilities */}
                         <div>
                           <span className="text-[9px] font-sf-mono text-primary/40 uppercase tracking-wider">
                             KEY ACHIEVEMENTS
                           </span>
-                          <div className="space-y-3 mt-2">
+                          <div className="space-y-2 mt-2">
                             {exp.responsibilities.map((resp, idx) => (
-                              <div key={idx} className="flex gap-3">
-                                <div className="w-5 h-5 border border-primary/20 bg-primary/5 flex items-center justify-center text-[10px] font-sf-mono text-primary/50 flex-shrink-0">
+                              <div key={idx} className="flex gap-2">
+                                <div className="w-4 h-4 border border-primary/20 bg-primary/5 flex items-center justify-center text-[9px] font-sf-mono text-primary/50 flex-shrink-0">
                                   {idx + 1}
                                 </div>
-                                <p className="text-xs font-sf-mono text-primary/70 leading-relaxed">{resp}</p>
+                                <p className="text-[10px] md:text-xs font-sf-mono text-primary/70 leading-relaxed">{resp}</p>
                               </div>
                             ))}
                           </div>
@@ -270,26 +270,17 @@ export default function ExperiencePage() {
                         {/* Right: Skills */}
                         <div className="md:border-l md:border-primary/10 md:pl-6">
                           <span className="text-[9px] font-sf-mono text-primary/40 uppercase tracking-wider">
-                            TECHNOLOGIES USED
+                            TECH STACK
                           </span>
-                          <div className="flex flex-wrap gap-1.5 mt-2">
+                          <div className="flex flex-wrap gap-1 mt-2">
                             {exp.skills.map((skill, idx) => (
                               <span
                                 key={idx}
-                                className="px-2 py-1 text-[10px] font-sf-mono border border-primary/20 bg-primary/5 hover:bg-primary hover:text-background transition-colors"
+                                className="px-1.5 py-0.5 text-[9px] font-sf-mono border border-primary/20 bg-primary/5 hover:bg-primary hover:text-background transition-colors"
                               >
                                 {skill}
                               </span>
                             ))}
-                          </div>
-
-                          <div className="mt-4 pt-4 border-t border-primary/10">
-                            <span className="text-[9px] font-sf-mono text-primary/40 uppercase tracking-wider">
-                              OVERVIEW
-                            </span>
-                            <p className="text-[11px] font-sf-mono text-primary/60 mt-2 leading-relaxed">
-                              {exp.description}
-                            </p>
                           </div>
                         </div>
                       </div>
