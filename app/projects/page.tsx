@@ -165,7 +165,8 @@ const mobileLabels: Record<string, string> = {
   Other: "OTHER",
 }
 
-const ITEMS_PER_PAGE = 4
+const ITEMS_PER_PAGE_DESKTOP = 4
+const ITEMS_PER_PAGE_MOBILE = 2
 
 export default function ProjectsPage() {
   const [selectedCategory, setSelectedCategory] = useState("All")
@@ -174,6 +175,8 @@ export default function ProjectsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [startIndex, setStartIndex] = useState(0)
   const isMobile = useMediaQuery("(max-width: 768px)")
+
+  const ITEMS_PER_PAGE = isMobile ? ITEMS_PER_PAGE_MOBILE : ITEMS_PER_PAGE_DESKTOP
 
   const filteredProjects =
     selectedCategory === "All" ? projects : projects.filter((p) => p.category === selectedCategory)
