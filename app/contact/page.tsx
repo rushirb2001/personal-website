@@ -35,7 +35,7 @@ export default function ContactPage() {
               onClick={() => setIsModalOpen(true)}
               className="rounded-none bg-primary text-background border-none hover:bg-primary/90 font-sf-mono text-xs tracking-widest px-8 py-5"
             >
-              COMPOSE EMAIL →
+              COMPOSE EMAIL {'->'} 
             </Button>
           </div>
         </motion.div>
@@ -61,7 +61,7 @@ export default function ContactPage() {
                 <span className="text-[9px] font-sf-mono text-primary/40 uppercase tracking-wider block mb-1">
                   EMAIL
                 </span>
-                
+                <a
                   href={`mailto:${CONTACT_INFO.email}`}
                   className="text-xs font-sf-mono text-primary/70 hover:text-primary transition-colors break-all"
                 >
@@ -77,7 +77,7 @@ export default function ContactPage() {
                 <span className="text-[9px] font-sf-mono text-primary/40 uppercase tracking-wider block mb-1">
                   PHONE
                 </span>
-                
+                <a
                   href={`tel:${CONTACT_INFO.phone}`}
                   className="text-xs font-sf-mono text-primary/70 hover:text-primary transition-colors"
                 >
@@ -113,7 +113,7 @@ export default function ContactPage() {
             </div>
           </div>
           <div className="grid grid-cols-3 divide-x divide-primary/10">
-            
+            <a
               href={CONTACT_INFO.linkedin}
               target="_blank"
               rel="noopener noreferrer"
@@ -124,7 +124,7 @@ export default function ContactPage() {
                 LinkedIn
               </span>
             </a>
-            
+            <a
               href={CONTACT_INFO.github}
               target="_blank"
               rel="noopener noreferrer"
@@ -135,7 +135,7 @@ export default function ContactPage() {
                 GitHub
               </span>
             </a>
-            
+            <a
               href={`mailto:${CONTACT_INFO.email}`}
               className="p-4 flex flex-col items-center gap-2 hover:bg-primary/10 transition-colors group"
             >
