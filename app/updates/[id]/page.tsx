@@ -239,7 +239,7 @@ export default function BlogPostPage() {
         transition={{ duration: 0.15 }}
         style={{ visibility: animationPhase === "expanding" ? "hidden" : "visible" }}
       >
-        <div className="container max-w-3xl mx-auto px-4 h-full">
+        <div className="container max-w-3xl mx-auto px-4 h-full py-4">
           <div
             ref={containerRef}
             className="h-full border border-primary/20 bg-background dark:bg-eerie-black/50 overflow-hidden flex flex-col"
