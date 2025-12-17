@@ -96,12 +96,6 @@ export default function EducationPage() {
                       <MapPin className="h-3 w-3" />
                       {edu.location}
                     </span>
-                    {edu.gpa && (
-                      <span className="flex items-center gap-1">
-                        <BookOpen className="h-3 w-3" />
-                        GPA: {edu.gpa}
-                      </span>
-                    )}
                   </div>
                 </div>
 
@@ -137,14 +131,21 @@ export default function EducationPage() {
                   className="overflow-hidden"
                 >
                   <div className="px-4 pb-4 pt-2 border-t border-primary/10">
-                    <span className="text-[9px] font-sf-mono text-primary/40 uppercase tracking-wider">
-                      KEY COURSEWORK
-                    </span>
-                    <div className="flex flex-wrap gap-1.5 mt-2">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-[9px] font-sf-mono text-primary/40 uppercase tracking-wider">
+                        KEY COURSEWORK
+                      </span>
+                      {edu.gpa && (
+                        <span className="text-[9px] font-sf-mono text-primary/40 uppercase tracking-wider">
+                          GPA: {edu.gpa}
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex flex-wrap gap-1.5">
                       {edu.courses.map((course, idx) => (
                         <span
                           key={idx}
-                          className="px-2 py-1 text-[10px] font-sf-mono border border-primary/20 bg-primary/5 hover:bg-primary hover:text-background transition-colors tracking-[-0.08em]"
+                          className="px-2 py-1 text-[10px] font-sf-mono border border-primary/20 bg-primary/5 hover:bg-primary hover:text-background transition-colors"
                         >
                           {course.toUpperCase()}
                         </span>
