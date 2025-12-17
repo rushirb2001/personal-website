@@ -74,16 +74,20 @@ export default function EducationPage() {
             {/* Main Content - Clickable */}
             <div
               onClick={() => toggleExpand(index)}
-              className={`p-4 cursor-pointer transition-colors ${
-                expandedIndex === index ? "bg-primary/5" : "hover:bg-primary/5"
+              className={`p-4 cursor-pointer transition-all duration-200 ${
+                expandedIndex === index 
+                  ? "bg-primary text-background" 
+                  : "hover:bg-primary/5"
               }`}
             >
               <div className="flex items-start justify-between gap-4">
                 <div className="flex-1">
                   <h3 className="text-sm font-sf-mono font-medium mb-2">{edu.field}</h3>
-                  <p className="text-xs font-sf-mono text-primary/60 mb-3">{edu.institution}</p>
+                  <p className={`text-xs font-sf-mono mb-3 ${expandedIndex === index ? "text-background/70" : "text-primary/60"}`}>
+                    {edu.institution}
+                  </p>
                   
-                  <div className="flex flex-wrap gap-x-4 gap-y-1 text-[10px] font-sf-mono text-primary/50">
+                  <div className={`flex flex-wrap gap-x-4 gap-y-1 text-[10px] font-sf-mono ${expandedIndex === index ? "text-background/60" : "text-primary/50"}`}>
                     <span className="flex items-center gap-1">
                       <Calendar className="h-3 w-3" />
                       {edu.period}
@@ -104,7 +108,7 @@ export default function EducationPage() {
                 <button
                   className={`flex items-center justify-center w-8 h-8 border transition-all duration-200 ${
                     expandedIndex === index
-                      ? "border-primary/40 bg-primary/10"
+                      ? "border-background/30 hover:bg-background/20"
                       : "border-primary/20 hover:border-primary/40"
                   }`}
                 >
@@ -120,7 +124,6 @@ export default function EducationPage() {
                   </motion.div>
                 </button>
               </div>
-            </div>
 
             {/* Expandable Coursework */}
             <AnimatePresence>
