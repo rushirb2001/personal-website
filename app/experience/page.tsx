@@ -50,7 +50,7 @@ export default function ExperiencePage() {
         "Incorporated artifact detection algorithms in PyTorch TFT & RCNN models and automated it via Jenkins CI/CD for Epilepsy Detection, exceeding 90% detection accuracy",
         "Built Vision Transformer & U-Net models in ExecuTorch with MONAI for AWS EC2 deployment, improving detection/classification accuracy by 20%",
       ],
-      skills: ["PYTORCH", "JENKINS", "AWS EC2", "MONAI", "VISION TRANSFORMERS"],
+      skills: ["PYTORCH", "JENKINS", "AWS EC2", "MONAI", "CV"],
     },
     {
       title: "AI/ML ENGINEER",
