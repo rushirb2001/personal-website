@@ -58,7 +58,7 @@ export default function EducationPage() {
   }
 
   return (
-    <PageLayout title="EDUCATION" subtitle="ACADEMIC BACKGROUND">
+    <PageLayout title="EDUCATION" subtitle="DEGREES & COURSEWORK">
       <div className="flex flex-col items-center justify-center min-h-[calc(100vh-16rem)]">
         <div className="w-full max-w-2xl mx-auto">
           {/* Section header */}
