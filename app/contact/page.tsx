@@ -13,7 +13,7 @@ export default function ContactPage() {
 
   return (
     <PageLayout title="CONTACT" subtitle="GET IN TOUCH">
-      <div className="space-y-3 w-min[500px]">
+      <div className="space-y-3 max-w-2xl mx-auto">
         {/* Primary Action */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
