@@ -214,32 +214,67 @@ export default function ProjectsPage() {
   return (
     <PageLayout title="PROJECTS" subtitle="PERSONAL & PROFESSIONAL WORK">
       <div className="flex flex-col gap-3">
-        {/* Category Filter */}
-        <div className="flex flex-wrap gap-1.5 justify-center py-2 border-b border-primary/20">
-          {categories.map((category) => (
-            <button
-              key={category}
-              onClick={() => setSelectedCategory(category)}
-              className={`text-[10px] font-sf-mono px-2 py-1 border transition-all duration-150 ${
-                selectedCategory === category
-                  ? "bg-primary text-background border-primary"
-                  : "bg-transparent border-primary/20 text-primary/60 hover:border-primary/40 hover:text-primary"
-              }`}
-            >
-              <span className="hidden md:inline">{category.toUpperCase()}</span>
-              <span className="md:hidden">{mobileLabels[category] || category.toUpperCase()}</span>
-            </button>
-          ))}
+      {/* Category Filter + Pagination Controls */}
+      <div className={`flex gap-2 ${showPaginationControls ? "" : ""}`}>
+        {/* Category Dropdown - Full width when no pagination, 60% with pagination */}
+        <div className={`border border-primary/20 ${showPaginationControls ? "flex-[6]" : "w-full"}`}>
+          <button
+            onClick={() => setIsCategoryOpen(!isCategoryOpen)}
+            className="w-full flex items-center justify-between px-3 py-2 bg-primary/5 hover:bg-primary/10 transition-colors"
+          >
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] font-sf-mono text-primary/60">FILTER</span>
+              <span className="text-primary/20">|</span>
+              <span className="text-[10px] font-sf-mono text-primary">
+                SHOWING '{isMobile ? (mobileLabels[selectedCategory] || selectedCategory.toUpperCase()) : selectedCategory.toUpperCase()}'
+              </span>
+            </div>
+            <motion.div animate={{ rotate: isCategoryOpen ? 180 : 0 }} transition={{ duration: 0.2 }}>
+              <ChevronDown className="w-3 h-3 text-primary/50" />
+            </motion.div>
+          </button>
+          <AnimatePresence>
+            {isCategoryOpen && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                className="overflow-hidden border-t border-primary/10"
+              >
+                <div className="p-3">
+                  <div className="flex flex-wrap gap-1.5">
+                    {categories.map((category) => (
+                      <button
+                        key={category}
+                        onClick={() => {
+                          setSelectedCategory(category)
+                          setIsCategoryOpen(false)
+                        }}
+                        className={`px-2 py-1 text-[9px] font-sf-mono border transition-colors ${
+                          selectedCategory === category
+                            ? "bg-primary text-background border-primary"
+                            : "border-primary/20 text-primary/60 hover:border-primary/40"
+                        }`}
+                      >
+                        <span className="hidden md:inline">{category.toUpperCase()}</span>
+                        <span className="md:hidden">{mobileLabels[category] || category.toUpperCase()}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
-        {/* Projects Grid with Side Navigation */}
-        <div className="flex items-center gap-2">
-          {/* Left Arrow */}
-          {showPaginationControls && (
+        {/* Pagination Controls - Only show when needed, takes 40% */}
+        {showPaginationControls && (
+          <div className="flex-[4] flex items-start gap-2">
             <button
               onClick={() => setStartIndex((prev) => Math.max(0, prev - ITEMS_PER_PAGE))}
               disabled={!canShowPrevious}
-              className={`flex-shrink-0 w-8 h-8 md:w-10 md:h-10 border flex items-center justify-center transition-all duration-150 ${
+              className={`flex-1 h-[42px] border flex items-center justify-center transition-all duration-150 ${
                 canShowPrevious
                   ? "border-primary/30 text-primary/70 hover:bg-primary/10 hover:border-primary/50"
                   : "border-primary/10 text-primary/10 cursor-not-allowed"
@@ -247,114 +282,10 @@ export default function ProjectsPage() {
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
-          )}
-
-          {/* Grid Container - Fixed Height */}
-          <div className="flex-1 min-h-[360px] md:min-h-[360px]">
-            {visibleProjects.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 h-full">
-                {visibleProjects.map((project, index) => (
-                  <motion.div
-                    key={project.id}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.05 }}
-                    onMouseEnter={() => setHoveredId(project.id)}
-                    onMouseLeave={() => setHoveredId(null)}
-                    className={`border border-primary/20 bg-background transition-all duration-150 cursor-pointer ${
-                      hoveredId === project.id ? "border-primary/40 bg-primary/5" : ""
-                    }`}
-                  >
-                    {/* Header - Lighter with inline tags */}
-                    <div className="border-b border-primary/20 px-3 py-2 flex items-center justify-between bg-transparent">
-                      <div className="flex items-center gap-2">
-                        <Terminal className="h-3 w-3 text-primary" />
-                        <span className="text-[10px] font-sf-mono font-bold text-primary tracking-wider">
-                          {project.category.toUpperCase()}
-                        </span>
-                      </div>
-                      <div className="flex gap-1">
-                        {project.technologies.slice(0, 4).map((tech) => (
-                          <div
-                            key={tech}
-                            className="w-6 h-6 border border-primary/20 flex items-center justify-center text-primary/60 hover:bg-primary/10 hover:text-primary transition-colors"
-                            title={tech}
-                          >
-                            {getTechIcon(tech)}
-                          </div>
-                        ))}
-                        {project.technologies.length > 4 && (
-                          <div className="w-6 h-6 border border-primary/20 flex items-center justify-center text-[8px] font-sf-mono text-primary/50">
-                            +{project.technologies.length - 4}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Body - Content with vertical button stack */}
-                    <div className="flex">
-                      {/* Content Area */}
-                      <div className="flex-1 p-3">
-                        <h3 className="text-xs font-sf-mono font-bold uppercase mb-2 tracking-wider">
-                          {project.title}
-                        </h3>
-                        <p className="text-[10px] font-sf-mono text-primary/60 leading-relaxed line-clamp-3 uppercase tracking-tight">
-                          {project.description}
-                        </p>
-                      </div>
-
-                      {/* Buttons - Vertically centered, fixed height */}
-                      <div className="flex flex-col justify-center gap-2 px-3 py-3">
-                        <a
-                          href={project.github || "#"}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            if (!project.github) e.preventDefault()
-                          }}
-                          className={`px-3 py-2 border transition-all duration-150 ${
-                            project.github
-                              ? "bg-primary text-background border-primary hover:bg-primary/90"
-                              : "bg-primary/10 text-primary/30 border-primary/20 cursor-not-allowed"
-                          }`}
-                        >
-                          <div className="flex items-center justify-center gap-1.5">
-                            <Github className="w-3 h-3" />
-                            <span className="text-[9px] font-sf-mono">CODE</span>
-                          </div>
-                        </a>
-
-                        <button
-                          onClick={() => openModal(project)}
-                          className="px-3 py-2 border bg-primary text-background border-primary hover:bg-primary/90 transition-all duration-150"
-                        >
-                          <div className="flex items-center justify-center gap-1.5">
-                            <ChevronRight className="w-3 h-3" />
-                            <span className="text-[9px] font-sf-mono">VIEW</span>
-                          </div>
-                        </button>
-                      </div>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            ) : (
-              <div className="flex items-center justify-center h-full min-h-[360px] md:min-h-[360px]">
-                <div className="flex items-center gap-2">
-                  <Terminal className="w-4 h-4 text-primary/50" />
-                  <p className="text-xs font-sf-mono text-primary/50">CHECK BACK AGAIN SOON, MORE PROJECTS TO COME...</p>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Right Arrow */}
-          {showPaginationControls && (
             <button
               onClick={() => setStartIndex((prev) => prev + ITEMS_PER_PAGE)}
               disabled={!canShowNext}
-              className={`flex-shrink-0 w-8 h-8 md:w-10 md:h-10 border flex items-center justify-center transition-all duration-150 ${
+              className={`flex-1 h-[42px] border flex items-center justify-center transition-all duration-150 ${
                 canShowNext
                   ? "border-primary/30 text-primary/70 hover:bg-primary/10 hover:border-primary/50"
                   : "border-primary/10 text-primary/10 cursor-not-allowed"
@@ -362,8 +293,109 @@ export default function ProjectsPage() {
             >
               <ChevronRight className="w-4 h-4" />
             </button>
-          )}
-        </div>
+          </div>
+        )}
+      </div>
+
+      {/* Projects Grid - No Side Navigation */}
+      <div className="min-h-[360px] md:min-h-[360px]">
+        {visibleProjects.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 h-full">
+            {visibleProjects.map((project, index) => (
+              <motion.div
+                key={project.id}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.05 }}
+                onMouseEnter={() => setHoveredId(project.id)}
+                onMouseLeave={() => setHoveredId(null)}
+                className={`border border-primary/20 bg-background transition-all duration-150 cursor-pointer ${
+                  hoveredId === project.id ? "border-primary/40 bg-primary/5" : ""
+                }`}
+              >
+                {/* Header - Lighter with inline tech icons */}
+                <div className="border-b border-primary/20 px-3 py-2 flex items-center justify-between bg-transparent">
+                  <div className="flex items-center gap-2">
+                    <Terminal className="h-3 w-3 text-primary" />
+                    <span className="text-[10px] font-sf-mono font-bold text-primary tracking-wider">
+                      {project.category.toUpperCase()}
+                    </span>
+                  </div>
+                  <div className="flex gap-1">
+                    {project.technologies.slice(0, 4).map((tech) => (
+                      <div
+                        key={tech}
+                        className="w-6 h-6 border border-primary/20 flex items-center justify-center text-primary/60 hover:bg-primary/10 hover:text-primary transition-colors"
+                        title={tech}
+                      >
+                        {getTechIcon(tech)}
+                      </div>
+                    ))}
+                    {project.technologies.length > 4 && (
+                      <div className="w-6 h-6 border border-primary/20 flex items-center justify-center text-[8px] font-sf-mono text-primary/50">
+                        +{project.technologies.length - 4}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Body - Content with vertical button stack */}
+                <div className="flex">
+                  {/* Content Area */}
+                  <div className="flex-1 p-3">
+                    <h3 className="text-xs font-sf-mono font-bold uppercase mb-2 tracking-wider">
+                      {project.title}
+                    </h3>
+                    <p className="text-[10px] font-sf-mono text-primary/60 leading-relaxed line-clamp-3 uppercase tracking-tight">
+                      {project.description}
+                    </p>
+                  </div>
+
+                  {/* Buttons - Vertically centered, fixed height */}
+                  <div className="flex flex-col justify-center gap-2 px-3 py-3">
+                    
+                      href={project.github || "#"}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        if (!project.github) e.preventDefault()
+                      }}
+                      className={`px-3 py-2 border transition-all duration-150 ${
+                        project.github
+                          ? "bg-primary text-background border-primary hover:bg-primary/90"
+                          : "bg-primary/10 text-primary/30 border-primary/20 cursor-not-allowed"
+                      }`}
+                    >
+                      <div className="flex items-center justify-center gap-1.5">
+                        <Github className="w-3 h-3" />
+                        <span className="text-[9px] font-sf-mono">CODE</span>
+                      </div>
+                    </a>
+
+                    <button
+                      onClick={() => openModal(project)}
+                      className="px-3 py-2 border bg-primary text-background border-primary hover:bg-primary/90 transition-all duration-150"
+                    >
+                      <div className="flex items-center justify-center gap-1.5">
+                        <ChevronRight className="w-3 h-3" />
+                        <span className="text-[9px] font-sf-mono">VIEW</span>
+                      </div>
+                    </button>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        ) : (
+          <div className="flex items-center justify-center h-full min-h-[360px] md:min-h-[360px]">
+            <div className="flex items-center gap-2">
+              <Terminal className="w-4 h-4 text-primary/50" />
+              <p className="text-xs font-sf-mono text-primary/50">CHECK BACK AGAIN SOON, MORE PROJECTS TO COME...</p>
+            </div>
+          </div>
+        )}
+      </div>
 
         {/* Footer Stats */}
         <motion.div
