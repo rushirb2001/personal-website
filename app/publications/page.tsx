@@ -354,20 +354,7 @@ export default function PublicationsPage() {
                   <div className="bg-primary/5 p-4 md:p-6">
                     <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-6">
                       <div className="space-y-4">
-                        <div>
-                          <div className="flex items-center gap-3 mb-2">
-                            <span className="text-[10px] font-sf-mono px-2 py-0.5 border border-green-500/30 text-green-500 bg-green-500/10">
-                              {selectedPublication.status}
-                            </span>
-                            <span className="text-[10px] font-sf-mono text-primary/50">
-                              {selectedPublication.citations} CITATIONS
-                            </span>
-                          </div>
-                          <span className="text-[9px] font-sf-mono text-primary/40 uppercase tracking-wider">
-                            TITLE
-                          </span>
-                          <h2 className="text-sm font-sf-mono font-medium mt-1">{selectedPublication.title}</h2>
-                        </div>
+                        
                         <div>
                           <span className="text-[9px] font-sf-mono text-primary/40 uppercase tracking-wider">
                             ABSTRACT
@@ -385,30 +372,14 @@ export default function PublicationsPage() {
                           </span>
                           <p className="text-[11px] font-sf-mono text-primary/70 mt-1">{selectedPublication.authors}</p>
                         </div>
-                        <div>
-                          <span className="text-[9px] font-sf-mono text-primary/40 uppercase tracking-wider">
-                            VENUE
-                          </span>
-                          <p className="text-[11px] font-sf-mono text-primary/70 mt-1">{selectedPublication.venue}</p>
-                        </div>
+                        
                         <div>
                           <span className="text-[9px] font-sf-mono text-primary/40 uppercase tracking-wider">DOI</span>
                           <p className="text-[10px] font-sf-mono text-primary/50 mt-1 break-all">
                             {selectedPublication.doi}
                           </p>
                         </div>
-                        <div className="pt-3 border-t border-primary/10">
-                          <a
-                            href={selectedPublication.pdfLink}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-2 text-xs font-sf-mono px-3 py-2 border border-primary/30 hover:bg-primary hover:text-background transition-all duration-150"
-                          >
-                            <FileText className="w-3 h-3" />
-                            VIEW PUBLICATION
-                            <ExternalLink className="w-3 h-3" />
-                          </a>
-                        </div>
+                        
                       </div>
                     </div>
                   </div>
