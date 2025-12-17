@@ -231,17 +231,19 @@ export default function ProjectsPage() {
         {/* Projects Grid with Side Navigation */}
         <div className="flex items-center gap-2">
           {/* Left Arrow */}
-          <button
-            onClick={() => setStartIndex((prev) => Math.max(0, prev - ITEMS_PER_PAGE))}
-            disabled={!canShowPrevious}
-            className={`flex-shrink-0 w-8 h-8 md:w-10 md:h-10 border flex items-center justify-center transition-all duration-150 ${
-              canShowPrevious
-                ? "border-primary/30 text-primary/70 hover:bg-primary/10 hover:border-primary/50"
-                : "border-primary/10 text-primary/10 cursor-not-allowed"
-            }`}
-          >
-            <ChevronLeft className="w-4 h-4" />
-          </button>
+          {showPaginationControls && (
+            <button
+              onClick={() => setStartIndex((prev) => Math.max(0, prev - ITEMS_PER_PAGE))}
+              disabled={!canShowPrevious}
+              className={`flex-shrink-0 w-8 h-8 md:w-10 md:h-10 border flex items-center justify-center transition-all duration-150 ${
+                canShowPrevious
+                  ? "border-primary/30 text-primary/70 hover:bg-primary/10 hover:border-primary/50"
+                  : "border-primary/10 text-primary/10 cursor-not-allowed"
+              }`}
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+          )}
 
           {/* Grid Container - Fixed Height */}
           <div className="flex-1 min-h-[415px] md:min-h-[415px]">
