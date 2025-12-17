@@ -130,7 +130,7 @@ export default function ExperiencePage() {
         )}
 
         {/* Table Header - Desktop Only */}
-        <div className="hidden md:grid grid-cols-[1fr_180px_180px_140px_40px] gap-4 px-3 py-2 border-b border-primary/30 text-[10px] font-sf-mono text-primary/50 uppercase tracking-wider">
+        <div className="hidden md:grid grid-cols-[1fr_160px_160px_140px_40px] gap-4 px-3 py-2 border-b border-primary/30 text-[10px] font-sf-mono text-primary/50 uppercase tracking-wider">
           <span>POSITION</span>
           <span>COMPANY</span>
           <span>PERIOD</span>
