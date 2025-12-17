@@ -250,7 +250,7 @@ export default function ExperiencePage() {
                       transition={{ duration: 0.2 }}
                       className="overflow-hidden"
                     >
-                      <div className="bg-primary/5 p-3 md:p-6">
+                      <div className="bg-primary/5 p-3 md:p-6 px-3 py-3">
                         <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] md:gap-6">
                           {/* Left: Responsibilities */}
                           <div>
@@ -263,7 +263,7 @@ export default function ExperiencePage() {
                                   <div className="w-4 h-4 border border-primary/20 bg-primary/5 flex items-center justify-center text-[9px] font-sf-mono text-primary/50 flex-shrink-0">
                                     {idx + 1}
                                   </div>
-                                  <p className="text-[10px] md:text-xs font-sf-mono text-primary/70 leading-relaxed">{resp}</p>
+                                  <p className="text-[10px] md:text-xs font-sf-mono text-primary/70 leading-relaxed tracking-tighter">{resp}</p>
                                 </div>
                               ))}
                             </div>
