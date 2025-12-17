@@ -171,36 +171,34 @@ export default function PublicationsPage() {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="flex flex-col md:flex-row items-center justify-center gap-2 py-3 mb-2"
+            className="flex items-center justify-center gap-2 py-3 mb-2"
           >
-            <div className="flex items-center gap-2 w-full md:w-auto justify-center">
-              <button
-                onClick={() => setStartIndex((prev) => Math.max(0, prev - ITEMS_PER_PAGE))}
-                disabled={!canShowPrevious}
-                className={`px-3 md:px-4 py-1.5 text-[10px] font-sf-mono uppercase tracking-wider border transition-all duration-150 flex-1 md:flex-none md:w-32 ${
-                  canShowPrevious
-                    ? "border-primary/30 text-primary/70 hover:bg-primary/10 hover:border-primary/50"
-                    : "border-primary/10 text-primary/20 cursor-not-allowed opacity-0 pointer-events-none"
-                }`}
-              >
-                ← PREVIOUS
-              </button>
-              <button
-                onClick={() => setStartIndex((prev) => prev + ITEMS_PER_PAGE)}
-                disabled={!canShowNext}
-                className={`px-3 md:px-4 py-1.5 text-[10px] font-sf-mono uppercase tracking-wider border transition-all duration-150 flex-1 md:flex-none md:w-32 ${
-                  canShowNext
-                    ? "border-primary/30 text-primary/70 hover:bg-primary/10 hover:border-primary/50"
-                    : "border-primary/10 text-primary/20 cursor-not-allowed opacity-0 pointer-events-none"
-                }`}
-              >
-                NEXT →
-              </button>
-            </div>
-            <span className="text-[9px] font-sf-mono text-primary/40 md:px-2">
+            <button
+              onClick={() => setStartIndex((prev) => Math.max(0, prev - ITEMS_PER_PAGE))}
+              disabled={!canShowPrevious}
+              className={`px-4 py-1.5 text-[10px] font-sf-mono uppercase tracking-wider border transition-all duration-150 w-32 ${
+                canShowPrevious
+                  ? "border-primary/30 text-primary/70 hover:bg-primary/10 hover:border-primary/50"
+                  : "border-primary/10 text-primary/20 cursor-not-allowed opacity-0 pointer-events-none"
+              }`}
+            >
+              ← PREVIOUS
+            </button>
+            <span className="text-[9px] font-sf-mono text-primary/40 px-2">
               {startIndex + 1}-{Math.min(startIndex + ITEMS_PER_PAGE, sortedPublications.length)} OF{" "}
               {sortedPublications.length}
             </span>
+            <button
+              onClick={() => setStartIndex((prev) => prev + ITEMS_PER_PAGE)}
+              disabled={!canShowNext}
+              className={`px-4 py-1.5 text-[10px] font-sf-mono uppercase tracking-wider border transition-all duration-150 w-32 ${
+                canShowNext
+                  ? "border-primary/30 text-primary/70 hover:bg-primary/10 hover:border-primary/50"
+                  : "border-primary/10 text-primary/20 cursor-not-allowed opacity-0 pointer-events-none"
+              }`}
+            >
+              NEXT →
+            </button>
           </motion.div>
         )}
 
