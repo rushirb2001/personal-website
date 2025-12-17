@@ -162,46 +162,46 @@ export default function ExperiencePage() {
                 onClick={() => setSelectedExp(selectedExp === actualIndex ? null : actualIndex)}
               >
                 {/* Desktop Row */}
-                <div className="hidden md:grid grid-cols-[1fr_180px_180px_140px_40px] gap-4 px-3 py-3 items-center">
-                  <span className="text-xs font-sf-mono font-medium pr-4">{exp.title}</span>
-                  <span
-                    className={`text-[10px] font-sf-mono ${selectedExp === actualIndex ? "text-background/70" : "text-primary/60"}`}
+              <div className="hidden md:grid grid-cols-[2fr_1.5fr_1.2fr_1fr_40px] gap-2 px-3 py-3 items-center">
+                <span className="text-xs font-sf-mono font-medium">{exp.title}</span>
+                <span
+                  className={`text-xs font-sf-mono ${selectedExp === actualIndex ? "text-background/70" : "text-primary/60"}`}
+                >
+                  {exp.company}
+                </span>
+                <span
+                  className={`text-xs font-sf-mono ${selectedExp === actualIndex ? "text-background/70" : "text-primary/50"}`}
+                >
+                  {exp.period}
+                </span>
+                <span
+                  className={`text-xs font-sf-mono ${selectedExp === actualIndex ? "text-background/70" : "text-primary/50"}`}
+                >
+                  {exp.location}
+                </span>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    setSelectedExp(selectedExp === actualIndex ? null : actualIndex)
+                  }}
+                  className={`flex items-center justify-center w-8 h-8 border transition-all duration-200 ${
+                    selectedExp === actualIndex
+                      ? "border-background/30 hover:bg-background/20"
+                      : "border-primary/20 hover:bg-primary/10 hover:border-primary/40"
+                  }`}
+                >
+                  <motion.div
+                    animate={{ rotate: selectedExp === actualIndex ? 180 : 0 }}
+                    transition={{ duration: 0.2 }}
                   >
-                    {exp.company}
-                  </span>
-                  <span
-                    className={`text-xs font-sf-mono ${selectedExp === actualIndex ? "text-background/70" : "text-primary/50"}`}
-                  >
-                    {exp.period}
-                  </span>
-                  <span
-                    className={`text-xs font-sf-mono ${selectedExp === actualIndex ? "text-background/70" : "text-primary/50"}`}
-                  >
-                    {exp.location}
-                  </span>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      setSelectedExp(selectedExp === actualIndex ? null : actualIndex)
-                    }}
-                    className={`flex items-center justify-center w-8 h-8 border transition-all duration-200 ${
-                      selectedExp === actualIndex
-                        ? "border-background/30 hover:bg-background/20"
-                        : "border-primary/20 hover:bg-primary/10 hover:border-primary/40"
-                    }`}
-                  >
-                    <motion.div
-                      animate={{ rotate: selectedExp === actualIndex ? 180 : 0 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      {selectedExp === actualIndex ? (
-                        <X className="w-3 h-3" />
-                      ) : (
-                        <ChevronDown className="w-3 h-3" />
-                      )}
-                    </motion.div>
-                  </button>
-                </div>
+                    {selectedExp === actualIndex ? (
+                      <X className="w-3 h-3" />
+                    ) : (
+                      <ChevronDown className="w-3 h-3" />
+                    )}
+                  </motion.div>
+                </button>
+              </div>
 
                 {/* Mobile Row */}
                 <div className="md:hidden px-3 py-3">
