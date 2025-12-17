@@ -320,17 +320,19 @@ export default function ProjectsPage() {
           </div>
 
           {/* Right Arrow */}
-          <button
-            onClick={() => setStartIndex((prev) => prev + ITEMS_PER_PAGE)}
-            disabled={!canShowNext}
-            className={`flex-shrink-0 w-8 h-8 md:w-10 md:h-10 border flex items-center justify-center transition-all duration-150 ${
-              canShowNext
-                ? "border-primary/30 text-primary/70 hover:bg-primary/10 hover:border-primary/50"
-                : "border-primary/10 text-primary/10 cursor-not-allowed"
-            }`}
-          >
-            <ChevronRight className="w-4 h-4" />
-          </button>
+          {showPaginationControls && (
+            <button
+              onClick={() => setStartIndex((prev) => prev + ITEMS_PER_PAGE)}
+              disabled={!canShowNext}
+              className={`flex-shrink-0 w-8 h-8 md:w-10 md:h-10 border flex items-center justify-center transition-all duration-150 ${
+                canShowNext
+                  ? "border-primary/30 text-primary/70 hover:bg-primary/10 hover:border-primary/50"
+                  : "border-primary/10 text-primary/10 cursor-not-allowed"
+              }`}
+            >
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          )}
         </div>
 
         {/* Footer Stats */}
