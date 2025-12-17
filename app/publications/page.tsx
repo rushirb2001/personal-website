@@ -173,7 +173,7 @@ export default function PublicationsPage() {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="flex items-center justify-center gap-2 py-3 mb-2"
+            className="flex items-center justify-center gap-2 mb-2 py-0"
           >
             <button
               onClick={() => setStartIndex((prev) => Math.max(0, prev - ITEMS_PER_PAGE))}
