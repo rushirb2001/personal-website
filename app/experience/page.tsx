@@ -318,7 +318,7 @@ export default function ExperiencePage() {
             <span className="text-primary/20">/</span>
             <span className="text-sm">2022-24</span>
           </div>
-          <div className="text-[9px] sm:text-[10px] font-sf-mono text-primary/30">LAST.UPDATED: 2025</div>
+          <div className="text-[9px] sm:text-[10px] font-sf-mono text-primary/30"><span className="text-sm">LAST.UPDATED: 2025</span></div>
         </motion.div>
       </div>
     </PageLayout>
