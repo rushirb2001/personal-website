@@ -38,7 +38,7 @@ const skillsData = {
       "Big Data": ["Apache Spark", "Hadoop", "Hive", "Databricks"],
       "RDBMS": ["PostgreSQL", "MySQL"],
       "NoSQL": ["MongoDB", "Firebase", "Redis"],
-      VectorDB: ["ChromaDB", "Pinecone", "Weaviate", "AstraDB"],
+      VectorDB: ["ChromaDB", "Pinecone", "Weaviate", "Datastax AstraDB"],
     },
   },
   cloud: {
