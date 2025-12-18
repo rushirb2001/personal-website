@@ -259,7 +259,7 @@ export default function ProjectsPage() {
                             : "border-primary/20 text-primary/60 hover:border-primary/40"
                         }`}
                       >
-                        <span className="hidden md:inline">{category.toUpperCase()}</span>
+                        <span className="hidden md:inline text-sm">{category.toUpperCase()}</span>
                         <span className="md:hidden">{mobileLabels[category] || category.toUpperCase()}</span>
                       </button>
                     ))}
