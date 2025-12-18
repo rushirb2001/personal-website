@@ -37,7 +37,7 @@ const skillsData = {
     subcategories: {
       RDBMS: ["PostgreSQL", "MySQL"],
       "Big Data": ["Apache Spark", "Hadoop", "Hive", "Databricks"],
-      NoSQL: ["MongoDB", "Firebase", "Redis"],
+      NoSQL: ["MongoDB", "Firebase", "Redis", "Neo4j"],
       VectorDB: ["ChromaDB", "Pinecone", "Weaviate", "Datastax AstraDB"],
     },
   },
