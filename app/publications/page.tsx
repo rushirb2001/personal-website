@@ -314,10 +314,10 @@ export default function PublicationsPage() {
                       <div className="space-y-4">
                         
                         <div>
-                          <span className="text-[9px] font-sf-mono text-primary/40 uppercase tracking-wider">
+                          <span className="font-sf-mono text-primary/40 uppercase tracking-wider text-sm">
                             ABSTRACT
                           </span>
-                          <p className="text-xs font-sf-mono text-primary/70 mt-1 leading-relaxed border-l-2 border-primary/20 pl-3">
+                          <p className="font-sf-mono text-primary/70 mt-1 leading-relaxed border-l-2 border-primary/20 pl-3 tracking-tighter text-sm">
                             {selectedPublication.abstract}
                           </p>
                         </div>
@@ -325,15 +325,15 @@ export default function PublicationsPage() {
 
                       <div className="space-y-3 md:border-l md:border-primary/10 md:pl-6">
                         <div>
-                          <span className="text-[9px] font-sf-mono text-primary/40 uppercase tracking-wider">
+                          <span className="font-sf-mono text-primary/40 uppercase tracking-wider text-sm">
                             AUTHORS
                           </span>
-                          <p className="text-[11px] font-sf-mono text-primary/70 mt-1">{selectedPublication.authors}</p>
+                          <p className="font-sf-mono text-primary/70 mt-1 text-sm">{selectedPublication.authors}</p>
                         </div>
                         
                         <div>
-                          <span className="text-[9px] font-sf-mono text-primary/40 uppercase tracking-wider">DOI</span>
-                          <p className="text-[10px] font-sf-mono text-primary/50 mt-1 break-all">
+                          <span className="font-sf-mono text-primary/40 uppercase tracking-wider text-sm">DOI</span>
+                          <p className="font-sf-mono text-primary/50 mt-1 break-all text-sm">
                             {selectedPublication.doi}
                           </p>
                         </div>
