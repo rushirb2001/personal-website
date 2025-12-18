@@ -197,11 +197,13 @@ export default function UpdatesPage() {
       </AnimatePresence>
 
       <div className="space-y-0 max-w-3xl mx-auto">
-        {/* Filter Header */}
-        <div className="border border-primary/20 mb-3">
+      {/* Filter Header with Inline Pagination */}
+      <div className={`border border-primary/20 mb-3 ${showPaginationControls ? 'flex gap-0' : ''}`}>
+        {/* Filter Dropdown */}
+        <div className={showPaginationControls ? 'flex-[6] border-r border-primary/20' : 'w-full'}>
           <button
             onClick={() => setIsFilterOpen(!isFilterOpen)}
-            className="w-full flex items-center justify-between px-3 py-2 bg-primary/5 hover:bg-primary/10 transition-colors"
+            className="w-full flex items-center justify-between px-3 py-2 bg-primary/5 hover:bg-primary/10 transition-colors h-[42px]"
           >
             <span className="text-[10px] font-sf-mono text-primary/60">
               {selectedTags.length > 0
@@ -253,43 +255,34 @@ export default function UpdatesPage() {
           </AnimatePresence>
         </div>
 
-        {/* Pagination Controls */}
+        {/* Inline Pagination Controls */}
         {showPaginationControls && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="flex flex-col md:flex-row items-center justify-center gap-2 py-3 mb-2"
-          >
-            <div className="flex items-center gap-2 w-full md:w-auto justify-center">
-              <button
-                onClick={() => setStartIndex((prev) => Math.max(0, prev - ITEMS_PER_PAGE))}
-                disabled={!canShowPrevious}
-                className={`px-3 md:px-4 py-1.5 text-[10px] font-sf-mono uppercase tracking-wider border transition-all duration-150 flex-1 md:flex-none md:w-32 ${
-                  canShowPrevious
-                    ? "border-primary/30 text-primary/70 hover:bg-primary/10 hover:border-primary/50"
-                    : "border-primary/10 text-primary/20 cursor-not-allowed"
-                }`}
-              >
-                ← PREVIOUS
-              </button>
-              <button
-                onClick={() => setStartIndex((prev) => prev + ITEMS_PER_PAGE)}
-                disabled={!canShowNext}
-                className={`px-3 md:px-4 py-1.5 text-[10px] font-sf-mono uppercase tracking-wider border transition-all duration-150 flex-1 md:flex-none md:w-32 ${
-                  canShowNext
-                    ? "border-primary/30 text-primary/70 hover:bg-primary/10 hover:border-primary/50"
-                    : "border-primary/10 text-primary/20 cursor-not-allowed"
-                }`}
-              >
-                NEXT →
-              </button>
-            </div>
-            <span className="text-[9px] font-sf-mono text-primary/40 md:px-2">
-              {startIndex + 1}-{Math.min(startIndex + ITEMS_PER_PAGE, filteredPosts.length)} OF{" "}
-              {filteredPosts.length}
-            </span>
-          </motion.div>
+          <div className="flex-[4] flex">
+            <button
+              onClick={() => setStartIndex((prev) => Math.max(0, prev - ITEMS_PER_PAGE))}
+              disabled={!canShowPrevious}
+              className={`flex-1 flex items-center justify-center border-r border-primary/20 h-[42px] transition-colors ${
+                canShowPrevious
+                  ? "text-primary/70 hover:bg-primary/10"
+                  : "text-primary/20 cursor-not-allowed"
+              }`}
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+            <button
+              onClick={() => setStartIndex((prev) => prev + ITEMS_PER_PAGE)}
+              disabled={!canShowNext}
+              className={`flex-1 flex items-center justify-center h-[42px] transition-colors ${
+                canShowNext
+                  ? "text-primary/70 hover:bg-primary/10"
+                  : "text-primary/20 cursor-not-allowed"
+              }`}
+            >
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
         )}
+      </div>
 
         {/* Posts List */}
         <div className="space-y-2">
