@@ -200,7 +200,7 @@ export default function Home() {
                     <span className="text-primary font-medium">deep learning</span>, and{" "}
                     <span className="text-primary font-medium">AI systems development</span>.
                   </p>
-                  <p className="text-primary/60 leading-relaxed font-mono tracking-tight mt-2 sm:text-sm">
+                  <p className="text-primary/60 leading-relaxed font-mono tracking-tight mt-2 sm:text-sm hidden md:block">
                     Experience across healthcare, astronomy, and enterprise AI domains.
                   </p>
                 </div>
