@@ -15,17 +15,50 @@ import { projects } from "@/app/projects/data"
 
 const specializations = [
   {
-    items: ["Machine Learning", "Deep Learning", "Computer Vision", "NLP", "LLMs", "Generative AI", "Neural Networks", "Transformers", "MLOps", "RL"],
+    items: [
+      "Machine Learning",
+      "Deep Learning",
+      "Computer Vision",
+      "NLP",
+      "LLMs",
+      "Generative AI",
+      "Neural Networks",
+      "Transformers",
+      "MLOps",
+      "RL",
+    ],
     speed: 30,
     reverse: false,
   },
   {
-    items: ["PyTorch", "TensorFlow", "JAX", "Hugging Face", "LangChain", "DeepSpeed", "Ray", "vLLM", "LoRA/QLoRA", "CUDA"],
+    items: [
+      "PyTorch",
+      "TensorFlow",
+      "JAX",
+      "Hugging Face",
+      "LangChain",
+      "DeepSpeed",
+      "Ray",
+      "vLLM",
+      "LoRA/QLoRA",
+      "CUDA",
+    ],
     speed: 35,
     reverse: true,
   },
   {
-    items: ["AWS SageMaker", "Apache Spark", "Vector DBs", "Kubernetes", "Docker", "FastAPI", "PostgreSQL", "MLFlow", "Databricks", "Redis"],
+    items: [
+      "AWS SageMaker",
+      "Apache Spark",
+      "Vector DBs",
+      "Kubernetes",
+      "Docker",
+      "FastAPI",
+      "PostgreSQL",
+      "MLFlow",
+      "Databricks",
+      "Redis",
+    ],
     speed: 28,
     reverse: false,
   },
@@ -76,17 +109,17 @@ function MarqueeRow({ items, speed, reverse }: MarqueeRowProps) {
       <div className="overflow-hidden">
         <div
           className={`flex items-center whitespace-nowrap ${reverse ? "animate-[marqueeReverse_var(--speed)_linear_infinite]" : "animate-[marquee_var(--speed)_linear_infinite]"} hover:[animation-duration:calc(var(--speed)*2)]`}
-          style={{ 
-            "--speed": `${speed}s`,
-            transform: `translateX(${offset}px)`, 
-            transition: "transform 0.3s ease-out" 
-          } as React.CSSProperties}
+          style={
+            {
+              "--speed": `${speed}s`,
+              transform: `translateX(${offset}px)`,
+              transition: "transform 0.3s ease-out",
+            } as React.CSSProperties
+          }
         >
           {[...items, ...items].map((item, idx) => (
             <span key={idx} className="flex items-center shrink-0">
-              <span className="font-sf-mono text-primary/70 px-3 uppercase tracking-wider text-base">
-                {item}
-              </span>
+              <span className="font-sf-mono text-primary/70 px-3 uppercase tracking-wider text-base">{item}</span>
               <span className="w-1 h-1 rounded-full bg-primary/30 shrink-0" />
             </span>
           ))}
@@ -127,7 +160,6 @@ export default function Home() {
 
       <PageLayout title="RUSHIR BHAVSAR" subtitle="DATA SCIENTIST • AI ENGINEER • ML RESEARCHER">
         <div className="flex flex-col gap-3 h-full min-w-0 overflow-hidden">
-          
           {/* Top Section: Photo + About */}
           <div className="flex flex-col md:flex-row gap-3 items-stretch min-w-0">
             {/* Photo Block */}
@@ -202,7 +234,7 @@ export default function Home() {
                   <div className="flex items-center gap-1.5">
                     <Button
                       variant="ghost"
-                      className="h-7 px-2 border border-primary/20 text-[9px] font-sf-mono bg-transparent hover:bg-primary hover:text-background transition-colors rounded-none"
+                      className="h-7 px-2 border border-primary/20 text-base font-sf-mono bg-transparent hover:bg-primary hover:text-background transition-colors rounded-none"
                       onClick={() => setIsResumeModalOpen(true)}
                     >
                       <FileText className="h-3 w-3 mr-1" />
@@ -210,7 +242,7 @@ export default function Home() {
                     </Button>
                     <Button
                       variant="ghost"
-                      className="h-7 px-2 border border-primary/20 text-[9px] font-sf-mono bg-transparent hover:bg-primary hover:text-background transition-colors rounded-none"
+                      className="h-7 px-2 border border-primary/20 text-base font-sf-mono bg-transparent hover:bg-primary hover:text-background transition-colors rounded-none"
                       onClick={() => navigateTo("/contact")}
                     >
                       CONTACT
@@ -299,7 +331,7 @@ export default function Home() {
                     )}
                     <Button
                       variant="ghost"
-                      className="h-5 px-2 border border-primary/20 text-[8px] font-sf-mono bg-transparent hover:bg-primary hover:text-background rounded-none transition-colors"
+                      className="h-5 px-2 border border-primary/20 text-base font-sf-mono bg-transparent hover:bg-primary hover:text-background rounded-none transition-colors"
                       onClick={() => navigateTo("/projects")}
                     >
                       ALL
@@ -331,9 +363,7 @@ export default function Home() {
                         <h4 className="font-sf-mono font-bold text-primary mb-1 truncate text-xl">
                           {currentFeatured?.title}
                         </h4>
-                        <p className="font-mono text-primary/60 line-clamp-2 text-sm">
-                          {currentFeatured?.description}
-                        </p>
+                        <p className="font-mono text-primary/60 line-clamp-2 text-sm">{currentFeatured?.description}</p>
                       </div>
                       <div className="flex flex-col gap-1 items-end justify-center shrink-0">
                         {currentFeatured?.technologies.slice(0, 3).map((tech, idx) => (
@@ -374,7 +404,7 @@ export default function Home() {
                   <Button
                     key={idx}
                     variant="ghost"
-                    className="h-7 w-full justify-between text-[10px] font-sf-mono border border-primary/20 hover:bg-primary hover:text-background rounded-none transition-colors group"
+                    className="h-7 w-full justify-between text-base font-sf-mono border border-primary/20 hover:bg-primary hover:text-background rounded-none transition-colors group"
                     onClick={() => navigateTo(item.path)}
                   >
                     {item.label}
