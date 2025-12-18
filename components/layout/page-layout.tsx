@@ -3,6 +3,7 @@
 import type { ReactNode } from "react"
 import { motion } from "framer-motion"
 import { useNavigation } from "@/contexts/navigation-context"
+import { usePathname } from "next/navigation"
 
 interface PageLayoutProps {
   title: string
@@ -11,48 +12,26 @@ interface PageLayoutProps {
 }
 
 export function PageLayout({ title, subtitle, children }: PageLayoutProps) {
-  const { hasJustNavigated } = useNavigation()
+  const { shouldAnimateEntrance } = useNavigation()
+  const pathname = usePathname()
 
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1,
-        delayChildren: 0.05,
+        staggerChildren: 0.15,
+        delayChildren: 0.1,
       },
     },
   }
 
   const titleVariants = {
-    hidden: { opacity: 0, x: -30 },
+    hidden: { opacity: 0, x: -40, filter: "blur(4px)" },
     visible: {
       opacity: 1,
       x: 0,
-      transition: {
-        duration: 0.4,
-        ease: [0.22, 1, 0.36, 1],
-      },
-    },
-  }
-
-  const subtitleVariants = {
-    hidden: { opacity: 0, x: -20 },
-    visible: {
-      opacity: 1,
-      x: 0,
-      transition: {
-        duration: 0.4,
-        ease: [0.22, 1, 0.36, 1],
-      },
-    },
-  }
-
-  const contentVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
+      filter: "blur(0px)",
       transition: {
         duration: 0.5,
         ease: [0.22, 1, 0.36, 1],
@@ -60,11 +39,38 @@ export function PageLayout({ title, subtitle, children }: PageLayoutProps) {
     },
   }
 
+  const subtitleVariants = {
+    hidden: { opacity: 0, x: -30, filter: "blur(4px)" },
+    visible: {
+      opacity: 1,
+      x: 0,
+      filter: "blur(0px)",
+      transition: {
+        duration: 0.5,
+        ease: [0.22, 1, 0.36, 1],
+      },
+    },
+  }
+
+  const contentVariants = {
+    hidden: { opacity: 0, y: 30, filter: "blur(4px)" },
+    visible: {
+      opacity: 1,
+      y: 0,
+      filter: "blur(0px)",
+      transition: {
+        duration: 0.6,
+        ease: [0.22, 1, 0.36, 1],
+      },
+    },
+  }
+
   return (
     <motion.div
+      key={shouldAnimateEntrance ? `${pathname}-animate` : pathname}
       className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-[1fr_2fr] gap-3 sm:gap-4 md:gap-6 lg:gap-8 py-3 sm:py-4 md:py-6 lg:py-8 px-3 sm:px-4 md:px-6 lg:px-8 max-w-7xl mx-auto"
       variants={containerVariants}
-      initial={hasJustNavigated ? "hidden" : "visible"}
+      initial="hidden"
       animate="visible"
     >
       <div className="md:sticky md:top-20 lg:top-24 self-start flex flex-col justify-center md:h-auto lg:h-[calc(100vh-12rem)] md:mb-4 lg:mb-0">
