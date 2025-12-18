@@ -8,6 +8,7 @@ interface NavigationContextType {
   isTransitioning: boolean
   currentPath: string
   targetPath: string | null
+  hasJustNavigated: boolean
 }
 
 const NavigationContext = createContext<NavigationContextType | undefined>(undefined)
@@ -23,6 +24,7 @@ export function NavigationProvider({ children, isReady = true }: NavigationProvi
   const [isTransitioning, setIsTransitioning] = useState(false)
   const [targetPath, setTargetPath] = useState<string | null>(null)
   const [currentPath, setCurrentPath] = useState("")
+  const [hasJustNavigated, setHasJustNavigated] = useState(false)
 
   // Update current path when pathname changes
   useEffect(() => {
@@ -69,6 +71,7 @@ export function NavigationProvider({ children, isReady = true }: NavigationProvi
       const hideTimeout = setTimeout(() => {
         setIsTransitioning(false)
         setTargetPath(null)
+        setHasJustNavigated(true)
       }, totalDuration)
 
       // Return cleanup function to clear timeouts if component unmounts during transition
@@ -79,6 +82,15 @@ export function NavigationProvider({ children, isReady = true }: NavigationProvi
     },
     [pathname, router, isTransitioning, isReady],
   )
+
+  useEffect(() => {
+    if (hasJustNavigated) {
+      const resetTimeout = setTimeout(() => {
+        setHasJustNavigated(false)
+      }, 800) // Allow entrance animations to complete
+      return () => clearTimeout(resetTimeout)
+    }
+  }, [hasJustNavigated])
 
   // Prefetch all pages for smoother navigation
   useEffect(() => {
@@ -107,8 +119,9 @@ export function NavigationProvider({ children, isReady = true }: NavigationProvi
       isTransitioning,
       currentPath,
       targetPath,
+      hasJustNavigated,
     }),
-    [navigateTo, isTransitioning, currentPath, targetPath],
+    [navigateTo, isTransitioning, currentPath, targetPath, hasJustNavigated],
   )
 
   return <NavigationContext.Provider value={contextValue}>{children}</NavigationContext.Provider>

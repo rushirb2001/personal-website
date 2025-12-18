@@ -1,4 +1,8 @@
+"use client"
+
 import type { ReactNode } from "react"
+import { motion } from "framer-motion"
+import { useNavigation } from "@/contexts/navigation-context"
 
 interface PageLayoutProps {
   title: string
@@ -7,21 +11,84 @@ interface PageLayoutProps {
 }
 
 export function PageLayout({ title, subtitle, children }: PageLayoutProps) {
+  const { hasJustNavigated } = useNavigation()
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.05,
+      },
+    },
+  }
+
+  const titleVariants = {
+    hidden: { opacity: 0, x: -30 },
+    visible: {
+      opacity: 1,
+      x: 0,
+      transition: {
+        duration: 0.4,
+        ease: [0.22, 1, 0.36, 1],
+      },
+    },
+  }
+
+  const subtitleVariants = {
+    hidden: { opacity: 0, x: -20 },
+    visible: {
+      opacity: 1,
+      x: 0,
+      transition: {
+        duration: 0.4,
+        ease: [0.22, 1, 0.36, 1],
+      },
+    },
+  }
+
+  const contentVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.5,
+        ease: [0.22, 1, 0.36, 1],
+      },
+    },
+  }
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-[1fr_2fr] gap-3 sm:gap-4 md:gap-6 lg:gap-8 py-3 sm:py-4 md:py-6 lg:py-8 px-3 sm:px-4 md:px-6 lg:px-8 max-w-7xl mx-auto">
+    <motion.div
+      className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-[1fr_2fr] gap-3 sm:gap-4 md:gap-6 lg:gap-8 py-3 sm:py-4 md:py-6 lg:py-8 px-3 sm:px-4 md:px-6 lg:px-8 max-w-7xl mx-auto"
+      variants={containerVariants}
+      initial={hasJustNavigated ? "hidden" : "visible"}
+      animate="visible"
+    >
       <div className="md:sticky md:top-20 lg:top-24 self-start flex flex-col justify-center md:h-auto lg:h-[calc(100vh-12rem)] md:mb-4 lg:mb-0">
-        <h1 className="relative pb-2 text-lg sm:text-xl uppercase before:content-[''] before:absolute before:top-0 before:left-0 before:w-20 sm:before:w-24 md:before:w-28 lg:before:w-32 before:h-0.5 before:bg-primary/70 font-black tracking-widest md:text-4xl">
+        <motion.h1
+          className="relative pb-2 text-lg sm:text-xl uppercase before:content-[''] before:absolute before:top-0 before:left-0 before:w-20 sm:before:w-24 md:before:w-28 lg:before:w-32 before:h-0.5 before:bg-primary/70 font-black tracking-widest md:text-4xl"
+          variants={titleVariants}
+        >
           {title}
-        </h1>
-        <p className="sm:text-xs md:text-xs text-primary/70 font-sf-mono px-0 lg:text-sm tracking-tighter font-normal">
+        </motion.h1>
+        <motion.p
+          className="sm:text-xs md:text-xs text-primary/70 font-sf-mono px-0 lg:text-sm tracking-tighter font-normal"
+          variants={subtitleVariants}
+        >
           {subtitle}
-        </p>
+        </motion.p>
       </div>
-      <div className="w-full min-w-0 max-w-full flex flex-col justify-center overflow-hidden">
+      <motion.div
+        className="w-full min-w-0 max-w-full flex flex-col justify-center overflow-hidden"
+        variants={contentVariants}
+      >
         <div className="break-words overflow-hidden pt-2 sm:pt-3 md:pt-4 lg:pt-8 px-0 sm:px-2 md:px-4 lg:px-0">
           {children}
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   )
 }
