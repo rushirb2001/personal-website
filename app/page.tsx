@@ -340,7 +340,7 @@ export default function Home() {
                     {featuredProjects.length > 1 && (
                       <button
                         onClick={goToNextFeatured}
-                        className="w-5 h-5 flex items-center justify-center border border-primary/20 bg-black text-white dark:bg-white dark:text-black hover:bg-primary hover:text-background hover:dark:text-background transition-colors"
+                        className="w-5 h-5 flex items-center justify-center border border-primary/20 bg-black text-white dark:bg-white dark:text-black hover:bg-primary hover:text-background transition-colors"
                       >
                         <ChevronRight className="h-3 w-3" />
                       </button>
