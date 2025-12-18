@@ -9,6 +9,7 @@ interface NavigationContextType {
   currentPath: string
   targetPath: string | null
   shouldAnimateEntrance: boolean
+  isPageReady: boolean // New flag to signal when page can show content
 }
 
 const NavigationContext = createContext<NavigationContextType | undefined>(undefined)
@@ -25,26 +26,30 @@ export function NavigationProvider({ children, isReady = true }: NavigationProvi
   const [targetPath, setTargetPath] = useState<string | null>(null)
   const [currentPath, setCurrentPath] = useState("")
   const [shouldAnimateEntrance, setShouldAnimateEntrance] = useState(false)
+  const [isPageReady, setIsPageReady] = useState(true) // Track if page is ready to display
   const navigationInProgress = useRef(false)
-  const waitingForTransitionEnd = useRef(false)
+  const prevPathnameRef = useRef(pathname)
 
   // Update current path when pathname changes
   useEffect(() => {
     if (pathname) {
       setCurrentPath(pathname)
-      if (navigationInProgress.current) {
-        waitingForTransitionEnd.current = true
-        navigationInProgress.current = false
+      if (navigationInProgress.current && pathname !== prevPathnameRef.current) {
+        // Page has changed, keep it hidden until transition ends
+        setIsPageReady(false)
       }
+      prevPathnameRef.current = pathname
     }
   }, [pathname])
 
   useEffect(() => {
-    if (!isTransitioning && waitingForTransitionEnd.current) {
+    if (!isTransitioning && !isPageReady) {
+      // Transition overlay just finished, now animate entrance
       setShouldAnimateEntrance(true)
-      waitingForTransitionEnd.current = false
+      setIsPageReady(true)
+      navigationInProgress.current = false
     }
-  }, [isTransitioning])
+  }, [isTransitioning, isPageReady])
 
   useEffect(() => {
     if (shouldAnimateEntrance) {
@@ -67,18 +72,19 @@ export function NavigationProvider({ children, isReady = true }: NavigationProvi
       }
 
       // More abrupt, systemic timing
-      const totalDuration = 2500 // Slightly shorter total duration
+      const totalDuration = 2500
 
       // Step 1: Set target path immediately
       setTargetPath(href)
       navigationInProgress.current = true
+
+      setIsPageReady(false)
 
       // Step 2: Show transition animation immediately
       setIsTransitioning(true)
 
       // Random chance to trigger easter egg (1 in 10 navigations)
       if (Math.random() < 0.1) {
-        // Trigger a brief glitch effect
         setTimeout(() => {
           const event = new CustomEvent("easterEggTrigger")
           window.dispatchEvent(event)
@@ -88,7 +94,7 @@ export function NavigationProvider({ children, isReady = true }: NavigationProvi
       // Step 3: Navigate to new page at precise timing
       const navigationTimeout = setTimeout(() => {
         router.push(href)
-      }, 1800) // Exact timing for navigation
+      }, 1800)
 
       // Step 4: Hide animation after precise duration
       const hideTimeout = setTimeout(() => {
@@ -96,7 +102,6 @@ export function NavigationProvider({ children, isReady = true }: NavigationProvi
         setTargetPath(null)
       }, totalDuration)
 
-      // Return cleanup function to clear timeouts if component unmounts during transition
       return () => {
         clearTimeout(navigationTimeout)
         clearTimeout(hideTimeout)
@@ -111,7 +116,6 @@ export function NavigationProvider({ children, isReady = true }: NavigationProvi
 
     const prefetchPages = async () => {
       try {
-        // Prefetch all pages for smoother transitions
         pagesToPrefetch.forEach((path) => {
           if (path !== pathname) {
             router.prefetch(path)
@@ -133,8 +137,9 @@ export function NavigationProvider({ children, isReady = true }: NavigationProvi
       currentPath,
       targetPath,
       shouldAnimateEntrance,
+      isPageReady, // Expose isPageReady
     }),
-    [navigateTo, isTransitioning, currentPath, targetPath, shouldAnimateEntrance],
+    [navigateTo, isTransitioning, currentPath, targetPath, shouldAnimateEntrance, isPageReady],
   )
 
   return <NavigationContext.Provider value={contextValue}>{children}</NavigationContext.Provider>

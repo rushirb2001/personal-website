@@ -13,26 +13,26 @@ interface PageLayoutProps {
 }
 
 export function PageLayout({ title, subtitle, children }: PageLayoutProps) {
-  const { shouldAnimateEntrance, isTransitioning } = useNavigation()
+  const { shouldAnimateEntrance, isTransitioning, isPageReady } = useNavigation()
   const pathname = usePathname()
 
-  const hasAnimatedRef = useRef(false)
-  const [animationKey, setAnimationKey] = useState(pathname)
+  const [hasAnimated, setHasAnimated] = useState(false)
   const prevPathnameRef = useRef(pathname)
 
   useEffect(() => {
-    // Reset when pathname changes (new navigation)
+    // Reset animation state when pathname changes
     if (prevPathnameRef.current !== pathname) {
-      hasAnimatedRef.current = false
+      setHasAnimated(false)
       prevPathnameRef.current = pathname
     }
+  }, [pathname])
 
-    // Only update key once when shouldAnimateEntrance becomes true
-    if (shouldAnimateEntrance && !hasAnimatedRef.current) {
-      setAnimationKey(`${pathname}-${Date.now()}`)
-      hasAnimatedRef.current = true
+  useEffect(() => {
+    // Mark as animated when entrance animation triggers
+    if (shouldAnimateEntrance && !hasAnimated) {
+      setHasAnimated(true)
     }
-  }, [pathname, shouldAnimateEntrance])
+  }, [shouldAnimateEntrance, hasAnimated])
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -84,15 +84,28 @@ export function PageLayout({ title, subtitle, children }: PageLayoutProps) {
     },
   }
 
-  const shouldAnimate = (shouldAnimateEntrance && !hasAnimatedRef.current) || animationKey !== pathname
+  // If transitioning or page not ready, stay hidden
+  // If shouldAnimateEntrance just fired, animate from hidden to visible
+  // If already animated or initial page load, show visible
+  const getAnimateState = () => {
+    if (isTransitioning || !isPageReady) return "hidden"
+    return "visible"
+  }
+
+  const getInitialState = () => {
+    // If we should animate entrance and haven't yet, start hidden
+    if (shouldAnimateEntrance && !hasAnimated) return "hidden"
+    // Otherwise start visible (initial page load)
+    return "visible"
+  }
 
   return (
     <motion.div
-      key={animationKey}
+      key={pathname}
       className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-[1fr_2fr] gap-3 sm:gap-4 md:gap-6 lg:gap-8 py-3 sm:py-4 md:py-6 lg:py-8 px-3 sm:px-4 md:px-6 lg:px-8 max-w-7xl mx-auto"
       variants={containerVariants}
-      initial={animationKey !== pathname ? "hidden" : "visible"}
-      animate={isTransitioning ? "hidden" : "visible"}
+      initial={getInitialState()}
+      animate={getAnimateState()}
     >
       <div className="md:sticky md:top-20 lg:top-24 self-start flex flex-col justify-center md:h-auto lg:h-[calc(100vh-12rem)] md:mb-4 lg:mb-0">
         <motion.h1

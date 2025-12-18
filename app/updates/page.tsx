@@ -9,6 +9,7 @@ import { ArrowRight, Calendar, Tag, ChevronDown, X, ChevronLeft, ChevronRight } 
 import { PageLayout } from "@/components/layout/page-layout"
 import { useRouter } from "next/navigation"
 import { useMediaQuery } from "@/hooks/use-media-query"
+import { useNavigation } from "@/contexts/navigation-context"
 
 const ITEMS_PER_PAGE = 3
 
@@ -54,6 +55,7 @@ export default function UpdatesPage() {
   const posts = getPublishedPosts()
   const router = useRouter()
   const isMobile = useMediaQuery("(max-width: 768px)")
+  const { isPageReady, shouldAnimateEntrance } = useNavigation()
 
   const [selectedTags, setSelectedTags] = useState<string[]>(() => getInitialSelectedTags())
   const [isFilterOpen, setIsFilterOpen] = useState(false)
@@ -72,6 +74,17 @@ export default function UpdatesPage() {
     }
     return false
   })
+  
+  const [internalAnimationsReady, setInternalAnimationsReady] = useState(!shouldAnimateEntrance)
+
+  useEffect(() => {
+    if (isPageReady && !internalAnimationsReady) {
+      const timer = setTimeout(() => {
+        setInternalAnimationsReady(true)
+      }, 600)
+      return () => clearTimeout(timer)
+    }
+  }, [isPageReady, internalAnimationsReady])
 
   const allTags = Array.from(new Set(posts.flatMap((post) => post.tags)))
 
@@ -140,8 +153,7 @@ export default function UpdatesPage() {
             setCardRevealed(null)
           }, 400)
         }, 50)
-      }, 700)
-    }
+      }, 700)\
   }, [])
 
   const handleArticleClick = (e: React.MouseEvent, post: BlogPost) => {
@@ -168,9 +180,10 @@ export default function UpdatesPage() {
     return returningPostId === postId && collapseStarted && cardRevealed !== postId
   }
 
+  const shouldAnimatePosts = internalAnimationsReady && !isReturningFromArticle.current
+
   return (
     <PageLayout title="BLOG" subtitle="ARTICLES & UPDATES">
-      {/* Collapse Animation Overlay */}
       <AnimatePresence>
         {collapseAnimation.show && collapseAnimation.endRect && collapseAnimation.postData && (
           <motion.div
@@ -210,94 +223,90 @@ export default function UpdatesPage() {
       </AnimatePresence>
 
       <div className="space-y-0 max-w-3xl mx-auto">
-      {/* Filter Header with Inline Pagination */}
-      <div className={`border border-primary/20 mb-3 ${showPaginationControls ? 'flex gap-0' : ''}`}>
-        {/* Filter Dropdown */}
-        <div className={showPaginationControls ? 'flex-[6] border-r border-primary/20' : 'w-full'}>
-          <button
-            onClick={() => setIsFilterOpen(!isFilterOpen)}
-            className="w-full flex items-center justify-between px-3 py-2 bg-primary/5 hover:bg-primary/10 transition-colors h-[42px]"
-          >
-            <span className="font-sf-mono text-primary/60 text-sm">
-              {selectedTags.length > 0
-                ? `FILTER: SHOWING ${selectedTags.slice(0, 2).join(", ").toUpperCase()}${selectedTags.length > 2 ? ` +${selectedTags.length - 2}` : ""}`
-                : "FILTER BY TAG"}
-            </span>
-            <motion.div animate={{ rotate: isFilterOpen ? 180 : 0 }} transition={{ duration: 0.2 }}>
-              <ChevronDown className="w-3 h-3 text-primary/50" />
-            </motion.div>
-          </button>
-
-          <AnimatePresence>
-            {isFilterOpen && (
-              <motion.div
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: "auto", opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                transition={{ duration: 0.2 }}
-                className="overflow-hidden border-t border-primary/10"
-              >
-                <div className="p-3">
-                  <div className="flex flex-wrap gap-1.5">
-                    {allTags.map((tag) => (
-                      <button
-                        key={tag}
-                        onClick={() => toggleTag(tag)}
-                        className={`px-2 py-1 font-sf-mono border transition-colors text-sm ${
-                          selectedTags.includes(tag)
-                            ? "bg-primary text-background border-primary"
-                            : "border-primary/20 text-primary/60 hover:border-primary/40"
-                        }`}
-                      >
-                        {tag.toUpperCase()}
-                      </button>
-                    ))}
-                  </div>
-                  {selectedTags.length > 0 && (
-                    <button
-                      onClick={clearTags}
-                      className="mt-2 text-[9px] font-sf-mono text-primary/50 hover:text-primary flex items-center gap-1"
-                    >
-                      <X className="w-3 h-3" />
-                      CLEAR ALL
-                    </button>
-                  )}
-                </div>
+        <div className={`border border-primary/20 mb-3 ${showPaginationControls ? 'flex gap-0' : ''}`}>
+          <div className={showPaginationControls ? 'flex-[6] border-r border-primary/20' : 'w-full'}>
+            <button
+              onClick={() => setIsFilterOpen(!isFilterOpen)}
+              className="w-full flex items-center justify-between px-3 py-2 bg-primary/5 hover:bg-primary/10 transition-colors h-[42px]"
+            >
+              <span className="font-sf-mono text-primary/60 text-sm">
+                {selectedTags.length > 0
+                  ? `FILTER: SHOWING ${selectedTags.slice(0, 2).join(", ").toUpperCase()}${selectedTags.length > 2 ? ` +${selectedTags.length - 2}` : ""}`
+                  : "FILTER BY TAG"}
+              </span>
+              <motion.div animate={{ rotate: isFilterOpen ? 180 : 0 }} transition={{ duration: 0.2 }}>
+                <ChevronDown className="w-3 h-3 text-primary/50" />
               </motion.div>
-            )}
-          </AnimatePresence>
+            </button>
+
+            <AnimatePresence>
+              {isFilterOpen && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="overflow-hidden border-t border-primary/10"
+                >
+                  <div className="p-3">
+                    <div className="flex flex-wrap gap-1.5">
+                      {allTags.map((tag) => (
+                        <button
+                          key={tag}
+                          onClick={() => toggleTag(tag)}
+                          className={`px-2 py-1 font-sf-mono border transition-colors text-sm ${
+                            selectedTags.includes(tag)
+                              ? "bg-primary text-background border-primary"
+                              : "border-primary/20 text-primary/60 hover:border-primary/40"
+                          }`}
+                        >
+                          {tag.toUpperCase()}
+                        </button>
+                      ))}
+                    </div>
+                    {selectedTags.length > 0 && (
+                      <button
+                        onClick={clearTags}
+                        className="mt-2 text-[9px] font-sf-mono text-primary/50 hover:text-primary flex items-center gap-1"
+                      >
+                        <X className="w-3 h-3" />
+                        CLEAR ALL
+                      </button>
+                    )}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {showPaginationControls && (
+            <div className="flex-[4] flex">
+              <button
+                onClick={() => setStartIndex((prev) => Math.max(0, prev - ITEMS_PER_PAGE))}
+                disabled={!canShowPrevious}
+                className={`flex-1 flex items-center justify-center border-r border-primary/20 h-[42px] transition-colors ${
+                  canShowPrevious
+                    ? "text-primary/70 hover:bg-primary/10"
+                    : "text-primary/20 cursor-not-allowed"
+                }`}
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => setStartIndex((prev) => prev + ITEMS_PER_PAGE)}
+                disabled={!canShowNext}
+                className={`flex-1 flex items-center justify-center h-[42px] transition-colors ${
+                  canShowNext
+                    ? "text-primary/70 hover:bg-primary/10"
+                    : "text-primary/20 cursor-not-allowed"
+                }`}
+              >
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
+          )}
         </div>
 
-        {/* Inline Pagination Controls */}
-        {showPaginationControls && (
-          <div className="flex-[4] flex">
-            <button
-              onClick={() => setStartIndex((prev) => Math.max(0, prev - ITEMS_PER_PAGE))}
-              disabled={!canShowPrevious}
-              className={`flex-1 flex items-center justify-center border-r border-primary/20 h-[42px] transition-colors ${
-                canShowPrevious
-                  ? "text-primary/70 hover:bg-primary/10"
-                  : "text-primary/20 cursor-not-allowed"
-              }`}
-            >
-              <ChevronLeft className="w-4 h-4" />
-            </button>
-            <button
-              onClick={() => setStartIndex((prev) => prev + ITEMS_PER_PAGE)}
-              disabled={!canShowNext}
-              className={`flex-1 flex items-center justify-center h-[42px] transition-colors ${
-                canShowNext
-                  ? "text-primary/70 hover:bg-primary/10"
-                  : "text-primary/20 cursor-not-allowed"
-              }`}
-            >
-              <ChevronRight className="w-4 h-4" />
-            </button>
-          </div>
-        )}
-      </div>
-
-        {/* Posts List */}
         <div className="space-y-2">
           {visiblePosts.length > 0 ? (
             visiblePosts.map((post, index) => (
@@ -307,13 +316,13 @@ export default function UpdatesPage() {
                   if (el) articleRefs.current.set(post.id, el)
                 }}
                 initial={{
-                  opacity: isReturningFromArticle.current ? 1 : 0,
-                  y: isReturningFromArticle.current ? 0 : 10,
+                  opacity: shouldAnimatePosts ? 0 : 1,
+                  y: shouldAnimatePosts ? 10 : 0,
                 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{
-                  delay: isReturningFromArticle.current ? 0 : index * 0.05,
-                  duration: isReturningFromArticle.current ? 0 : 0.2,
+                  delay: shouldAnimatePosts ? index * 0.05 : 0,
+                  duration: shouldAnimatePosts ? 0.2 : 0,
                 }}
                 className={`border transition-all duration-150 cursor-pointer ${
                   highlightedPostId === post.id
@@ -331,7 +340,6 @@ export default function UpdatesPage() {
                 onClick={(e) => handleArticleClick(e, post)}
               >
                 <div className="p-3">
-                  {/* Header */}
                   <div className="flex items-start justify-between gap-3 mb-2">
                     <h2 className="font-sf-mono flex-1 text-xl font-bold">{post.title}</h2>
                     <div className="flex items-center text-primary/50 font-sf-mono whitespace-nowrap text-sm">
@@ -340,10 +348,8 @@ export default function UpdatesPage() {
                     </div>
                   </div>
 
-                  {/* Summary */}
                   <p className="text-primary/60 mb-2 font-sf-mono line-clamp-2 text-sm">{post.summary}</p>
 
-                  {/* Footer */}
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-1">
                       <Tag className="h-3 w-3 text-primary/40" />
@@ -375,7 +381,6 @@ export default function UpdatesPage() {
           )}
         </div>
 
-        {/* Footer Stats */}
         <motion.div
           className="flex items-center justify-between border-t border-primary/20 pt-3 mt-4"
           initial={{ opacity: 0 }}
@@ -393,5 +398,5 @@ export default function UpdatesPage() {
         </motion.div>
       </div>
     </PageLayout>
-  )
+  )\
 }
