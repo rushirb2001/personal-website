@@ -325,14 +325,14 @@ export default function SkillsPage() {
           transition={{ duration: 0.2, delay: 0.5 }}
         >
           <div className="flex gap-1 sm:gap-2 md:gap-4 text-[9px] sm:text-[10px] font-sf-mono text-primary/40 uppercase tracking-wider">
-            <span>5 {isMobile ? "CAT" : "CATEGORIES"}</span>
+            <span className="text-sm">5 {isMobile ? "CAT" : "CATEGORIES"}</span>
             <span className="text-primary/20">/</span>
-            <span>{totalSubcategories} {isMobile ? "SUB" : "SUBCATEGORIES"}</span>
+            <span className="text-sm">{totalSubcategories} {isMobile ? "SUB" : "SUBCATEGORIES"}</span>
             <span className="text-primary/20">/</span>
-            <span>{totalTech} {isMobile ? "TECH" : "TECHNOLOGIES"}</span>
+            <span className="text-sm">{totalTech} {isMobile ? "TECH" : "TECHNOLOGIES"}</span>
           </div>
-          <div className="text-[9px] sm:text-[10px] font-sf-mono text-primary/30">
-            {isMobile ? "2025" : "LAST.UPDATED: 2025"}
+          <div className="sm:text-[10px] font-sf-mono text-primary/30 text-sm">
+            <span className="text-sm">{isMobile ? "2025" : "LAST.UPDATED: 2025"}</span>
           </div>
         </motion.div>
       </div>
