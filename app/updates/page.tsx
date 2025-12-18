@@ -106,6 +106,7 @@ export default function UpdatesPage() {
       sessionStorage.removeItem("collapseToRect")
       sessionStorage.removeItem("collapseFromPost")
       sessionStorage.removeItem("collapsePostData")
+      sessionStorage.removeItem("selectedTags")
 
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
@@ -158,7 +159,7 @@ export default function UpdatesPage() {
         })
       )
       sessionStorage.setItem("selectedTags", JSON.stringify(selectedTags))
-      
+
       router.push(`/updates/${post.id}`)
     }
   }
