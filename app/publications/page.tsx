@@ -24,7 +24,7 @@ export default function PublicationsPage() {
   const [selectedPublication, setSelectedPublication] = useState<Publication | null>(null)
   const [hoveredId, setHoveredId] = useState<string | null>(null)
   const [startIndex, setStartIndex] = useState(0)
-  const ITEMS_PER_PAGE = 3
+  const ITEMS_PER_PAGE = 5
   const isMobile = useMediaQuery("(max-width: 768px)")
 
   const publications: Publication[] = [
