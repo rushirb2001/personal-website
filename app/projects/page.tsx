@@ -82,6 +82,7 @@ const techIconMap: Record<string, React.ComponentType<{ className?: string }>> =
   sklearn: SiScikitlearn,
   scikit: SiScikitlearn,
   openai: SiOpenai,
+  opencv: SiOpencv,
   postgres: SiPostgresql,
   mongo: SiMongodb,
   mysql: SiMysql,
