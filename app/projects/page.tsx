@@ -49,6 +49,7 @@ import {
   SiGraphql,
   SiSocketdotio,
   SiJest,
+  SiJupyter,
   SiVercel,
   SiNetlify,
   SiVite,
