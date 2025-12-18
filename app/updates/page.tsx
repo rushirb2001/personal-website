@@ -157,6 +157,8 @@ export default function UpdatesPage() {
           height: rect.height,
         })
       )
+      sessionStorage.setItem("selectedTags", JSON.stringify(selectedTags))
+      
       router.push(`/updates/${post.id}`)
     }
   }
