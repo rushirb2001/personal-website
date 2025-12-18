@@ -130,7 +130,7 @@ export default function ExperiencePage() {
         )}
 
         {/* Table Header - Desktop Only */}
-        <div className="hidden md:grid grid-cols-[2fr_1.5fr_1.2fr_1fr_40px] gap-2 px-3 py-2 border-b border-primary/30 text-[10px] font-sf-mono text-primary/50 uppercase tracking-wider">
+        <div className="hidden md:grid grid-cols-[2fr_1.5fr_1.2fr_1fr_40px] gap-2 px-3 py-2 border-b border-primary/30 font-sf-mono text-primary/50 uppercase tracking-wider text-sm">
           <span>POSITION</span>
           <span>COMPANY</span>
           <span>PERIOD</span>
@@ -167,19 +167,19 @@ export default function ExperiencePage() {
                 >
                   {/* Desktop Row */}
                   <div className="hidden md:grid grid-cols-[2fr_1.5fr_1.2fr_1fr_40px] gap-2 px-3 py-3 items-center">
-                    <span className="text-xs font-sf-mono font-medium">{exp.title}</span>
+                    <span className="font-sf-mono font-medium text-base">{exp.title}</span>
                     <span
-                      className={`text-xs font-sf-mono ${selectedExp === actualIndex ? "text-background/70" : "text-primary/60"}`}
+                      className={`font-sf-mono text-sm ${selectedExp === actualIndex ? "text-background/70" : "text-primary/60"}`}
                     >
                       {exp.company}
                     </span>
                     <span
-                      className={`text-xs font-sf-mono ${selectedExp === actualIndex ? "text-background/70" : "text-primary/50"}`}
+                      className={`font-sf-mono text-base ${selectedExp === actualIndex ? "text-background/70" : "text-primary/50"}`}
                     >
                       {exp.period}
                     </span>
                     <span
-                      className={`text-xs font-sf-mono ${selectedExp === actualIndex ? "text-background/70" : "text-primary/50"}`}
+                      className={`font-sf-mono text-sm ${selectedExp === actualIndex ? "text-background/70" : "text-primary/50"}`}
                     >
                       {exp.location}
                     </span>
@@ -312,11 +312,11 @@ export default function ExperiencePage() {
           transition={{ duration: 0.2, delay: 0.3 }}
         >
           <div className="flex flex-wrap gap-1 sm:gap-2 md:gap-4 text-[9px] sm:text-[10px] font-sf-mono text-primary/40 uppercase tracking-wider">
-            <span>{experiences.length} {isMobile ? "ROLES" : "POSITIONS"}</span>
+            <span className="text-sm">{experiences.length} {isMobile ? "ROLES" : "POSITIONS"}</span>
             <span className="text-primary/20">/</span>
-            <span>{experiences.length} {isMobile ? "CO" : "COMPANIES"}</span>
+            <span className="text-sm">{experiences.length} {isMobile ? "CO" : "COMPANIES"}</span>
             <span className="text-primary/20">/</span>
-            <span>2022-24</span>
+            <span className="text-sm">2022-24</span>
           </div>
           <div className="text-[9px] sm:text-[10px] font-sf-mono text-primary/30">LAST.UPDATED: 2025</div>
         </motion.div>
