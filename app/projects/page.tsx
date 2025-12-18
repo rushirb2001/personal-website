@@ -356,7 +356,7 @@ export default function ProjectsPage() {
                     <h3 className="font-sf-mono font-bold uppercase mb-2 tracking-wider text-base">
                       {project.title}
                     </h3>
-                    <p className="font-sf-mono text-primary/60 leading-relaxed line-clamp-3 uppercase tracking-tight text-xs">
+                    <p className="font-sf-mono text-primary/60 leading-relaxed line-clamp-3 uppercase tracking-tight text-sm">
                       {project.description}
                     </p>
                   </div>
