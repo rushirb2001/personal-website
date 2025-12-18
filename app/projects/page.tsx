@@ -454,7 +454,7 @@ export default function ProjectsPage() {
               <div className="border-b border-primary/20 px-3 md:px-4 py-2 md:py-3 flex justify-between items-center bg-primary/5">
                 <div className="flex items-center gap-2">
                   <Terminal className="h-3 w-3 md:h-4 md:w-4 text-primary" />
-                  <span className="text-[10px] md:text-sm font-sf-mono font-bold uppercase tracking-wider text-primary line-clamp-1">
+                  <span className="font-sf-mono font-bold uppercase tracking-wider text-primary line-clamp-1 md:text-lg">
                     {selectedProject.title}
                   </span>
                 </div>
