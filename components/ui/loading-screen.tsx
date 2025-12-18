@@ -11,30 +11,41 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
   const [progress, setProgress] = useState(0)
   const [phase, setPhase] = useState<"loading" | "transitioning" | "complete">("loading")
   const nameRef = useRef<HTMLDivElement>(null)
-  const [namePosition, setNamePosition] = useState({ x: 0, y: 0 })
+  const [targetPosition, setTargetPosition] = useState({ x: 0, y: 0 })
+  const [isMobile, setIsMobile] = useState(false)
 
-  // Calculate target position (header location)
   useEffect(() => {
-    // Target position: top-left of viewport with header padding
-    const targetX = window.innerWidth >= 768 ? 16 : 12 // px-3 md:px-4
-    const targetY = window.innerWidth >= 768 ? 32 : 28 // h-14 md:h-16 / 2
+    const calculatePosition = () => {
+      const mobile = window.innerWidth < 768
+      setIsMobile(mobile)
 
-    if (nameRef.current) {
-      const rect = nameRef.current.getBoundingClientRect()
-      const centerX = window.innerWidth / 2
-      const centerY = window.innerHeight / 2
+      // Header specs: h-14 (56px) mobile, h-16 (64px) desktop
+      // Padding: px-3 (12px) mobile, px-4 (16px) desktop
+      const headerHeight = mobile ? 56 : 64
+      const headerPadding = mobile ? 12 : 16
 
-      // Calculate offset from center to target
-      setNamePosition({
-        x: targetX - centerX + rect.width / 2,
-        y: targetY - centerY,
-      })
+      // Target: left edge + padding, vertically centered in header
+      const targetX = headerPadding
+      const targetY = headerHeight / 2
+
+      if (nameRef.current) {
+        const rect = nameRef.current.getBoundingClientRect()
+        // Calculate from center of screen to target position
+        setTargetPosition({
+          x: targetX - window.innerWidth / 2 + (rect.width / 2) * 0.4, // Account for scale
+          y: targetY - window.innerHeight / 2,
+        })
+      }
     }
+
+    calculatePosition()
+    window.addEventListener("resize", calculatePosition)
+    return () => window.removeEventListener("resize", calculatePosition)
   }, [])
 
   // Loading progress animation
   useEffect(() => {
-    const duration = 1800 // 1.8 seconds for loading
+    const duration = 1800
     const interval = 20
     const increment = 100 / (duration / interval)
 
@@ -43,7 +54,6 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
         const next = prev + increment
         if (next >= 100) {
           clearInterval(timer)
-          // Start transition phase after a brief pause
           setTimeout(() => setPhase("transitioning"), 300)
           return 100
         }
@@ -57,7 +67,6 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
   // Handle transition completion
   useEffect(() => {
     if (phase === "transitioning") {
-      // Wait for name animation to complete
       const timer = setTimeout(() => {
         setPhase("complete")
         onComplete()
@@ -65,6 +74,11 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
       return () => clearTimeout(timer)
     }
   }, [phase, onComplete])
+
+  // Initial: ~50px (large display), Target: 20px mobile / 30px desktop
+  const targetFontSize = isMobile ? 20 : 30
+  const initialFontSize = Math.min(window.innerWidth * 0.08, 50) || 50
+  const scaleFactor = targetFontSize / initialFontSize
 
   return (
     <AnimatePresence>
@@ -90,28 +104,28 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
             </h1>
           </motion.div>
 
-          {/* Name that will animate to header */}
           <motion.div
             ref={nameRef}
-            className="font-sf-mono font-bold tracking-tighter"
+            className="font-sf-mono font-bold tracking-tighter leading-7 text-primary"
+            style={{
+              fontSize: "clamp(2rem, 8vw, 3.125rem)", // Large initial size
+            }}
             initial={{
-              scale: 1,
               x: 0,
               y: 0,
-              fontSize: "clamp(2.5rem, 8vw, 5rem)",
+              scale: 1,
             }}
             animate={
               phase === "transitioning"
                 ? {
-                    scale: 0.4,
-                    x: namePosition.x,
-                    y: namePosition.y,
-                    fontSize: "clamp(1.25rem, 3vw, 1.875rem)",
+                    x: targetPosition.x,
+                    y: targetPosition.y,
+                    scale: scaleFactor,
                   }
                 : {
-                    scale: 1,
                     x: 0,
                     y: 0,
+                    scale: 1,
                   }
             }
             transition={{
@@ -119,14 +133,7 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
               ease: [0.4, 0, 0.2, 1],
             }}
           >
-            <span className="text-primary">RUSHIR BHAVSAR</span>
-            <motion.span
-              className="text-primary"
-              initial={{ opacity: 1 }}
-              animate={{ opacity: phase === "transitioning" ? 1 : 1 }}
-            >
-              .
-            </motion.span>
+            RUSHIR BHAVSAR.
           </motion.div>
 
           {/* Loading bar */}
@@ -139,9 +146,7 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
             }}
             transition={{ duration: 0.3, delay: phase === "loading" ? 0.2 : 0 }}
           >
-            {/* Bar container */}
             <div className="h-1 bg-primary/10 overflow-hidden">
-              {/* Progress fill */}
               <motion.div
                 className="h-full bg-primary origin-left"
                 initial={{ scaleX: 0 }}
@@ -149,8 +154,6 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
                 transition={{ duration: 0.1, ease: "linear" }}
               />
             </div>
-
-            {/* Progress text */}
             <div className="flex justify-between mt-2 text-[10px] font-sf-mono text-primary/40 uppercase tracking-wider">
               <span>Loading</span>
               <span>{Math.round(progress)}%</span>
