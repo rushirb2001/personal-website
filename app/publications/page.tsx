@@ -65,7 +65,7 @@ export default function PublicationsPage() {
               disabled={!canShowPrevious}
               className={`px-4 py-1.5 text-[10px] font-sf-mono uppercase tracking-wider border transition-all duration-150 w-32 ${
                 canShowPrevious
-                  ? "border-primary/30 text-primary/70 hover:bg-primary/10 hover:border-primary/50"
+                  ? "bg-primary text-background border-primary/40 hover:bg-primary/90"
                   : "border-primary/10 text-primary/20 cursor-not-allowed opacity-0 pointer-events-none"
               }`}
             >
