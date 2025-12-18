@@ -54,7 +54,7 @@ export const projects: Project[] = [
   },
   {
     id: "proj_ml_pipeline_003",
-    title: "Machine Learning Pipeline for Image Classification",
+    title: "ML Pipeline for Image Classification",
     description: "End-to-end ML pipeline for training and deploying image models",
     fullDescription:
       "A complete machine learning pipeline for image classification tasks, including data preprocessing, model training, evaluation, and deployment. Supports multiple architectures and transfer learning.",

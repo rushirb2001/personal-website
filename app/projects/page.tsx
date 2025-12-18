@@ -319,7 +319,7 @@ export default function ProjectsPage() {
                 <div className="border-b border-primary/20 px-3 py-2 flex items-center justify-between bg-transparent">
                   <div className="flex items-center gap-2">
                     <Terminal className="h-3 w-3 text-primary" />
-                    <span className="text-[10px] font-sf-mono font-bold text-primary tracking-wider">
+                    <span className="font-sf-mono font-bold text-primary tracking-wider text-sm">
                       {project.category.toUpperCase()}
                     </span>
                   </div>
@@ -345,10 +345,10 @@ export default function ProjectsPage() {
                 <div className="flex">
                   {/* Content Area */}
                   <div className="flex-1 p-3">
-                    <h3 className="text-xs font-sf-mono font-bold uppercase mb-2 tracking-wider">
+                    <h3 className="font-sf-mono font-bold uppercase mb-2 tracking-wider text-base">
                       {project.title}
                     </h3>
-                    <p className="text-[10px] font-sf-mono text-primary/60 leading-relaxed line-clamp-3 uppercase tracking-tight">
+                    <p className="font-sf-mono text-primary/60 leading-relaxed line-clamp-3 uppercase tracking-tight text-xs">
                       {project.description}
                     </p>
                   </div>
@@ -371,7 +371,7 @@ export default function ProjectsPage() {
                     >
                       <div className="flex items-center justify-center gap-1.5">
                         <Github className="w-3 h-3" />
-                        <span className="text-[9px] font-sf-mono">CODE</span>
+                        <span className="font-sf-mono text-sm">CODE</span>
                       </div>
                     </a>
 
@@ -381,7 +381,7 @@ export default function ProjectsPage() {
                     >
                       <div className="flex items-center justify-center gap-1.5">
                         <ChevronRight className="w-3 h-3" />
-                        <span className="text-[9px] font-sf-mono">VIEW</span>
+                        <span className="font-sf-mono text-sm">VIEW</span>
                       </div>
                     </button>
                   </div>
