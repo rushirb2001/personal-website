@@ -213,7 +213,7 @@ export default function PublicationsPage() {
                     )}
                   </motion.div>
                 </button>
-                <span className="text-xs font-sf-mono font-medium pr-4">{pub.title}</span>
+                <span className="font-sf-mono font-medium pr-4 text-base">{pub.title}</span>
                 <span
                   className={`text-[10px] font-sf-mono ${selectedPublication?.id === pub.id ? "text-background/70" : "text-primary/60"}`}
                 >
