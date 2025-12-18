@@ -156,8 +156,8 @@ export default function ExperiencePage() {
                   <div className="md:hidden px-3 py-2">
                     <div className="flex items-center justify-between gap-2">
                       <div className="flex-1 min-w-0">
-                        <h3 className="text-[11px] font-sf-mono font-medium">{exp.title}</h3>
-                        <p className={`text-[10px] font-sf-mono ${selectedExp === actualIndex ? "text-background/60" : "text-primary/50"}`}>
+                        <h3 className="font-sf-mono font-medium text-xl">{exp.title}</h3>
+                        <p className={`font-sf-mono text-base ${selectedExp === actualIndex ? "text-background/60" : "text-primary/50"}`}>
                           {exp.company} • {exp.location} • {exp.period}
                         </p>
                       </div>
