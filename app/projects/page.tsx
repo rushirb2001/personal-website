@@ -289,7 +289,7 @@ export default function ProjectsPage() {
               disabled={!canShowNext}
               className={`flex-1 h-[42px] border flex items-center justify-center transition-all duration-150 ${
                 canShowNext
-                  ? "border-primary/30 text-primary/70 hover:bg-primary/10 hover:border-primary/50"
+                  ? "bg-primary text-background border-primary/40 hover:bg-primary/90"
                   : "border-primary/10 text-primary/10 cursor-not-allowed"
               }`}
             >
