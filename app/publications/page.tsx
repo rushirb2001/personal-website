@@ -201,8 +201,10 @@ export default function PublicationsPage() {
                           e.stopPropagation()
                           setSelectedPublication(selectedPublication?.id === pub.id ? null : pub)
                         }}
-                        className={`flex items-center justify-center w-8 h-8 border ${
-                          selectedPublication?.id === pub.id ? "border-background/30" : "border-primary/20"
+                        className={`flex items-center justify-center w-8 h-8 border transition-all duration-200 ${
+                          selectedPublication?.id === pub.id 
+                            ? "bg-background text-primary border-background/30 hover:bg-background/90" 
+                            : "bg-primary text-background border-primary/40 hover:bg-primary/90"
                         }`}
                       >
                         <motion.div
