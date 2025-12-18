@@ -254,7 +254,7 @@ export default function ExperiencePage() {
                         <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] md:gap-6">
                           {/* Left: Responsibilities */}
                           <div>
-                            <span className="text-[9px] font-sf-mono text-primary/40 uppercase tracking-wider">
+                            <span className="font-sf-mono text-primary/40 uppercase tracking-wider text-sm">
                               KEY ACHIEVEMENTS
                             </span>
                             <div className="space-y-2 mt-2">
@@ -263,7 +263,7 @@ export default function ExperiencePage() {
                                   <div className="w-4 h-4 border border-primary/20 bg-primary/5 flex items-center justify-center text-[9px] font-sf-mono text-primary/50 flex-shrink-0">
                                     {idx + 1}
                                   </div>
-                                  <p className="text-[10px] md:text-xs font-sf-mono text-primary/70 leading-relaxed tracking-tighter">{resp}</p>
+                                  <p className="font-sf-mono text-primary/70 leading-relaxed text-xs tracking-wide">{resp}</p>
                                 </div>
                               ))}
                             </div>
@@ -271,14 +271,14 @@ export default function ExperiencePage() {
 
                           {/* Right: Skills */}
                           <div className="md:border-l md:border-primary/10 md:pl-6">
-                            <span className="text-[9px] font-sf-mono text-primary/40 uppercase tracking-wider">
+                            <span className="font-sf-mono text-primary/40 uppercase tracking-wider text-sm">
                               TECH STACK
                             </span>
                             <div className="flex flex-wrap gap-1 mt-2">
                               {exp.skills.map((skill, idx) => (
                                 <span
                                   key={idx}
-                                  className="px-1.5 py-0.5 text-[9px] font-sf-mono border border-primary/20 bg-primary/5 hover:bg-primary hover:text-background transition-colors"
+                                  className="px-1.5 py-0.5 font-sf-mono border border-primary/20 bg-primary/5 hover:bg-primary hover:text-background transition-colors text-xs"
                                 >
                                   {skill}
                                 </span>
@@ -287,10 +287,10 @@ export default function ExperiencePage() {
 
                             {/* Overview - Desktop Only */}
                             <div className="hidden md:block mt-4 pt-4 border-t border-primary/10">
-                              <span className="text-[9px] font-sf-mono text-primary/40 uppercase tracking-wider">
+                              <span className="font-sf-mono text-primary/40 uppercase tracking-wider text-sm">
                                 OVERVIEW
                               </span>
-                              <p className="text-[11px] font-sf-mono text-primary/60 mt-2 leading-relaxed">
+                              <p className="font-sf-mono text-primary/60 mt-2 leading-relaxed text-xs">
                                 {exp.description}
                               </p>
                             </div>
