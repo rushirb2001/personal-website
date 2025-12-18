@@ -51,8 +51,8 @@ export const projects: Project[] = [
     fullDescription:
       "End-to-end machine learning platform processing millions of Yelp reviews to deliver business recommendations and sentiment analysis through a containerized REST API. Implements collaborative filtering using ALS (Alternating Least Squares) for personalized recommendations and multi-class sentiment classification using TF-IDF with Logistic Regression. The platform demonstrates comprehensive MLOps practices including distributed data processing with Apache Spark, experiment tracking with MLflow, automated testing (24 unit and integration tests), and CI/CD automation with GitHub Actions. Features scalable ETL pipelines transforming JSON to Parquet, comprehensive feature engineering, and Docker-based microservices architecture with multi-service orchestration.",
     technologies: [
-      "Python 3.11",
-      "Apache Spark 3.5",
+      "Python",
+      "Spark",
       "PySpark ML",
       "FastAPI",
       "MLflow",
@@ -82,7 +82,7 @@ export const projects: Project[] = [
     fullDescription:
       "Master's thesis research introducing Multi-Architecture Coupled Ensemble Physics-Informed Neural Networks (MACE-PINN) for solving coupled partial differential equation systems. The architecture employs parallel subnetworks with separate neural networks for each PDE variable, preventing gradient interference while maintaining physical coupling. Implements random Fourier feature embeddings to overcome spectral bias and enable high-frequency pattern capture, combined with gradient norm adaptive loss weighting for training stability. Successfully applied to Gray-Scott and Ginzburg-Landau reaction-diffusion systems, demonstrating superior pattern formation capture including spot formation, stripe patterns, and self-replication dynamics. The research addresses fundamental challenges in scientific computing by enabling accurate simulation of complex physical phenomena using data-efficient neural approaches.",
     technologies: [
-      "Python 3.8+",
+      "Python",
       "JAX",
       "Flax",
       "NumPy",
@@ -111,7 +111,7 @@ export const projects: Project[] = [
     fullDescription:
       "Computer vision pipeline for automated diamond segmentation processing over 57,000 images across 14 shape categories. Developed during the MiNeD Hackathon at Nirma University, the system implements OpenCV's GrabCut algorithm enhanced with CLAHE (Contrast Limited Adaptive Histogram Equalization) for robust background removal. Features comprehensive batch processing with multi-threaded execution, automated video generation for pipeline visualization, and statistical analysis with quality metrics. The pipeline includes morphological operations for mask refinement, contour detection with bounding box annotation, and interactive Jupyter notebooks for exploration. Demonstrates production-ready computer vision engineering with structured logging, performance profiling, and configurable parameters via YAML.",
     technologies: [
-      "Python 3.9+",
+      "Python",
       "OpenCV",
       "NumPy",
       "Matplotlib",
