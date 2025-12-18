@@ -97,22 +97,24 @@ function SubcategoryRow({
 
   return (
     <div
-      className={`flex flex-wrap items-center gap-1 py-1 border-b last:border-b-0 transition-colors duration-150 ${
+      className={`grid grid-cols-[30%_70%] gap-3 items-center py-1.5 border-b last:border-b-0 transition-colors duration-150 ${
         isContainerHovered ? "border-primary/10" : "border-primary/5"
       }`}
     >
       <span
-        className={`text-[9px] font-sf-mono uppercase tracking-wider cursor-pointer transition-colors duration-100 mr-1 ${
+        className={`text-[9px] font-sf-mono uppercase tracking-wider cursor-pointer transition-colors duration-100 text-center ${
           isContainerHovered || isHovered ? "text-primary/70" : "text-primary/40"
         }`}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        {title}:
+        {title}
       </span>
-      {items.map((item, idx) => (
-        <SkillTag key={idx} name={item} isHighlighted={isHovered} />
-      ))}
+      <div className="flex flex-wrap items-center gap-1">
+        {items.map((item, idx) => (
+          <SkillTag key={idx} name={item} isHighlighted={isHovered} />
+        ))}
+      </div>
     </div>
   )
 }
