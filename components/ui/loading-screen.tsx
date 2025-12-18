@@ -41,8 +41,11 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
         const currentCenterX = window.innerWidth / 2
         const currentCenterY = window.innerHeight / 2
 
+        // On mobile, reduce the offset to position text closer to left edge
+        const mobileAdjustment = mobile ? -8 : 0
+
         // Target position: left padding + half of scaled width (since transform origin is center)
-        const targetCenterX = headerPadding + scaledWidth / 2
+        const targetCenterX = headerPadding + scaledWidth / 2 + mobileAdjustment
         // Target Y: vertically centered in header
         const targetCenterY = headerHeight / 2
 
@@ -97,7 +100,7 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
     <AnimatePresence>
       {phase !== "complete" && (
         <motion.div
-          className="fixed inset-0 z-[100] bg-background flex flex-col items-center justify-center"
+          className="fixed inset-0 z-50 bg-background flex flex-col items-center justify-center"
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.5, ease: "easeInOut" }}
