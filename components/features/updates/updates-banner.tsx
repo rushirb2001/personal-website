@@ -107,36 +107,54 @@ export function UpdatesBanner() {
             animate={{ opacity: 1, y: 0, height: "auto" }}
             exit={{ opacity: 0, y: -10, height: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed top-[calc(3.5rem+1.75rem)] md:top-[calc(4rem+1.75rem)] right-0 md:right-auto md:left-0 z-50 w-64 border border-primary/30 bg-background/95 backdrop-blur-sm shadow-sm rounded-b-md"
+            className="fixed top-[calc(3.5rem+1.75rem)] md:top-[calc(4rem+1.75rem)] right-0 md:right-auto md:left-0 z-50 w-64 border border-primary/20 bg-background"
           >
-            <div className="p-2 border-b border-primary/20 flex items-center justify-between">
-              <div className="text-xs font-sf-mono text-primary/70">RECENT UPDATES</div>
-              <div className="text-[10px] text-primary/50">{updateCount} TOTAL</div>
+            {/* Header */}
+            <div className="p-3 bg-primary/5 border-b border-primary/20">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-sf-mono tracking-wider text-primary/70">
+                  RECENT UPDATES
+                </span>
+                <span className="text-[9px] font-sf-mono tracking-wider text-primary/50">
+                  [{String(updateCount).padStart(2, '0')}]
+                </span>
+              </div>
             </div>
 
-            <div className="max-h-60 overflow-y-auto custom-scrollbar">
+            {/* Updates List */}
+            <div className="max-h-60 overflow-y-auto">
               {recentPosts.map((post, index) => (
                 <div
                   key={post.id}
                   onClick={handleUpdateClick(post.id)}
-                  className={`p-2 cursor-pointer hover:bg-primary/5 transition-colors ${
-                    index < recentPosts.length - 1 ? "border-b border-primary/10" : ""
-                  }`}
+                  className="p-3 border-b border-primary/10 cursor-pointer hover:bg-primary/5 transition-all duration-150"
                 >
-                  <div className="flex justify-between items-start mb-1">
-                    <div className="font-medium text-xs text-primary/80">{post.title}</div>
-                    <div className="text-[10px] text-primary/50 ml-2">{formatDate(post.date)}</div>
+                  <div className="flex items-start justify-between gap-2 mb-1.5">
+                    <span className="text-[10px] font-sf-mono tracking-tight text-primary/80 uppercase line-clamp-1">
+                      {post.title}
+                    </span>
+                    <span className="text-[9px] font-sf-mono tracking-wider text-primary/50 whitespace-nowrap">
+                      {formatDate(post.date)}
+                    </span>
                   </div>
-                  <div className="text-[10px] text-primary/60 line-clamp-2">{post.summary}</div>
+                  <div className="text-[9px] font-sf-mono tracking-tight text-primary/60 line-clamp-2 uppercase">
+                    {post.summary}
+                  </div>
                 </div>
               ))}
             </div>
 
+            {/* Footer */}
             <div
               onClick={handleViewAllClick}
-              className="p-2 border-t border-primary/20 text-xs font-sf-mono text-primary/70 flex items-center justify-center hover:bg-primary/10 transition-colors cursor-pointer"
+              className="p-3 border-t border-primary/20 cursor-pointer hover:bg-primary/10 transition-all duration-150"
             >
-              VIEW ALL UPDATES <ChevronDown className="ml-1 h-3 w-3" />
+              <div className="flex items-center justify-center gap-1.5">
+                <span className="text-[10px] font-sf-mono tracking-wider text-primary/70">
+                  VIEW ALL
+                </span>
+                <span className="text-[9px] text-primary/50">→</span>
+              </div>
             </div>
           </motion.div>
         )}
