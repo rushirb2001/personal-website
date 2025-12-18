@@ -19,7 +19,7 @@ const skillsData = {
     subcategories: {
       "Deep Learning": ["PyTorch", "TensorFlow", "JAX"],
       "Generative AI": ["Transformers", "LangGraph/Chain", "CrewAI", "Hugging Face"],
-      "Traditional ML": ["Pandas", "Numpy", "Sklearn", "Matplotlib"], // , "NLTK",  "Seaborn"
+      "Machine Learning": ["Pandas", "Numpy", "Sklearn", "Matplotlib"], // , "NLTK",  "Seaborn"
       "Computer Vision": ["OpenCV", "MediaPipe", "Albumentations", "YOLO"],
     },
   },
