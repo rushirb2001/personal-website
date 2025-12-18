@@ -253,10 +253,10 @@ export default function ProjectsPage() {
                           setSelectedCategory(category)
                           setIsCategoryOpen(false)
                         }}
-                        className={`px-2 py-1 text-[9px] font-sf-mono border transition-colors ${
+                        className={`px-2 py-1 text-[9px] font-sf-mono border transition-colors duration-200 ${
                           selectedCategory === category
                             ? "bg-primary text-background border-primary"
-                            : "border-primary/20 text-primary/60 hover:border-primary/40"
+                            : "bg-primary text-background border-primary/40 hover:bg-primary/90"
                         }`}
                       >
                         <span className="hidden md:inline text-sm">{category.toUpperCase()}</span>
