@@ -135,8 +135,8 @@ export default function ExperiencePage() {
                       }}
                       className={`flex items-center justify-center w-8 h-8 border transition-all duration-200 ${
                         selectedExp === actualIndex
-                          ? "border-background/30 hover:bg-background/20"
-                          : "border-primary/20 hover:bg-primary/10 hover:border-primary/40"
+                          ? "bg-background border-background/30 text-primary hover:bg-background/90"
+                          : "bg-primary border-primary/40 text-background hover:bg-primary/90"
                       }`}
                     >
                       <motion.div
@@ -166,8 +166,10 @@ export default function ExperiencePage() {
                           e.stopPropagation()
                           setSelectedExp(selectedExp === actualIndex ? null : actualIndex)
                         }}
-                        className={`flex items-center justify-center w-7 h-7 border flex-shrink-0 ${
-                          selectedExp === actualIndex ? "border-background/30" : "border-primary/20"
+                        className={`flex items-center justify-center w-7 h-7 border flex-shrink-0 transition-all duration-200 ${
+                          selectedExp === actualIndex 
+                            ? "bg-background border-background/30 text-primary hover:bg-background/90" 
+                            : "bg-primary border-primary/40 text-background hover:bg-primary/90"
                         }`}
                       >
                         <motion.div
