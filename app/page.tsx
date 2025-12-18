@@ -84,7 +84,7 @@ function MarqueeRow({ items, speed, reverse }: MarqueeRowProps) {
         >
           {[...items, ...items].map((item, idx) => (
             <span key={idx} className="flex items-center shrink-0">
-              <span className="text-[10px] font-sf-mono text-primary/70 px-3 uppercase tracking-wider">
+              <span className="font-sf-mono text-primary/70 px-3 uppercase tracking-wider text-base">
                 {item}
               </span>
               <span className="w-1 h-1 rounded-full bg-primary/30 shrink-0" />
@@ -156,19 +156,19 @@ export default function Home() {
             >
               <div className="border-b border-primary/20 px-3 py-1.5 bg-primary/5">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-xs font-sf-mono font-bold text-primary tracking-tighter">ABOUT</h3>
-                  <span className="text-[9px] font-sf-mono text-primary/30">[01]</span>
+                  <h3 className="font-sf-mono font-bold text-primary tracking-tighter text-base">ABOUT</h3>
+                  <span className="font-sf-mono text-primary/30 text-base">[01]</span>
                 </div>
               </div>
               <div className="px-3 py-2 flex-1 flex flex-col justify-between overflow-hidden">
                 <div className="py-3 px-2">
-                  <p className="text-[10px] sm:text-xs text-primary/70 leading-relaxed font-mono tracking-tight">
+                  <p className="text-primary/70 leading-relaxed font-mono tracking-tight sm:text-base">
                     Data Scientist and AI Engineer specializing in{" "}
                     <span className="text-primary font-medium">machine learning</span>,{" "}
                     <span className="text-primary font-medium">deep learning</span>, and{" "}
                     <span className="text-primary font-medium">AI systems development</span>.
                   </p>
-                  <p className="text-[10px] sm:text-xs text-primary/60 leading-relaxed font-mono tracking-tight mt-2">
+                  <p className="text-primary/60 leading-relaxed font-mono tracking-tight mt-2 sm:text-sm">
                     Experience across healthcare, astronomy, and enterprise AI domains.
                   </p>
                 </div>
@@ -194,7 +194,7 @@ export default function Home() {
                     >
                       <Mail className="h-3.5 w-3.5" />
                     </Link>
-                    <span className="flex items-center text-[8px] font-sf-mono text-primary/40 ml-2">
+                    <span className="flex items-center font-sf-mono text-primary/40 ml-2 text-sm">
                       <MapPin className="h-2.5 w-2.5 mr-0.5" />
                       PHOENIX, AZ
                     </span>
@@ -233,8 +233,8 @@ export default function Home() {
             >
               <div className="border-b border-primary/20 px-3 py-1.5 bg-primary/5">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-xs font-sf-mono font-bold text-primary tracking-tighter">METRICS</h3>
-                  <span className="text-[9px] font-sf-mono text-primary/30">[02]</span>
+                  <h3 className="font-sf-mono font-bold text-primary tracking-tighter text-base">METRICS</h3>
+                  <span className="font-sf-mono text-primary/30 text-base">[02]</span>
                 </div>
               </div>
               <div className="p-2">
@@ -243,8 +243,8 @@ export default function Home() {
                     key={idx}
                     className="flex items-center justify-between py-2 border-b border-primary/5 last:border-b-0"
                   >
-                    <span className="text-[9px] font-sf-mono text-primary/40 uppercase">{stat.label}</span>
-                    <span className="text-[10px] font-sf-mono font-bold text-primary">{stat.value}</span>
+                    <span className="font-sf-mono text-primary/40 uppercase text-base">{stat.label}</span>
+                    <span className="font-sf-mono font-bold text-primary text-base">{stat.value}</span>
                   </div>
                 ))}
               </div>
@@ -259,8 +259,8 @@ export default function Home() {
             >
               <div className="border-b border-primary/20 px-3 py-1.5 bg-primary/5">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-xs font-sf-mono font-bold text-primary tracking-tighter">SPECIALIZATIONS</h3>
-                  <span className="text-[9px] font-sf-mono text-primary/30">[03]</span>
+                  <h3 className="font-sf-mono font-bold text-primary tracking-tighter text-base">SPECIALIZATIONS</h3>
+                  <span className="font-sf-mono text-primary/30 text-base">[03]</span>
                 </div>
               </div>
               {specializations.map((row, idx) => (
@@ -281,7 +281,7 @@ export default function Home() {
               <div className="border-b border-primary/20 px-3 py-1.5 bg-primary/5">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <h3 className="text-xs font-sf-mono font-bold text-primary tracking-tighter">FEATURED</h3>
+                    <h3 className="font-sf-mono font-bold text-primary tracking-tighter text-base">FEATURED</h3>
                     {featuredProjects.length > 1 && (
                       <span className="text-[8px] font-sf-mono text-primary/30">
                         {currentFeaturedIndex + 1}/{featuredProjects.length}
@@ -328,10 +328,10 @@ export default function Home() {
                   >
                     <div className="flex gap-3 w-full">
                       <div className="flex-1 flex flex-col justify-center min-w-0">
-                        <h4 className="text-sm font-sf-mono font-bold text-primary mb-1 truncate">
+                        <h4 className="font-sf-mono font-bold text-primary mb-1 truncate text-xl">
                           {currentFeatured?.title}
                         </h4>
-                        <p className="text-[10px] font-mono text-primary/60 line-clamp-2">
+                        <p className="font-mono text-primary/60 line-clamp-2 text-sm">
                           {currentFeatured?.description}
                         </p>
                       </div>
@@ -365,8 +365,8 @@ export default function Home() {
             >
               <div className="border-b border-primary/20 px-3 py-1.5 bg-primary/5">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-xs font-sf-mono font-bold text-primary tracking-tighter">EXPLORE</h3>
-                  <span className="text-[9px] font-sf-mono text-primary/30">[05]</span>
+                  <h3 className="font-sf-mono font-bold text-primary tracking-tighter text-base">EXPLORE</h3>
+                  <span className="font-sf-mono text-primary/30 text-base">[05]</span>
                 </div>
               </div>
               <div className="p-2 flex flex-col gap-1.5">
