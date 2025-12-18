@@ -40,6 +40,16 @@ function getInitialReturningPostId(): string | null {
   return null
 }
 
+function getInitialSelectedTags(): string[] {
+  if (typeof window !== "undefined") {
+    const storedTags = sessionStorage.getItem("selectedTags")
+    if (storedTags) {
+      return JSON.parse(storedTags)
+    }
+  }
+  return []
+}
+
 export default function UpdatesPage() {
   const posts = getPublishedPosts()
   const router = useRouter()
