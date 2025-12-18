@@ -144,9 +144,9 @@ export default function ExperiencePage() {
                         transition={{ duration: 0.2 }}
                       >
                         {selectedExp === actualIndex ? (
-                          <X className="w-7 h-7" />
+                          <X className="w-5 h-5" />
                         ) : (
-                          <ChevronDown className="h-7 w-7" />
+                          <ChevronDown className="h-5 w-5" />
                         )}
                       </motion.div>
                     </button>
