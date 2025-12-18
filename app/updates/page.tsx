@@ -55,7 +55,7 @@ export default function UpdatesPage() {
   const router = useRouter()
   const isMobile = useMediaQuery("(max-width: 768px)")
 
-  const [selectedTags, setSelectedTags] = useState<string[]>([])
+  const [selectedTags, setSelectedTags] = useState<string[]>(() => getInitialSelectedTags())
   const [isFilterOpen, setIsFilterOpen] = useState(false)
   const [startIndex, setStartIndex] = useState(0)
   const [hoveredId, setHoveredId] = useState<string | null>(null)
