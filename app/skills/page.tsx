@@ -97,12 +97,12 @@ function SubcategoryRow({
 
   return (
     <div
-      className={`grid grid-cols-[30%_70%] gap-3 items-center py-1.5 border-b last:border-b-0 transition-colors duration-150 ${
+      className={`grid grid-cols-[25%_75%] gap-3 items-center py-1.5 border-b last:border-b-0 transition-colors duration-150 ${
         isContainerHovered ? "border-primary/10" : "border-primary/5"
       }`}
     >
       <span
-        className={`text-[9px] font-sf-mono uppercase tracking-wider cursor-pointer transition-colors duration-100 text-center ${
+        className={`text-[9px] font-sf-mono uppercase tracking-wider cursor-pointer transition-colors duration-100 text-right ${
           isContainerHovered || isHovered ? "text-primary/70" : "text-primary/40"
         }`}
         onMouseEnter={() => setIsHovered(true)}
