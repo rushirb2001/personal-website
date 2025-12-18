@@ -25,12 +25,12 @@ export default function ContactPage() {
         >
           <div className="border-b border-primary/20 px-3 py-2 bg-primary/5">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-sf-mono font-bold tracking-widest">DIRECT MESSAGE</span>
-              <span className="text-[10px] font-sf-mono text-primary/30">[01]</span>
+              <span className="font-sf-mono font-bold tracking-widest text-base">DIRECT MESSAGE</span>
+              <span className="font-sf-mono text-primary/30 text-base">[01]</span>
             </div>
           </div>
           <div className="p-4 flex items-center justify-between">
-            <p className="text-xs font-sf-mono text-primary/60">
+            <p className="font-sf-mono text-primary/60 text-sm">
               SEND ME A DETAILED EMAIL OR DROP A CALL
             </p>
             <Button
@@ -51,12 +51,12 @@ export default function ContactPage() {
         >
           <div className="border-b border-primary/20 px-3 py-2 bg-primary/5">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-sf-mono font-bold tracking-widest">BOOK A CALL</span>
-              <span className="text-[10px] font-sf-mono text-primary/30">[02]</span>
+              <span className="font-sf-mono font-bold tracking-widest text-base">BOOK A CALL</span>
+              <span className="font-sf-mono text-primary/30 text-base">[02]</span>
             </div>
           </div>
           <div className="p-4 flex items-center justify-between">
-            <p className="text-xs font-sf-mono text-primary/60">
+            <p className="font-sf-mono text-primary/60 text-sm">
               SCHEDULE A 30-MIN CALL WITH ME
             </p>
             <Button
@@ -78,19 +78,19 @@ export default function ContactPage() {
           {/* Contact Info */}
           <div className="border border-primary/20 bg-background">
             <div className="border-b border-primary/20 px-3 py-2 bg-primary/5">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-sf-mono font-bold tracking-widest">CONTACT</span>
-                <span className="text-[10px] font-sf-mono text-primary/30">[02]</span>
+              <div className="flex items-center justify-between text-base">
+                <span className="font-sf-mono font-bold tracking-widest text-base">CONTACT</span>
+                <span className="font-sf-mono text-primary/30 text-base">[02]</span>
               </div>
             </div>
             <div className="divide-y divide-primary/10">
               <a href={`mailto:${CONTACT_INFO.email}`} className="p-4 flex items-center gap-3 hover:bg-primary/5 transition-colors">
                 <Mail className="h-4 w-4 text-primary/50 flex-shrink-0" />
-                <span className="text-xs font-sf-mono text-primary/70 break-all">{CONTACT_INFO.email}</span>
+                <span className="font-sf-mono text-primary/70 break-all text-sm">{CONTACT_INFO.email}</span>
               </a>
               <a href={`tel:${CONTACT_INFO.phone}`} className="p-4 flex items-center gap-3 hover:bg-primary/5 transition-colors">
                 <Phone className="h-4 w-4 text-primary/50 flex-shrink-0" />
-                <span className="text-xs font-sf-mono text-primary/70">{CONTACT_INFO.phone}</span>
+                <span className="font-sf-mono text-primary/70 text-sm">{CONTACT_INFO.phone}</span>
               </a>
             </div>
           </div>
@@ -99,18 +99,18 @@ export default function ContactPage() {
           <div className="border border-primary/20 bg-background">
             <div className="border-b border-primary/20 px-3 py-2 bg-primary/5">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-sf-mono font-bold tracking-widest">SOCIAL</span>
-                <span className="text-[10px] font-sf-mono text-primary/30">[03]</span>
+                <span className="font-sf-mono font-bold tracking-widest text-base">SOCIAL</span>
+                <span className="font-sf-mono text-primary/30 text-base">[03]</span>
               </div>
             </div>
             <div className="divide-y divide-primary/10">
               <a href={CONTACT_INFO.linkedin} target="_blank" rel="noopener noreferrer" className="p-4 flex items-center gap-3 hover:bg-primary/5 transition-colors">
                 <Linkedin className="h-4 w-4 text-primary/50 flex-shrink-0" />
-                <span className="text-xs font-sf-mono text-primary/70">LINKEDIN</span>
+                <span className="font-sf-mono text-primary/70 text-sm">LINKEDIN</span>
               </a>
               <a href={CONTACT_INFO.github} target="_blank" rel="noopener noreferrer" className="p-4 flex items-center gap-3 hover:bg-primary/5 transition-colors">
                 <Github className="h-4 w-4 text-primary/50 flex-shrink-0" />
-                <span className="text-xs font-sf-mono text-primary/70">GITHUB</span>
+                <span className="font-sf-mono text-primary/70 text-sm">GITHUB</span>
               </a>
             </div>
           </div>
@@ -123,10 +123,10 @@ export default function ContactPage() {
           transition={{ duration: 0.2, delay: 0.3 }}
           className="flex items-center justify-between border-t border-primary/20 pt-3"
         >
-          <div className="text-[10px] font-sf-mono text-primary/40 uppercase tracking-wider">
+          <div className="font-sf-mono text-primary/40 uppercase tracking-wider text-xs">
             RESPONSE TIME: 24-48 HOURS
           </div>
-          <div className="text-[10px] font-sf-mono text-primary/30">LAST.UPDATED: 2025</div>
+          <div className="font-sf-mono text-primary/30 text-xs">LAST.UPDATED: 2025</div>
         </motion.div>
       </div>
 
