@@ -225,9 +225,9 @@ export default function ProjectsPage() {
             className="w-full flex items-center justify-between px-3 py-2 bg-primary/5 hover:bg-primary/10 transition-colors"
           >
             <div className="flex items-center gap-2">
-              <span className="text-[10px] font-sf-mono text-primary/60">FILTER</span>
+              <span className="font-sf-mono text-primary/60 text-sm">FILTER</span>
               <span className="text-primary/20">|</span>
-              <span className="text-[10px] font-sf-mono text-primary">
+              <span className="font-sf-mono text-primary text-sm">
                 SHOWING '{isMobile ? (mobileLabels[selectedCategory] || selectedCategory.toUpperCase()) : selectedCategory.toUpperCase()}'
               </span>
             </div>
