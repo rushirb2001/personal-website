@@ -17,10 +17,10 @@ const skillsData = {
   frameworks: {
     title: "FRAMEWORKS",
     subcategories: {
-      "Deep Learning": ["PyTorch", "TensorFlow", "JAX"],
-      "Generative AI": ["Transformers", "LangGraph/Chain", "CrewAI", "Hugging Face"],
-      "Classical ML": ["Pandas", "Numpy", "Sklearn", "Matplotlib"], // , "NLTK",  "Seaborn"
-      "Computer Vision": ["OpenCV", "MediaPipe", "Albumentations", "YOLO"],
+      "DL": ["PyTorch", "TensorFlow", "JAX"],
+      "GenAI": ["Transformers", "LangGraph/Chain", "CrewAI", "Hugging Face"],
+      "ML": ["Pandas", "Numpy", "Sklearn", "Matplotlib"], // , "NLTK",  "Seaborn"
+      "CV": ["OpenCV", "MediaPipe", "Albumentations", "YOLO"],
     },
   },
   trainEvalInfer: {
@@ -103,7 +103,7 @@ function SubcategoryRow({
       }`}
     >
       <span
-        className={`text-[9px] font-sf-mono uppercase tracking-wider cursor-pointer transition-colors duration-100 text-right ${
+        className={`font-sf-mono uppercase tracking-wider cursor-pointer transition-colors duration-100 text-right text-xs ${
           isContainerHovered || isHovered ? "text-primary/70" : "text-primary/40"
         }`}
         onMouseEnter={() => setIsHovered(true)}
@@ -225,11 +225,11 @@ function CategoryBlock({
         }`}
       >
         <div className="flex items-center justify-between">
-          <h3 className="text-xs font-sf-mono font-bold tracking-widest text-primary">
+          <h3 className="font-sf-mono font-bold tracking-widest text-primary text-base">
             {title}
           </h3>
           <span
-            className={`text-[9px] font-sf-mono transition-colors duration-150 ${
+            className={`font-sf-mono transition-colors duration-150 text-base ${
               isContainerHovered ? "text-primary/50" : "text-primary/30"
             }`}
           >
