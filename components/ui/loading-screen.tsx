@@ -112,7 +112,7 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
             }}
             transition={{ duration: 0.5, ease: "easeOut" }}
           >
-            <h1 className="text-xl sm:text-2xl md:text-3xl font-sf-pro font-light text-primary/60 tracking-wide">
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-sf-mono font-light text-primary/60 tracking-wide">
               Hi, Welcome to my portfolio
             </h1>
           </motion.div>
