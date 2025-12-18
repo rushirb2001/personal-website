@@ -167,9 +167,9 @@ export default function ExperiencePage() {
                 >
                   {/* Desktop Row */}
                   <div className="hidden md:grid grid-cols-[2fr_1.5fr_1.2fr_1fr_40px] gap-2 px-3 py-3 items-center">
-                    <span className="font-sf-mono font-medium text-base">{exp.title}</span>
+                    <span className="font-sf-mono font-medium text-lg tracking-tighter">{exp.title}</span>
                     <span
-                      className={`font-sf-mono text-sm ${selectedExp === actualIndex ? "text-background/70" : "text-primary/60"}`}
+                      className={`font-sf-mono text-base tracking-tighter ${selectedExp === actualIndex ? "text-background/70" : "text-primary/60"}`}
                     >
                       {exp.company}
                     </span>
