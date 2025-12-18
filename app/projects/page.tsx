@@ -222,7 +222,7 @@ export default function ProjectsPage() {
         <div className={`border border-primary/20 ${showPaginationControls ? "flex-[6]" : "w-full"}`}>
           <button
             onClick={() => setIsCategoryOpen(!isCategoryOpen)}
-            className="w-full flex items-center justify-between px-3 py-2 bg-primary/5 hover:bg-primary/10 transition-colors"
+            className="w-full flex items-center justify-between px-3 py-2 bg-primary/5 hover:bg-primary/10 transition-colors duration-200"
           >
             <div className="flex items-center gap-2">
               <span className="font-sf-mono text-primary/60 text-sm">FILTER</span>
