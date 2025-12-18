@@ -205,7 +205,7 @@ export default function UpdatesPage() {
           >
             <span className="text-[10px] font-sf-mono text-primary/60">
               {selectedTags.length > 0
-                ? `FILTER: ${selectedTags.length} TAG${selectedTags.length !== 1 ? "S" : ""}`
+                ? `FILTER: SHOWING ${selectedTags.slice(0, 2).join(", ").toUpperCase()}${selectedTags.length > 2 ? ` +${selectedTags.length - 2}` : ""}`
                 : "FILTER BY TAG"}
             </span>
             <motion.div animate={{ rotate: isFilterOpen ? 180 : 0 }} transition={{ duration: 0.2 }}>
