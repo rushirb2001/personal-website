@@ -126,12 +126,9 @@ export function UpdatesBanner() {
       >
         <div className="flex items-center justify-between">
           <span className="text-[10px] font-sf-mono tracking-wider text-primary/70">
-            RECENT UPDATES
+            RECENT UPDATES [{String(updateCount).padStart(2, '0')}]
           </span>
           <div className="flex items-center gap-2">
-            <span className="text-[9px] font-sf-mono tracking-wider text-primary/50">
-              [{String(updateCount).padStart(2, '0')}]
-            </span>
             <button
               onClick={(e) => {
                 e.stopPropagation();
