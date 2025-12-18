@@ -174,9 +174,9 @@ export default function PublicationsPage() {
               <div className="md:hidden px-3 py-3">
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex-1 min-w-0">
-                    <h3 className="text-xs font-sf-mono font-medium line-clamp-2 text-left mb-2">{pub.title}</h3>
+                    <h3 className="font-sf-mono font-medium line-clamp-2 text-left mb-2 text-lg">{pub.title}</h3>
                     <p
-                      className={`text-[10px] font-sf-mono ${selectedPublication?.id === pub.id ? "text-background/60" : "text-primary/50"}`}
+                      className={`font-sf-mono text-base ${selectedPublication?.id === pub.id ? "text-background/60" : "text-primary/50"}`}
                     >
                       {pub.venue}
                     </p>
