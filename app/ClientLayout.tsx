@@ -11,6 +11,7 @@ import { useEffect, useState } from "react"
 import { ClientOnly } from "@/components/ui/client-only"
 import { CustomCursor } from "@/components/ui/custom-cursor"
 import { TouchFeedback } from "@/components/ui/touch-feedback"
+import { LoadingScreen } from "@/components/ui/loading-screen"
 import { motion, AnimatePresence } from "framer-motion"
 import { Analytics } from "@vercel/analytics/react"
 import { SpeedInsights } from "@vercel/speed-insights/next"
@@ -24,6 +25,8 @@ export default function ClientLayout({
   const [isTransitionReady, setIsTransitionReady] = useState(false)
   const [isTouchDevice, setIsTouchDevice] = useState(false)
   const [isInitialRender, setIsInitialRender] = useState(true)
+  const [showLoadingScreen, setShowLoadingScreen] = useState(true)
+  const [loadingComplete, setLoadingComplete] = useState(false)
 
   useEffect(() => {
     setIsMounted(true)
@@ -67,7 +70,14 @@ export default function ClientLayout({
     }
   }, [isMounted])
 
-  // Animation variants for header and footer
+  const handleLoadingComplete = () => {
+    setLoadingComplete(true)
+    // Small delay before hiding loading screen to allow smooth transition
+    setTimeout(() => {
+      setShowLoadingScreen(false)
+    }, 100)
+  }
+
   const headerVariants = {
     hidden: { opacity: 0, y: -20 },
     visible: {
@@ -147,7 +157,8 @@ export default function ClientLayout({
         <ThemeProvider>
           <NavigationProvider isReady={isTransitionReady}>
             <div className="flex flex-col min-h-screen overflow-hidden">
-              {/* Only render client-side components after mounting */}
+              <ClientOnly>{showLoadingScreen && <LoadingScreen onComplete={handleLoadingComplete} />}</ClientOnly>
+
               <ClientOnly>
                 {!isTouchDevice && <CustomCursor />}
                 <TouchFeedback />
@@ -155,21 +166,16 @@ export default function ClientLayout({
               </ClientOnly>
 
               <AnimatePresence mode="wait">
-                {isMounted && (
+                {isMounted && loadingComplete && (
                   <>
-                    <motion.div
-                      key="header"
-                      initial={isInitialRender ? "hidden" : "visible"}
-                      animate="visible"
-                      variants={headerVariants}
-                    >
+                    <motion.div key="header" initial="hidden" animate="visible" variants={headerVariants}>
                       <Header />
                     </motion.div>
 
                     <motion.main
                       className="flex-1 pt-16 pb-16 overflow-y-auto relative theme-transition"
                       key="main-content"
-                      initial={isInitialRender ? "hidden" : "visible"}
+                      initial="hidden"
                       animate="visible"
                       variants={contentVariants}
                     >
@@ -177,12 +183,7 @@ export default function ClientLayout({
                       <TransitionOverlay />
                     </motion.main>
 
-                    <motion.div
-                      key="footer"
-                      initial={isInitialRender ? "hidden" : "visible"}
-                      animate="visible"
-                      variants={footerVariants}
-                    >
+                    <motion.div key="footer" initial="hidden" animate="visible" variants={footerVariants}>
                       <Footer />
                     </motion.div>
                   </>
