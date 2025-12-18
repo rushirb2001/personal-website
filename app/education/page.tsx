@@ -66,8 +66,8 @@ export default function EducationPage() {
             {/* Header */}
             <div className="border-b border-primary/20 px-3 py-2 bg-primary/5">
               <div className="flex items-center justify-between">
-                <span className="font-sf-mono font-bold tracking-widest text-base">{edu.degree}</span>
-                <span className="text-[10px] font-sf-mono text-primary/30">[{String(index + 1).padStart(2, "0")}]</span>
+                <span className="font-sf-mono font-bold tracking-widest text-lg">{edu.degree}</span>
+                <span className="font-sf-mono text-primary/30 text-lg">[{String(index + 1).padStart(2, "0")}]</span>
               </div>
             </div>
 
