@@ -20,7 +20,7 @@ const skillsData = {
       DL: ["PyTorch", "TensorFlow", "JAX"],
       GenAI: ["Transformers", "LangGraph/Chain", "CrewAI", "Hugging Face"],
       ML: ["Pandas", "Numpy", "Sklearn", "Matplotlib"], // , "NLTK",  "Seaborn"
-      CV: ["OpenCV", "MediaPipe", "Albumentations", "YOLO"],
+      CV: ["OpenCV", "MediaPipe", "YOLO", "Albumentations"],
     },
   },
   trainEvalInfer: {
