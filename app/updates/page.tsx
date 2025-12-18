@@ -196,7 +196,7 @@ export default function UpdatesPage() {
               className="p-3 h-full"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 0.3, duration: 0.35, ease: "easeOut" }}
+              transition={{ delay: 4.3, duration: 0.35, ease: "easeOut" }}
             >
               <h2 className="text-base md:text-base font-sf-mono font-medium line-clamp-1 mb-1">
                 {collapseAnimation.postData.title}
