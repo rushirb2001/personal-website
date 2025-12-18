@@ -475,11 +475,11 @@ export default function ProjectsPage() {
                     <div className="w-5 h-5 border border-primary/30 bg-primary/10 flex items-center justify-center text-[10px] font-sf-mono text-primary/70">
                       01
                     </div>
-                    <span className="text-[9px] md:text-[10px] font-sf-mono text-primary/50 uppercase tracking-wider">
+                    <span className="text-[9px] md:text-sm font-sf-mono text-primary/50 uppercase tracking-wider">
                       DESCRIPTION
                     </span>
                   </div>
-                  <p className="text-[10px] md:text-[11px] font-sf-mono text-primary/70 leading-relaxed">
+                  <p className="text-[10px] md:text-xs font-sf-mono text-primary/70 leading-relaxed">
                     {selectedProject.fullDescription}
                   </p>
                 </div>
@@ -490,7 +490,7 @@ export default function ProjectsPage() {
                     <div className="w-5 h-5 border border-primary/30 bg-primary/10 flex items-center justify-center text-[10px] font-sf-mono text-primary/70">
                       02
                     </div>
-                    <span className="text-[9px] md:text-[10px] font-sf-mono text-primary/50 uppercase tracking-wider">
+                    <span className="text-[9px] md:text-sm font-sf-mono text-primary/50 uppercase tracking-wider">
                       KEY HIGHLIGHTS
                     </span>
                   </div>
@@ -500,7 +500,7 @@ export default function ProjectsPage() {
                         <div className="w-5 h-5 border border-primary/20 bg-primary/5 flex items-center justify-center text-[9px] font-sf-mono text-primary/60 flex-shrink-0">
                           {i + 1}
                         </div>
-                        <p className="text-[10px] md:text-[11px] font-sf-mono text-primary/70 leading-relaxed">
+                        <p className="text-[10px] md:text-xs font-sf-mono text-primary/70 leading-relaxed">
                           {highlight}
                         </p>
                       </div>
