@@ -189,7 +189,7 @@ export default function Home() {
               <div className="border-b border-primary/20 px-3 py-1.5 bg-primary/5">
                 <div className="flex items-center justify-between">
                   <h3 className="font-sf-mono font-bold text-primary tracking-tighter text-base">ABOUT</h3>
-                  <span className="font-sf-mono text-primary/30 text-base">[01]</span>
+                  <span className="font-sf-mono text-primary/30 text-base hidden md:block">[01]</span>
                 </div>
               </div>
               <div className="px-3 py-2 flex-1 flex flex-col justify-between overflow-hidden">
