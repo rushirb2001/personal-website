@@ -218,7 +218,7 @@ export default function UpdatesPage() {
             onClick={() => setIsFilterOpen(!isFilterOpen)}
             className="w-full flex items-center justify-between px-3 py-2 bg-primary/5 hover:bg-primary/10 transition-colors h-[42px]"
           >
-            <span className="text-[10px] font-sf-mono text-primary/60">
+            <span className="font-sf-mono text-primary/60 text-sm">
               {selectedTags.length > 0
                 ? `FILTER: SHOWING ${selectedTags.slice(0, 2).join(", ").toUpperCase()}${selectedTags.length > 2 ? ` +${selectedTags.length - 2}` : ""}`
                 : "FILTER BY TAG"}
@@ -243,7 +243,7 @@ export default function UpdatesPage() {
                       <button
                         key={tag}
                         onClick={() => toggleTag(tag)}
-                        className={`px-2 py-1 text-[9px] font-sf-mono border transition-colors ${
+                        className={`px-2 py-1 font-sf-mono border transition-colors text-sm ${
                           selectedTags.includes(tag)
                             ? "bg-primary text-background border-primary"
                             : "border-primary/20 text-primary/60 hover:border-primary/40"
@@ -333,15 +333,15 @@ export default function UpdatesPage() {
                 <div className="p-3">
                   {/* Header */}
                   <div className="flex items-start justify-between gap-3 mb-2">
-                    <h2 className="text-xs font-sf-mono font-medium flex-1">{post.title}</h2>
-                    <div className="flex items-center text-[9px] text-primary/50 font-sf-mono whitespace-nowrap">
+                    <h2 className="font-sf-mono flex-1 text-xl font-bold">{post.title}</h2>
+                    <div className="flex items-center text-primary/50 font-sf-mono whitespace-nowrap text-sm">
                       <Calendar className="h-3 w-3 mr-1" />
                       {formatDate(new Date(post.date))}
                     </div>
                   </div>
 
                   {/* Summary */}
-                  <p className="text-[10px] text-primary/60 mb-2 font-sf-mono line-clamp-2">{post.summary}</p>
+                  <p className="text-primary/60 mb-2 font-sf-mono line-clamp-2 text-sm">{post.summary}</p>
 
                   {/* Footer */}
                   <div className="flex items-center justify-between">
@@ -349,7 +349,7 @@ export default function UpdatesPage() {
                       <Tag className="h-3 w-3 text-primary/40" />
                       <div className="flex gap-1">
                         {post.tags.slice(0, 3).map((tag) => (
-                          <span key={tag} className="text-[9px] text-primary/40 font-sf-mono">
+                          <span key={tag} className="text-primary/40 font-sf-mono text-xs">
                             {tag}
                           </span>
                         ))}
@@ -360,7 +360,7 @@ export default function UpdatesPage() {
                         )}
                       </div>
                     </div>
-                    <div className="text-[9px] font-sf-mono text-primary/50 flex items-center">
+                    <div className="font-sf-mono text-primary/50 flex items-center text-xs">
                       READ
                       <ArrowRight className="ml-1 h-3 w-3" />
                     </div>
@@ -383,13 +383,13 @@ export default function UpdatesPage() {
           transition={{ duration: 0.2, delay: 0.3 }}
         >
           <div className="flex gap-1 sm:gap-2 text-[9px] sm:text-[10px] font-sf-mono text-primary/40 uppercase tracking-wider">
-            <span>{posts.length} {isMobile ? "POSTS" : "ARTICLES"}</span>
+            <span className="text-sm">{posts.length} {isMobile ? "POSTS" : "ARTICLES"}</span>
             <span className="text-primary/20">/</span>
-            <span>{allTags.length} TAGS</span>
+            <span className="text-sm">{allTags.length} TAGS</span>
             <span className="text-primary/20">/</span>
-            <span>{filteredPosts.length} {isMobile ? "SHOWN" : "FILTERED"}</span>
+            <span className="text-sm">{filteredPosts.length} {isMobile ? "SHOWN" : "FILTERED"}</span>
           </div>
-          <div className="text-[9px] sm:text-[10px] font-sf-mono text-primary/30">LAST.UPDATED: 2025</div>
+          <div className="text-[9px] sm:text-[10px] font-sf-mono text-primary/30"><span className="text-sm">LAST.UPDATED: 2025</span></div>
         </motion.div>
       </div>
     </PageLayout>
