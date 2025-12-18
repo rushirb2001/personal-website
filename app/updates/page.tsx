@@ -198,10 +198,10 @@ export default function UpdatesPage() {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.3, duration: 0.35, ease: "easeOut" }}
             >
-              <h2 className="text-base font-sf-mono font-medium line-clamp-1 mb-1">
+              <h2 className="text-base md:text-base font-sf-mono font-medium line-clamp-1 mb-1">
                 {collapseAnimation.postData.title}
               </h2>
-              <p className="text-[10px] text-primary/60 font-sf-mono line-clamp-2">
+              <p className="text-sm md:text-sm text-primary/60 font-sf-mono line-clamp-2">
                 {collapseAnimation.postData.summary}
               </p>
             </motion.div>
