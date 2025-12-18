@@ -5,7 +5,7 @@ import { PageLayout } from "@/components/layout/page-layout"
 import { motion, AnimatePresence } from "framer-motion"
 import { FileText, ExternalLink, ChevronDown, X } from "lucide-react"
 import { useMediaQuery } from "@/hooks/use-media-query"
-import { publications, ITEMS_PER_PAGE, type Publication } from "@/data/publications"
+import { publications, ITEMS_PER_PAGE, type Publication } from "./data"
 
 export default function PublicationsPage() {
   const [selectedPublication, setSelectedPublication] = useState<Publication | null>(null)
