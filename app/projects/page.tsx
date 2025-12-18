@@ -452,7 +452,7 @@ export default function ProjectsPage() {
                 </div>
                 <button
                   onClick={closeModal}
-                  className="text-primary/50 hover:text-primary transition-colors font-sf-mono border border-primary/20 hover:bg-primary/10 flex items-center justify-center w-7 h-7 md:w-auto md:px-2 md:py-1"
+                  className="bg-primary text-background border border-primary/40 hover:bg-primary/90 transition-all duration-200 font-sf-mono flex items-center justify-center w-7 h-7 md:w-auto md:px-2 md:py-1"
                 >
                   <span className="hidden md:inline text-[10px]">ESC</span>
                   <X className="w-3 h-3 md:hidden" />
