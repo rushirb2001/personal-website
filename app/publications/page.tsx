@@ -134,9 +134,9 @@ export default function PublicationsPage() {
                     transition={{ duration: 0.2 }}
                   >
                     {selectedPublication?.id === pub.id ? (
-                      <X className="w-3 h-3" />
+                      <X className="w-5 h-5" />
                     ) : (
-                      <ChevronDown className="w-3 h-3" />
+                      <ChevronDown className="w-5 h-5" />
                     )}
                   </motion.div>
                 </button>
@@ -167,7 +167,7 @@ export default function PublicationsPage() {
                       : "border-primary/20 hover:bg-primary/10 hover:border-primary/40"
                   }`}
                 >
-                  <ExternalLink className="w-3 h-3" />
+                  <ExternalLink className="w-5 h-5" />
                 </a>
               </div>
 
@@ -192,7 +192,7 @@ export default function PublicationsPage() {
                           selectedPublication?.id === pub.id ? "border-background/30" : "border-primary/20"
                         }`}
                       >
-                        <ExternalLink className="w-3 h-3" />
+                        <ExternalLink className="w-5 h-5" />
                       </a>
                       <button
                         onClick={(e) => {
@@ -208,9 +208,9 @@ export default function PublicationsPage() {
                           transition={{ duration: 0.2 }}
                         >
                           {selectedPublication?.id === pub.id ? (
-                            <X className="w-3 h-3" />
+                            <X className="w-5 h-5" />
                           ) : (
-                            <ChevronDown className="w-3 h-3" />
+                            <ChevronDown className="w-5 h-5" />
                           )}
                         </motion.div>
                       </button>
