@@ -35,8 +35,8 @@ const skillsData = {
   databases: {
     title: "DATABASES",
     subcategories: {
-      "Big Data": ["Apache Spark", "Hadoop", "Hive", "Databricks"],
       "RDBMS": ["PostgreSQL", "MySQL"],
+      "Big Data": ["Apache Spark", "Hadoop", "Hive", "Databricks"],
       "NoSQL": ["MongoDB", "Firebase", "Redis"],
       VectorDB: ["ChromaDB", "Pinecone", "Weaviate", "Datastax AstraDB"],
     },
