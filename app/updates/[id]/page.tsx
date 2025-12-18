@@ -184,12 +184,12 @@ export default function BlogPostPage() {
           <button
             onClick={handleBackToUpdates}
             disabled={isReversing}
-            className="flex items-center gap-1 text-[10px] font-sf-mono border border-primary/20 px-3 py-1.5 hover:bg-primary hover:text-background transition-colors disabled:opacity-50"
+            className="flex items-center gap-1 font-sf-mono border border-primary/20 px-3 py-1.5 hover:bg-primary hover:text-background transition-colors disabled:opacity-50 text-sm"
           >
             <ArrowLeft className="h-3 w-3" />
             BACK
           </button>
-          <div className="flex items-center gap-2 font-sf-mono text-primary/50 text-xs font-normal">
+          <div className="flex items-center gap-2 font-sf-mono text-primary/50 font-normal text-sm">
             <Calendar className="h-3 w-3" />
             {formatDate(new Date(post.date))}
           </div>
@@ -263,7 +263,7 @@ export default function BlogPostPage() {
                     {post.tags.map((tag) => (
                       <span
                         key={tag}
-                        className="text-[9px] font-sf-mono px-2 py-0.5 border border-primary/20 text-primary/60"
+                        className="font-sf-mono px-2 py-0.5 border border-primary/20 text-primary/60 text-xs"
                       >
                         {tag.toUpperCase()}
                       </span>
