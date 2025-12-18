@@ -158,17 +158,17 @@ export default function PublicationsPage() {
                 </span>
                 <a
                   href={pub.pdfLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={(e) => e.stopPropagation()}
-                  className={`flex items-center justify-center w-8 h-8 border transition-colors ${
-                    selectedPublication?.id === pub.id
-                      ? "border-background/30 hover:bg-background/20"
-                      : "border-primary/20 hover:bg-primary/10 hover:border-primary/40"
-                  }`}
-                >
-                  <ExternalLink className="w-5 h-5" />
-                </a>
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(e) => e.stopPropagation()}
+                    className={`flex items-center justify-center w-8 h-8 border transition-colors ${
+                      selectedPublication?.id === pub.id
+                        ? "bg-background text-primary border-background/30 hover:bg-background/90"
+                        : "bg-primary text-background border-primary/40 hover:bg-primary/90"
+                    }`}
+                  >
+                    <ExternalLink className="w-5 h-5" />
+                  </a>
               </div>
 
               <div className="md:hidden px-3 py-3">
@@ -184,16 +184,18 @@ export default function PublicationsPage() {
                   <div className="flex flex-col items-end gap-1 shrink-0">
                     <div className="flex items-center gap-1">
                       <a
-                        href={pub.pdfLink}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={(e) => e.stopPropagation()}
-                        className={`flex items-center justify-center w-8 h-8 border ${
-                          selectedPublication?.id === pub.id ? "border-background/30" : "border-primary/20"
-                        }`}
-                      >
-                        <ExternalLink className="w-5 h-5" />
-                      </a>
+                      href={pub.pdfLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                      className={`flex items-center justify-center w-8 h-8 border transition-all duration-200 ${
+                        selectedPublication?.id === pub.id 
+                          ? "bg-background text-primary border-background/30 hover:bg-background/90" 
+                          : "bg-primary text-background border-primary/40 hover:bg-primary/90"
+                      }`}
+                    >
+                      <ExternalLink className="w-5 h-5" />
+                    </a>
                       <button
                         onClick={(e) => {
                           e.stopPropagation()
