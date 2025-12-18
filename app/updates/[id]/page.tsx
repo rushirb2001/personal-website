@@ -273,7 +273,7 @@ export default function BlogPostPage() {
 
                 {/* Summary */}
                 <motion.div variants={itemVariants} className="border-l-2 border-primary/20 pl-4 mb-6">
-                  <p className="text-xs font-sf-mono text-primary/60 italic">TL;DR | {post.summary}</p>
+                  <p className="text-xs font-sf-mono text-primary/60 italic">{post.summary}</p>
                 </motion.div>
 
                 {/* Content */}
