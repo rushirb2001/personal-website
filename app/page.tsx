@@ -222,7 +222,7 @@ export default function Home() {
                     </Link>
                     <Link
                       href="mailto:rushirbhavsar@gmail.com"
-                      className="w-7 h-7 flex items-center justify-center border border-primary/20 bg-primary text-primary-foreground transition-all group"
+                      className="w-7 h-7 flex items-center justify-center border border-primary/20 bg-primary text-primary-foreground transition-all group hidden md:block"
                     >
                       <Mail className="h-3.5 w-3.5 group-hover:-translate-y-0.5 transition-transform" />
                     </Link>
