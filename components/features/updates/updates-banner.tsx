@@ -64,17 +64,16 @@ export function UpdatesBanner() {
 
   return (
     <>
-      {/* Banner */}
       {/* Banner - only show when dropdown is closed */}
 <AnimatePresence>
   {!showDropdown && (
     <motion.div
       ref={bannerRef}
       onClick={handleBannerClick}
-      initial={{ opacity: 0, y: -10 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -10 }}
-      transition={{ duration: 0.2 }}
+      initial={{ opacity: 0, scaleY: 0, originY: 0 }}
+      animate={{ opacity: 1, scaleY: 1, originY: 0 }}
+      exit={{ opacity: 0, scaleY: 0, originY: 0 }}
+      transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
       className="fixed top-14 md:top-16 right-0 md:right-auto md:left-0 z-40 flex items-center justify-start space-x-2 py-1 px-2 border-l md:border-l-0 md:border-r border-b border-primary/20 bg-background cursor-pointer hover:bg-primary/10 transition-colors duration-150"
     >
       <div className="w-1.5 h-1.5 rounded-full bg-primary animate-[blink_1s_ease-in-out_infinite]"></div>
@@ -112,29 +111,53 @@ export function UpdatesBanner() {
   {showDropdown && (
     <motion.div
       ref={dropdownRef}
-      initial={{ opacity: 0, y: -10, height: 0 }}
-      animate={{ opacity: 1, y: 0, height: "auto" }}
-      exit={{ opacity: 0, y: -10, height: 0 }}
-      transition={{ duration: 0.2 }}
-      className="fixed top-14 md:top-16 right-0 md:right-auto md:left-0 z-50 w-64 border border-primary/20 bg-background"
+      initial={{ opacity: 0, scaleY: 0, originY: 0 }}
+      animate={{ opacity: 1, scaleY: 1, originY: 0 }}
+      exit={{ opacity: 0, scaleY: 0, originY: 0 }}
+      transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+      className="fixed top-14 md:top-16 right-0 md:right-auto md:left-0 z-50 w-64 border border-primary/20 bg-background overflow-hidden"
     >
       {/* Header */}
-      <div className="p-3 bg-primary/5 border-b border-primary/20">
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.15, duration: 0.2 }}
+        className="p-3 bg-primary/5 border-b border-primary/20"
+      >
         <div className="flex items-center justify-between">
           <span className="text-[10px] font-sf-mono tracking-wider text-primary/70">
             RECENT UPDATES
           </span>
-          <span className="text-[9px] font-sf-mono tracking-wider text-primary/50">
-            [{String(updateCount).padStart(2, '0')}]
-          </span>
+          <div className="flex items-center gap-2">
+            <span className="text-[9px] font-sf-mono tracking-wider text-primary/50">
+              [{String(updateCount).padStart(2, '0')}]
+            </span>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowDropdown(false);
+              }}
+              className="w-4 h-4 flex items-center justify-center hover:bg-primary/10 transition-colors duration-150 cursor-pointer"
+            >
+              <X className="h-3 w-3 text-primary/60" />
+            </button>
+          </div>
         </div>
-      </div>
+      </motion.div>
 
       {/* Updates List */}
-      <div className="max-h-60 overflow-y-auto">
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.2, duration: 0.2 }}
+        className="max-h-60 overflow-y-auto"
+      >
         {recentPosts.map((post, index) => (
-          <div
+          <motion.div
             key={post.id}
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.25 + index * 0.05, duration: 0.2 }}
             onClick={handleUpdateClick(post.id)}
             className="p-3 border-b border-primary/10 cursor-pointer hover:bg-primary/5 transition-all duration-150"
           >
@@ -149,12 +172,15 @@ export function UpdatesBanner() {
             <div className="text-[9px] font-sf-mono tracking-tight text-primary/60 line-clamp-2 uppercase">
               {post.summary}
             </div>
-          </div>
+          </motion.div>
         ))}
-      </div>
+      </motion.div>
 
       {/* Footer */}
-      <div
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.25, duration: 0.2 }}
         onClick={handleViewAllClick}
         className="p-3 border-t border-primary/20 cursor-pointer hover:bg-primary/10 transition-all duration-150"
       >
@@ -164,7 +190,7 @@ export function UpdatesBanner() {
           </span>
           <span className="text-[9px] text-primary/50">→</span>
         </div>
-      </div>
+      </motion.div>
     </motion.div>
   )}
 </AnimatePresence>
