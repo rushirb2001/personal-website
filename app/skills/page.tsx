@@ -28,7 +28,7 @@ const skillsData = {
     subcategories: {
       Training: ["LoRA", "QLoRA", "DSP-Zero", "Ray", "FSDP"],
       Evaluation: ["MLFlow", "WandB", "DeepEval", "RAGAS"],
-      Inference: ["vLLM", "MLX", "Diffusers", "Ollama", "Groq", "Baseten"],
+      Inference: ["vLLM/MLX", "Diffusers", "Ollama", "Groq", "Baseten"],
     },
   },
   databases: {
