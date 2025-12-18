@@ -17,11 +17,6 @@ export const blogPosts: BlogPost[] = [
     date: "2025-05-01",
     summary: "Initial deployment of personal portfolio system with core functionality.",
     content: `
-## SYSTEM UPDATE: PORTFOLIO LAUNCH
-
-**DATE: 2025.05.01**
-**STATUS: OPERATIONAL**
-
 The initial deployment of my personal portfolio system is now complete. This marks the first major milestone in establishing my digital presence as a data scientist and AI engineer.
 
 ### DEPLOYMENT NOTES
@@ -99,10 +94,6 @@ The system will continue to evolve as new projects and capabilities are develope
     date: "2025-04-10",
     summary: "Successfully defended my MS thesis introducing MACE-PINNs for solving complex coupled PDEs.",
     content: `
-## RESEARCH MILESTONE: THESIS DEFENDED – MACE-PINNs
-
-**DATE: 2025.04.10**  
-**STATUS: COMPLETED**
 
 I'm excited to share that I successfully defended my Master's thesis at Arizona State University. The research focused on solving complex coupled PDEs using a modular deep learning framework I proposed: **MACE-PINNs** (Multi-Network Architecture for Coupled Equations - Physics-Informed Neural Networks).
 
@@ -135,10 +126,6 @@ The thesis lays the groundwork for future work in scalable physics-based machine
     date: "2025-05-15",
     summary: "I'm officially graduating with a Master of Science in Data Science, Analytics, and Engineering.",
     content: `
-## LIFE UPDATE: MS DSAE GRADUATION
-
-**DATE: 2025.05.15**  
-**STATUS: TO GRADUATE**
 
 I'm officially graduating with a **Master of Science in Data Science, Analytics, and Engineering (DSAE)** from **Arizona State University**.
 
