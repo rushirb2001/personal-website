@@ -10,7 +10,7 @@ import { PageLayout } from "@/components/layout/page-layout"
 import { useRouter } from "next/navigation"
 import { useMediaQuery } from "@/hooks/use-media-query"
 
-const ITEMS_PER_PAGE = 5
+const ITEMS_PER_PAGE = 3
 
 function getInitialCollapseAnimation(): {
   show: boolean
