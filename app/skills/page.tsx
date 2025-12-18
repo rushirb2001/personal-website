@@ -26,7 +26,7 @@ const skillsData = {
   trainEvalInfer: {
     title: "TRAIN/EVAL/INFER",
     subcategories: {
-      Training: ["LoRA", "QLoRA", "DeepSpeed Zero", "Ray", "Pytorch FSDP"],
+      Training: ["LoRA", "QLoRA", "DSP-Zero", "Ray", "FSDP"],
       Evaluation: ["MLFlow", "WandB", "DeepEval", "RAGAS"],
       Inference: ["vLLM", "MLX", "Diffusers", "Ollama", "Groq", "Baseten"],
     },
