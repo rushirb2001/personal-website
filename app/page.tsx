@@ -209,20 +209,20 @@ export default function Home() {
                     <Link
                       href="https://github.com/rushirb2001"
                       target="_blank"
-                      className="w-7 h-7 flex items-center justify-center border border-primary/20 hover:bg-primary hover:text-background transition-colors"
+                      className="w-7 h-7 flex items-center justify-center border border-primary/20 bg-black dark:bg-white hover:bg-primary dark:hover:bg-primary hover:text-background dark:hover:text-background dark:text-black transition-colors"
                     >
                       <Github className="h-3.5 w-3.5" />
                     </Link>
                     <Link
                       href="https://linkedin.com/in/rushir-bhavsar/"
                       target="_blank"
-                      className="w-7 h-7 flex items-center justify-center border border-primary/20 hover:bg-primary hover:text-background transition-colors"
+                      className="w-7 h-7 flex items-center justify-center border border-primary/20 bg-black dark:bg-white hover:bg-primary dark:hover:bg-primary hover:text-background dark:hover:text-background dark:text-black transition-colors"
                     >
                       <Linkedin className="h-3.5 w-3.5" />
                     </Link>
                     <Link
                       href="mailto:rushirbhavsar@gmail.com"
-                      className="w-7 h-7 flex items-center justify-center border border-primary/20 hover:bg-primary hover:text-background transition-colors"
+                      className="w-7 h-7 flex items-center justify-center border border-primary/20 bg-black dark:bg-white hover:bg-primary dark:hover:bg-primary hover:text-background dark:hover:text-background dark:text-black transition-colors"
                     >
                       <Mail className="h-3.5 w-3.5" />
                     </Link>
@@ -234,7 +234,7 @@ export default function Home() {
                   <div className="flex items-center gap-1.5">
                     <Button
                       variant="ghost"
-                      className="h-7 px-2 border border-primary/20 text-base font-sf-mono bg-transparent hover:bg-primary hover:text-background transition-colors rounded-none"
+                      className="h-7 px-2 border border-primary/20 text-base font-sf-mono bg-black dark:bg-white hover:bg-primary dark:hover:bg-primary hover:text-background dark:hover:text-background dark:text-black rounded-none transition-colors"
                       onClick={() => setIsResumeModalOpen(true)}
                     >
                       <FileText className="h-3 w-3 mr-1" />
@@ -242,7 +242,7 @@ export default function Home() {
                     </Button>
                     <Button
                       variant="ghost"
-                      className="h-7 px-2 border border-primary/20 text-base font-sf-mono bg-transparent hover:bg-primary hover:text-background transition-colors rounded-none"
+                      className="h-7 px-2 border border-primary/20 text-base font-sf-mono bg-black dark:bg-white hover:bg-primary dark:hover:bg-primary hover:text-background dark:hover:text-background dark:text-black rounded-none transition-colors"
                       onClick={() => navigateTo("/contact")}
                     >
                       CONTACT
@@ -324,14 +324,14 @@ export default function Home() {
                     {featuredProjects.length > 1 && (
                       <button
                         onClick={goToPrevFeatured}
-                        className="w-5 h-5 flex items-center justify-center border border-primary/20 hover:bg-primary hover:text-background transition-colors"
+                        className="w-5 h-5 flex items-center justify-center border border-primary/20 bg-black dark:bg-white hover:bg-primary dark:hover:bg-primary hover:text-background dark:hover:text-background dark:text-black transition-colors"
                       >
                         <ChevronLeft className="h-3 w-3" />
                       </button>
                     )}
                     <Button
                       variant="ghost"
-                      className="h-5 px-2 border border-primary/20 text-base font-sf-mono bg-transparent hover:bg-primary hover:text-background rounded-none transition-colors"
+                      className="h-5 px-2 border border-primary/20 text-base font-sf-mono bg-black dark:bg-white hover:bg-primary dark:hover:bg-primary hover:text-background dark:hover:text-background dark:text-black rounded-none transition-colors"
                       onClick={() => navigateTo("/projects")}
                     >
                       ALL
@@ -340,7 +340,7 @@ export default function Home() {
                     {featuredProjects.length > 1 && (
                       <button
                         onClick={goToNextFeatured}
-                        className="w-5 h-5 flex items-center justify-center border border-primary/20 hover:bg-primary hover:text-background transition-colors"
+                        className="w-5 h-5 flex items-center justify-center border border-primary/20 bg-black dark:bg-white hover:bg-primary dark:hover:bg-primary hover:text-background dark:hover:text-background dark:text-black transition-colors"
                       >
                         <ChevronRight className="h-3 w-3" />
                       </button>
@@ -404,7 +404,7 @@ export default function Home() {
                   <Button
                     key={idx}
                     variant="ghost"
-                    className="h-7 w-full justify-between text-base font-sf-mono border border-primary/20 hover:bg-primary hover:text-background rounded-none transition-colors group"
+                    className="h-7 w-full justify-between text-base font-sf-mono border border-primary/20 bg-black dark:bg-white hover:bg-primary dark:hover:bg-primary hover:text-background dark:hover:text-background dark:text-black rounded-none transition-colors group"
                     onClick={() => navigateTo(item.path)}
                   >
                     {item.label}
