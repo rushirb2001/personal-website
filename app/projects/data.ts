@@ -23,7 +23,7 @@ export const projects: Project[] = [
     technologies: [
       "Next.js 14",
       "TypeScript",
-      "React Server Components",
+      "React",
       "Tailwind CSS",
       "Framer Motion",
       "shadcn/ui",
