@@ -43,7 +43,6 @@ import {
   SiFlask,
   SiDjango,
   SiJavascript,
-  SiJupyter,
   SiHtml5,
   SiCss3,
   SiGit,
