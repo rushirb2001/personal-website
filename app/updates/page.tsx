@@ -201,7 +201,7 @@ export default function UpdatesPage() {
               <h2 className="text-base font-sf-mono font-medium line-clamp-1 mb-1">
                 {collapseAnimation.postData.title}
               </h2>
-              <p className="text-sm text-primary/60 font-sf-mono line-clamp-2">
+              <p className="text-[10px] text-primary/60 font-sf-mono line-clamp-2">
                 {collapseAnimation.postData.summary}
               </p>
             </motion.div>
