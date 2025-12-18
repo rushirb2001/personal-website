@@ -305,7 +305,7 @@ export default function Home() {
           <div className="flex flex-col md:flex-row gap-3 items-stretch min-w-0">
             {/* Featured Project */}
             <motion.div
-              className="border border-primary/20 bg-background flex-1 min-w-0 flex flex-col"
+              className="border border-primary/20 bg-background flex-1 min-w-0 flex flex-col hidden md:block"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: 0.3 }}
