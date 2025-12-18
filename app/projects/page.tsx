@@ -66,6 +66,7 @@ import {
   SiOpenai,
   SiOpencv,
 } from "react-icons/si"
+import {GiFlax} from "react-icons/gi"
 
 const techIconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   next: SiNextdotjs,
@@ -104,6 +105,7 @@ const techIconMap: Record<string, React.ComponentType<{ className?: string }>> =
   fastapi: SiFastapi,
   express: SiExpress,
   flask: SiFlask,
+  flax: GiFlax
   django: SiDjango,
   d3: SiD3Dotjs,
   graphql: SiGraphql,
