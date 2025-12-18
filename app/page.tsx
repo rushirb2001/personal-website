@@ -220,12 +220,7 @@ export default function Home() {
                     >
                       <Linkedin className="h-3.5 w-3.5 group-hover:-translate-y-0.5 transition-transform" />
                     </Link>
-                    <Link
-                      href="mailto:rushirbhavsar@gmail.com"
-                      className="w-7 h-7 flex items-center justify-center border border-primary/20 bg-primary text-primary-foreground transition-all group hidden md:block"
-                    >
-                      <Mail className="h-3.5 w-3.5 group-hover:-translate-y-0.5 transition-transform" />
-                    </Link>
+                    
                     <span className="flex items-center font-sf-mono text-primary/40 ml-2 text-sm hidden md:block">
                       <MapPin className="h-2.5 w-2.5 mr-0.5" />
                       PHOENIX, AZ
