@@ -131,7 +131,7 @@ export function TransitionOverlay() {
                   transition={{ duration: 0.5, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
                 >
                   <motion.span
-                    className="block text-sm font-sf-mono tracking-[0.25em] text-primary/80 whitespace-nowrap uppercase font-medium"
+                    className="block text-base font-sf-mono tracking-[0.25em] text-primary/80 whitespace-nowrap uppercase font-medium"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.3, delay: 0.3 }}
