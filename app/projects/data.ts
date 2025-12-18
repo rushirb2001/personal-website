@@ -114,7 +114,6 @@ export const projects: Project[] = [
       "Python",
       "OpenCV",
       "NumPy",
-      "Matplotlib",
       "Jupyter",
       "YAML",
     ],
