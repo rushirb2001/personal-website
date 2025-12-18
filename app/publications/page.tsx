@@ -354,21 +354,21 @@ export default function PublicationsPage() {
           transition={{ duration: 0.2, delay: 0.3 }}
         >
           <div className="flex flex-wrap gap-1 sm:gap-2 md:gap-4 text-[9px] sm:text-[10px] font-sf-mono text-primary/40 uppercase tracking-wider">
-            <span className="text-xs">
+            <span className="text-sm">
               {stats.total} {isMobile ? "PUB" : "PUBLICATIONS"}
             </span>
             <span className="text-primary/20">/</span>
-            <span className="text-xs">
+            <span className="text-sm">
               {stats.totalCitations} {isMobile ? "CIT" : "CITATIONS"}
             </span>
             <span className="text-primary/20">/</span>
-            <span className="text-xs">
+            <span className="text-sm">
               {stats.venues} {isMobile ? "VEN" : "VENUES"}
             </span>
             <span className="text-primary/20">/</span>
-            <span className="text-xs">{isMobile ? stats.yearRangeMobile : stats.yearRangeDesktop}</span>
+            <span className="text-sm">{isMobile ? stats.yearRangeMobile : stats.yearRangeDesktop}</span>
           </div>
-          <div className="text-[9px] sm:text-[10px] font-sf-mono text-primary/30"><span className="text-xs">{"LAST.UPDATED: 2025"}</span></div>
+          <div className="text-[9px] sm:text-[10px] font-sf-mono text-primary/30"><span className="text-sm">{"LAST.UPDATED: 2025"}</span></div>
         </motion.div>
       </div>
     </PageLayout>
