@@ -209,24 +209,23 @@ export default function Home() {
                     <Link
                       href="https://github.com/rushirb2001"
                       target="_blank"
-                      className="w-7 h-7 flex items-center justify-center border border-primary/20 bg-primary text-primary-foreground hover:bg-primary/80 transition-colors"
+                      className="w-7 h-7 flex items-center justify-center border border-primary/20 bg-primary text-primary-foreground transition-all group"
                     >
-                      <Github className="h-3.5 w-3.5" />
+                      <Github className="h-3.5 w-3.5 group-hover:-translate-y-0.5 transition-transform" />
                     </Link>
                     <Link
                       href="https://linkedin.com/in/rushir-bhavsar/"
                       target="_blank"
-                      className="w-7 h-7 flex items-center justify-center border border-primary/20 bg-primary text-primary-foreground hover:bg-primary/80 transition-colors"
+                      className="w-7 h-7 flex items-center justify-center border border-primary/20 bg-primary text-primary-foreground transition-all group"
                     >
-                      <Linkedin className="h-3.5 w-3.5" />
+                      <Linkedin className="h-3.5 w-3.5 group-hover:-translate-y-0.5 transition-transform" />
                     </Link>
                     <Link
                       href="mailto:rushirbhavsar@gmail.com"
-                      className="w-7 h-7 flex items-center justify-center border border-primary/20 bg-primary text-primary-foreground hover:bg-primary/80 transition-colors"
+                      className="w-7 h-7 flex items-center justify-center border border-primary/20 bg-primary text-primary-foreground transition-all group"
                     >
-                      <Mail className="h-3.5 w-3.5" />
+                      <Mail className="h-3.5 w-3.5 group-hover:-translate-y-0.5 transition-transform" />
                     </Link>
-                    {/* </CHANGE> */}
                     <span className="flex items-center font-sf-mono text-primary/40 ml-2 text-sm">
                       <MapPin className="h-2.5 w-2.5 mr-0.5" />
                       PHOENIX, AZ
@@ -235,21 +234,20 @@ export default function Home() {
                   <div className="flex items-center gap-1.5">
                     <Button
                       variant="ghost"
-                      className="h-7 px-2 border border-primary/20 text-base font-sf-mono bg-primary text-primary-foreground hover:bg-primary/80 transition-colors rounded-none"
+                      className="h-7 px-2 border border-primary/20 text-base font-sf-mono bg-primary text-primary-foreground transition-all group rounded-none"
                       onClick={() => setIsResumeModalOpen(true)}
                     >
-                      <FileText className="h-3 w-3 mr-1" />
+                      <FileText className="h-3 w-3 mr-1 group-hover:-translate-y-0.5 transition-transform" />
                       RESUME
                     </Button>
                     <Button
                       variant="ghost"
-                      className="h-7 px-2 border border-primary/20 text-base font-sf-mono bg-primary text-primary-foreground hover:bg-primary/80 transition-colors rounded-none"
+                      className="h-7 px-2 border border-primary/20 text-base font-sf-mono bg-primary text-primary-foreground transition-all group rounded-none"
                       onClick={() => navigateTo("/contact")}
                     >
                       CONTACT
-                      <ArrowRight className="h-2.5 w-2.5 ml-1" />
+                      <ArrowRight className="h-2.5 w-2.5 ml-1 group-hover:translate-x-1 transition-transform" />
                     </Button>
-                    {/* </CHANGE> */}
                   </div>
                 </div>
               </div>
@@ -326,28 +324,27 @@ export default function Home() {
                     {featuredProjects.length > 1 && (
                       <button
                         onClick={goToPrevFeatured}
-                        className="w-5 h-5 flex items-center justify-center border border-primary/20 bg-primary text-primary-foreground hover:bg-primary/80 transition-colors"
+                        className="w-5 h-5 flex items-center justify-center border border-primary/20 bg-primary text-primary-foreground transition-all hover:w-7"
                       >
                         <ChevronLeft className="h-3 w-3" />
                       </button>
                     )}
                     <Button
                       variant="ghost"
-                      className="h-5 px-2 border border-primary/20 text-base font-sf-mono bg-primary text-primary-foreground hover:bg-primary/80 transition-colors rounded-none"
+                      className="h-5 px-2 border border-primary/20 text-base font-sf-mono bg-primary text-primary-foreground transition-all group rounded-none"
                       onClick={() => navigateTo("/projects")}
                     >
                       ALL
-                      <ArrowRight className="h-2.5 w-2.5 ml-1" />
+                      <ArrowRight className="h-2.5 w-2.5 ml-1 group-hover:translate-x-1 transition-transform" />
                     </Button>
                     {featuredProjects.length > 1 && (
                       <button
                         onClick={goToNextFeatured}
-                        className="w-5 h-5 flex items-center justify-center border border-primary/20 bg-primary text-primary-foreground hover:bg-primary/80 transition-colors"
+                        className="w-5 h-5 flex items-center justify-center border border-primary/20 bg-primary text-primary-foreground transition-all hover:w-7"
                       >
                         <ChevronRight className="h-3 w-3" />
                       </button>
                     )}
-                    {/* </CHANGE> */}
                   </div>
                 </div>
               </div>
@@ -407,14 +404,13 @@ export default function Home() {
                   <Button
                     key={idx}
                     variant="ghost"
-                    className="h-7 w-full justify-between text-base font-sf-mono border border-primary/20 bg-primary text-primary-foreground hover:bg-primary/80 transition-colors group rounded-none"
+                    className="h-7 w-full justify-between text-base font-sf-mono border border-primary/20 bg-primary text-primary-foreground transition-all group rounded-none"
                     onClick={() => navigateTo(item.path)}
                   >
                     {item.label}
-                    <ArrowRight className="h-3 w-3 group-hover:translate-x-1 transition-transform" />
+                    <ArrowRight className="h-3 w-3 group-hover:translate-x-1.5 transition-transform" />
                   </Button>
                 ))}
-                {/* </CHANGE> */}
               </div>
             </motion.div>
           </div>
