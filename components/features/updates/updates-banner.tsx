@@ -4,7 +4,7 @@ import type React from "react"
 
 import { useState, useEffect, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { ArrowRight, ChevronDown } from "lucide-react"
+import { ArrowRight, ChevronDown, X } from "lucide-react"
 import { useNavigation } from "@/contexts/navigation-context"
 import { getRecentPosts } from "@/lib/blog-data"
 import { formatDate } from "@/lib/utils"
