@@ -1,6 +1,7 @@
 "use client"
 
 import type { ReactNode } from "react"
+import { useRef, useEffect, useState } from "react"
 import { motion } from "framer-motion"
 import { useNavigation } from "@/contexts/navigation-context"
 import { usePathname } from "next/navigation"
@@ -14,6 +15,24 @@ interface PageLayoutProps {
 export function PageLayout({ title, subtitle, children }: PageLayoutProps) {
   const { shouldAnimateEntrance, isTransitioning } = useNavigation()
   const pathname = usePathname()
+
+  const hasAnimatedRef = useRef(false)
+  const [animationKey, setAnimationKey] = useState(pathname)
+  const prevPathnameRef = useRef(pathname)
+
+  useEffect(() => {
+    // Reset when pathname changes (new navigation)
+    if (prevPathnameRef.current !== pathname) {
+      hasAnimatedRef.current = false
+      prevPathnameRef.current = pathname
+    }
+
+    // Only update key once when shouldAnimateEntrance becomes true
+    if (shouldAnimateEntrance && !hasAnimatedRef.current) {
+      setAnimationKey(`${pathname}-${Date.now()}`)
+      hasAnimatedRef.current = true
+    }
+  }, [pathname, shouldAnimateEntrance])
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -65,16 +84,15 @@ export function PageLayout({ title, subtitle, children }: PageLayoutProps) {
     },
   }
 
-  const shouldAnimate = shouldAnimateEntrance
-  const isHiddenDuringTransition = isTransitioning
+  const shouldAnimate = (shouldAnimateEntrance && !hasAnimatedRef.current) || animationKey !== pathname
 
   return (
     <motion.div
-      key={shouldAnimate ? `${pathname}-animate` : pathname}
+      key={animationKey}
       className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-[1fr_2fr] gap-3 sm:gap-4 md:gap-6 lg:gap-8 py-3 sm:py-4 md:py-6 lg:py-8 px-3 sm:px-4 md:px-6 lg:px-8 max-w-7xl mx-auto"
       variants={containerVariants}
-      initial={shouldAnimate ? "hidden" : "visible"}
-      animate={isHiddenDuringTransition ? "hidden" : "visible"}
+      initial={animationKey !== pathname ? "hidden" : "visible"}
+      animate={isTransitioning ? "hidden" : "visible"}
     >
       <div className="md:sticky md:top-20 lg:top-24 self-start flex flex-col justify-center md:h-auto lg:h-[calc(100vh-12rem)] md:mb-4 lg:mb-0">
         <motion.h1
