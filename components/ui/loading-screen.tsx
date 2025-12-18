@@ -35,17 +35,20 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
       if (nameRef.current) {
         const rect = nameRef.current.getBoundingClientRect()
 
+        // Current center position of text element
+        const currentCenterX = rect.left + rect.width / 2
+        const currentCenterY = rect.top + rect.height / 2
+
+        // After scaling, the text width becomes: rect.width * scaleFactor
         const scaledWidth = rect.width * scaleFactor
 
-        // Current center position of text
-        const currentCenterX = window.innerWidth / 2
-        const currentCenterY = window.innerHeight / 2
+        // The target left edge should be at headerPadding
+        // Since transform origin is center, we need to find where center should be
+        // for the left edge to land at headerPadding
+        // targetLeftEdge = headerPadding
+        // targetCenterX = targetLeftEdge + (scaledWidth / 2)
+        const targetCenterX = headerPadding + scaledWidth / 2
 
-        // On mobile, reduce the offset to position text closer to left edge
-        const mobileAdjustment = mobile ? -8 : 0
-
-        // Target position: left padding + half of scaled width (since transform origin is center)
-        const targetCenterX = headerPadding + scaledWidth / 2 + mobileAdjustment
         // Target Y: vertically centered in header
         const targetCenterY = headerHeight / 2
 
