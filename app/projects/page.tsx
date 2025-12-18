@@ -422,7 +422,7 @@ export default function ProjectsPage() {
             <span className="text-sm">{filteredProjects.length} {isMobile ? "SHOWN" : "FILTERED"}</span>
           </div>
           {showPaginationControls && (
-            <span className="text-[9px] sm:text-[10px] font-sf-mono text-primary/30">
+            <span className="sm:text-[10px] font-sf-mono text-primary/30 text-sm font-semibold">
               {startIndex + 1}-{Math.min(startIndex + ITEMS_PER_PAGE, filteredProjects.length)} OF {filteredProjects.length}
             </span>
           )}
