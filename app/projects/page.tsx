@@ -407,11 +407,11 @@ export default function ProjectsPage() {
           transition={{ duration: 0.2, delay: 0.3 }}
         >
           <div className="flex gap-1 sm:gap-2 text-[9px] sm:text-[10px] font-sf-mono text-primary/40 uppercase tracking-wider">
-            <span>{projects.length} {isMobile ? "PROJ" : "PROJECTS"}</span>
+            <span className="text-sm">{projects.length} {isMobile ? "PROJ" : "PROJECTS"}</span>
             <span className="text-primary/20">/</span>
-            <span>{categories.length - 1} {isMobile ? "CAT" : "CATEGORIES"}</span>
+            <span className="text-sm">{categories.length - 1} {isMobile ? "CAT" : "CATEGORIES"}</span>
             <span className="text-primary/20">/</span>
-            <span>{filteredProjects.length} {isMobile ? "SHOWN" : "FILTERED"}</span>
+            <span className="text-sm">{filteredProjects.length} {isMobile ? "SHOWN" : "FILTERED"}</span>
           </div>
           {showPaginationControls && (
             <span className="text-[9px] sm:text-[10px] font-sf-mono text-primary/30">
@@ -419,7 +419,7 @@ export default function ProjectsPage() {
             </span>
           )}
           {!showPaginationControls && (
-            <div className="text-[9px] sm:text-[10px] font-sf-mono text-primary/30">LAST.UPDATED: 2025</div>
+            <div className="text-[9px] sm:text-[10px] font-sf-mono text-primary/30"><span className="text-sm">LAST.UPDATED: 2025</span></div>
           )}
         </motion.div>
       </div>
