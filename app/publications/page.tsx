@@ -162,7 +162,7 @@ export default function PublicationsPage() {
           </motion.div>
         )}
 
-        <div className="hidden md:grid grid-cols-[40px_1fr_180px_60px_40px_40px] gap-4 px-3 py-2 border-b border-primary/30 text-[10px] font-sf-mono text-primary/50 uppercase tracking-wider">
+        <div className="hidden md:grid grid-cols-[40px_1fr_180px_60px_40px_40px] gap-4 px-3 py-2 border-b border-primary/30 font-sf-mono text-primary/50 uppercase tracking-wider text-sm">
           <span></span>
           <span>TITLE</span>
           <span>VENUE</span>
@@ -215,17 +215,17 @@ export default function PublicationsPage() {
                 </button>
                 <span className="font-sf-mono font-medium pr-4 text-base">{pub.title}</span>
                 <span
-                  className={`text-[10px] font-sf-mono ${selectedPublication?.id === pub.id ? "text-background/70" : "text-primary/60"}`}
+                  className={`font-sf-mono text-base ${selectedPublication?.id === pub.id ? "text-background/70" : "text-primary/60"}`}
                 >
                   {pub.venue}
                 </span>
                 <span
-                  className={`text-xs font-sf-mono ${selectedPublication?.id === pub.id ? "text-background/70" : "text-primary/50"}`}
+                  className={`font-sf-mono tracking-tighter text-sm ${selectedPublication?.id === pub.id ? "text-background/70" : "text-primary/50"}`}
                 >
                   {pub.year}.{pub.month}
                 </span>
                 <span
-                  className={`text-xs font-sf-mono font-medium ${selectedPublication?.id === pub.id ? "text-background" : "text-primary/70"}`}
+                  className={`font-sf-mono font-medium text-base ${selectedPublication?.id === pub.id ? "text-background" : "text-primary/70"}`}
                 >
                   {pub.citations}
                 </span>
