@@ -17,10 +17,10 @@ const skillsData = {
   frameworks: {
     title: "FRAMEWORKS",
     subcategories: {
-      "DL": ["PyTorch", "TensorFlow", "JAX"],
-      "GenAI": ["Transformers", "LangGraph/Chain", "CrewAI", "Hugging Face"],
-      "ML": ["Pandas", "Numpy", "Sklearn", "Matplotlib"], // , "NLTK",  "Seaborn"
-      "CV": ["OpenCV", "MediaPipe", "Albumentations", "YOLO"],
+      DL: ["PyTorch", "TensorFlow", "JAX"],
+      GenAI: ["Transformers", "LangGraph/Chain", "CrewAI", "Hugging Face"],
+      ML: ["Pandas", "Numpy", "Sklearn", "Matplotlib"], // , "NLTK",  "Seaborn"
+      CV: ["OpenCV", "MediaPipe", "Albumentations", "YOLO"],
     },
   },
   trainEvalInfer: {
@@ -35,9 +35,9 @@ const skillsData = {
   databases: {
     title: "DATABASES",
     subcategories: {
-      "RDBMS": ["PostgreSQL", "MySQL"],
+      RDBMS: ["PostgreSQL", "MySQL"],
       "Big Data": ["Apache Spark", "Hadoop", "Hive", "Databricks"],
-      "NoSQL": ["MongoDB", "Firebase", "Redis"],
+      NoSQL: ["MongoDB", "Firebase", "Redis"],
       VectorDB: ["ChromaDB", "Pinecone", "Weaviate", "Datastax AstraDB"],
     },
   },
@@ -74,7 +74,7 @@ function calculateTotals() {
 function SkillTag({ name, isHighlighted }: { name: string; isHighlighted?: boolean }) {
   return (
     <span
-      className={`inline-block px-1.5 py-0.5 text-[9px] md:text-[10px] font-sf-mono uppercase tracking-wide border transition-all duration-100 whitespace-nowrap ${
+      className={`inline-block px-1.5 py-0.5 text-[9px] md:text-sm font-sf-mono uppercase tracking-wide border transition-all duration-100 whitespace-nowrap ${
         isHighlighted
           ? "bg-primary text-background border-primary"
           : "bg-background text-primary/70 border-primary/20 hover:bg-primary hover:text-background hover:border-primary"
@@ -155,15 +155,8 @@ function MobileCollapsibleCategory({
           <span className={`text-[9px] font-sf-mono ${isExpanded ? "text-background/50" : "text-primary/30"}`}>
             [{String(index + 1).padStart(2, "0")}]
           </span>
-          <motion.div
-            animate={{ rotate: isExpanded ? 180 : 0 }}
-            transition={{ duration: 0.2 }}
-          >
-            {isExpanded ? (
-              <X className="w-3 h-3" />
-            ) : (
-              <ChevronDown className="w-3 h-3" />
-            )}
+          <motion.div animate={{ rotate: isExpanded ? 180 : 0 }} transition={{ duration: 0.2 }}>
+            {isExpanded ? <X className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
           </motion.div>
         </div>
       </button>
@@ -180,12 +173,7 @@ function MobileCollapsibleCategory({
           >
             <div className="px-3 py-2">
               {Object.entries(subcategories).map(([subcat, subItems], idx) => (
-                <SubcategoryRow
-                  key={subcat}
-                  title={subcat}
-                  items={subItems}
-                  isContainerHovered={false}
-                />
+                <SubcategoryRow key={subcat} title={subcat} items={subItems} isContainerHovered={false} />
               ))}
             </div>
           </motion.div>
@@ -225,9 +213,7 @@ function CategoryBlock({
         }`}
       >
         <div className="flex items-center justify-between">
-          <h3 className="font-sf-mono font-bold tracking-widest text-primary text-base">
-            {title}
-          </h3>
+          <h3 className="font-sf-mono font-bold tracking-widest text-primary text-base">{title}</h3>
           <span
             className={`font-sf-mono transition-colors duration-150 text-base ${
               isContainerHovered ? "text-primary/50" : "text-primary/30"
@@ -240,12 +226,7 @@ function CategoryBlock({
 
       <div className="px-3 py-2 flex-1">
         {Object.entries(subcategories).map(([subcat, subItems]) => (
-          <SubcategoryRow
-            key={subcat}
-            title={subcat}
-            items={subItems}
-            isContainerHovered={isContainerHovered}
-          />
+          <SubcategoryRow key={subcat} title={subcat} items={subItems} isContainerHovered={isContainerHovered} />
         ))}
       </div>
     </motion.div>
@@ -327,9 +308,13 @@ export default function SkillsPage() {
           <div className="flex gap-1 sm:gap-2 md:gap-4 text-[9px] sm:text-[10px] font-sf-mono text-primary/40 uppercase tracking-wider">
             <span className="text-sm">5 {isMobile ? "CAT" : "CATEGORIES"}</span>
             <span className="text-primary/20">/</span>
-            <span className="text-sm">{totalSubcategories} {isMobile ? "SUB" : "SUBCATEGORIES"}</span>
+            <span className="text-sm">
+              {totalSubcategories} {isMobile ? "SUB" : "SUBCATEGORIES"}
+            </span>
             <span className="text-primary/20">/</span>
-            <span className="text-sm">{totalTech} {isMobile ? "TECH" : "TECHNOLOGIES"}</span>
+            <span className="text-sm">
+              {totalTech} {isMobile ? "TECH" : "TECHNOLOGIES"}
+            </span>
           </div>
           <div className="sm:text-[10px] font-sf-mono text-primary/30 text-sm">
             <span className="text-sm">{isMobile ? "2025" : "LAST.UPDATED: 2025"}</span>
