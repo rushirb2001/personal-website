@@ -209,20 +209,20 @@ export default function Home() {
                     <Link
                       href="https://github.com/rushirb2001"
                       target="_blank"
-                      className="w-7 h-7 flex items-center justify-center border border-primary/20 bg-black dark:bg-white hover:bg-primary dark:hover:bg-primary hover:text-background dark:hover:text-background dark:text-black transition-colors"
+                      className="w-7 h-7 flex items-center justify-center border border-primary/20 bg-background text-primary hover:bg-primary hover:text-background transition-colors"
                     >
                       <Github className="h-3.5 w-3.5" />
                     </Link>
                     <Link
                       href="https://linkedin.com/in/rushir-bhavsar/"
                       target="_blank"
-                      className="w-7 h-7 flex items-center justify-center border border-primary/20 bg-black dark:bg-white hover:bg-primary dark:hover:bg-primary hover:text-background dark:hover:text-background dark:text-black transition-colors"
+                      className="w-7 h-7 flex items-center justify-center border border-primary/20 bg-background text-primary hover:bg-primary hover:text-background transition-colors"
                     >
                       <Linkedin className="h-3.5 w-3.5" />
                     </Link>
                     <Link
                       href="mailto:rushirbhavsar@gmail.com"
-                      className="w-7 h-7 flex items-center justify-center border border-primary/20 bg-black dark:bg-white hover:bg-primary dark:hover:bg-primary hover:text-background dark:hover:text-background dark:text-black transition-colors"
+                      className="w-7 h-7 flex items-center justify-center border border-primary/20 bg-background text-primary hover:bg-primary hover:text-background transition-colors"
                     >
                       <Mail className="h-3.5 w-3.5" />
                     </Link>
