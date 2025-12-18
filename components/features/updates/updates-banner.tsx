@@ -65,100 +65,109 @@ export function UpdatesBanner() {
   return (
     <>
       {/* Banner */}
-      <div
-        ref={bannerRef}
-        onClick={handleBannerClick}
-        className="fixed top-14 md:top-16 right-0 md:right-auto md:left-0 z-40 flex items-center justify-start space-x-2 py-1 px-2 border-l md:border-l-0 md:border-r border-b border-primary/20 bg-background/95 backdrop-blur-sm text-xs font-sf-mono text-primary/70 cursor-pointer hover:bg-primary/10 transition-colors rounded-bl-md md:rounded-bl-none md:rounded-br-md"
-      >
-        <div className="w-1.5 h-1.5 rounded-full bg-primary animate-[blink_1s_ease-in-out_infinite]"></div>
-        <AnimatePresence mode="wait">
-          {showAlternateText ? (
-            <motion.div
-              key="alternate"
-              initial={{ opacity: 0, y: -5 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 5 }}
-              transition={{ duration: 0.2 }}
-              className="flex items-center"
-            >
-              [{updateCount}-NEW UPDATES]
-            </motion.div>
-          ) : (
-            <motion.div
-              key="standard"
-              initial={{ opacity: 0, y: -5 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 5 }}
-              transition={{ duration: 0.2 }}
-              className="flex items-center"
-            >
-              [ UPDATES ] <ArrowRight className="ml-1 h-3 w-3" />
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-
-      {/* Dropdown */}
-      <AnimatePresence>
-        {showDropdown && (
+      {/* Banner - only show when dropdown is closed */}
+<AnimatePresence>
+  {!showDropdown && (
+    <motion.div
+      ref={bannerRef}
+      onClick={handleBannerClick}
+      initial={{ opacity: 0, y: -10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -10 }}
+      transition={{ duration: 0.2 }}
+      className="fixed top-14 md:top-16 right-0 md:right-auto md:left-0 z-40 flex items-center justify-start space-x-2 py-1 px-2 border-l md:border-l-0 md:border-r border-b border-primary/20 bg-background cursor-pointer hover:bg-primary/10 transition-colors duration-150"
+    >
+      <div className="w-1.5 h-1.5 rounded-full bg-primary animate-[blink_1s_ease-in-out_infinite]"></div>
+      <AnimatePresence mode="wait">
+        {showAlternateText ? (
           <motion.div
-            ref={dropdownRef}
-            initial={{ opacity: 0, y: -10, height: 0 }}
-            animate={{ opacity: 1, y: 0, height: "auto" }}
-            exit={{ opacity: 0, y: -10, height: 0 }}
+            key="alternate"
+            initial={{ opacity: 0, y: -5 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 5 }}
             transition={{ duration: 0.2 }}
-            className="fixed top-[calc(3.5rem+1.75rem)] md:top-[calc(4rem+1.75rem)] right-0 md:right-auto md:left-0 z-50 w-64 border border-primary/20 bg-background"
+            className="flex items-center text-[10px] font-sf-mono tracking-wider text-primary/70"
           >
-            {/* Header */}
-            <div className="p-3 bg-primary/5 border-b border-primary/20">
-              <div className="flex items-center justify-between">
-                <span className="text-[10px] font-sf-mono tracking-wider text-primary/70">
-                  RECENT UPDATES
-                </span>
-                <span className="text-[9px] font-sf-mono tracking-wider text-primary/50">
-                  [{String(updateCount).padStart(2, '0')}]
-                </span>
-              </div>
-            </div>
-
-            {/* Updates List */}
-            <div className="max-h-60 overflow-y-auto">
-              {recentPosts.map((post, index) => (
-                <div
-                  key={post.id}
-                  onClick={handleUpdateClick(post.id)}
-                  className="p-3 border-b border-primary/10 cursor-pointer hover:bg-primary/5 transition-all duration-150"
-                >
-                  <div className="flex items-start justify-between gap-2 mb-1.5">
-                    <span className="text-[10px] font-sf-mono tracking-tight text-primary/80 uppercase line-clamp-1">
-                      {post.title}
-                    </span>
-                    <span className="text-[9px] font-sf-mono tracking-wider text-primary/50 whitespace-nowrap">
-                      {formatDate(post.date)}
-                    </span>
-                  </div>
-                  <div className="text-[9px] font-sf-mono tracking-tight text-primary/60 line-clamp-2 uppercase">
-                    {post.summary}
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Footer */}
-            <div
-              onClick={handleViewAllClick}
-              className="p-3 border-t border-primary/20 cursor-pointer hover:bg-primary/10 transition-all duration-150"
-            >
-              <div className="flex items-center justify-center gap-1.5">
-                <span className="text-[10px] font-sf-mono tracking-wider text-primary/70">
-                  VIEW ALL
-                </span>
-                <span className="text-[9px] text-primary/50">→</span>
-              </div>
-            </div>
+            [{updateCount}-NEW UPDATES]
+          </motion.div>
+        ) : (
+          <motion.div
+            key="standard"
+            initial={{ opacity: 0, y: -5 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 5 }}
+            transition={{ duration: 0.2 }}
+            className="flex items-center text-[10px] font-sf-mono tracking-wider text-primary/70"
+          >
+            [ UPDATES ] <ArrowRight className="ml-1 h-3 w-3" />
           </motion.div>
         )}
       </AnimatePresence>
+    </motion.div>
+  )}
+</AnimatePresence>
+
+{/* Dropdown - only show when banner is clicked */}
+<AnimatePresence>
+  {showDropdown && (
+    <motion.div
+      ref={dropdownRef}
+      initial={{ opacity: 0, y: -10, height: 0 }}
+      animate={{ opacity: 1, y: 0, height: "auto" }}
+      exit={{ opacity: 0, y: -10, height: 0 }}
+      transition={{ duration: 0.2 }}
+      className="fixed top-14 md:top-16 right-0 md:right-auto md:left-0 z-50 w-64 border border-primary/20 bg-background"
+    >
+      {/* Header */}
+      <div className="p-3 bg-primary/5 border-b border-primary/20">
+        <div className="flex items-center justify-between">
+          <span className="text-[10px] font-sf-mono tracking-wider text-primary/70">
+            RECENT UPDATES
+          </span>
+          <span className="text-[9px] font-sf-mono tracking-wider text-primary/50">
+            [{String(updateCount).padStart(2, '0')}]
+          </span>
+        </div>
+      </div>
+
+      {/* Updates List */}
+      <div className="max-h-60 overflow-y-auto">
+        {recentPosts.map((post, index) => (
+          <div
+            key={post.id}
+            onClick={handleUpdateClick(post.id)}
+            className="p-3 border-b border-primary/10 cursor-pointer hover:bg-primary/5 transition-all duration-150"
+          >
+            <div className="flex items-start justify-between gap-2 mb-1.5">
+              <span className="text-[10px] font-sf-mono tracking-tight text-primary/80 uppercase line-clamp-1">
+                {post.title}
+              </span>
+              <span className="text-[9px] font-sf-mono tracking-wider text-primary/50 whitespace-nowrap">
+                {formatDate(post.date)}
+              </span>
+            </div>
+            <div className="text-[9px] font-sf-mono tracking-tight text-primary/60 line-clamp-2 uppercase">
+              {post.summary}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Footer */}
+      <div
+        onClick={handleViewAllClick}
+        className="p-3 border-t border-primary/20 cursor-pointer hover:bg-primary/10 transition-all duration-150"
+      >
+        <div className="flex items-center justify-center gap-1.5">
+          <span className="text-[10px] font-sf-mono tracking-wider text-primary/70">
+            VIEW ALL
+          </span>
+          <span className="text-[9px] text-primary/50">→</span>
+        </div>
+      </div>
+    </motion.div>
+  )}
+</AnimatePresence>
     </>
   )
 }
