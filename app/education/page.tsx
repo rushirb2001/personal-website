@@ -66,7 +66,7 @@ export default function EducationPage() {
             {/* Header */}
             <div className="border-b border-primary/20 px-3 py-2 bg-primary/5">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-sf-mono font-bold tracking-widest">{edu.degree}</span>
+                <span className="font-sf-mono font-bold tracking-widest text-base">{edu.degree}</span>
                 <span className="text-[10px] font-sf-mono text-primary/30">[{String(index + 1).padStart(2, "0")}]</span>
               </div>
             </div>
@@ -82,17 +82,17 @@ export default function EducationPage() {
             >
               <div className="flex items-start justify-between gap-4">
                 <div className="flex-1">
-                  <h3 className="text-sm font-sf-mono font-medium mb-2">{edu.field}</h3>
-                  <p className={`text-xs font-sf-mono mb-3 ${expandedIndex === index ? "text-background/70" : "text-primary/60"}`}>
+                  <h3 className="font-sf-mono font-medium mb-2 text-base">{edu.field}</h3>
+                  <p className={`font-sf-mono mb-3 text-sm ${expandedIndex === index ? "text-background/70" : "text-primary/60"}`}>
                     {edu.institution}
                   </p>
                   
                   <div className={`flex flex-wrap gap-x-4 gap-y-1 text-[10px] font-sf-mono ${expandedIndex === index ? "text-background/60" : "text-primary/50"}`}>
-                    <span className="flex items-center gap-1">
+                    <span className="flex items-center gap-1 text-sm">
                       <Calendar className="h-3 w-3" />
                       {edu.period}
                     </span>
-                    <span className="flex items-center gap-1">
+                    <span className="flex items-center gap-1 text-sm">
                       <MapPin className="h-3 w-3" />
                       {edu.location}
                     </span>
@@ -132,11 +132,11 @@ export default function EducationPage() {
                 >
                   <div className="px-4 pb-4 pt-2 border-t border-primary/10">
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-[9px] font-sf-mono text-primary/40 uppercase tracking-wider">
+                      <span className="font-sf-mono text-primary/40 uppercase tracking-wider text-xs">
                         KEY COURSEWORK
                       </span>
                       {edu.gpa && (
-                        <span className="text-[9px] font-sf-mono text-primary/40 uppercase tracking-wider font-black">
+                        <span className="font-sf-mono text-primary/40 uppercase tracking-wider font-black text-xs">
                           GPA: {edu.gpa}
                         </span>
                       )}
@@ -145,7 +145,7 @@ export default function EducationPage() {
                       {edu.courses.map((course, idx) => (
                         <span
                           key={idx}
-                          className="px-2 py-1 text-[10px] font-sf-mono border border-primary/20 bg-primary/5 hover:bg-primary hover:text-background transition-colors tracking-[-0.075em]"
+                          className="px-2 py-1 font-sf-mono border border-primary/20 bg-primary/5 hover:bg-primary hover:text-background transition-colors text-xs tracking-wider"
                         >
                           {course.toUpperCase()}
                         </span>
@@ -166,13 +166,13 @@ export default function EducationPage() {
           className="flex items-center justify-between border-t border-primary/20 pt-3"
         >
           <div className="flex gap-1 sm:gap-2 text-[9px] sm:text-[10px] font-sf-mono text-primary/40 uppercase tracking-wider">
-            <span>2 {isMobile ? "DEG" : "DEGREES"}</span>
+            <span className="text-sm">2 {isMobile ? "DEG" : "DEGREES"}</span>
             <span className="text-primary/20">/</span>
-            <span>2 {isMobile ? "INST" : "INSTITUTIONS"}</span>
+            <span className="text-sm">2 {isMobile ? "INST" : "INSTITUTIONS"}</span>
             <span className="text-primary/20">/</span>
-            <span>2019-25</span>
+            <span className="text-sm">2019-25</span>
           </div>
-          <div className="text-[10px] font-sf-mono text-primary/30">LAST.UPDATED: 2025</div>
+          <div className="font-sf-mono text-primary/30 text-sm">LAST.UPDATED: 2025</div>
         </motion.div>
       </div>
     </PageLayout>
