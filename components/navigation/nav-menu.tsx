@@ -74,7 +74,7 @@ export function NavMenu() {
             ) : (
               <span className="w-1.5 h-1.5 rounded-full bg-red-500/70 mr-2"></span>
             )}
-            <span>[{item.name}]</span>
+            <span className="text-sm tracking-tighter">[{item.name}]</span>
           </button>
         ))}
       </nav>
