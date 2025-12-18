@@ -226,7 +226,7 @@ export default function Home() {
                     >
                       <Mail className="h-3.5 w-3.5 group-hover:-translate-y-0.5 transition-transform" />
                     </Link>
-                    <span className="flex items-center font-sf-mono text-primary/40 ml-2 text-sm">
+                    <span className="flex items-center font-sf-mono text-primary/40 ml-2 text-sm hidden md:block">
                       <MapPin className="h-2.5 w-2.5 mr-0.5" />
                       PHOENIX, AZ
                     </span>
