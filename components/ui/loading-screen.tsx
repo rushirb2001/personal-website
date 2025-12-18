@@ -137,7 +137,7 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
             animate={
               phase === "transitioning"
                 ? {
-                    x: targetPosition.x - 10,
+                    x: targetPosition.x,
                     y: targetPosition.y,
                     scale: scaleFactor,
                   }
