@@ -115,7 +115,7 @@ const techIconMap: Record<string, React.ComponentType<{ className?: string }>> =
   firebase: SiFirebase,
   git: SiGit,
   jest: SiJest,
-  jupyter: SiJuptyer,
+  jupyter: SiJupyter,
 }
 
 const fallbackIconMap: Record<string, React.ComponentType<{ className?: string }>> = {
