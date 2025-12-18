@@ -97,7 +97,7 @@ function SubcategoryRow({
 
   return (
     <div
-      className={`grid grid-cols-[25%_75%] gap-3 items-center py-1.5 border-b last:border-b-0 transition-colors duration-150 ${
+      className={`grid grid-cols-[20%_80%] gap-3 items-center py-1.5 border-b last:border-b-0 transition-colors duration-150 ${
         isContainerHovered ? "border-primary/10" : "border-primary/5"
       }`}
     >
