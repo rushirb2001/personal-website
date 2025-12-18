@@ -63,6 +63,7 @@ import {
   SiPandas,
   SiScikitlearn,
   SiOpenai,
+  SiOpencv,
 } from "react-icons/si"
 
 const techIconMap: Record<string, React.ComponentType<{ className?: string }>> = {
