@@ -26,17 +26,25 @@ export function NavigationProvider({ children, isReady = true }: NavigationProvi
   const [currentPath, setCurrentPath] = useState("")
   const [shouldAnimateEntrance, setShouldAnimateEntrance] = useState(false)
   const navigationInProgress = useRef(false)
+  const waitingForTransitionEnd = useRef(false)
 
   // Update current path when pathname changes
   useEffect(() => {
     if (pathname) {
       setCurrentPath(pathname)
       if (navigationInProgress.current) {
-        setShouldAnimateEntrance(true)
+        waitingForTransitionEnd.current = true
         navigationInProgress.current = false
       }
     }
   }, [pathname])
+
+  useEffect(() => {
+    if (!isTransitioning && waitingForTransitionEnd.current) {
+      setShouldAnimateEntrance(true)
+      waitingForTransitionEnd.current = false
+    }
+  }, [isTransitioning])
 
   useEffect(() => {
     if (shouldAnimateEntrance) {

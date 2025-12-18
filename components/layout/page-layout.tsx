@@ -12,7 +12,7 @@ interface PageLayoutProps {
 }
 
 export function PageLayout({ title, subtitle, children }: PageLayoutProps) {
-  const { shouldAnimateEntrance } = useNavigation()
+  const { shouldAnimateEntrance, isTransitioning } = useNavigation()
   const pathname = usePathname()
 
   const containerVariants = {
@@ -65,13 +65,16 @@ export function PageLayout({ title, subtitle, children }: PageLayoutProps) {
     },
   }
 
+  const shouldAnimate = shouldAnimateEntrance
+  const isHiddenDuringTransition = isTransitioning
+
   return (
     <motion.div
-      key={shouldAnimateEntrance ? `${pathname}-animate` : pathname}
+      key={shouldAnimate ? `${pathname}-animate` : pathname}
       className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-[1fr_2fr] gap-3 sm:gap-4 md:gap-6 lg:gap-8 py-3 sm:py-4 md:py-6 lg:py-8 px-3 sm:px-4 md:px-6 lg:px-8 max-w-7xl mx-auto"
       variants={containerVariants}
-      initial="hidden"
-      animate="visible"
+      initial={shouldAnimate ? "hidden" : "visible"}
+      animate={isHiddenDuringTransition ? "hidden" : "visible"}
     >
       <div className="md:sticky md:top-20 lg:top-24 self-start flex flex-col justify-center md:h-auto lg:h-[calc(100vh-12rem)] md:mb-4 lg:mb-0">
         <motion.h1
