@@ -414,25 +414,27 @@ export default function Home() {
                 <div className="grid grid-cols-2 gap-1.5">
                   {/* Left Column - Social Links */}
                   <div className="flex flex-col gap-1.5">
-                    <Link
-                      href="https://github.com/rushirb2001"
+                    
+                      href="https://github.com/yourusername"
                       target="_blank"
-                      className="w-7 h-7 flex items-center justify-center border border-primary/20 bg-primary text-primary-foreground transition-all group"
+                      rel="noopener noreferrer"
+                      className="h-7 w-full flex items-center justify-between px-2 text-base font-sf-mono uppercase border border-primary/20 bg-primary text-background transition-all duration-150 hover:bg-primary/90"
                     >
                       <span>GITHUB</span>
-                      <Github className="h-3.5 w-3.5 group-hover:-translate-y-0.5 transition-transform" />
-                    </Link>
-                    <Link
-                      href="https://linkedin.com/in/rushir-bhavsar/"
+                      <Github className="h-3 w-3" />
+                    </a>
+                    
+                      href="https://linkedin.com/in/yourusername"
                       target="_blank"
-                      className="w-7 h-7 flex items-center justify-center border border-primary/20 bg-primary text-primary-foreground transition-all group"
+                      rel="noopener noreferrer"
+                      className="h-7 w-full flex items-center justify-between px-2 text-base font-sf-mono uppercase border border-primary/20 bg-primary text-background transition-all duration-150 hover:bg-primary/90"
                     >
                       <span>LINKEDIN</span>
-                      <Linkedin className="h-3.5 w-3.5 group-hover:-translate-y-0.5 transition-transform" />
-                    </Link>
+                      <Linkedin className="h-3 w-3" />
+                    </a>
                     <button
                       onClick={() => navigateTo("/contact")}
-                      className="h-8 w-full flex items-center justify-between px-2 font-sf-mono text-[10px] uppercase tracking-wider border border-primary/20 bg-primary text-background transition-all duration-150 hover:bg-primary/90"
+                      className="h-7 w-full flex items-center justify-between px-2 text-base font-sf-mono uppercase border border-primary/20 bg-primary text-background transition-all duration-150 hover:bg-primary/90"
                     >
                       <span>CONTACT</span>
                       <Mail className="h-3 w-3" />
@@ -445,7 +447,7 @@ export default function Home() {
                       <button
                         key={idx}
                         onClick={() => navigateTo(item.path)}
-                        className="h-8 w-full flex items-center justify-between px-2 font-sf-mono text-[10px] uppercase tracking-wider border border-primary/20 bg-primary text-background transition-all duration-150 hover:bg-primary/90 group"
+                        className="h-7 w-full flex items-center justify-between px-2 text-base font-sf-mono uppercase border border-primary/20 bg-primary text-background transition-all duration-150 hover:bg-primary/90 group"
                       >
                         <span>{item.label}</span>
                         <ArrowRight className="h-3 w-3 group-hover:translate-x-0.5 transition-transform" />
