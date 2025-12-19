@@ -31,6 +31,9 @@ export default function ClientLayout({
   useEffect(() => {
     setIsMounted(true)
 
+    document.documentElement.style.cursor = 'none'
+    document.body.style.cursor = 'none'
+
     // Check if this is a touch device
     const checkTouch = () => {
       setIsTouchDevice("ontouchstart" in window || navigator.maxTouchPoints > 0)
