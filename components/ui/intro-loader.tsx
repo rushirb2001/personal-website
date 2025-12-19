@@ -44,88 +44,67 @@ export function IntroLoader({ onLoadComplete }: IntroLoaderProps) {
     }
   }, [handleComplete])
 
-  const fullName = "RUSHIR BHAVSAR"
-
-  const charVariants = {
-    hidden: { opacity: 0, y: 15 },
-    visible: (i: number) => ({
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.4,
-        delay: 0.15 + i * 0.035,
-        ease: [0.4, 0, 0.2, 1],
-      },
-    }),
-  }
-
   return (
     <motion.div
-      className="fixed inset-0 z-[100] bg-background flex items-center justify-center p-8 md:p-12"
+      className="fixed inset-0 z-[100] bg-background flex items-center justify-center px-8 md:px-16"
       initial={{ opacity: 1 }}
       animate={{ opacity: isExiting ? 0 : 1 }}
       transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
     >
       {showContent && (
-        <div className="flex flex-col items-center justify-center w-full max-w-md">
+        <div className="flex flex-col items-center w-full max-w-2xl">
           {/* Name */}
-          <div className="flex justify-center flex-wrap overflow-hidden">
-            {fullName.split("").map((char, i) => (
-              <motion.span
-                key={i}
-                custom={i}
-                variants={charVariants}
-                initial="hidden"
-                animate="visible"
-                className={`text-2xl md:text-3xl lg:text-4xl font-sf-mono font-bold text-primary leading-none tracking-wider ${char === " " ? "w-3 md:w-4" : ""}`}
-              >
-                {char === " " ? "\u00A0" : char}
-              </motion.span>
-            ))}
-          </div>
+          <motion.h1
+            className="text-2xl md:text-3xl font-sf-mono font-bold text-primary tracking-wider mb-8 md:mb-12"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.1 }}
+          >
+            RUSHIR BHAVSAR
+          </motion.h1>
 
-          {/* Divider */}
+          {/* Greeting */}
           <motion.div
-            className="w-12 h-px bg-primary/20 mt-6 mb-6"
-            initial={{ opacity: 0, scaleX: 0 }}
-            animate={{ opacity: 1, scaleX: 1 }}
-            transition={{ delay: 0.7, duration: 0.4 }}
-          />
-
-          {/* Subtitle */}
-          <motion.p
-            className="text-xs md:text-sm font-sf-mono text-primary/60 tracking-wider text-center"
+            className="flex flex-col md:flex-row items-center gap-1 md:gap-3 mb-12 md:mb-16"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.8, duration: 0.4 }}
+            transition={{ duration: 0.4, delay: 0.3 }}
           >
-            DATA SCIENTIST • AI ENGINEER • ML RESEARCHER
-          </motion.p>
+            <span className="text-sm md:text-base font-sf-mono text-primary/70 tracking-wide">
+              HI, THERE!
+            </span>
+            <span className="text-sm md:text-base font-sf-mono text-primary tracking-wide">
+              WELCOME TO MY PORTFOLIO
+            </span>
+          </motion.div>
 
-          {/* Progress Section */}
+          {/* Loading Section */}
           <motion.div
-            className="mt-12 md:mt-16 w-full"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1.0, duration: 0.4 }}
+            className="w-full"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.5 }}
           >
-            {/* Progress label */}
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-[10px] font-sf-mono text-primary/40 tracking-widest">
-                LOADING
-              </span>
-              <span className="text-[10px] font-sf-mono text-primary/70 tabular-nums tracking-wider">
+            {/* Loading label */}
+            <span className="text-xs font-sf-mono font-bold text-primary tracking-widest mb-2 block">
+              LOADING
+            </span>
+
+            {/* Progress bar container with percentage */}
+            <div className="flex items-center gap-4 md:gap-6">
+              {/* Progress box */}
+              <div className="flex-1 h-6 md:h-8 border-[3px] border-primary overflow-hidden relative">
+                <motion.div
+                  className="absolute inset-y-0 left-0 bg-primary"
+                  style={{ width: `${progress}%` }}
+                  transition={{ duration: 0.05, ease: "linear" }}
+                />
+              </div>
+
+              {/* Percentage */}
+              <span className="text-xl md:text-2xl font-sf-mono font-bold text-primary tabular-nums min-w-[4ch]">
                 {Math.round(progress)}%
               </span>
-            </div>
-
-            {/* Progress bar */}
-            <div className="h-[3px] bg-primary/10 overflow-hidden">
-              <motion.div
-                className="h-full bg-primary"
-                style={{ width: `${progress}%` }}
-                transition={{ duration: 0.05, ease: "linear" }}
-              />
             </div>
           </motion.div>
         </div>
