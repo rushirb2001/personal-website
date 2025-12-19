@@ -394,7 +394,8 @@ export default function Home() {
                   <span className="font-sf-mono text-primary/30 text-base hidden md:block">[05]</span>
                 </div>
               </div>
-              <div className="p-2 flex flex-col gap-1.5">
+              {/* Desktop View */}
+              <div className="hidden md:flex p-2 flex-col gap-1.5">
                 {quickLinks.map((item, idx) => (
                   <Button
                     key={idx}
@@ -406,6 +407,52 @@ export default function Home() {
                     <ArrowRight className="h-3 w-3 group-hover:translate-x-1.5 transition-transform" />
                   </Button>
                 ))}
+              </div>
+
+              {/* Mobile View - 2 Column Grid */}
+              <div className="md:hidden p-2">
+                <div className="grid grid-cols-2 gap-1.5">
+                  {/* Left Column - Social Links */}
+                  <div className="flex flex-col gap-1.5">
+                    <Link
+                      href="https://github.com/rushirb2001"
+                      target="_blank"
+                      className="w-7 h-7 flex items-center justify-center border border-primary/20 bg-primary text-primary-foreground transition-all group"
+                    >
+                      <span>GITHUB</span>
+                      <Github className="h-3.5 w-3.5 group-hover:-translate-y-0.5 transition-transform" />
+                    </Link>
+                    <Link
+                      href="https://linkedin.com/in/rushir-bhavsar/"
+                      target="_blank"
+                      className="w-7 h-7 flex items-center justify-center border border-primary/20 bg-primary text-primary-foreground transition-all group"
+                    >
+                      <span>LINKEDIN</span>
+                      <Linkedin className="h-3.5 w-3.5 group-hover:-translate-y-0.5 transition-transform" />
+                    </Link>
+                    <button
+                      onClick={() => navigateTo("/contact")}
+                      className="h-8 w-full flex items-center justify-between px-2 font-sf-mono text-[10px] uppercase tracking-wider border border-primary/20 bg-primary text-background transition-all duration-150 hover:bg-primary/90"
+                    >
+                      <span>CONTACT</span>
+                      <Mail className="h-3 w-3" />
+                    </button>
+                  </div>
+
+                  {/* Right Column - Navigation Links */}
+                  <div className="flex flex-col gap-1.5">
+                    {quickLinks.slice(0, 3).map((item, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => navigateTo(item.path)}
+                        className="h-8 w-full flex items-center justify-between px-2 font-sf-mono text-[10px] uppercase tracking-wider border border-primary/20 bg-primary text-background transition-all duration-150 hover:bg-primary/90 group"
+                      >
+                        <span>{item.label}</span>
+                        <ArrowRight className="h-3 w-3 group-hover:translate-x-0.5 transition-transform" />
+                      </button>
+                    ))}
+                  </div>
+                </div>
               </div>
             </motion.div>
           </div>
