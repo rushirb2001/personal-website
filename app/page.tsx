@@ -189,6 +189,37 @@ export default function Home() {
               <div className="border-b border-primary/20 px-3 py-1.5 bg-primary/5">
                 <div className="flex items-center justify-between">
                   <h3 className="font-sf-mono font-bold text-primary tracking-tighter text-base">ABOUT</h3>
+                  {/* Mobile: Buttons in Header */}
+                  <div className="flex items-center gap-1 md:hidden">
+                    <Link
+                      href="https://github.com/rushirb2001"
+                      target="_blank"
+                      className="w-6 h-6 flex items-center justify-center border border-primary/20 bg-primary text-primary-foreground transition-all"
+                    >
+                      <Github className="h-3 w-3" />
+                    </Link>
+                    <Link
+                      href="https://linkedin.com/in/rushir-bhavsar/"
+                      target="_blank"
+                      className="w-6 h-6 flex items-center justify-center border border-primary/20 bg-primary text-primary-foreground transition-all"
+                    >
+                      <Linkedin className="h-3 w-3" />
+                    </Link>
+                    <button
+                      className="w-6 h-6 flex items-center justify-center border border-primary/20 bg-primary text-primary-foreground transition-all"
+                      onClick={() => setIsResumeModalOpen(true)}
+                    >
+                      <FileText className="h-3 w-3" />
+                    </button>
+                    <button
+                      className="w-6 h-6 flex items-center justify-center border border-primary/20 bg-primary text-primary-foreground transition-all"
+                      onClick={() => navigateTo("/contact")}
+                    >
+                      <Mail className="h-3 w-3" />
+                    </button>
+                  </div>
+                  
+                  {/* Desktop: Just the number */}
                   <span className="font-sf-mono text-primary/30 text-base hidden md:block">[01]</span>
                 </div>
               </div>
