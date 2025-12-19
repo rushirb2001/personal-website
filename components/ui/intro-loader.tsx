@@ -86,7 +86,7 @@ export function IntroLoader({ onLoadComplete }: IntroLoaderProps) {
             transition={{ duration: 0.4, delay: 0.5 }}
           >
             {/* Loading label */}
-            <span className="font-sf-mono font-bold text-primary mb-3 block text-base tracking-widest">
+            <span className="font-sf-mono font-bold text-primary mb-3 block text-base text-center tracking-widest">
               LOADING...
             </span>
 
