@@ -176,7 +176,7 @@ export default function PublicationsPage() {
                   <div className="flex-1 min-w-0">
                     <h3 className="font-sf-mono font-medium line-clamp-3 text-left mb-2 text-sm">{pub.title}</h3>
                     <p
-                      className={`font-sf-mono text-base ${selectedPublication?.id === pub.id ? "text-background/60" : "text-primary/50"}`}
+                      className={`font-sf-mono text-xs ${selectedPublication?.id === pub.id ? "text-background/60" : "text-primary/50"}`}
                     >
                       {pub.venue}
                     </p>
@@ -285,21 +285,21 @@ export default function PublicationsPage() {
           transition={{ duration: 0.2, delay: 0.3 }}
         >
           <div className="flex flex-wrap gap-1 sm:gap-2 md:gap-4 text-[9px] sm:text-[10px] font-sf-mono text-primary/40 uppercase tracking-wider">
-            <span className="text-sm">
+            <span className="">
               {stats.total} {isMobile ? "PUB" : "PUBLICATIONS"}
             </span>
             <span className="text-primary/20">/</span>
-            <span className="text-sm">
+            <span className="">
               {stats.totalCitations} {isMobile ? "CIT" : "CITATIONS"}
             </span>
             <span className="text-primary/20">/</span>
-            <span className="text-sm">
+            <span className="">
               {stats.venues} {isMobile ? "VEN" : "VENUES"}
             </span>
             <span className="text-primary/20">/</span>
-            <span className="text-sm">{isMobile ? stats.yearRangeMobile : stats.yearRangeDesktop}</span>
+            <span className="">{isMobile ? stats.yearRangeMobile : stats.yearRangeDesktop}</span>
           </div>
-          <div className="text-[9px] sm:text-[10px] font-sf-mono text-primary/30"><span className="text-xs">{"LAST.UPDATED: 2025"}</span></div>
+          <div className="text-[9px] md:text-base font-sf-mono text-primary/30"><span className="text-xs">{"LAST.UPDATED: 2025"}</span></div>
         </motion.div>
       </div>
     </PageLayout>
