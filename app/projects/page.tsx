@@ -687,8 +687,9 @@ export default function ProjectsPage() {
                 </div>
               </div>
             </motion.div>
-          )}
-        </AnimatePresence>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </PageLayout>
   )
 }
