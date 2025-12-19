@@ -414,7 +414,7 @@ export default function Home() {
                 <div className="grid grid-cols-2 gap-1.5">
                   {/* Left Column - Social Links */}
                   <div className="flex flex-col gap-1.5">
-                    
+                    <a
                       href="https://github.com/yourusername"
                       target="_blank"
                       rel="noopener noreferrer"
@@ -423,7 +423,7 @@ export default function Home() {
                       <span>GITHUB</span>
                       <Github className="h-3 w-3" />
                     </a>
-                    
+                    <a
                       href="https://linkedin.com/in/yourusername"
                       target="_blank"
                       rel="noopener noreferrer"
