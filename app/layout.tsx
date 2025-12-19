@@ -22,6 +22,12 @@ export const metadata: Metadata = {
     generator: 'v0.app'
 }
 
+useEffect(() => {
+  // Force immediate cursor hiding on mount
+  document.documentElement.style.cursor = 'none'
+  document.body.style.cursor = 'none'
+}, [])
+
 export default function RootLayout({
   children,
 }: {
