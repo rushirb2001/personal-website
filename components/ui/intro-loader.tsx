@@ -73,7 +73,7 @@ export function IntroLoader({ onLoadComplete }: IntroLoaderProps) {
             <span className="font-sf-mono text-primary/70 tracking-tighter text-3xl">
               HI, THERE!
             </span>
-            <span className="text-sm font-sf-mono text-primary tracking-tighter md:text-3xl">
+            <span className="font-sf-mono text-primary tracking-tighter md:text-3xl text-3xl text-center">
               WELCOME TO MY PORTFOLIO
             </span>
           </motion.div>
