@@ -44,143 +44,92 @@ export function IntroLoader({ onLoadComplete }: IntroLoaderProps) {
     }
   }, [handleComplete])
 
-  const lineOne = "HI, MY NAME IS"
   const firstName = "RUSHIR"
   const lastName = "BHAVSAR"
-  const lineThree = "WELCOME TO MY PORTFOLIO"
 
-  const lineVariants = {
-    hidden: { opacity: 0 },
-    visible: (delay: number) => ({
+  const charVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: (i: number) => ({
       opacity: 1,
+      y: 0,
       transition: {
         duration: 0.5,
-        delay,
+        delay: 0.2 + i * 0.04,
         ease: [0.4, 0, 0.2, 1],
       },
     }),
   }
 
-  const nameContainerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.03,
-        delayChildren: 0.3,
-      },
-    },
-  }
-
-  const charVariants = {
-    hidden: { opacity: 0, y: 15, scale: 0.95 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      scale: 1,
-      transition: {
-        duration: 0.3,
-        ease: [0.4, 0, 0.2, 1],
-      },
-    },
-  }
-
   return (
     <motion.div
-      className="fixed inset-0 z-[100] bg-background flex items-center justify-center px-8 md:px-12"
+      className="fixed inset-0 z-[100] bg-background flex items-center justify-center"
       initial={{ opacity: 1 }}
-      animate={{ opacity: isExiting ? 0 : 1, scale: isExiting ? 0.98 : 1 }}
+      animate={{ opacity: isExiting ? 0 : 1 }}
       transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
     >
       {showContent && (
-        <div className="flex flex-col items-center justify-center w-full max-w-5xl">
-          {/* Top label - more space from name */}
-          <motion.div
-            className="mb-16 md:mb-20"
-            variants={lineVariants}
-            initial="hidden"
-            animate="visible"
-            custom={0.1}
-          >
-            <p className="text-[10px] md:text-xs font-sf-mono text-primary/60 tracking-widest uppercase">
-              {lineOne}
-            </p>
-          </motion.div>
-
-          {/* Name display - proper letter spacing */}
-          <div className="flex flex-col items-center gap-2 md:gap-3">
-            {/* First name */}
-            <motion.div
-              className="flex justify-center gap-[2px] md:gap-1"
-              variants={nameContainerVariants}
-              initial="hidden"
-              animate="visible"
-            >
+        <div className="flex flex-col items-center justify-center w-full px-6">
+          {/* Name */}
+          <div className="flex flex-col items-center gap-1 md:gap-2">
+            <div className="flex justify-center overflow-hidden">
               {firstName.split("").map((char, i) => (
                 <motion.span
                   key={`first-${i}`}
+                  custom={i}
                   variants={charVariants}
-                  className="text-5xl md:text-7xl lg:text-8xl font-sf-mono font-bold text-primary leading-none"
+                  initial="hidden"
+                  animate="visible"
+                  className="text-5xl md:text-7xl lg:text-8xl font-sf-mono font-bold text-primary leading-none tracking-tight"
                 >
                   {char}
                 </motion.span>
               ))}
-            </motion.div>
+            </div>
 
-            {/* Last name */}
-            <motion.div
-              className="flex justify-center gap-[2px] md:gap-1"
-              variants={nameContainerVariants}
-              initial="hidden"
-              animate="visible"
-            >
+            <div className="flex justify-center overflow-hidden">
               {lastName.split("").map((char, i) => (
                 <motion.span
                   key={`last-${i}`}
+                  custom={firstName.length + i}
                   variants={charVariants}
-                  className="text-5xl md:text-7xl lg:text-8xl font-sf-mono font-bold text-primary leading-none"
-                  style={{ transitionDelay: `${(firstName.length + i) * 0.03}s` }}
+                  initial="hidden"
+                  animate="visible"
+                  className="text-5xl md:text-7xl lg:text-8xl font-sf-mono font-bold text-primary leading-none tracking-tight"
                 >
                   {char}
                 </motion.span>
               ))}
-            </motion.div>
+            </div>
           </div>
 
-          {/* Bottom label - more space from name */}
-          <motion.div
-            className="mt-16 md:mt-20"
-            variants={lineVariants}
-            initial="hidden"
-            animate="visible"
-            custom={1.0}
+          {/* Subtitle */}
+          <motion.p
+            className="mt-8 md:mt-12 text-[10px] md:text-[11px] font-sf-mono text-primary/40 tracking-widest"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1.0, duration: 0.5 }}
           >
-            <p className="text-[10px] md:text-xs font-sf-mono text-primary/40 tracking-widest uppercase">
-              {lineThree}
-            </p>
-          </motion.div>
+            DATA SCIENTIST • AI ENGINEER • ML RESEARCHER
+          </motion.p>
 
-          {/* Progress bar - proper separation and width */}
+          {/* Progress */}
           <motion.div
-            className="w-full max-w-xs md:max-w-md mt-20 md:mt-24"
+            className="mt-16 md:mt-20 w-full max-w-xs"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1.2, duration: 0.4 }}
           >
-            <div className="relative h-[2px] bg-primary/20 overflow-hidden">
-              <div
-                className="absolute left-0 top-0 h-full bg-primary transition-[width] duration-75 ease-linear"
+            <div className="h-px bg-primary/10 overflow-hidden">
+              <motion.div
+                className="h-full bg-primary/60"
                 style={{ width: `${progress}%` }}
+                transition={{ duration: 0.05, ease: "linear" }}
               />
             </div>
 
-            {/* Progress labels - proper spacing */}
-            <div className="flex justify-between items-center mt-3">
-              <span className="text-[9px] md:text-[10px] font-sf-mono text-primary/40 uppercase tracking-wider">
-                Loading
-              </span>
-              <span className="text-[9px] md:text-[10px] font-sf-mono text-primary/60 tabular-nums tracking-wider">
-                {Math.round(progress).toString().padStart(3, "0")}%
+            <div className="flex justify-end mt-2">
+              <span className="text-[9px] font-sf-mono text-primary/30 tabular-nums">
+                {Math.round(progress).toString().padStart(3, "0")}
               </span>
             </div>
           </motion.div>
