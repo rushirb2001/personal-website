@@ -425,12 +425,12 @@ export default function Home() {
                   <button
                     key={idx}
                     onClick={() => navigateTo(item.path)}
-                    className="h-8 flex flex-col items-center justify-center border border-primary/20 bg-primary text-primary-foreground transition-all hover:bg-primary/90 group"
+                    className="h-8 flex items-center justify-center gap-0.5 border border-primary/20 bg-primary text-primary-foreground transition-all hover:bg-primary/90 group px-1"
                   >
-                    <ArrowRight className="h-3 w-3 mb-0.5 group-hover:translate-x-0.5 transition-transform" />
-                    <span className="font-sf-mono text-[8px] tracking-tight">
-                      {item.label === "PROJECTS" ? "PROJ" : item.label === "EXPERIENCE" ? "EXP" : "PUB"}
+                    <span className="font-sf-mono text-[9px] tracking-tighter leading-none">
+                      {item.label}
                     </span>
+                    <ArrowRight className="h-2.5 w-2.5 group-hover:translate-x-0.5 transition-transform shrink-0" />
                   </button>
                 ))}
               </div>
