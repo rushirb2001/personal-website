@@ -230,7 +230,7 @@ export default function Home() {
                   </p>
                 </div>
                 <div className="flex flex-wrap items-center justify-between gap-2 px-2 py-2 border-t border-primary/10 hidden md:block">
-                  <div className="hidden md:flex items-center justify-between px-2 py-2 border-primary/10 border-t-0">
+                  <div className="hidden md:flex items-center justify-between border-primary/10 border-t-0 py-0 px-0">
                     <div className="flex items-center gap-1.5">
                       <Link
                         href="https://github.com/rushirb2001"
