@@ -96,7 +96,7 @@ export function IntroLoader({ onLoadComplete }: IntroLoaderProps) {
                 <motion.div
                   className="h-full bg-primary"
                   style={{ width: `${progress}%` }}
-                  transition={{ duration: 10.0, ease: "linear" }}
+                  transition={{ duration: 0.1, ease: "linear" }}
                 />
               </div>
             </div>
