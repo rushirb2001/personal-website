@@ -185,68 +185,88 @@ const ITEMS_PER_PAGE_MOBILE = 2
 function ExpandableDescription({ text }: { text: string }) {
   const [isExpanded, setIsExpanded] = useState(false)
   const [needsTruncation, setNeedsTruncation] = useState(false)
-  const textRef = React.useRef<HTMLParagraphElement>(null)
+  const measureRef = React.useRef<HTMLParagraphElement>(null)
 
   useEffect(() => {
-    if (textRef.current) {
-      // Check if text exceeds 10 lines (approximate line height * 10)
-      const lineHeight = Number.parseInt(getComputedStyle(textRef.current).lineHeight) || 16
+    if (measureRef.current) {
+      const lineHeight = Number.parseInt(getComputedStyle(measureRef.current).lineHeight) || 16
       const maxHeight = lineHeight * 10
-      setNeedsTruncation(textRef.current.scrollHeight > maxHeight)
+      setNeedsTruncation(measureRef.current.scrollHeight > maxHeight)
     }
+  }, [text])
+
+  // Reset expansion when text changes
+  useEffect(() => {
+    setIsExpanded(false)
   }, [text])
 
   return (
     <div className="relative">
-      {/* Mobile view with truncation/expansion */}
+      {/* Mobile View */}
       <div className="md:hidden">
-        <div
-          className={`relative ${!isExpanded && needsTruncation ? "cursor-pointer" : ""}`}
-          onClick={() => needsTruncation && setIsExpanded(!isExpanded)}
-        >
+        <AnimatePresence mode="wait">
           {isExpanded ? (
-            // Expanded scrollable container
-            <div className="max-h-48 overflow-y-auto border border-primary/20 bg-primary/5 p-2 rounded-sm">
-              <p className="text-[10px] font-sf-mono text-primary/70 leading-relaxed">{text}</p>
+            <motion.div
+              key="expanded"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.15 }}
+              className="border border-primary/20 bg-primary/5"
+            >
+              {/* Scrollable Content Container */}
+              <div className="max-h-40 overflow-y-auto p-3 overscroll-contain">
+                <p className="text-[10px] font-sf-mono text-primary/70 leading-relaxed uppercase tracking-tight">
+                  {text}
+                </p>
+              </div>
+              
+              {/* Collapse Button - Fixed at bottom */}
               <button
-                onClick={(e) => {
-                  e.stopPropagation()
-                  setIsExpanded(false)
-                }}
-                className="sticky bottom-0 left-0 right-0 mt-2 w-full py-1 bg-primary text-background text-[9px] font-sf-mono uppercase tracking-wider flex items-center justify-center gap-1"
+                onClick={() => setIsExpanded(false)}
+                className="w-full px-3 py-2 border-t border-primary/20 bg-primary text-background flex items-center justify-center gap-2 transition-colors duration-150 hover:bg-primary/90"
               >
-                <ChevronDown className="w-3 h-3 rotate-180" />
-                <span>COLLAPSE</span>
+                <X className="w-3 h-3" />
+                <span className="text-[9px] font-sf-mono uppercase tracking-wider">CLOSE</span>
               </button>
-            </div>
+            </motion.div>
           ) : (
-            // Truncated view
-            <>
+            <motion.div
+              key="collapsed"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.15 }}
+            >
+              {/* Truncated Text */}
               <p
-                ref={textRef}
-                className={`text-[10px] font-sf-mono text-primary/70 leading-relaxed ${
+                ref={measureRef}
+                className={`text-[10px] font-sf-mono text-primary/70 leading-relaxed uppercase tracking-tight ${
                   needsTruncation ? "line-clamp-[10]" : ""
                 }`}
               >
                 {text}
               </p>
+              
+              {/* Expand Trigger */}
               {needsTruncation && (
-                <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-background to-transparent pointer-events-none" />
-              )}
-              {needsTruncation && (
-                <button className="mt-2 w-full py-1 border border-primary/30 bg-primary/10 text-primary text-[9px] font-sf-mono uppercase tracking-wider flex items-center justify-center gap-1 hover:bg-primary/20 transition-colors">
-                  <ChevronDown className="w-3 h-3 animate-bounce" />
-                  <span>TAP TO READ MORE</span>
-                  <ChevronDown className="w-3 h-3 animate-bounce" />
+                <button
+                  onClick={() => setIsExpanded(true)}
+                  className="mt-2 w-full py-1.5 border border-primary/20 bg-transparent text-primary/60 flex items-center justify-center gap-2 transition-all duration-150 hover:bg-primary/10 hover:border-primary/40 hover:text-primary"
+                >
+                  <ChevronDown className="w-3 h-3" />
+                  <span className="text-[9px] font-sf-mono uppercase tracking-wider">MORE</span>
                 </button>
               )}
-            </>
+            </motion.div>
           )}
-        </div>
+        </AnimatePresence>
       </div>
 
-      {/* Desktop view - unchanged */}
-      <p className="hidden md:block text-xs font-sf-mono text-primary/70 leading-relaxed">{text}</p>
+      {/* Desktop View */}
+      <p className="hidden md:block text-xs font-sf-mono text-primary/70 leading-relaxed uppercase tracking-tight">
+        {text}
+      </p>
     </div>
   )
 }
