@@ -125,7 +125,7 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
 
           <motion.div
             ref={nameRef}
-            className="font-sf-mono font-bold tracking-tighter leading-7 text-primary px-4 py-8"
+            className="font-sf-mono font-bold tracking-tighter leading-7 text-primary py-8"
             style={{
               fontSize: `${initialFontSize}px`,
             }}
