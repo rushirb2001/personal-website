@@ -55,7 +55,7 @@ export function IntroLoader({ onLoadComplete }: IntroLoaderProps) {
         <div className="flex flex-col items-center w-full max-w-2xl">
           {/* Name */}
           <motion.h1
-            className="text-2xl md:text-3xl font-sf-mono font-bold text-primary tracking-wider mb-8 md:mb-12"
+            className="text-2xl md:text-3xl font-sf-mono font-bold text-primary tracking-wider mb-10 md:mb-14"
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.1 }}
@@ -65,7 +65,7 @@ export function IntroLoader({ onLoadComplete }: IntroLoaderProps) {
 
           {/* Greeting */}
           <motion.div
-            className="flex flex-col md:flex-row items-center gap-1 md:gap-3 mb-12 md:mb-16"
+            className="flex flex-col md:flex-row items-center gap-2 md:gap-4 mb-16 md:mb-20 px-4"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.4, delay: 0.3 }}
