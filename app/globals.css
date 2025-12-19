@@ -1040,7 +1040,10 @@ main {
 }
 
 /* Hide native cursor when custom cursor is active */
-.hide-cursor {
+html.hide-cursor,
+html.hide-cursor *,
+body.hide-cursor,
+body.hide-cursor * {
   cursor: none !important;
 }
 
