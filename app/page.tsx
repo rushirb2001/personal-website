@@ -3,7 +3,7 @@
 import type React from "react"
 import { useState, useRef, useEffect, useCallback } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { ArrowRight, Github, Linkedin, FileText, MapPin, ChevronLeft, ChevronRight } from "lucide-react"
+import { ArrowRight, Github, Linkedin, Mail, FileText, MapPin, ChevronLeft, ChevronRight } from "lucide-react"
 import { PageLayout } from "@/components/layout/page-layout"
 import { Button } from "@/components/ui/button"
 import { useNavigation } from "@/contexts/navigation-context"
