@@ -355,10 +355,10 @@ export default function Home() {
                   >
                     <div className="flex gap-3 w-full">
                       <div className="flex-1 flex flex-col justify-center min-w-0">
-                        <h4 className="font-sf-mono font-bold text-primary mb-1 truncate text-xl">
+                        <h4 className="font-sf-mono font-bold text-primary mb-1 line-clamp-2 text-base">
                           {currentFeatured?.title}
                         </h4>
-                        <p className="font-mono text-primary/60 line-clamp-2 text-sm">{currentFeatured?.description}</p>
+                        <p className="font-mono text-primary/60 line-clamp-2 text-xs">{currentFeatured?.description}</p>
                       </div>
                       <div className="flex flex-col gap-1 items-end justify-center shrink-0">
                         {currentFeatured?.technologies.slice(0, 3).map((tech, idx) => (
