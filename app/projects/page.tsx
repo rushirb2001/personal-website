@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-
+import { createPortal } from "react-dom"
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { PageLayout } from "@/components/layout/page-layout"
@@ -38,8 +38,6 @@ import {
   SiTailwindcss,
   SiD3Dotjs,
   SiNodedotjs,
-  SiFirebase,
-  SiRedux,
   SiFastapi,
   SiExpress,
   SiFlask,
@@ -47,11 +45,8 @@ import {
   SiJavascript,
   SiHtml5,
   SiCss3,
-  SiGit,
   SiGraphql,
   SiSocketdotio,
-  SiJest,
-  SiJupyter,
   SiVercel,
   SiNetlify,
   SiVite,
@@ -115,11 +110,6 @@ const techIconMap: Record<string, React.ComponentType<{ className?: string }>> =
   websocket: SiSocketdotio,
   kafka: SiApachekafka,
   spark: SiApachespark,
-  redux: SiRedux,
-  firebase: SiFirebase,
-  git: SiGit,
-  jest: SiJest,
-  jupyter: SiJupyter,
 }
 
 const fallbackIconMap: Record<string, React.ComponentType<{ className?: string }>> = {
@@ -188,6 +178,7 @@ export default function ProjectsPage() {
   const [startIndex, setStartIndex] = useState(0)
   const [isCategoryOpen, setIsCategoryOpen] = useState(false)
   const isMobile = useMediaQuery("(max-width: 768px)")
+  const [mounted, setMounted] = useState(false)
 
   const ITEMS_PER_PAGE = isMobile ? ITEMS_PER_PAGE_MOBILE : ITEMS_PER_PAGE_DESKTOP
 
@@ -198,6 +189,10 @@ export default function ProjectsPage() {
   const canShowPrevious = startIndex > 0
   const canShowNext = startIndex + ITEMS_PER_PAGE < filteredProjects.length
   const showPaginationControls = filteredProjects.length > ITEMS_PER_PAGE
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   useEffect(() => {
     setStartIndex(0)
@@ -222,6 +217,161 @@ export default function ProjectsPage() {
     setIsModalOpen(false)
     setTimeout(() => setSelectedProject(null), 200)
   }
+
+  const modalContent =
+    isModalOpen && selectedProject && mounted
+      ? createPortal(
+          <AnimatePresence>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-[80] flex items-center justify-center bg-black/80 backdrop-blur-sm p-3 md:p-6"
+              onClick={closeModal}
+            >
+              <motion.div
+                initial={{ scale: 0.95, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.95, opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                className="w-full max-w-5xl bg-background border border-primary/30 shadow-lg max-h-[85vh] overflow-hidden flex flex-col mt-14 md:mt-16 mb-12"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {/* Header */}
+                <div className="border-b border-primary/20 px-3 md:px-4 py-2 md:py-3 flex justify-between items-center bg-primary/5">
+                  <div className="flex items-center gap-2">
+                    <Terminal className="h-3 w-3 md:h-4 md:w-4 text-primary" />
+                    <span className="font-sf-mono font-bold uppercase tracking-wider text-primary line-clamp-1 md:text-lg">
+                      {selectedProject.title}
+                    </span>
+                  </div>
+                  <button
+                    onClick={closeModal}
+                    className="bg-primary text-background border border-primary/40 hover:bg-primary/90 transition-all duration-200 font-sf-mono flex items-center justify-center w-7 h-7 md:w-auto md:px-2 md:py-1"
+                  >
+                    <span className="hidden md:inline text-[10px]">ESC</span>
+                    <X className="w-3 h-3 md:hidden" />
+                  </button>
+                </div>
+
+                {/* Content - Single Column */}
+                <div className="p-4 md:p-6 overflow-y-auto flex-1 space-y-4 md:space-y-5">
+                  {/* Description */}
+                  <div>
+                    <div className="flex items-center gap-2 mb-2 md:mb-3 pb-2 border-b border-primary/10">
+                      <div className="w-5 h-5 border border-primary/30 bg-primary/10 flex items-center justify-center text-[10px] font-sf-mono text-primary/70">
+                        01
+                      </div>
+                      <span className="text-[9px] md:text-sm font-sf-mono text-primary/50 uppercase tracking-wider">
+                        DESCRIPTION
+                      </span>
+                    </div>
+                    <p className="text-[10px] md:text-xs font-sf-mono text-primary/70 leading-relaxed">
+                      {selectedProject.fullDescription}
+                    </p>
+                  </div>
+
+                  {/* Highlights */}
+                  <div>
+                    <div className="flex items-center gap-2 mb-2 md:mb-3 pb-2 border-b border-primary/10">
+                      <div className="w-5 h-5 border border-primary/30 bg-primary/10 flex items-center justify-center text-[10px] font-sf-mono text-primary/70 flex-shrink-0">
+                        02
+                      </div>
+                      <span className="text-[9px] md:text-sm font-sf-mono text-primary/50 uppercase tracking-wider">
+                        KEY HIGHLIGHTS
+                      </span>
+                    </div>
+                    <div className="space-y-2 md:space-y-3">
+                      {selectedProject.highlights.map((highlight, i) => (
+                        <div key={i} className="flex gap-2">
+                          <div className="w-5 h-5 border border-primary/20 bg-primary/5 flex items-center justify-center text-[9px] font-sf-mono text-primary/40 flex-shrink-0">
+                            {i + 1}
+                          </div>
+                          <p className="text-[10px] md:text-xs font-sf-mono text-primary/60 leading-relaxed">
+                            {highlight}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Tech Stack */}
+                  <div>
+                    <div className="flex items-center gap-2 mb-2 md:mb-3 pb-2 border-b border-primary/10">
+                      <div className="w-5 h-5 border border-primary/30 bg-primary/10 flex items-center justify-center text-[10px] font-sf-mono text-primary/70 flex-shrink-0">
+                        03
+                      </div>
+                      <span className="text-[9px] md:text-sm font-sf-mono text-primary/50 uppercase tracking-wider">
+                        TECH STACK
+                      </span>
+                    </div>
+                    <div className="flex flex-wrap gap-1.5">
+                      {selectedProject.technologies.map((tech) => (
+                        <div
+                          key={tech}
+                          className="flex items-center gap-1.5 px-2 py-1 border border-primary/20 bg-primary/5"
+                        >
+                          <span className="text-primary/60">{getTechIcon(tech)}</span>
+                          <span className="text-[9px] md:text-[10px] font-sf-mono text-primary/70 uppercase">
+                            {tech}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Meta Info */}
+                  <div className="flex flex-wrap gap-3 md:gap-4 pt-2 border-t border-primary/10">
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-[9px] font-sf-mono text-primary/40">STATUS:</span>
+                      <span className={`text-[9px] font-sf-mono font-bold ${getStatusColor(selectedProject.status)}`}>
+                        {selectedProject.status}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-[9px] font-sf-mono text-primary/40">YEAR:</span>
+                      <span className="text-[9px] font-sf-mono text-primary/70">{selectedProject.year}</span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-[9px] font-sf-mono text-primary/40">CATEGORY:</span>
+                      <span className="text-[9px] font-sf-mono text-primary/70 uppercase">
+                        {selectedProject.category}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Footer Actions */}
+                <div className="border-t border-primary/20 px-3 md:px-4 py-2 md:py-3 flex justify-end gap-2 bg-primary/5">
+                  {selectedProject.github && (
+                    <a
+                      href={selectedProject.github}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-3 py-1.5 border border-primary/30 bg-primary text-background hover:bg-primary/90 transition-colors flex items-center gap-1.5"
+                    >
+                      <Github className="w-3 h-3" />
+                      <span className="text-[10px] font-sf-mono">CODE</span>
+                    </a>
+                  )}
+                  {selectedProject.link && (
+                    <a
+                      href={selectedProject.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-3 py-1.5 border border-primary/30 bg-primary text-background hover:bg-primary/90 transition-colors flex items-center gap-1.5"
+                    >
+                      <ExternalLink className="w-3 h-3" />
+                      <span className="text-[10px] font-sf-mono">LIVE</span>
+                    </a>
+                  )}
+                </div>
+              </motion.div>
+            </motion.div>
+          </AnimatePresence>,
+          document.body,
+        )
+      : null
 
   return (
     <PageLayout title="PROJECTS" subtitle="PERSONAL & PROFESSIONAL WORK">
@@ -447,147 +597,7 @@ export default function ProjectsPage() {
         </motion.div>
       </div>
 
-      {/* Modal - Full Screen Layout */}
-      <AnimatePresence>
-        {isModalOpen && selectedProject && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[80] bg-background"
-            onClick={closeModal}
-          >
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 20 }}
-              transition={{ duration: 0.2 }}
-              className="w-full h-full pt-14 md:pt-16 pb-12 overflow-hidden flex flex-col"
-              onClick={(e) => e.stopPropagation()}
-            >
-              {/* Header */}
-              <div className="border-b border-primary/20 px-4 md:px-8 py-3 md:py-4 flex justify-between items-center bg-primary/5 shrink-0">
-                <div className="flex items-center gap-3">
-                  <Terminal className="h-4 w-4 md:h-5 md:w-5 text-primary" />
-                  <span className="font-sf-mono font-bold uppercase tracking-wider text-primary text-lg md:text-xl">
-                    {selectedProject.title}
-                  </span>
-                  <span className={`text-xs font-sf-mono ${getStatusColor(selectedProject.status)}`}>
-                    [{selectedProject.status}]
-                  </span>
-                </div>
-                <button
-                  onClick={closeModal}
-                  className="bg-primary text-background border border-primary/40 hover:bg-primary/90 transition-all duration-200 font-sf-mono flex items-center gap-2 px-3 py-1.5"
-                >
-                  <span className="text-xs">CLOSE</span>
-                  <X className="w-3 h-3" />
-                </button>
-              </div>
-
-              {/* Content - Full Width Scrollable */}
-              <div className="flex-1 overflow-y-auto px-4 md:px-8 py-6 md:py-8">
-                <div className="max-w-4xl mx-auto space-y-6 md:space-y-8">
-                  {/* Description */}
-                  <div>
-                    <div className="flex items-center gap-2 mb-3 pb-2 border-b border-primary/10">
-                      <div className="w-6 h-6 border border-primary/30 bg-primary/10 flex items-center justify-center text-xs font-sf-mono text-primary/70">
-                        01
-                      </div>
-                      <span className="text-sm font-sf-mono text-primary/50 uppercase tracking-wider">DESCRIPTION</span>
-                    </div>
-                    <p className="text-sm md:text-base font-sf-mono text-primary/70 leading-relaxed">
-                      {selectedProject.fullDescription}
-                    </p>
-                  </div>
-
-                  {/* Highlights */}
-                  <div>
-                    <div className="flex items-center gap-2 mb-3 pb-2 border-b border-primary/10">
-                      <div className="w-6 h-6 border border-primary/30 bg-primary/10 flex items-center justify-center text-xs font-sf-mono text-primary/70 shrink-0">
-                        02
-                      </div>
-                      <span className="text-sm font-sf-mono text-primary/50 uppercase tracking-wider">
-                        KEY HIGHLIGHTS
-                      </span>
-                    </div>
-                    <div className="space-y-3">
-                      {selectedProject.highlights.map((highlight, i) => (
-                        <div key={i} className="flex gap-3">
-                          <div className="w-6 h-6 border border-primary/20 bg-primary/5 flex items-center justify-center text-xs font-sf-mono text-primary/40 shrink-0">
-                            {i + 1}
-                          </div>
-                          <p className="text-sm font-sf-mono text-primary/60 leading-relaxed">{highlight}</p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Technologies */}
-                  <div>
-                    <div className="flex items-center gap-2 mb-3 pb-2 border-b border-primary/10">
-                      <div className="w-6 h-6 border border-primary/30 bg-primary/10 flex items-center justify-center text-xs font-sf-mono text-primary/70">
-                        03
-                      </div>
-                      <span className="text-sm font-sf-mono text-primary/50 uppercase tracking-wider">
-                        TECHNOLOGIES
-                      </span>
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                      {selectedProject.technologies.map((tech) => (
-                        <div
-                          key={tech}
-                          className="flex items-center gap-2 px-3 py-1.5 border border-primary/20 bg-primary/5 hover:bg-primary/10 transition-colors"
-                        >
-                          <span className="text-primary/60">{getTechIcon(tech)}</span>
-                          <span className="text-xs font-sf-mono text-primary/70 uppercase">{tech}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Links */}
-                  <div>
-                    <div className="flex items-center gap-2 mb-3 pb-2 border-b border-primary/10">
-                      <div className="w-6 h-6 border border-primary/30 bg-primary/10 flex items-center justify-center text-xs font-sf-mono text-primary/70">
-                        04
-                      </div>
-                      <span className="text-sm font-sf-mono text-primary/50 uppercase tracking-wider">LINKS</span>
-                    </div>
-                    <div className="flex flex-wrap gap-3">
-                      {selectedProject.github && (
-                        <a
-                          href={selectedProject.github}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center gap-2 px-4 py-2 bg-primary text-background border border-primary hover:bg-primary/90 transition-all"
-                        >
-                          <Github className="w-4 h-4" />
-                          <span className="text-sm font-sf-mono">VIEW CODE</span>
-                        </a>
-                      )}
-                      {selectedProject.demo && (
-                        <a
-                          href={selectedProject.demo}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center gap-2 px-4 py-2 bg-primary text-background border border-primary hover:bg-primary/90 transition-all"
-                        >
-                          <ExternalLink className="w-4 h-4" />
-                          <span className="text-sm font-sf-mono">LIVE DEMO</span>
-                        </a>
-                      )}
-                      {!selectedProject.github && !selectedProject.demo && (
-                        <span className="text-sm font-sf-mono text-primary/40">NO EXTERNAL LINKS AVAILABLE</span>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {modalContent}
     </PageLayout>
   )
 }
