@@ -262,7 +262,7 @@ export default function Home() {
                       </Button>
                       <Button
                         variant="ghost"
-                        className="h-7 px-2 border border-primary/20 text-[9px] md:text:sm font-sf-mono tracking-wider bg-primary text-primary-foreground transition-all group rounded-none"
+                        className="h-7 px-2 border border-primary/20 text-[9px] md:text:base font-sf-mono tracking-wider bg-primary text-primary-foreground transition-all group rounded-none"
                         onClick={() => navigateTo("/contact")}
                       >
                         CONTACT
