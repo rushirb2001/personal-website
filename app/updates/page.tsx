@@ -76,9 +76,7 @@ export default function UpdatesPage() {
   const allTags = Array.from(new Set(posts.flatMap((post) => post.tags)))
 
   const filteredPosts =
-    selectedTags.length > 0
-      ? posts.filter((post) => post.tags.some((tag) => selectedTags.includes(tag)))
-      : posts
+    selectedTags.length > 0 ? posts.filter((post) => post.tags.some((tag) => selectedTags.includes(tag))) : posts
 
   const visiblePosts = filteredPosts.slice(startIndex, startIndex + ITEMS_PER_PAGE)
   const canShowPrevious = startIndex > 0
@@ -86,9 +84,7 @@ export default function UpdatesPage() {
   const showPaginationControls = filteredPosts.length > ITEMS_PER_PAGE
 
   const toggleTag = (tag: string) => {
-    setSelectedTags((prev) =>
-      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
-    )
+    setSelectedTags((prev) => (prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]))
     setStartIndex(0)
   }
 
@@ -142,7 +138,7 @@ export default function UpdatesPage() {
         }, 50)
       }, 700)
     }
-  }, [])
+  }, [collapseAnimation.show])
 
   const handleArticleClick = (e: React.MouseEvent, post: BlogPost) => {
     e.preventDefault()
@@ -156,7 +152,7 @@ export default function UpdatesPage() {
           left: rect.left,
           width: rect.width,
           height: rect.height,
-        })
+        }),
       )
       sessionStorage.setItem("selectedTags", JSON.stringify(selectedTags))
 
@@ -210,92 +206,88 @@ export default function UpdatesPage() {
       </AnimatePresence>
 
       <div className="space-y-0 max-w-3xl mx-auto">
-      {/* Filter Header with Inline Pagination */}
-      <div className={`border border-primary/20 mb-3 ${showPaginationControls ? 'flex gap-0' : ''}`}>
-        {/* Filter Dropdown */}
-        <div className={showPaginationControls ? 'flex-[6] border-r border-primary/20' : 'w-full'}>
-          <button
-            onClick={() => setIsFilterOpen(!isFilterOpen)}
-            className="w-full flex items-center justify-between px-3 py-2 bg-primary/5 hover:bg-primary/10 transition-colors h-[42px]"
-          >
-            <span className="font-sf-mono text-primary/60 text-sm">
-              {selectedTags.length > 0
-                ? `FILTER: SHOWING ${selectedTags.slice(0, 2).join(", ").toUpperCase()}${selectedTags.length > 2 ? ` +${selectedTags.length - 2}` : ""}`
-                : "FILTER BY TAG"}
-            </span>
-            <motion.div animate={{ rotate: isFilterOpen ? 180 : 0 }} transition={{ duration: 0.2 }}>
-              <ChevronDown className="w-3 h-3 text-primary/50" />
-            </motion.div>
-          </button>
-
-          <AnimatePresence>
-            {isFilterOpen && (
-              <motion.div
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: "auto", opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                transition={{ duration: 0.2 }}
-                className="overflow-hidden border-t border-primary/10"
-              >
-                <div className="p-3">
-                  <div className="flex flex-wrap gap-1.5">
-                    {allTags.map((tag) => (
-                      <button
-                        key={tag}
-                        onClick={() => toggleTag(tag)}
-                        className={`px-2 py-1 font-sf-mono border transition-colors text-sm ${
-                          selectedTags.includes(tag)
-                            ? "bg-primary text-background border-primary"
-                            : "border-primary/20 text-primary/60 hover:border-primary/40"
-                        }`}
-                      >
-                        {tag.toUpperCase()}
-                      </button>
-                    ))}
-                  </div>
-                  {selectedTags.length > 0 && (
-                    <button
-                      onClick={clearTags}
-                      className="mt-2 text-[9px] font-sf-mono text-primary/50 hover:text-primary flex items-center gap-1"
-                    >
-                      <X className="w-3 h-3" />
-                      CLEAR ALL
-                    </button>
-                  )}
-                </div>
+        {/* Filter Header with Inline Pagination */}
+        <div className={`border border-primary/20 mb-3 ${showPaginationControls ? "flex gap-0" : ""}`}>
+          {/* Filter Dropdown */}
+          <div className={showPaginationControls ? "flex-[6] border-r border-primary/20" : "w-full"}>
+            <button
+              onClick={() => setIsFilterOpen(!isFilterOpen)}
+              className="w-full flex items-center justify-between px-3 py-2 bg-primary/5 hover:bg-primary/10 transition-colors h-[42px]"
+            >
+              <span className="font-sf-mono text-primary/60 text-sm">
+                {selectedTags.length > 0
+                  ? `FILTER: SHOWING ${selectedTags.slice(0, 2).join(", ").toUpperCase()}${selectedTags.length > 2 ? ` +${selectedTags.length - 2}` : ""}`
+                  : "FILTER BY TAG"}
+              </span>
+              <motion.div animate={{ rotate: isFilterOpen ? 180 : 0 }} transition={{ duration: 0.2 }}>
+                <ChevronDown className="w-3 h-3 text-primary/50" />
               </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
+            </button>
 
-        {/* Inline Pagination Controls */}
-        {showPaginationControls && (
-          <div className="flex-[4] flex">
-            <button
-              onClick={() => setStartIndex((prev) => Math.max(0, prev - ITEMS_PER_PAGE))}
-              disabled={!canShowPrevious}
-              className={`flex-1 flex items-center justify-center border-r border-primary/20 h-[42px] transition-colors ${
-                canShowPrevious
-                  ? "text-primary/70 hover:bg-primary/10"
-                  : "text-primary/20 cursor-not-allowed"
-              }`}
-            >
-              <ChevronLeft className="w-4 h-4" />
-            </button>
-            <button
-              onClick={() => setStartIndex((prev) => prev + ITEMS_PER_PAGE)}
-              disabled={!canShowNext}
-              className={`flex-1 flex items-center justify-center h-[42px] transition-colors ${
-                canShowNext
-                  ? "text-primary/70 hover:bg-primary/10"
-                  : "text-primary/20 cursor-not-allowed"
-              }`}
-            >
-              <ChevronRight className="w-4 h-4" />
-            </button>
+            <AnimatePresence>
+              {isFilterOpen && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="overflow-hidden border-t border-primary/10"
+                >
+                  <div className="p-3">
+                    <div className="flex flex-wrap gap-1.5">
+                      {allTags.map((tag) => (
+                        <button
+                          key={tag}
+                          onClick={() => toggleTag(tag)}
+                          className={`px-2 py-1 font-sf-mono border transition-colors text-sm ${
+                            selectedTags.includes(tag)
+                              ? "bg-primary text-background border-primary"
+                              : "border-primary/20 text-primary/60 hover:border-primary/40"
+                          }`}
+                        >
+                          {tag.toUpperCase()}
+                        </button>
+                      ))}
+                    </div>
+                    {selectedTags.length > 0 && (
+                      <button
+                        onClick={clearTags}
+                        className="mt-2 text-[9px] font-sf-mono text-primary/50 hover:text-primary flex items-center gap-1"
+                      >
+                        <X className="w-3 h-3" />
+                        CLEAR ALL
+                      </button>
+                    )}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
-        )}
-      </div>
+
+          {/* Inline Pagination Controls */}
+          {showPaginationControls && (
+            <div className="flex-[4] flex">
+              <button
+                onClick={() => setStartIndex((prev) => Math.max(0, prev - ITEMS_PER_PAGE))}
+                disabled={!canShowPrevious}
+                className={`flex-1 flex items-center justify-center border-r border-primary/20 h-[42px] transition-colors ${
+                  canShowPrevious ? "text-primary/70 hover:bg-primary/10" : "text-primary/20 cursor-not-allowed"
+                }`}
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => setStartIndex((prev) => prev + ITEMS_PER_PAGE)}
+                disabled={!canShowNext}
+                className={`flex-1 flex items-center justify-center h-[42px] transition-colors ${
+                  canShowNext ? "text-primary/70 hover:bg-primary/10" : "text-primary/20 cursor-not-allowed"
+                }`}
+              >
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
+          )}
+        </div>
 
         {/* Posts List */}
         <div className="space-y-2">
@@ -354,9 +346,7 @@ export default function UpdatesPage() {
                           </span>
                         ))}
                         {post.tags.length > 3 && (
-                          <span className="text-[9px] text-primary/30 font-sf-mono">
-                            +{post.tags.length - 3}
-                          </span>
+                          <span className="text-[9px] text-primary/30 font-sf-mono">+{post.tags.length - 3}</span>
                         )}
                       </div>
                     </div>
@@ -383,13 +373,19 @@ export default function UpdatesPage() {
           transition={{ duration: 0.2, delay: 0.3 }}
         >
           <div className="flex gap-1 sm:gap-2 text-[9px] sm:text-[10px] font-sf-mono text-primary/40 uppercase tracking-wider">
-            <span className="text-sm">{posts.length} {isMobile ? "POSTS" : "ARTICLES"}</span>
+            <span className="text-sm">
+              {posts.length} {isMobile ? "POSTS" : "ARTICLES"}
+            </span>
             <span className="text-primary/20">/</span>
             <span className="text-sm">{allTags.length} TAGS</span>
             <span className="text-primary/20">/</span>
-            <span className="text-sm">{filteredPosts.length} {isMobile ? "SHOWN" : "FILTERED"}</span>
+            <span className="text-sm">
+              {filteredPosts.length} {isMobile ? "SHOWN" : "FILTERED"}
+            </span>
           </div>
-          <div className="text-[9px] sm:text-[10px] font-sf-mono text-primary/30"><span className="text-sm">LAST.UPDATED: 2025</span></div>
+          <div className="text-[9px] sm:text-[10px] font-sf-mono text-primary/30">
+            <span className="text-sm">LAST.UPDATED: 2025</span>
+          </div>
         </motion.div>
       </div>
     </PageLayout>
