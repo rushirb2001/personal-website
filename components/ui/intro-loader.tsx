@@ -87,29 +87,31 @@ export function IntroLoader({ onLoadComplete }: IntroLoaderProps) {
 
   return (
     <motion.div
-      className="fixed inset-0 z-[100] bg-background flex flex-col items-center justify-center px-6"
+      className="fixed inset-0 z-[100] bg-background flex items-center justify-center px-8 md:px-12"
       initial={{ opacity: 1 }}
       animate={{ opacity: isExiting ? 0 : 1, scale: isExiting ? 0.98 : 1 }}
       transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
     >
       {showContent && (
-        <div className="flex flex-col items-center justify-center w-full max-w-4xl">
-          {/* Top label */}
-          <motion.p
-            className="text-[10px] font-sf-mono text-primary/60 tracking-widest uppercase mb-6 md:mb-8"
+        <div className="flex flex-col items-center justify-center w-full max-w-5xl">
+          {/* Top label - more space from name */}
+          <motion.div
+            className="mb-16 md:mb-20"
             variants={lineVariants}
             initial="hidden"
             animate="visible"
             custom={0.1}
           >
-            {lineOne}
-          </motion.p>
+            <p className="text-[10px] md:text-xs font-sf-mono text-primary/60 tracking-widest uppercase">
+              {lineOne}
+            </p>
+          </motion.div>
 
-          {/* Name display */}
-          <div className="flex flex-col items-center gap-0 md:gap-1">
+          {/* Name display - proper letter spacing */}
+          <div className="flex flex-col items-center gap-2 md:gap-3">
             {/* First name */}
             <motion.div
-              className="flex justify-center"
+              className="flex justify-center gap-[2px] md:gap-1"
               variants={nameContainerVariants}
               initial="hidden"
               animate="visible"
@@ -118,7 +120,7 @@ export function IntroLoader({ onLoadComplete }: IntroLoaderProps) {
                 <motion.span
                   key={`first-${i}`}
                   variants={charVariants}
-                  className="text-5xl md:text-7xl font-sf-mono font-bold text-primary tracking-tight leading-none"
+                  className="text-5xl md:text-7xl lg:text-8xl font-sf-mono font-bold text-primary leading-none"
                 >
                   {char}
                 </motion.span>
@@ -127,7 +129,7 @@ export function IntroLoader({ onLoadComplete }: IntroLoaderProps) {
 
             {/* Last name */}
             <motion.div
-              className="flex justify-center"
+              className="flex justify-center gap-[2px] md:gap-1"
               variants={nameContainerVariants}
               initial="hidden"
               animate="visible"
@@ -136,7 +138,7 @@ export function IntroLoader({ onLoadComplete }: IntroLoaderProps) {
                 <motion.span
                   key={`last-${i}`}
                   variants={charVariants}
-                  className="text-5xl md:text-7xl font-sf-mono font-bold text-primary tracking-tight leading-none"
+                  className="text-5xl md:text-7xl lg:text-8xl font-sf-mono font-bold text-primary leading-none"
                   style={{ transitionDelay: `${(firstName.length + i) * 0.03}s` }}
                 >
                   {char}
@@ -145,20 +147,22 @@ export function IntroLoader({ onLoadComplete }: IntroLoaderProps) {
             </motion.div>
           </div>
 
-          {/* Bottom label */}
-          <motion.p
-            className="mt-6 md:mt-8 text-[10px] font-sf-mono text-primary/40 tracking-widest uppercase"
+          {/* Bottom label - more space from name */}
+          <motion.div
+            className="mt-16 md:mt-20"
             variants={lineVariants}
             initial="hidden"
             animate="visible"
             custom={1.0}
           >
-            {lineThree}
-          </motion.p>
+            <p className="text-[10px] md:text-xs font-sf-mono text-primary/40 tracking-widest uppercase">
+              {lineThree}
+            </p>
+          </motion.div>
 
-          {/* Progress bar */}
+          {/* Progress bar - proper separation and width */}
           <motion.div
-            className="w-full max-w-sm md:max-w-md mt-12 md:mt-16"
+            className="w-full max-w-xs md:max-w-md mt-20 md:mt-24"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1.2, duration: 0.4 }}
@@ -170,12 +174,12 @@ export function IntroLoader({ onLoadComplete }: IntroLoaderProps) {
               />
             </div>
 
-            {/* Progress labels */}
-            <div className="flex justify-between mt-2">
-              <span className="text-[9px] font-sf-mono text-primary/40 uppercase tracking-wider">
+            {/* Progress labels - proper spacing */}
+            <div className="flex justify-between items-center mt-3">
+              <span className="text-[9px] md:text-[10px] font-sf-mono text-primary/40 uppercase tracking-wider">
                 Loading
               </span>
-              <span className="text-[9px] font-sf-mono text-primary/60 tabular-nums tracking-wider">
+              <span className="text-[9px] md:text-[10px] font-sf-mono text-primary/60 tabular-nums tracking-wider">
                 {Math.round(progress).toString().padStart(3, "0")}%
               </span>
             </div>
