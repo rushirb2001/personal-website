@@ -2,7 +2,7 @@ import { TerminalFooter } from "@/components/ui/terminal-footer"
 
 export function Footer() {
   return (
-    <footer className="fixed bottom-0 left-0 right-0 bg-background border-t border-primary/10 z-100">
+    <footer className="fixed bottom-0 left-0 right-0 bg-background border-t border-primary/10 z-1000">
       <div className="w-full px-3 md:px-4 py-4">
         <div className="flex flex-row justify-between items-center">
           <div className="w-[80%] md:w-[70%]">
