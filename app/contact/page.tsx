@@ -31,7 +31,7 @@ export default function ContactPage() {
           </div>
           <div className="p-4 flex items-center justify-between">
             <p className="font-sf-mono text-primary/60 text-sm">
-              SEND ME A DETAILED EMAIL OR DROP A CALL
+              SEND ME A DETAILED EMAIL  
             </p>
             <Button
               onClick={() => setIsModalOpen(true)}
