@@ -25,7 +25,7 @@ export default function ContactPage() {
         >
           <div className="border-b border-primary/20 px-3 py-2 bg-primary/5">
             <div className="flex items-center justify-between">
-              <span className="font-sf-mono font-bold tracking-widest text-lg">DIRECT MESSAGE</span>
+              <span className="font-sf-mono font-bold tracking-widest text-base">DIRECT MESSAGE</span>
               <span className="font-sf-mono text-primary/30 text-base">[01]</span>
             </div>
           </div>
@@ -51,7 +51,7 @@ export default function ContactPage() {
         >
           <div className="border-b border-primary/20 px-3 py-2 bg-primary/5">
             <div className="flex items-center justify-between">
-              <span className="font-sf-mono font-bold tracking-widest text-lg">BOOK A CALL</span>
+              <span className="font-sf-mono font-bold tracking-widest text-base">BOOK A CALL</span>
               <span className="font-sf-mono text-primary/30 text-base">[02]</span>
             </div>
           </div>
@@ -79,7 +79,7 @@ export default function ContactPage() {
           <div className="border border-primary/20 bg-background">
             <div className="border-b border-primary/20 px-3 py-2 bg-primary/5">
               <div className="flex items-center justify-between text-base">
-                <span className="font-sf-mono font-bold tracking-widest text-lg">CONTACT</span>
+                <span className="font-sf-mono font-bold tracking-widest text-base">CONTACT</span>
                 <span className="font-sf-mono text-primary/30 text-base">[02]</span>
               </div>
             </div>
@@ -99,7 +99,7 @@ export default function ContactPage() {
           <div className="border border-primary/20 bg-background">
             <div className="border-b border-primary/20 px-3 py-2 bg-primary/5">
               <div className="flex items-center justify-between">
-                <span className="font-sf-mono font-bold tracking-widest text-lg">SOCIAL</span>
+                <span className="font-sf-mono font-bold tracking-widest text-base">SOCIAL</span>
                 <span className="font-sf-mono text-primary/30 text-base">[03]</span>
               </div>
             </div>
