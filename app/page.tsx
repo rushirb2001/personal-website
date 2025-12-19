@@ -254,7 +254,7 @@ export default function Home() {
                     <div className="flex items-center gap-1.5">
                       <Button
                         variant="ghost"
-                        className="h-7 px-2 border border-primary/20 text-[9px] md:text-base font-sf-mono tracking-wider bg-primary text-primary-foreground transition-all group rounded-none"
+                        className="h-7 px-2 border border-primary/20 text-base font-sf-mono tracking-wider bg-primary text-primary-foreground transition-all group rounded-none"
                         onClick={() => setIsResumeModalOpen(true)}
                       >
                         <FileText className="h-3 w-3 mr-1 group-hover:-translate-y-0.5 transition-transform" />
