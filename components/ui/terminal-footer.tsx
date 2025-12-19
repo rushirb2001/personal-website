@@ -300,7 +300,7 @@ const TerminalFooter = memo(function TerminalFooter() {
               )}
               <div className="absolute right-0 top-0 bottom-0 flex items-center pointer-events-none">
                 <span className="text-xs font-sf-mono text-primary/40 mr-1">[terminal]</span>
-                <span className="inline-block w-1.5 h-1.5 rounded-full bg-primary animate-[blink_0.5s_ease-in-out_infinite]"></span>
+                <span className="inline-block w-1.5 h-1.5 rounded-full bg-primary animate-[blink_0.5s_ease-in-out_infinite] terminal-cursor"></span>
               </div>
             </div>
           </form>
@@ -315,7 +315,7 @@ const TerminalFooter = memo(function TerminalFooter() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4"
+            className="fixed inset-0 z-[80] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4"
             onClick={() => setShowHelpModal(false)}
           >
             <motion.div
