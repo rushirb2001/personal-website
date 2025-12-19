@@ -44,17 +44,16 @@ export function IntroLoader({ onLoadComplete }: IntroLoaderProps) {
     }
   }, [handleComplete])
 
-  const firstName = "RUSHIR"
-  const lastName = "BHAVSAR"
+  const fullName = "RUSHIR BHAVSAR"
 
   const charVariants = {
-    hidden: { opacity: 0, y: 30 },
+    hidden: { opacity: 0, y: 15 },
     visible: (i: number) => ({
       opacity: 1,
       y: 0,
       transition: {
-        duration: 0.5,
-        delay: 0.2 + i * 0.04,
+        duration: 0.4,
+        delay: 0.15 + i * 0.035,
         ease: [0.4, 0, 0.2, 1],
       },
     }),
@@ -62,75 +61,71 @@ export function IntroLoader({ onLoadComplete }: IntroLoaderProps) {
 
   return (
     <motion.div
-      className="fixed inset-0 z-[100] bg-background flex items-center justify-center"
+      className="fixed inset-0 z-[100] bg-background flex items-center justify-center p-8 md:p-12"
       initial={{ opacity: 1 }}
       animate={{ opacity: isExiting ? 0 : 1 }}
       transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
     >
       {showContent && (
-        <div className="flex flex-col items-center justify-center w-full px-6">
+        <div className="flex flex-col items-center justify-center w-full max-w-md">
           {/* Name */}
-          <div className="flex flex-col items-center gap-1 md:gap-2">
-            <div className="flex justify-center overflow-hidden">
-              {firstName.split("").map((char, i) => (
-                <motion.span
-                  key={`first-${i}`}
-                  custom={i}
-                  variants={charVariants}
-                  initial="hidden"
-                  animate="visible"
-                  className="text-5xl md:text-7xl lg:text-8xl font-sf-mono font-bold text-primary leading-none tracking-tight"
-                >
-                  {char}
-                </motion.span>
-              ))}
-            </div>
-
-            <div className="flex justify-center overflow-hidden">
-              {lastName.split("").map((char, i) => (
-                <motion.span
-                  key={`last-${i}`}
-                  custom={firstName.length + i}
-                  variants={charVariants}
-                  initial="hidden"
-                  animate="visible"
-                  className="text-5xl md:text-7xl lg:text-8xl font-sf-mono font-bold text-primary leading-none tracking-tight"
-                >
-                  {char}
-                </motion.span>
-              ))}
-            </div>
+          <div className="flex justify-center flex-wrap overflow-hidden">
+            {fullName.split("").map((char, i) => (
+              <motion.span
+                key={i}
+                custom={i}
+                variants={charVariants}
+                initial="hidden"
+                animate="visible"
+                className={`text-2xl md:text-3xl lg:text-4xl font-sf-mono font-bold text-primary leading-none tracking-wider ${char === " " ? "w-3 md:w-4" : ""}`}
+              >
+                {char === " " ? "\u00A0" : char}
+              </motion.span>
+            ))}
           </div>
+
+          {/* Divider */}
+          <motion.div
+            className="w-12 h-px bg-primary/20 mt-6 mb-6"
+            initial={{ opacity: 0, scaleX: 0 }}
+            animate={{ opacity: 1, scaleX: 1 }}
+            transition={{ delay: 0.7, duration: 0.4 }}
+          />
 
           {/* Subtitle */}
           <motion.p
-            className="mt-8 md:mt-12 text-[10px] md:text-[11px] font-sf-mono text-primary/40 tracking-widest"
+            className="text-xs md:text-sm font-sf-mono text-primary/60 tracking-wider text-center"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 1.0, duration: 0.5 }}
+            transition={{ delay: 0.8, duration: 0.4 }}
           >
             DATA SCIENTIST • AI ENGINEER • ML RESEARCHER
           </motion.p>
 
-          {/* Progress */}
+          {/* Progress Section */}
           <motion.div
-            className="mt-16 md:mt-20 w-full max-w-xs"
+            className="mt-12 md:mt-16 w-full"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 1.2, duration: 0.4 }}
+            transition={{ delay: 1.0, duration: 0.4 }}
           >
-            <div className="h-px bg-primary/10 overflow-hidden">
+            {/* Progress label */}
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-[10px] font-sf-mono text-primary/40 tracking-widest">
+                LOADING
+              </span>
+              <span className="text-[10px] font-sf-mono text-primary/70 tabular-nums tracking-wider">
+                {Math.round(progress)}%
+              </span>
+            </div>
+
+            {/* Progress bar */}
+            <div className="h-[3px] bg-primary/10 overflow-hidden">
               <motion.div
-                className="h-full bg-primary/60"
+                className="h-full bg-primary"
                 style={{ width: `${progress}%` }}
                 transition={{ duration: 0.05, ease: "linear" }}
               />
-            </div>
-
-            <div className="flex justify-end mt-2">
-              <span className="text-[9px] font-sf-mono text-primary/30 tabular-nums">
-                {Math.round(progress).toString().padStart(3, "0")}
-              </span>
             </div>
           </motion.div>
         </div>
