@@ -45,9 +45,9 @@ export function MobileDropdownNav() {
       >
         <div className="flex items-center">
           <span className="w-1.5 h-1.5 rounded-full bg-green-500 mr-2 animate-[blink_0.5s_ease-in-out_infinite]"></span>
-          <span className="">{currentPage}</span>
+          <span className="text-lg">{currentPage}</span>
         </div>
-        {isOpen ? <ChevronUp className="h-6 w-6 ml-1" /> : <ChevronDown className="h-3 w-3 ml-1" />}
+        {isOpen ? <ChevronUp className="h-3 w-3 ml-1" /> : <ChevronDown className="h-3 w-3 ml-1" />}
       </button>
 
       <AnimatePresence>
@@ -57,7 +57,7 @@ export function MobileDropdownNav() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.2 }}
-            className="absolute top-full left-0 mt-1 w-40 bg-background dark:bg-eerie-black border border-primary/20 shadow-md z-[95]"
+            className="absolute top-full left-0 mt-1 w-40 bg-background dark:bg-eerie-black border border-primary/20 shadow-md z-50"
           >
             <div className="py-1">
               {NAV_ITEMS.map((item) => (

@@ -123,12 +123,3 @@
     @apply bg-background text-foreground;
   }
 }
-
-/* Hide native cursor when custom cursor is active */
-.hide-cursor {
-  cursor: none !important;
-}
-
-.hide-cursor * {
-  cursor: none !important;
-}

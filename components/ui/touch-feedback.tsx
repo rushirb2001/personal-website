@@ -71,7 +71,7 @@ export function TouchFeedback() {
   if (!isTouchDevice) return null
 
   return (
-    <div className="fixed inset-0 pointer-events-none z-[110]">
+    <div className="fixed inset-0 pointer-events-none z-[100]">
       <AnimatePresence>
         {touchPoints.map((point) => (
           <motion.div

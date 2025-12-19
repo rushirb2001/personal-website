@@ -174,9 +174,9 @@ export default function PublicationsPage() {
               <div className="md:hidden px-3 py-3">
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-sf-mono font-medium line-clamp-3 text-left mb-2 text-sm">{pub.title}</h3>
+                    <h3 className="font-sf-mono font-medium line-clamp-2 text-left mb-2 text-lg">{pub.title}</h3>
                     <p
-                      className={`font-sf-mono text-xs ${selectedPublication?.id === pub.id ? "text-background/60" : "text-primary/50"}`}
+                      className={`font-sf-mono text-base ${selectedPublication?.id === pub.id ? "text-background/60" : "text-primary/50"}`}
                     >
                       {pub.venue}
                     </p>
@@ -245,10 +245,10 @@ export default function PublicationsPage() {
                       <div className="space-y-4">
                         
                         <div>
-                          <span className="font-sf-mono text-primary/40 uppercase tracking-wider text-xs">
+                          <span className="font-sf-mono text-primary/40 uppercase tracking-wider text-sm">
                             ABSTRACT
                           </span>
-                          <p className="font-sf-mono text-primary/70 mt-1 leading-relaxed border-l-2 border-primary/20 pl-3 tracking-tighter text-xs">
+                          <p className="font-sf-mono text-primary/70 mt-1 leading-relaxed border-l-2 border-primary/20 pl-3 tracking-tighter text-sm">
                             {selectedPublication.abstract}
                           </p>
                         </div>
@@ -256,15 +256,15 @@ export default function PublicationsPage() {
 
                       <div className="space-y-3 md:border-l md:border-primary/10 md:pl-6">
                         <div>
-                          <span className="font-sf-mono text-primary/40 uppercase tracking-wider text-xs">
+                          <span className="font-sf-mono text-primary/40 uppercase tracking-wider text-sm">
                             AUTHORS
                           </span>
-                          <p className="font-sf-mono text-primary/70 mt-1 text-xs">{selectedPublication.authors}</p>
+                          <p className="font-sf-mono text-primary/70 mt-1 text-sm">{selectedPublication.authors}</p>
                         </div>
                         
                         <div>
-                          <span className="font-sf-mono text-primary/40 uppercase tracking-wider text-xs">DOI</span>
-                          <p className="font-sf-mono text-primary/50 mt-1 break-all text-xs">
+                          <span className="font-sf-mono text-primary/40 uppercase tracking-wider text-sm">DOI</span>
+                          <p className="font-sf-mono text-primary/50 mt-1 break-all text-sm">
                             {selectedPublication.doi}
                           </p>
                         </div>
@@ -285,21 +285,21 @@ export default function PublicationsPage() {
           transition={{ duration: 0.2, delay: 0.3 }}
         >
           <div className="flex flex-wrap gap-1 sm:gap-2 md:gap-4 text-[9px] sm:text-[10px] font-sf-mono text-primary/40 uppercase tracking-wider">
-            <span className="">
+            <span className="text-sm">
               {stats.total} {isMobile ? "PUB" : "PUBLICATIONS"}
             </span>
             <span className="text-primary/20">/</span>
-            <span className="">
+            <span className="text-sm">
               {stats.totalCitations} {isMobile ? "CIT" : "CITATIONS"}
             </span>
             <span className="text-primary/20">/</span>
-            <span className="">
+            <span className="text-sm">
               {stats.venues} {isMobile ? "VEN" : "VENUES"}
             </span>
             <span className="text-primary/20">/</span>
-            <span className="">{isMobile ? stats.yearRangeMobile : stats.yearRangeDesktop}</span>
+            <span className="text-sm">{isMobile ? stats.yearRangeMobile : stats.yearRangeDesktop}</span>
           </div>
-          <div className="text-[9px] md:text-base font-sf-mono text-primary/30"><span className="text-xs">{"LAST.UPDATED: 2025"}</span></div>
+          <div className="text-[9px] sm:text-[10px] font-sf-mono text-primary/30"><span className="text-xs">{"LAST.UPDATED: 2025"}</span></div>
         </motion.div>
       </div>
     </PageLayout>

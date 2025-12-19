@@ -41,17 +41,6 @@ export function ContactFormModal({ isOpen, onClose }: ContactFormModalProps) {
     return () => window.removeEventListener("keydown", handleEsc)
   }, [onClose])
 
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = "hidden"
-    } else {
-      document.body.style.overflow = ""
-    }
-    return () => {
-      document.body.style.overflow = ""
-    }
-  }, [isOpen])
-
   // Handle form input changes
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value)
@@ -139,7 +128,7 @@ export function ContactFormModal({ isOpen, onClose }: ContactFormModalProps) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[80] flex items-center justify-center bg-black/70 backdrop-blur-sm p-3 md:p-4"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-3 md:p-4"
           onClick={onClose}
         >
           <motion.div

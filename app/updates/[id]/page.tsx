@@ -19,12 +19,8 @@ export default function BlogPostPage() {
   const containerRef = useRef<HTMLDivElement>(null)
 
   const [animationPhase, setAnimationPhase] = useState<AnimationPhase>("expanding")
-  const [expandRect, setExpandRect] = useState<{ top: number; left: number; width: number; height: number } | null>(
-    null,
-  )
-  const [originalRect, setOriginalRect] = useState<{ top: number; left: number; width: number; height: number } | null>(
-    null,
-  )
+  const [expandRect, setExpandRect] = useState<{ top: number; left: number; width: number; height: number } | null>(null)
+  const [originalRect, setOriginalRect] = useState<{ top: number; left: number; width: number; height: number } | null>(null)
   const [reversePhase, setReversePhase] = useState<ReversePhase>("idle")
 
   useEffect(() => {
@@ -100,7 +96,7 @@ export default function BlogPostPage() {
             left: containerRect.left,
             width: containerRect.width,
             height: containerRect.height,
-          }),
+          })
         )
       }
 
@@ -114,7 +110,7 @@ export default function BlogPostPage() {
           date: post.date,
           summary: post.summary,
           tags: post.tags,
-        }),
+        })
       )
 
       setReversePhase("text-reverse")
@@ -170,9 +166,9 @@ export default function BlogPostPage() {
 
   return (
     <>
-      {/* Top Navigation - Updated z-index from z-40 to z-[50] */}
+      {/* Top Navigation */}
       <motion.div
-        className="fixed top-14 md:top-16 left-0 right-0 z-[50] bg-background dark:bg-eerie-black border-b border-primary/20"
+        className="fixed top-14 md:top-16 left-0 right-0 z-40 bg-background dark:bg-eerie-black border-b border-primary/20"
         initial={{ y: -60, opacity: 0 }}
         animate={{
           y: reversePhase === "nav-up" || reversePhase === "navigating" ? -60 : 0,
@@ -200,10 +196,10 @@ export default function BlogPostPage() {
         </div>
       </motion.div>
 
-      {/* Expansion Animation Box - Updated z-index from z-40 to z-[50] */}
+      {/* Expansion Animation Box */}
       {expandRect && animationPhase === "expanding" && (
         <motion.div
-          className="fixed z-[50] pointer-events-none border border-primary/20 bg-background dark:bg-eerie-black"
+          className="fixed z-40 pointer-events-none border border-primary/20 bg-background dark:bg-eerie-black"
           initial={{
             top: expandRect.top,
             left: expandRect.left,
@@ -221,10 +217,10 @@ export default function BlogPostPage() {
         />
       )}
 
-      {/* Blank overlay during reverse - Updated z-index from z-[100] to z-[80] to be behind header/footer */}
+      {/* Blank overlay during reverse */}
       {(reversePhase === "blank" || reversePhase === "nav-up" || reversePhase === "navigating") && (
         <motion.div
-          className="fixed z-[80] border border-primary/20 bg-background dark:bg-eerie-black"
+          className="fixed z-[100] border border-primary/20 bg-background dark:bg-eerie-black"
           style={{
             top: 120,
             left: "50%",
@@ -235,9 +231,9 @@ export default function BlogPostPage() {
         />
       )}
 
-      {/* Main Content Container - Updated z-index from z-30 to z-[40] */}
+      {/* Main Content Container */}
       <motion.div
-        className="fixed top-[7.5rem] left-0 right-0 bottom-16 z-[40]"
+        className="fixed top-[7.5rem] left-0 right-0 bottom-16 z-30"
         initial={{ opacity: 0 }}
         animate={{ opacity: animationPhase === "expanding" ? 0 : 1 }}
         transition={{ duration: 0.15 }}
@@ -302,7 +298,9 @@ export default function BlogPostPage() {
             >
               <div className="flex items-center justify-between">
                 <span className="text-[9px] font-sf-mono text-primary/30">ID: {post.id}</span>
-                <span className="text-[9px] font-sf-mono text-primary/30">{post.tags.length} TAGS</span>
+                <span className="text-[9px] font-sf-mono text-primary/30">
+                  {post.tags.length} TAGS
+                </span>
               </div>
             </motion.div>
           </div>

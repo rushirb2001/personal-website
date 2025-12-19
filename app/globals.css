@@ -989,6 +989,15 @@ main {
   }
 }
 
+/* Hide native cursor when custom cursor is active */
+.hide-cursor {
+  cursor: none !important;
+}
+
+.hide-cursor * {
+  cursor: none !important;
+}
+
 /* Optimize animations for better performance */
 @media (prefers-reduced-motion: reduce) {
   .cursor-target-ring,
@@ -1037,16 +1046,4 @@ main {
     animation-iteration-count: 1 !important;
     transition: none !important;
   }
-}
-
-/* Hide native cursor when custom cursor is active */
-html.hide-cursor,
-html.hide-cursor *,
-body.hide-cursor,
-body.hide-cursor * {
-  cursor: none !important;
-}
-
-.hide-cursor * {
-  cursor: none !important;
 }

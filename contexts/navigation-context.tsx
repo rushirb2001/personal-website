@@ -1,6 +1,6 @@
 "use client"
 
-import { createContext, useContext, useState, useEffect, useCallback, useMemo, useRef, type ReactNode } from "react"
+import { createContext, useContext, useState, useEffect, useCallback, useMemo, type ReactNode } from "react"
 import { useRouter, usePathname } from "next/navigation"
 
 interface NavigationContextType {
@@ -8,7 +8,6 @@ interface NavigationContextType {
   isTransitioning: boolean
   currentPath: string
   targetPath: string | null
-  shouldAnimateEntrance: boolean
 }
 
 const NavigationContext = createContext<NavigationContextType | undefined>(undefined)
@@ -24,36 +23,13 @@ export function NavigationProvider({ children, isReady = true }: NavigationProvi
   const [isTransitioning, setIsTransitioning] = useState(false)
   const [targetPath, setTargetPath] = useState<string | null>(null)
   const [currentPath, setCurrentPath] = useState("")
-  const [shouldAnimateEntrance, setShouldAnimateEntrance] = useState(false)
-  const navigationInProgress = useRef(false)
-  const waitingForTransitionEnd = useRef(false)
 
   // Update current path when pathname changes
   useEffect(() => {
     if (pathname) {
       setCurrentPath(pathname)
-      if (navigationInProgress.current) {
-        waitingForTransitionEnd.current = true
-        navigationInProgress.current = false
-      }
     }
   }, [pathname])
-
-  useEffect(() => {
-    if (!isTransitioning && waitingForTransitionEnd.current) {
-      setShouldAnimateEntrance(true)
-      waitingForTransitionEnd.current = false
-    }
-  }, [isTransitioning])
-
-  useEffect(() => {
-    if (shouldAnimateEntrance) {
-      const resetTimeout = setTimeout(() => {
-        setShouldAnimateEntrance(false)
-      }, 1000)
-      return () => clearTimeout(resetTimeout)
-    }
-  }, [shouldAnimateEntrance])
 
   // Custom navigation function with abrupt, systemic timings
   const navigateTo = useCallback(
@@ -71,7 +47,6 @@ export function NavigationProvider({ children, isReady = true }: NavigationProvi
 
       // Step 1: Set target path immediately
       setTargetPath(href)
-      navigationInProgress.current = true
 
       // Step 2: Show transition animation immediately
       setIsTransitioning(true)
@@ -132,9 +107,8 @@ export function NavigationProvider({ children, isReady = true }: NavigationProvi
       isTransitioning,
       currentPath,
       targetPath,
-      shouldAnimateEntrance,
     }),
-    [navigateTo, isTransitioning, currentPath, targetPath, shouldAnimateEntrance],
+    [navigateTo, isTransitioning, currentPath, targetPath],
   )
 
   return <NavigationContext.Provider value={contextValue}>{children}</NavigationContext.Provider>
