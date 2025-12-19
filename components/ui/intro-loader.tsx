@@ -55,7 +55,7 @@ export function IntroLoader({ onLoadComplete }: IntroLoaderProps) {
         <div className="flex flex-col items-center w-full max-w-2xl">
           {/* Name */}
           <motion.h1
-            className="items-center font-sf-mono text-primary tracking-wider mb-10 md:mb-14 py-0 text-4xl font-black text-center"
+            className="items-center font-sf-mono text-primary tracking-wider mb-10 md:mb-14 py-0 font-black text-center text-6xl"
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.1 }}
@@ -70,23 +70,23 @@ export function IntroLoader({ onLoadComplete }: IntroLoaderProps) {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.4, delay: 0.3 }}
           >
-            <span className="text-sm md:text-base font-sf-mono text-primary/70 tracking-tighter">
+            <span className="font-sf-mono text-primary/70 tracking-tighter text-3xl">
               HI, THERE!
             </span>
-            <span className="text-sm md:text-base font-sf-mono text-primary tracking-tighter">
+            <span className="text-sm font-sf-mono text-primary tracking-tighter md:text-3xl">
               WELCOME TO MY PORTFOLIO
             </span>
           </motion.div>
 
           {/* Loading Section */}
           <motion.div
-            className="w-full flex flex-col items-center"
+            className="w-full flex flex-col items-center py-14"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.5 }}
           >
             {/* Loading label */}
-            <span className="text-xs font-sf-mono font-bold text-primary tracking-widest mb-3 block">
+            <span className="font-sf-mono font-bold text-primary mb-3 block text-base tracking-widest">
               LOADING...
             </span>
 
