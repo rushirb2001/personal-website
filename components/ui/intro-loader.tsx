@@ -44,17 +44,17 @@ export function IntroLoader({ onLoadComplete }: IntroLoaderProps) {
     }
   }, [handleComplete])
 
-  const lineOne = "SYSTEM.INIT"
+  const lineOne = "HI, MY NAME IS"
   const firstName = "RUSHIR"
   const lastName = "BHAVSAR"
-  const lineThree = "PORTFOLIO.V1"
+  const lineThree = "WELCOME TO MY PORTFOLIO"
 
   const lineVariants = {
     hidden: { opacity: 0 },
     visible: (delay: number) => ({
       opacity: 1,
       transition: {
-        duration: 0.6,
+        duration: 0.5,
         delay,
         ease: [0.4, 0, 0.2, 1],
       },
@@ -66,20 +66,20 @@ export function IntroLoader({ onLoadComplete }: IntroLoaderProps) {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.04,
-        delayChildren: 0.4,
+        staggerChildren: 0.03,
+        delayChildren: 0.3,
       },
     },
   }
 
   const charVariants = {
-    hidden: { opacity: 0, y: 20, scale: 0.95 },
+    hidden: { opacity: 0, y: 15, scale: 0.95 },
     visible: {
       opacity: 1,
       y: 0,
       scale: 1,
       transition: {
-        duration: 0.4,
+        duration: 0.3,
         ease: [0.4, 0, 0.2, 1],
       },
     },
@@ -87,105 +87,99 @@ export function IntroLoader({ onLoadComplete }: IntroLoaderProps) {
 
   return (
     <motion.div
-      className="fixed inset-0 z-[100] bg-background flex items-center justify-center px-6"
+      className="fixed inset-0 z-[100] bg-background flex flex-col items-center justify-center px-6"
       initial={{ opacity: 1 }}
       animate={{ opacity: isExiting ? 0 : 1, scale: isExiting ? 0.98 : 1 }}
-      transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
+      transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
     >
       {showContent && (
-        <div className="w-full max-w-md border border-primary/20 bg-primary/[0.02]">
-          {/* Header */}
-          <div className="bg-primary/5 px-4 py-3 border-b border-primary/20">
-            <motion.p
-              className="text-[9px] font-sf-mono text-primary/60 tracking-wider uppercase"
-              variants={lineVariants}
+        <div className="flex flex-col items-center justify-center w-full max-w-4xl">
+          {/* Top label */}
+          <motion.p
+            className="text-[10px] font-sf-mono text-primary/60 tracking-widest uppercase mb-6 md:mb-8"
+            variants={lineVariants}
+            initial="hidden"
+            animate="visible"
+            custom={0.1}
+          >
+            {lineOne}
+          </motion.p>
+
+          {/* Name display */}
+          <div className="flex flex-col items-center gap-0 md:gap-1">
+            {/* First name */}
+            <motion.div
+              className="flex justify-center"
+              variants={nameContainerVariants}
               initial="hidden"
               animate="visible"
-              custom={0.1}
             >
-              {lineOne}
-            </motion.p>
-          </div>
+              {firstName.split("").map((char, i) => (
+                <motion.span
+                  key={`first-${i}`}
+                  variants={charVariants}
+                  className="text-5xl md:text-7xl font-sf-mono font-bold text-primary tracking-tight leading-none"
+                >
+                  {char}
+                </motion.span>
+              ))}
+            </motion.div>
 
-          {/* Content */}
-          <div className="px-6 py-8">
-            {/* Name display */}
-            <div className="flex flex-col gap-1 mb-6">
-              {/* First name */}
-              <motion.div
-                className="flex"
-                variants={nameContainerVariants}
-                initial="hidden"
-                animate="visible"
-              >
-                {firstName.split("").map((char, i) => (
-                  <motion.span
-                    key={`first-${i}`}
-                    variants={charVariants}
-                    className="text-xl font-sf-mono font-bold text-primary tracking-tight leading-none"
-                  >
-                    {char}
-                  </motion.span>
-                ))}
-              </motion.div>
-
-              {/* Last name */}
-              <motion.div
-                className="flex"
-                variants={nameContainerVariants}
-                initial="hidden"
-                animate="visible"
-              >
-                {lastName.split("").map((char, i) => (
-                  <motion.span
-                    key={`last-${i}`}
-                    variants={charVariants}
-                    className="text-xl font-sf-mono font-bold text-primary tracking-tight leading-none"
-                    style={{ transitionDelay: `${(firstName.length + i) * 0.04}s` }}
-                  >
-                    {char}
-                  </motion.span>
-                ))}
-              </motion.div>
-            </div>
-
-            {/* Progress bar */}
+            {/* Last name */}
             <motion.div
-              className="space-y-2"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 1.2, duration: 0.5 }}
+              className="flex justify-center"
+              variants={nameContainerVariants}
+              initial="hidden"
+              animate="visible"
             >
-              <div className="relative h-[1px] bg-primary/20 overflow-hidden">
-                <div
-                  className="absolute left-0 top-0 h-full bg-primary transition-[width] duration-75 ease-linear"
-                  style={{ width: `${progress}%` }}
-                />
-              </div>
-
-              <div className="flex justify-between items-center">
-                <span className="text-[9px] font-sf-mono text-primary/60 uppercase tracking-wider">
-                  Loading
-                </span>
-                <span className="text-[9px] font-sf-mono text-primary/60 tabular-nums tracking-wider">
-                  {Math.round(progress).toString().padStart(3, "0")}%
-                </span>
-              </div>
+              {lastName.split("").map((char, i) => (
+                <motion.span
+                  key={`last-${i}`}
+                  variants={charVariants}
+                  className="text-5xl md:text-7xl font-sf-mono font-bold text-primary tracking-tight leading-none"
+                  style={{ transitionDelay: `${(firstName.length + i) * 0.03}s` }}
+                >
+                  {char}
+                </motion.span>
+              ))}
             </motion.div>
           </div>
 
-          {/* Footer */}
-          <div className="bg-primary/5 px-4 py-3 border-t border-primary/20">
-            <motion.p
-              className="text-[9px] font-sf-mono text-primary/40 tracking-wider uppercase"
-              variants={lineVariants}
-              initial="hidden"
-              animate="visible"
-              custom={1.2}
-            >
-              {lineThree}
-            </motion.p>
-          </div>
+          {/* Bottom label */}
+          <motion.p
+            className="mt-6 md:mt-8 text-[10px] font-sf-mono text-primary/40 tracking-widest uppercase"
+            variants={lineVariants}
+            initial="hidden"
+            animate="visible"
+            custom={1.0}
+          >
+            {lineThree}
+          </motion.p>
+
+          {/* Progress bar */}
+          <motion.div
+            className="w-full max-w-sm md:max-w-md mt-12 md:mt-16"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1.2, duration: 0.4 }}
+          >
+            <div className="relative h-[2px] bg-primary/20 overflow-hidden">
+              <div
+                className="absolute left-0 top-0 h-full bg-primary transition-[width] duration-75 ease-linear"
+                style={{ width: `${progress}%` }}
+              />
+            </div>
+
+            {/* Progress labels */}
+            <div className="flex justify-between mt-2">
+              <span className="text-[9px] font-sf-mono text-primary/40 uppercase tracking-wider">
+                Loading
+              </span>
+              <span className="text-[9px] font-sf-mono text-primary/60 tabular-nums tracking-wider">
+                {Math.round(progress).toString().padStart(3, "0")}%
+              </span>
+            </div>
+          </motion.div>
         </div>
       )}
     </motion.div>
