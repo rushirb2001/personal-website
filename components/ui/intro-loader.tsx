@@ -12,12 +12,10 @@ export function IntroLoader({ onLoadComplete }: IntroLoaderProps) {
   const [showContent, setShowContent] = useState(false)
 
   useEffect(() => {
-    // Small delay before showing content for smoother entrance
     const contentTimer = setTimeout(() => setShowContent(true), 100)
 
-    // Animate progress bar
-    const duration = 2000 // 2 seconds total
-    const interval = 20 // Update every 20ms
+    const duration = 2200
+    const interval = 20
     const increment = 100 / (duration / interval)
 
     const progressTimer = setInterval(() => {
@@ -25,8 +23,7 @@ export function IntroLoader({ onLoadComplete }: IntroLoaderProps) {
         const next = prev + increment
         if (next >= 100) {
           clearInterval(progressTimer)
-          // Complete after progress bar finishes
-          setTimeout(() => onLoadComplete(), 400)
+          setTimeout(() => onLoadComplete(), 500)
           return 100
         }
         return next
@@ -39,42 +36,42 @@ export function IntroLoader({ onLoadComplete }: IntroLoaderProps) {
     }
   }, [onLoadComplete])
 
-  const greeting = "Hi, I'm"
-  const name = "Rushir Bhavsar"
-  const welcome = "Welcome to my portfolio"
+  const lineOne = "HI, MY NAME IS"
+  const firstName = "RUSHIR"
+  const lastName = "BHAVSAR"
+  const lineThree = "WELCOME TO MY PORTFOLIO"
 
-  // Character animation variants
-  const containerVariants = {
+  const lineVariants = {
+    hidden: { opacity: 0 },
+    visible: (delay: number) => ({
+      opacity: 1,
+      transition: {
+        duration: 0.6,
+        delay,
+        ease: [0.4, 0, 0.2, 1],
+      },
+    }),
+  }
+
+  const nameContainerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.03,
-        delayChildren: 0.2,
+        staggerChildren: 0.04,
+        delayChildren: 0.4,
       },
     },
   }
 
   const charVariants = {
-    hidden: { opacity: 0, y: 20 },
+    hidden: { opacity: 0, y: 30, scale: 0.9 },
     visible: {
       opacity: 1,
       y: 0,
+      scale: 1,
       transition: {
-        duration: 0.3,
-        ease: [0.4, 0, 0.2, 1],
-      },
-    },
-  }
-
-  const welcomeVariants = {
-    hidden: { opacity: 0, y: 10 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.5,
-        delay: 1,
+        duration: 0.4,
         ease: [0.4, 0, 0.2, 1],
       },
     },
@@ -82,81 +79,99 @@ export function IntroLoader({ onLoadComplete }: IntroLoaderProps) {
 
   return (
     <motion.div
-      className="fixed inset-0 z-[100] bg-background flex flex-col items-center justify-center px-4"
+      className="fixed inset-0 z-[100] bg-background flex flex-col items-center justify-center px-6 sm:px-8"
       initial={{ opacity: 1 }}
       exit={{
         opacity: 0,
-        transition: { duration: 0.5, ease: [0.4, 0, 0.2, 1] },
+        scale: 0.98,
+        transition: { duration: 0.6, ease: [0.4, 0, 0.2, 1] },
       }}
     >
       {showContent && (
-        <div className="flex flex-col items-center justify-center max-w-4xl mx-auto text-center">
-          {/* Greeting line */}
-          <motion.div
-            className="flex flex-wrap justify-center gap-x-2 mb-2"
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-          >
-            {greeting.split("").map((char, i) => (
-              <motion.span
-                key={`greeting-${i}`}
-                variants={charVariants}
-                className="text-lg sm:text-xl md:text-2xl font-sf-mono text-primary/60"
-              >
-                {char === " " ? "\u00A0" : char}
-              </motion.span>
-            ))}
-          </motion.div>
-
-          {/* Name - Large and bold */}
-          <motion.div
-            className="flex flex-wrap justify-center"
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-          >
-            {name.split("").map((char, i) => (
-              <motion.span
-                key={`name-${i}`}
-                variants={charVariants}
-                className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-sf-mono font-bold text-primary tracking-tight"
-              >
-                {char === " " ? "\u00A0" : char}
-              </motion.span>
-            ))}
-          </motion.div>
-
-          {/* Welcome message */}
+        <div className="flex flex-col items-center justify-center w-full max-w-5xl mx-auto">
           <motion.p
-            className="mt-4 sm:mt-6 text-sm sm:text-base md:text-lg font-sf-mono text-primary/50 tracking-wider uppercase"
-            variants={welcomeVariants}
+            className="text-xs sm:text-sm md:text-base font-sf-mono text-primary/50 tracking-[0.3em] mb-4 sm:mb-6"
+            variants={lineVariants}
             initial="hidden"
             animate="visible"
+            custom={0.1}
           >
-            {welcome}
+            {lineOne}
           </motion.p>
 
-          {/* Loading bar */}
-          <motion.div
-            className="w-full max-w-md sm:max-w-lg md:max-w-xl mt-8 sm:mt-12"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.2, duration: 0.4 }}
+          <div className="flex flex-col items-center gap-0 sm:gap-1">
+            {/* First name */}
+            <motion.div
+              className="flex justify-center"
+              variants={nameContainerVariants}
+              initial="hidden"
+              animate="visible"
+            >
+              {firstName.split("").map((char, i) => (
+                <motion.span
+                  key={`first-${i}`}
+                  variants={charVariants}
+                  className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-sf-mono font-bold text-primary tracking-tight leading-none"
+                >
+                  {char}
+                </motion.span>
+              ))}
+            </motion.div>
+
+            {/* Last name */}
+            <motion.div
+              className="flex justify-center"
+              variants={nameContainerVariants}
+              initial="hidden"
+              animate="visible"
+            >
+              {lastName.split("").map((char, i) => (
+                <motion.span
+                  key={`last-${i}`}
+                  variants={charVariants}
+                  className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-sf-mono font-bold text-primary tracking-tight leading-none"
+                  style={{ transitionDelay: `${(firstName.length + i) * 0.04}s` }}
+                >
+                  {char}
+                </motion.span>
+              ))}
+            </motion.div>
+          </div>
+
+          <motion.p
+            className="mt-6 sm:mt-8 md:mt-10 text-xs sm:text-sm md:text-base font-sf-mono text-primary/40 tracking-[0.2em]"
+            variants={lineVariants}
+            initial="hidden"
+            animate="visible"
+            custom={1.2}
           >
-            <div className="relative h-[2px] bg-primary/10 overflow-hidden">
+            {lineThree}
+          </motion.p>
+
+          <motion.div
+            className="w-full max-w-xs sm:max-w-sm md:max-w-md mt-10 sm:mt-14 md:mt-16"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1.4, duration: 0.5 }}
+          >
+            {/* Progress bar container */}
+            <div className="relative h-[1px] bg-primary/20 overflow-hidden">
               <motion.div
                 className="absolute left-0 top-0 h-full bg-primary"
                 initial={{ width: "0%" }}
                 animate={{ width: `${progress}%` }}
-                transition={{ duration: 0.1, ease: "linear" }}
+                transition={{ duration: 0.05, ease: "linear" }}
               />
             </div>
-            <div className="flex justify-between mt-2">
-              <span className="text-[10px] sm:text-xs font-sf-mono text-primary/40 uppercase tracking-wider">
+
+            {/* Progress labels */}
+            <div className="flex justify-between mt-3">
+              <span className="text-[10px] sm:text-[11px] font-sf-mono text-primary/30 uppercase tracking-[0.2em]">
                 Loading
               </span>
-              <span className="text-[10px] sm:text-xs font-sf-mono text-primary/40">{Math.round(progress)}%</span>
+              <span className="text-[10px] sm:text-[11px] font-sf-mono text-primary/30 tabular-nums">
+                {Math.round(progress).toString().padStart(3, "0")}%
+              </span>
             </div>
           </motion.div>
         </div>
