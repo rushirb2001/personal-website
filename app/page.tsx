@@ -207,12 +207,6 @@ export default function Home() {
                     </Link>
                     <button
                       className="w-6 h-6 flex items-center justify-center border border-primary/20 bg-primary text-primary-foreground transition-all"
-                      onClick={() => setIsResumeModalOpen(true)}
-                    >
-                      <FileText className="h-3 w-3" />
-                    </button>
-                    <button
-                      className="w-6 h-6 flex items-center justify-center border border-primary/20 bg-primary text-primary-foreground transition-all"
                       onClick={() => navigateTo("/contact")}
                     >
                       <Mail className="h-3 w-3" />
