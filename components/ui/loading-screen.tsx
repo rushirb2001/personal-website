@@ -103,7 +103,7 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
     <AnimatePresence>
       {phase !== "complete" && (
         <motion.div
-          className="fixed inset-0 z-50 bg-background flex flex-col items-center justify-center"
+          className="fixed inset-0 z-[90] bg-background flex flex-col items-center justify-center"
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.5, ease: "easeInOut" }}

@@ -18,7 +18,7 @@ export function Header() {
   }
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-60 bg-background border-b border-primary/10">
+    <header className="fixed top-0 left-0 right-0 z-[100] bg-background border-b border-primary/10">
       <div className="w-full flex items-center justify-between h-14 md:h-16 px-3 md:px-4">
         <div className="flex items-center gap-3 md:gap-4">
           <a

@@ -19,7 +19,7 @@ export function TransitionOverlay() {
     <AnimatePresence>
       {isTransitioning && isMounted && (
         <motion.div
-          className="fixed inset-x-0 top-14 md:top-16 bottom-0 z-30 overflow-hidden"
+          className="fixed inset-x-0 top-14 md:top-16 bottom-0 z-[70] overflow-hidden"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
