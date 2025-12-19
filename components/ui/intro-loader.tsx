@@ -83,7 +83,7 @@ export function IntroLoader({ onLoadComplete }: IntroLoaderProps) {
             className="w-full flex flex-col items-center"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.5 }}
+            transition={{ duration: 10.0, delay: 2 }}
           >
             {/* Loading label */}
             <span className="text-xs font-sf-mono font-bold text-primary tracking-widest mb-3 block">
@@ -96,7 +96,7 @@ export function IntroLoader({ onLoadComplete }: IntroLoaderProps) {
                 <motion.div
                   className="h-full bg-primary"
                   style={{ width: `${progress}%` }}
-                  transition={{ duration: 0.05, ease: "linear" }}
+                  transition={{ duration: 10.0, ease: "linear" }}
                 />
               </div>
             </div>
