@@ -22,7 +22,7 @@ export function IntroLoader({ onLoadComplete }: IntroLoaderProps) {
   useEffect(() => {
     const contentTimer = setTimeout(() => setShowContent(true), 100)
 
-    const duration = 2200000
+    const duration = 2200
     const interval = 20
     const increment = 100 / (duration / interval)
 
@@ -55,7 +55,7 @@ export function IntroLoader({ onLoadComplete }: IntroLoaderProps) {
         <div className="flex flex-col items-center w-full max-w-2xl">
           {/* Name */}
           <motion.h1
-            className="font-sf-mono text-primary tracking-wider mb-10 md:mb-14 py-0 text-4xl font-black text-center"
+            className="font-sf-mono text-primary tracking-wider mb-10 md:mb-14 py-0 text-4xl font-black"
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.1 }}
