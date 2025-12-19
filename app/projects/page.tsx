@@ -447,114 +447,123 @@ export default function ProjectsPage() {
         </motion.div>
       </div>
 
-      {/* Modal - Wide Horizontal Layout */}
+      {/* Modal - Full Screen Layout */}
       <AnimatePresence>
         {isModalOpen && selectedProject && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[80] flex items-center justify-center bg-black/80 backdrop-blur-sm p-3 md:p-6"
+            className="fixed inset-0 z-[80] bg-background"
             onClick={closeModal}
           >
             <motion.div
-              initial={{ scale: 0.95, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.95, opacity: 0 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 20 }}
               transition={{ duration: 0.2 }}
-              className="w-full max-w-5xl bg-background border border-primary/30 shadow-lg max-h-[90vh] overflow-hidden flex flex-col"
+              className="w-full h-full pt-14 md:pt-16 pb-12 overflow-hidden flex flex-col"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Header */}
-              <div className="border-b border-primary/20 px-3 md:px-4 py-2 md:py-3 flex justify-between items-center bg-primary/5">
-                <div className="flex items-center gap-2">
-                  <Terminal className="h-3 w-3 md:h-4 md:w-4 text-primary" />
-                  <span className="font-sf-mono font-bold uppercase tracking-wider text-primary line-clamp-1 md:text-lg">
+              <div className="border-b border-primary/20 px-4 md:px-8 py-3 md:py-4 flex justify-between items-center bg-primary/5 shrink-0">
+                <div className="flex items-center gap-3">
+                  <Terminal className="h-4 w-4 md:h-5 md:w-5 text-primary" />
+                  <span className="font-sf-mono font-bold uppercase tracking-wider text-primary text-lg md:text-xl">
                     {selectedProject.title}
+                  </span>
+                  <span className={`text-xs font-sf-mono ${getStatusColor(selectedProject.status)}`}>
+                    [{selectedProject.status}]
                   </span>
                 </div>
                 <button
                   onClick={closeModal}
-                  className="bg-primary text-background border border-primary/40 hover:bg-primary/90 transition-all duration-200 font-sf-mono flex items-center justify-center w-7 h-7 md:w-auto md:px-2 md:py-1"
+                  className="bg-primary text-background border border-primary/40 hover:bg-primary/90 transition-all duration-200 font-sf-mono flex items-center gap-2 px-3 py-1.5"
                 >
-                  <span className="hidden md:inline text-[10px]">ESC</span>
-                  <X className="w-3 h-3 md:hidden" />
+                  <span className="text-xs">CLOSE</span>
+                  <X className="w-3 h-3" />
                 </button>
               </div>
 
-              {/* Content - Single Column */}
-              <div className="p-4 md:p-6 overflow-y-auto flex-1 space-y-4 md:space-y-5">
-                {/* Description */}
-                <div>
-                  <div className="flex items-center gap-2 mb-2 md:mb-3 pb-2 border-b border-primary/10">
-                    <div className="w-5 h-5 border border-primary/30 bg-primary/10 flex items-center justify-center text-[10px] font-sf-mono text-primary/70">
-                      01
-                    </div>
-                    <span className="text-[9px] md:text-sm font-sf-mono text-primary/50 uppercase tracking-wider">
-                      DESCRIPTION
-                    </span>
-                  </div>
-                  <p className="text-[10px] md:text-xs font-sf-mono text-primary/70 leading-relaxed">
-                    {selectedProject.fullDescription}
-                  </p>
-                </div>
-
-                {/* Highlights */}
-                <div>
-                  <div className="flex items-center gap-2 mb-2 md:mb-3 pb-2 border-b border-primary/10">
-                    <div className="w-5 h-5 border border-primary/30 bg-primary/10 flex items-center justify-center text-[10px] font-sf-mono text-primary/70 flex-shrink-0">
-                      02
-                    </div>
-                    <span className="text-[9px] md:text-sm font-sf-mono text-primary/50 uppercase tracking-wider">
-                      KEY HIGHLIGHTS
-                    </span>
-                  </div>
-                  <div className="space-y-2 md:space-y-3">
-                    {selectedProject.highlights.map((highlight, i) => (
-                      <div key={i} className="flex gap-2">
-                        <div className="w-5 h-5 border border-primary/20 bg-primary/5 flex items-center justify-center text-[9px] font-sf-mono text-primary/60 flex-shrink-0">
-                          {i + 1}
-                        </div>
-                        <p className="text-[10px] md:text-xs font-sf-mono text-primary/70 leading-relaxed">
-                          {highlight}
-                        </p>
+              {/* Content - Full Width Scrollable */}
+              <div className="flex-1 overflow-y-auto px-4 md:px-8 py-6 md:py-8">
+                <div className="max-w-4xl mx-auto space-y-6 md:space-y-8">
+                  {/* Description */}
+                  <div>
+                    <div className="flex items-center gap-2 mb-3 pb-2 border-b border-primary/10">
+                      <div className="w-6 h-6 border border-primary/30 bg-primary/10 flex items-center justify-center text-xs font-sf-mono text-primary/70">
+                        01
                       </div>
-                    ))}
+                      <span className="text-sm font-sf-mono text-primary/50 uppercase tracking-wider">DESCRIPTION</span>
+                    </div>
+                    <p className="text-sm md:text-base font-sf-mono text-primary/70 leading-relaxed">
+                      {selectedProject.fullDescription}
+                    </p>
                   </div>
-                </div>
-              </div>
 
-              {/* Footer - Proper Alignment */}
-              <div className="border-t border-primary/20 px-3 md:px-4 py-2 md:py-3 bg-primary/5">
-                {/* Desktop Layout - Single Row */}
-                <div className="hidden md:flex items-center justify-between gap-3">
-                  {/* Technologies - Left */}
-                  <div className="flex items-center gap-2 flex-wrap flex-1">
-                    <span className="text-[9px] font-sf-mono text-primary/50 uppercase tracking-wider">
-                      TECH STACK:
-                    </span>
-                    {selectedProject.technologies.map((tech) => (
-                      <span
-                        key={tech}
-                        className="text-[9px] font-sf-mono border border-primary bg-background text-primary/70 px-2 py-1 hover:bg-primary hover:text-background transition-colors"
-                      >
-                        {tech.toUpperCase()}
+                  {/* Highlights */}
+                  <div>
+                    <div className="flex items-center gap-2 mb-3 pb-2 border-b border-primary/10">
+                      <div className="w-6 h-6 border border-primary/30 bg-primary/10 flex items-center justify-center text-xs font-sf-mono text-primary/70 shrink-0">
+                        02
+                      </div>
+                      <span className="text-sm font-sf-mono text-primary/50 uppercase tracking-wider">
+                        KEY HIGHLIGHTS
                       </span>
-                    ))}
+                    </div>
+                    <div className="space-y-3">
+                      {selectedProject.highlights.map((highlight, i) => (
+                        <div key={i} className="flex gap-3">
+                          <div className="w-6 h-6 border border-primary/20 bg-primary/5 flex items-center justify-center text-xs font-sf-mono text-primary/40 shrink-0">
+                            {i + 1}
+                          </div>
+                          <p className="text-sm font-sf-mono text-primary/60 leading-relaxed">{highlight}</p>
+                        </div>
+                      ))}
+                    </div>
                   </div>
 
-                  {/* Action Buttons - Right */}
-                  {(selectedProject.github || selectedProject.demo) && (
-                    <div className="flex gap-2 flex-shrink-0">
+                  {/* Technologies */}
+                  <div>
+                    <div className="flex items-center gap-2 mb-3 pb-2 border-b border-primary/10">
+                      <div className="w-6 h-6 border border-primary/30 bg-primary/10 flex items-center justify-center text-xs font-sf-mono text-primary/70">
+                        03
+                      </div>
+                      <span className="text-sm font-sf-mono text-primary/50 uppercase tracking-wider">
+                        TECHNOLOGIES
+                      </span>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {selectedProject.technologies.map((tech) => (
+                        <div
+                          key={tech}
+                          className="flex items-center gap-2 px-3 py-1.5 border border-primary/20 bg-primary/5 hover:bg-primary/10 transition-colors"
+                        >
+                          <span className="text-primary/60">{getTechIcon(tech)}</span>
+                          <span className="text-xs font-sf-mono text-primary/70 uppercase">{tech}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Links */}
+                  <div>
+                    <div className="flex items-center gap-2 mb-3 pb-2 border-b border-primary/10">
+                      <div className="w-6 h-6 border border-primary/30 bg-primary/10 flex items-center justify-center text-xs font-sf-mono text-primary/70">
+                        04
+                      </div>
+                      <span className="text-sm font-sf-mono text-primary/50 uppercase tracking-wider">LINKS</span>
+                    </div>
+                    <div className="flex flex-wrap gap-3">
                       {selectedProject.github && (
                         <a
                           href={selectedProject.github}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex items-center gap-2 text-[10px] font-sf-mono border border-primary bg-primary text-background hover:bg-primary/90 transition-all duration-150 px-4 py-2"
+                          className="flex items-center gap-2 px-4 py-2 bg-primary text-background border border-primary hover:bg-primary/90 transition-all"
                         >
-                          <Github className="h-3 w-3" />
-                          <span>SOURCE</span>
+                          <Github className="w-4 h-4" />
+                          <span className="text-sm font-sf-mono">VIEW CODE</span>
                         </a>
                       )}
                       {selectedProject.demo && (
@@ -562,61 +571,17 @@ export default function ProjectsPage() {
                           href={selectedProject.demo}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex items-center gap-2 text-[10px] font-sf-mono border border-primary bg-primary text-background hover:bg-primary/90 transition-all duration-150 px-4 py-2"
+                          className="flex items-center gap-2 px-4 py-2 bg-primary text-background border border-primary hover:bg-primary/90 transition-all"
                         >
-                          <ExternalLink className="h-3 w-3" />
-                          <span>DEMO</span>
+                          <ExternalLink className="w-4 h-4" />
+                          <span className="text-sm font-sf-mono">LIVE DEMO</span>
                         </a>
                       )}
+                      {!selectedProject.github && !selectedProject.demo && (
+                        <span className="text-sm font-sf-mono text-primary/40">NO EXTERNAL LINKS AVAILABLE</span>
+                      )}
                     </div>
-                  )}
-                </div>
-
-                {/* Mobile Layout - Single Row */}
-                <div className="flex md:hidden items-center justify-between">
-                  {/* Tech Icons - Left */}
-                  <div className="flex gap-1 flex-wrap">
-                    {selectedProject.technologies.slice(0, 5).map((tech) => (
-                      <div
-                        key={tech}
-                        className="w-7 h-7 border border-primary bg-primary text-background flex items-center justify-center hover:bg-primary/90 transition-colors"
-                        title={tech}
-                      >
-                        {getTechIcon(tech)}
-                      </div>
-                    ))}
-                    {selectedProject.technologies.length > 5 && (
-                      <div className="w-7 h-7 border border-primary bg-primary text-background flex items-center justify-center text-[8px] font-sf-mono">
-                        +{selectedProject.technologies.length - 5}
-                      </div>
-                    )}
                   </div>
-
-                  {/* Action Buttons - Right */}
-                  {(selectedProject.github || selectedProject.demo) && (
-                    <div className="flex gap-2 flex-shrink-0">
-                      {selectedProject.github && (
-                        <a
-                          href={selectedProject.github}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="w-10 h-7 border border-primary bg-primary text-background hover:bg-primary/90 transition-all duration-150 flex items-center justify-center"
-                        >
-                          <Github className="h-3 w-3" />
-                        </a>
-                      )}
-                      {selectedProject.demo && (
-                        <a
-                          href={selectedProject.demo}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="w-10 h-7 border border-primary bg-primary text-background hover:bg-primary/90 transition-all duration-150 flex items-center justify-center"
-                        >
-                          <ExternalLink className="h-3 w-3" />
-                        </a>
-                      )}
-                    </div>
-                  )}
                 </div>
               </div>
             </motion.div>
