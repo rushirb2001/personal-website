@@ -170,7 +170,7 @@ export default function UpdatesPage() {
       <AnimatePresence>
         {collapseAnimation.show && collapseAnimation.endRect && collapseAnimation.postData && (
           <motion.div
-            className="fixed z-[100] border border-primary/20 bg-background dark:bg-eerie-black overflow-hidden pointer-events-none"
+            className="fixed z-[80] border border-primary/20 bg-background dark:bg-eerie-black overflow-hidden pointer-events-none"
             initial={{
               top: collapseAnimation.startRect.top,
               left: collapseAnimation.startRect.left,

@@ -37,7 +37,7 @@ export function NavMenu() {
 
       {/* Mobile dropdown menu */}
       {isOpen && (
-        <div className="absolute right-0 top-full mt-1 w-48 bg-background dark:bg-eerie-black border border-primary/20 shadow-md z-60 md:hidden">
+        <div className="absolute right-0 top-full mt-1 w-48 bg-background dark:bg-eerie-black border border-primary/20 shadow-md z-[95] md:hidden">
           <div className="py-1">
             {NAV_ITEMS.map((item) => (
               <button

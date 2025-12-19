@@ -57,7 +57,7 @@ export function MobileDropdownNav() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.2 }}
-            className="absolute top-full left-0 mt-1 w-40 bg-background dark:bg-eerie-black border border-primary/20 shadow-md z-50"
+            className="absolute top-full left-0 mt-1 w-40 bg-background dark:bg-eerie-black border border-primary/20 shadow-md z-[95]"
           >
             <div className="py-1">
               {NAV_ITEMS.map((item) => (
