@@ -427,7 +427,7 @@ export default function Home() {
                     onClick={() => navigateTo(item.path)}
                     className="h-8 flex items-center justify-center gap-0.5 border border-primary/20 bg-primary text-primary-foreground transition-all hover:bg-primary/90 group px-1"
                   >
-                    <span className="font-sf-mono text-[9px] tracking-tighter leading-none">
+                    <span className="font-sf-mono leading-none text-base tracking-[-0.075em]">
                       {item.label}
                     </span>
                     <ArrowRight className="h-2.5 w-2.5 group-hover:translate-x-0.5 transition-transform shrink-0" />
