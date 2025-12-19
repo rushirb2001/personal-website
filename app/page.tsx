@@ -204,7 +204,7 @@ export default function Home() {
                     Experience across healthcare, astronomy, and enterprise AI domains.
                   </p>
                 </div>
-                <div className="flex flex-wrap items-center justify-between gap-2 px-2 py-2 border-t border-primary/10">
+                <div className="flex flex-wrap items-center justify-between gap-2 px-2 py-2 border-t border-primary/10 hidden md:flex">
                   <div className="flex items-center gap-1.5">
                     <Link
                       href="https://github.com/rushirb2001"
