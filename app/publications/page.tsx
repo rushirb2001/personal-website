@@ -248,7 +248,7 @@ export default function PublicationsPage() {
                           <span className="font-sf-mono text-primary/40 uppercase tracking-wider text-sm">
                             ABSTRACT
                           </span>
-                          <p className="font-sf-mono text-primary/70 mt-1 leading-relaxed border-l-2 border-primary/20 pl-3 tracking-tighter text-sm">
+                          <p className="font-sf-mono text-primary/70 mt-1 leading-relaxed border-l-2 border-primary/20 pl-3 tracking-tighter text-xs">
                             {selectedPublication.abstract}
                           </p>
                         </div>
@@ -259,12 +259,12 @@ export default function PublicationsPage() {
                           <span className="font-sf-mono text-primary/40 uppercase tracking-wider text-sm">
                             AUTHORS
                           </span>
-                          <p className="font-sf-mono text-primary/70 mt-1 text-sm">{selectedPublication.authors}</p>
+                          <p className="font-sf-mono text-primary/70 mt-1 text-xs">{selectedPublication.authors}</p>
                         </div>
                         
                         <div>
                           <span className="font-sf-mono text-primary/40 uppercase tracking-wider text-sm">DOI</span>
-                          <p className="font-sf-mono text-primary/50 mt-1 break-all text-sm">
+                          <p className="font-sf-mono text-primary/50 mt-1 break-all text-xs">
                             {selectedPublication.doi}
                           </p>
                         </div>
