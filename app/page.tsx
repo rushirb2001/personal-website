@@ -230,44 +230,45 @@ export default function Home() {
                   </p>
                 </div>
                 <div className="flex flex-wrap items-center justify-between gap-2 px-2 py-2 border-t border-primary/10 hidden md:block">
-                  <div className="flex items-center gap-1.5">
-                    <Link
-                      href="https://github.com/rushirb2001"
-                      target="_blank"
-                      className="w-7 h-7 flex items-center justify-center border border-primary/20 bg-primary text-primary-foreground transition-all group"
-                    >
-                      <Github className="h-3.5 w-3.5 group-hover:-translate-y-0.5 transition-transform" />
-                    </Link>
-                    <Link
-                      href="https://linkedin.com/in/rushir-bhavsar/"
-                      target="_blank"
-                      className="w-7 h-7 flex items-center justify-center border border-primary/20 bg-primary text-primary-foreground transition-all group"
-                    >
-                      <Linkedin className="h-3.5 w-3.5 group-hover:-translate-y-0.5 transition-transform" />
-                    </Link>
-                    
-                    <span className="flex items-center font-sf-mono text-primary/40 ml-2 text-sm hidden md:block">
-                      <MapPin className="h-2.5 w-2.5 mr-0.5" />
-                      PHOENIX, AZ
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <Button
-                      variant="ghost"
-                      className="h-7 px-2 border border-primary/20 text-base font-sf-mono bg-primary text-primary-foreground transition-all group rounded-none"
-                      onClick={() => setIsResumeModalOpen(true)}
-                    >
-                      <FileText className="h-3 w-3 mr-1 group-hover:-translate-y-0.5 transition-transform" />
-                      RESUME
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      className="h-7 px-2 border border-primary/20 text-base font-sf-mono bg-primary text-primary-foreground transition-all group rounded-none"
-                      onClick={() => navigateTo("/contact")}
-                    >
-                      CONTACT
-                      <ArrowRight className="h-2.5 w-2.5 ml-1 group-hover:translate-x-1 transition-transform" />
-                    </Button>
+                  <div className="hidden md:flex items-center justify-between px-2 py-2 border-t border-primary/10">
+                    <div className="flex items-center gap-1.5">
+                      <Link
+                        href="https://github.com/rushirb2001"
+                        target="_blank"
+                        className="w-7 h-7 flex items-center justify-center border border-primary/20 bg-primary text-primary-foreground transition-all group"
+                      >
+                        <Github className="h-3.5 w-3.5 group-hover:-translate-y-0.5 transition-transform" />
+                      </Link>
+                      <Link
+                        href="https://linkedin.com/in/rushir-bhavsar/"
+                        target="_blank"
+                        className="w-7 h-7 flex items-center justify-center border border-primary/20 bg-primary text-primary-foreground transition-all group"
+                      >
+                        <Linkedin className="h-3.5 w-3.5 group-hover:-translate-y-0.5 transition-transform" />
+                      </Link>
+                      <span className="flex items-center font-sf-mono text-primary/40 ml-2 text-[9px] tracking-wider uppercase">
+                        <MapPin className="h-2.5 w-2.5 mr-1" />
+                        PHOENIX, AZ
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <Button
+                        variant="ghost"
+                        className="h-7 px-2 border border-primary/20 text-[9px] font-sf-mono tracking-wider bg-primary text-primary-foreground transition-all group rounded-none"
+                        onClick={() => setIsResumeModalOpen(true)}
+                      >
+                        <FileText className="h-3 w-3 mr-1 group-hover:-translate-y-0.5 transition-transform" />
+                        RESUME
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        className="h-7 px-2 border border-primary/20 text-[9px] font-sf-mono tracking-wider bg-primary text-primary-foreground transition-all group rounded-none"
+                        onClick={() => navigateTo("/contact")}
+                      >
+                        CONTACT
+                        <ArrowRight className="h-2.5 w-2.5 ml-1 group-hover:translate-x-1 transition-transform" />
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </div>
