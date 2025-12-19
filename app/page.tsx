@@ -3,7 +3,7 @@
 import type React from "react"
 import { useState, useRef, useEffect, useCallback } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { ArrowRight, Github, Linkedin, FileText, MapPin, Mail, ChevronLeft, ChevronRight } from "lucide-react"
+import { ArrowRight, Github, Linkedin, FileText, MapPin, ChevronLeft, ChevronRight } from "lucide-react"
 import { PageLayout } from "@/components/layout/page-layout"
 import { Button } from "@/components/ui/button"
 import { useNavigation } from "@/contexts/navigation-context"
@@ -220,9 +220,9 @@ export default function Home() {
                     >
                       <Linkedin className="h-3.5 w-3.5 group-hover:-translate-y-0.5 transition-transform" />
                     </Link>
-                    
-                    <span className="flex items-center font-sf-mono text-primary/40 ml-3 text-sm hidden md:block">
-                      <MapPin className="h-2.5 w-2.5 mr-0.5" />
+
+                    <span className="hidden md:flex items-center font-sf-mono text-primary/40 ml-3 text-sm">
+                      <MapPin className="h-3.5 w-3.5 mr-1" />
                       PHOENIX, AZ
                     </span>
                   </div>
