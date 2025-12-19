@@ -1,6 +1,8 @@
 "use client"
 
-import type React from "react"
+import React from "react"
+
+import type { ReactNode } from "react"
 
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
@@ -70,7 +72,7 @@ import {
 } from "react-icons/si"
 import { GiFlax } from "react-icons/gi"
 
-const techIconMap: Record<string, React.ComponentType<{ className?: string }>> = {
+const techIconMap: Record<string, ReactNode> = {
   next: SiNextdotjs,
   react: SiReact,
   vite: SiVite,
@@ -122,7 +124,7 @@ const techIconMap: Record<string, React.ComponentType<{ className?: string }>> =
   jupyter: SiJupyter,
 }
 
-const fallbackIconMap: Record<string, React.ComponentType<{ className?: string }>> = {
+const fallbackIconMap: Record<string, ReactNode> = {
   sql: Database,
   database: Database,
   cloud: Cloud,
@@ -179,6 +181,75 @@ const mobileLabels: Record<string, string> = {
 
 const ITEMS_PER_PAGE_DESKTOP = 4
 const ITEMS_PER_PAGE_MOBILE = 2
+
+function ExpandableDescription({ text }: { text: string }) {
+  const [isExpanded, setIsExpanded] = useState(false)
+  const [needsTruncation, setNeedsTruncation] = useState(false)
+  const textRef = React.useRef<HTMLParagraphElement>(null)
+
+  useEffect(() => {
+    if (textRef.current) {
+      // Check if text exceeds 10 lines (approximate line height * 10)
+      const lineHeight = Number.parseInt(getComputedStyle(textRef.current).lineHeight) || 16
+      const maxHeight = lineHeight * 10
+      setNeedsTruncation(textRef.current.scrollHeight > maxHeight)
+    }
+  }, [text])
+
+  return (
+    <div className="relative">
+      {/* Mobile view with truncation/expansion */}
+      <div className="md:hidden">
+        <div
+          className={`relative ${!isExpanded && needsTruncation ? "cursor-pointer" : ""}`}
+          onClick={() => needsTruncation && setIsExpanded(!isExpanded)}
+        >
+          {isExpanded ? (
+            // Expanded scrollable container
+            <div className="max-h-48 overflow-y-auto border border-primary/20 bg-primary/5 p-2 rounded-sm">
+              <p className="text-[10px] font-sf-mono text-primary/70 leading-relaxed">{text}</p>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation()
+                  setIsExpanded(false)
+                }}
+                className="sticky bottom-0 left-0 right-0 mt-2 w-full py-1 bg-primary text-background text-[9px] font-sf-mono uppercase tracking-wider flex items-center justify-center gap-1"
+              >
+                <ChevronDown className="w-3 h-3 rotate-180" />
+                <span>COLLAPSE</span>
+              </button>
+            </div>
+          ) : (
+            // Truncated view
+            <>
+              <p
+                ref={textRef}
+                className={`text-[10px] font-sf-mono text-primary/70 leading-relaxed ${
+                  needsTruncation ? "line-clamp-[10]" : ""
+                }`}
+              >
+                {text}
+              </p>
+              {needsTruncation && (
+                <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-background to-transparent pointer-events-none" />
+              )}
+              {needsTruncation && (
+                <button className="mt-2 w-full py-1 border border-primary/30 bg-primary/10 text-primary text-[9px] font-sf-mono uppercase tracking-wider flex items-center justify-center gap-1 hover:bg-primary/20 transition-colors">
+                  <ChevronDown className="w-3 h-3 animate-bounce" />
+                  <span>TAP TO READ MORE</span>
+                  <ChevronDown className="w-3 h-3 animate-bounce" />
+                </button>
+              )}
+            </>
+          )}
+        </div>
+      </div>
+
+      {/* Desktop view - unchanged */}
+      <p className="hidden md:block text-xs font-sf-mono text-primary/70 leading-relaxed">{text}</p>
+    </div>
+  )
+}
 
 export default function ProjectsPage() {
   const [selectedCategory, setSelectedCategory] = useState("All")
@@ -362,9 +433,7 @@ export default function ProjectsPage() {
                       <h3 className="font-sf-mono font-bold uppercase mb-2 tracking-wider text-base">
                         {project.title}
                       </h3>
-                      <p className="font-sf-mono text-primary/60 leading-relaxed line-clamp-3 uppercase tracking-tight text-sm">
-                        {project.description}
-                      </p>
+                      <ExpandableDescription text={project.description} />
                     </div>
 
                     {/* Buttons - Vertically centered, fixed height */}
@@ -494,9 +563,7 @@ export default function ProjectsPage() {
                       DESCRIPTION
                     </span>
                   </div>
-                  <p className="text-[10px] md:text-xs font-sf-mono text-primary/70 leading-relaxed">
-                    {selectedProject.fullDescription}
-                  </p>
+                  <ExpandableDescription text={selectedProject.fullDescription} />
                 </div>
 
                 {/* Highlights */}
@@ -620,9 +687,9 @@ export default function ProjectsPage() {
                 </div>
               </div>
             </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          )}
+        </AnimatePresence>
+      </div>
     </PageLayout>
   )
 }
