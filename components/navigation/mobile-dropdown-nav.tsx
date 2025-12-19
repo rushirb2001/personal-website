@@ -45,9 +45,9 @@ export function MobileDropdownNav() {
       >
         <div className="flex items-center">
           <span className="w-1.5 h-1.5 rounded-full bg-green-500 mr-2 animate-[blink_0.5s_ease-in-out_infinite]"></span>
-          <span className="text-lg">{currentPage}</span>
+          <span className="text-base">{currentPage}</span>
         </div>
-        {isOpen ? <ChevronUp className="h-3 w-3 ml-1" /> : <ChevronDown className="h-3 w-3 ml-1" />}
+        {isOpen ? <ChevronUp className="h-6 w-6 ml-1" /> : <ChevronDown className="h-3 w-3 ml-1" />}
       </button>
 
       <AnimatePresence>
