@@ -80,40 +80,32 @@ export function IntroLoader({ onLoadComplete }: IntroLoaderProps) {
 
           {/* Loading Section */}
           <motion.div
-            className="w-full flex flex-col items-center"
+            className="w-full"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.5 }}
           >
             {/* Loading label */}
-            <span className="text-xs font-sf-mono font-bold text-primary tracking-widest mb-3 block">
-              LOADING...
+            <span className="text-xs font-sf-mono font-bold text-primary tracking-widest mb-2 block">
+              LOADING
             </span>
 
-            {/* Progress box - centered independently */}
-            <div className="w-full max-w-sm h-7 md:h-8 border-[3px] border-primary p-[3px]">
-              <div className="h-full w-full overflow-hidden">
+            {/* Progress bar container with percentage */}
+            <div className="flex items-center gap-4 md:gap-6">
+              {/* Progress box */}
+              <div className="flex-1 h-6 md:h-8 border-[3px] border-primary overflow-hidden relative">
                 <motion.div
-                  className="h-full"
-                  style={{ 
-                    width: `${progress}%`,
-                    background: `repeating-linear-gradient(
-                      -45deg,
-                      hsl(var(--primary)),
-                      hsl(var(--primary)) 4px,
-                      transparent 4px,
-                      transparent 8px
-                    )`
-                  }}
+                  className="absolute inset-y-0 left-0 bg-primary"
+                  style={{ width: `${progress}%` }}
                   transition={{ duration: 0.05, ease: "linear" }}
                 />
               </div>
-            </div>
 
-            {/* Percentage - below bar */}
-            <span className="mt-3 text-lg md:text-xl font-sf-mono font-bold text-primary tabular-nums">
-              {Math.round(progress)}%
-            </span>
+              {/* Percentage */}
+              <span className="text-xl md:text-2xl font-sf-mono font-bold text-primary tabular-nums min-w-[4ch]">
+                {Math.round(progress)}%
+              </span>
+            </div>
           </motion.div>
         </div>
       )}
