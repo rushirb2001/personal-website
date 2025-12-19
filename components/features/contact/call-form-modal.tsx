@@ -11,11 +11,11 @@ interface CallFormModalProps {
   calEventSlug?: string
 }
 
-export function CallFormModal({ 
-  isOpen, 
-  onClose, 
+export function CallFormModal({
+  isOpen,
+  onClose,
   calUsername = "rushir-bhavsar-h7hcgm",
-  calEventSlug = "30min"
+  calEventSlug = "30min",
 }: CallFormModalProps) {
   const { resolvedTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
@@ -23,7 +23,7 @@ export function CallFormModal({
   useEffect(() => {
     setMounted(true)
   }, [])
-  
+
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose()
@@ -31,6 +31,17 @@ export function CallFormModal({
     window.addEventListener("keydown", handleEsc)
     return () => window.removeEventListener("keydown", handleEsc)
   }, [onClose])
+
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden"
+    } else {
+      document.body.style.overflow = ""
+    }
+    return () => {
+      document.body.style.overflow = ""
+    }
+  }, [isOpen])
 
   const calTheme = mounted && resolvedTheme === "dark" ? "dark" : "light"
   const calUrl = `https://cal.com/${calUsername}/${calEventSlug}?embed=true&layout=month_view&theme=${calTheme}`
@@ -42,7 +53,7 @@ export function CallFormModal({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-3 md:p-4"
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm p-3 md:p-4"
           onClick={onClose}
         >
           <motion.div
@@ -55,7 +66,10 @@ export function CallFormModal({
           >
             <div className="flex justify-between items-center p-2 md:p-3 border-b border-primary/20">
               <div className="text-[10px] md:text-xs font-sf-mono">SCHEDULE A CALL</div>
-              <button onClick={onClose} className="text-primary/70 hover:text-primary font-sf-mono text-[10px] md:text-xs">
+              <button
+                onClick={onClose}
+                className="text-primary/70 hover:text-primary font-sf-mono text-[10px] md:text-xs"
+              >
                 [ CLOSE ]
               </button>
             </div>
