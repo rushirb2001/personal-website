@@ -112,7 +112,7 @@ export function CustomCursor() {
     <>
       {/* Main cursor - larger and more visible */}
       <motion.div
-        className="fixed pointer-events-none z-[100] mix-blend-difference will-change-transform"
+        className="fixed pointer-events-none z-[110] mix-blend-difference will-change-transform"
         style={{
           x: mouseX,
           y: mouseY,
@@ -135,7 +135,7 @@ export function CustomCursor() {
 
       {/* Secondary cursor - simplified and properly aligned */}
       <motion.div
-        className="fixed pointer-events-none z-[99] mix-blend-difference will-change-transform"
+        className="fixed pointer-events-none z-[109] mix-blend-difference will-change-transform"
         style={{
           x: followerX,
           y: followerY,
