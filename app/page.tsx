@@ -196,20 +196,20 @@ export default function Home() {
                       target="_blank"
                       className="w-6 h-6 flex items-center justify-center border border-primary/20 bg-primary text-primary-foreground transition-all"
                     >
-                      <Github className="h-3 w-3" />
+                      <Github className="h-5 w-5" />
                     </Link>
                     <Link
                       href="https://linkedin.com/in/rushir-bhavsar/"
                       target="_blank"
                       className="w-6 h-6 flex items-center justify-center border border-primary/20 bg-primary text-primary-foreground transition-all"
                     >
-                      <Linkedin className="h-3 w-3" />
+                      <Linkedin className="h-5 w-5" />
                     </Link>
                     <button
                       className="w-6 h-6 flex items-center justify-center border border-primary/20 bg-primary text-primary-foreground transition-all"
                       onClick={() => navigateTo("/contact")}
                     >
-                      <Mail className="h-3 w-3" />
+                      <Mail className="h-5 w-5" />
                     </button>
                   </div>
                   
