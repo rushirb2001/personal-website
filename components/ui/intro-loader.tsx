@@ -22,7 +22,7 @@ export function IntroLoader({ onLoadComplete }: IntroLoaderProps) {
   useEffect(() => {
     const contentTimer = setTimeout(() => setShowContent(true), 100)
 
-    const duration = 20000
+    const duration = 200000
     const interval = 20
     const increment = 100 / (duration / interval)
 
