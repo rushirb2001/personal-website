@@ -425,7 +425,24 @@ export default function Home() {
                   <span className="font-sf-mono text-primary/30 text-base hidden md:block">[05]</span>
                 </div>
               </div>
-              <div className="p-2 flex flex-col gap-1.5">
+              {/* Mobile: Compact Side-by-Side */}
+              <div className="p-2 grid grid-cols-3 gap-1 md:hidden">
+                {quickLinks.map((item, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => navigateTo(item.path)}
+                    className="h-8 flex flex-col items-center justify-center border border-primary/20 bg-primary text-primary-foreground transition-all hover:bg-primary/90 group"
+                  >
+                    <ArrowRight className="h-3 w-3 mb-0.5 group-hover:translate-x-0.5 transition-transform" />
+                    <span className="font-sf-mono text-[8px] tracking-tight">
+                      {item.label === "PROJECTS" ? "PROJ" : item.label === "EXPERIENCE" ? "EXP" : "PUB"}
+                    </span>
+                  </button>
+                ))}
+              </div>
+              
+              {/* Desktop: Original Vertical Layout */}
+              <div className="p-2 hidden md:flex flex-col gap-1.5">
                 {quickLinks.map((item, idx) => (
                   <Button
                     key={idx}
