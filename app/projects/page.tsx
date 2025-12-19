@@ -242,7 +242,7 @@ function ExpandableDescription({ text }: { text: string }) {
               <p
                 ref={measureRef}
                 className={`text-[10px] font-sf-mono text-primary/70 leading-relaxed uppercase tracking-tight ${
-                  needsTruncation ? "line-clamp-[10]" : ""
+                  needsTruncation ? "line-clamp-[6]" : ""
                 }`}
               >
                 {text}
