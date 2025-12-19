@@ -55,7 +55,7 @@ export function IntroLoader({ onLoadComplete }: IntroLoaderProps) {
         <div className="flex flex-col items-center w-full max-w-2xl">
           {/* Name */}
           <motion.h1
-            className="text-2xl md:text-3xl font-sf-mono font-bold text-primary tracking-wider mb-10 md:mb-14 py-8"
+            className="font-sf-mono text-primary tracking-wider mb-10 md:mb-14 py-0 text-4xl font-black"
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.1 }}
@@ -65,15 +65,15 @@ export function IntroLoader({ onLoadComplete }: IntroLoaderProps) {
 
           {/* Greeting */}
           <motion.div
-            className="flex flex-col md:flex-row items-center gap-2 md:gap-4 mb-16 md:mb-20 px-4"
+            className="flex flex-col md:flex-row items-center gap-2 md:gap-4 mb-16 md:mb-20 px-4 py-4"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.4, delay: 0.3 }}
           >
-            <span className="text-sm md:text-base font-sf-mono text-primary/70 tracking-wide">
+            <span className="text-sm md:text-base font-sf-mono text-primary/70 tracking-tighter">
               HI, THERE!
             </span>
-            <span className="text-sm md:text-base font-sf-mono text-primary tracking-wide">
+            <span className="text-sm md:text-base font-sf-mono text-primary tracking-tighter">
               WELCOME TO MY PORTFOLIO
             </span>
           </motion.div>
@@ -102,7 +102,7 @@ export function IntroLoader({ onLoadComplete }: IntroLoaderProps) {
             </div>
 
             {/* Percentage - below bar */}
-            <span className="mt-3 text-lg md:text-xl font-sf-mono font-bold text-primary tabular-nums">
+            <span className="mt-3 font-sf-mono font-bold text-primary tabular-nums text-sm">
               {Math.round(progress)}%
             </span>
           </motion.div>
