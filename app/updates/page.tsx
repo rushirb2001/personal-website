@@ -138,7 +138,7 @@ export default function UpdatesPage() {
         }, 50)
       }, 700)
     }
-  }, [])
+  }, [collapseAnimation.show])
 
   const handleArticleClick = (e: React.MouseEvent, post: BlogPost) => {
     e.preventDefault()
