@@ -188,7 +188,7 @@ export default function Home() {
             >
               <div className="border-b border-primary/20 px-3 py-1.5 bg-primary/5">
                 <div className="flex items-center justify-between">
-                  <h3 className="font-sf-mono font-bold text-primary tracking-tighter text-lg">ABOUT</h3>
+                  <h3 className="font-sf-mono font-bold text-primary tracking-tighter text-base">ABOUT</h3>
                   {/* Mobile: Buttons in Header */}
                   <div className="flex items-center gap-1 md:hidden">
                     <Link
@@ -416,7 +416,7 @@ export default function Home() {
             >
               <div className="border-b border-primary/20 px-3 py-1.5 bg-primary/5">
                 <div className="flex items-center justify-between">
-                  <h3 className="font-sf-mono font-bold text-primary tracking-tighter text-lg">EXPLORE</h3>
+                  <h3 className="font-sf-mono font-bold text-primary tracking-tighter text-base">EXPLORE</h3>
                   <span className="font-sf-mono text-primary/30 text-base hidden md:block">[05]</span>
                 </div>
               </div>
