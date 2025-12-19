@@ -11,7 +11,7 @@ import { useEffect, useState } from "react"
 import { ClientOnly } from "@/components/ui/client-only"
 import { CustomCursor } from "@/components/ui/custom-cursor"
 import { TouchFeedback } from "@/components/ui/touch-feedback"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion } from "framer-motion"
 import { Analytics } from "@vercel/analytics/react"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import { IntroLoader } from "@/components/ui/intro-loader"
@@ -24,8 +24,8 @@ export default function ClientLayout({
   const [isMounted, setIsMounted] = useState(false)
   const [isTransitionReady, setIsTransitionReady] = useState(false)
   const [isTouchDevice, setIsTouchDevice] = useState(false)
-  const [isInitialRender, setIsInitialRender] = useState(true)
   const [showIntro, setShowIntro] = useState(true)
+  const [contentReady, setContentReady] = useState(false)
 
   useEffect(() => {
     setIsMounted(true)
@@ -49,13 +49,6 @@ export default function ClientLayout({
     sfMonoFont.href = "https://fonts.cdnfonts.com/css/sf-mono"
     sfMonoFont.as = "style"
     document.head.appendChild(sfMonoFont)
-
-    // Mark initial render complete after a short delay
-    const initialRenderTimer = setTimeout(() => {
-      setIsInitialRender(false)
-    }, 300)
-
-    return () => clearTimeout(initialRenderTimer)
   }, [])
 
   useEffect(() => {
@@ -71,6 +64,9 @@ export default function ClientLayout({
 
   const handleIntroComplete = () => {
     setShowIntro(false)
+    setTimeout(() => {
+      setContentReady(true)
+    }, 100)
   }
 
   // Animation variants for header and footer
@@ -80,7 +76,7 @@ export default function ClientLayout({
       opacity: 1,
       y: 0,
       transition: {
-        duration: 0.3,
+        duration: 0.4,
         ease: [0.4, 0, 0.2, 1],
       },
     },
@@ -92,9 +88,9 @@ export default function ClientLayout({
       opacity: 1,
       y: 0,
       transition: {
-        duration: 0.3,
+        duration: 0.4,
         ease: [0.4, 0, 0.2, 1],
-        delay: 0.1,
+        delay: 0.15,
       },
     },
   }
@@ -104,9 +100,9 @@ export default function ClientLayout({
     visible: {
       opacity: 1,
       transition: {
-        duration: 0.4,
+        duration: 0.5,
         ease: [0.4, 0, 0.2, 1],
-        delay: 0.2,
+        delay: 0.1,
       },
     },
   }
@@ -152,11 +148,12 @@ export default function ClientLayout({
       <body className="font-sf-pro bg-background text-foreground theme-transition">
         <ThemeProvider>
           <NavigationProvider isReady={isTransitionReady}>
-            <AnimatePresence mode="wait">
-              {showIntro && isMounted && <IntroLoader key="intro" onLoadComplete={handleIntroComplete} />}
-            </AnimatePresence>
+            {showIntro && isMounted && <IntroLoader onLoadComplete={handleIntroComplete} />}
 
-            <div className="flex flex-col min-h-screen overflow-hidden">
+            <div
+              className="flex flex-col min-h-screen overflow-hidden"
+              style={{ visibility: showIntro ? "hidden" : "visible" }}
+            >
               {/* Only render client-side components after mounting */}
               <ClientOnly>
                 {!isTouchDevice && <CustomCursor />}
@@ -164,40 +161,38 @@ export default function ClientLayout({
                 <LastAccessed />
               </ClientOnly>
 
-              <AnimatePresence mode="wait">
-                {isMounted && !showIntro && (
-                  <>
-                    <motion.div
-                      key="header"
-                      initial={isInitialRender ? "hidden" : "visible"}
-                      animate="visible"
-                      variants={headerVariants}
-                    >
-                      <Header />
-                    </motion.div>
+              {!showIntro && (
+                <>
+                  <motion.div
+                    key="header"
+                    initial="hidden"
+                    animate={contentReady ? "visible" : "hidden"}
+                    variants={headerVariants}
+                  >
+                    <Header />
+                  </motion.div>
 
-                    <motion.main
-                      className="flex-1 pt-16 pb-16 overflow-y-auto relative theme-transition"
-                      key="main-content"
-                      initial={isInitialRender ? "hidden" : "visible"}
-                      animate="visible"
-                      variants={contentVariants}
-                    >
-                      {children}
-                      <TransitionOverlay />
-                    </motion.main>
+                  <motion.main
+                    className="flex-1 pt-16 pb-16 overflow-y-auto relative theme-transition"
+                    key="main-content"
+                    initial="hidden"
+                    animate={contentReady ? "visible" : "hidden"}
+                    variants={contentVariants}
+                  >
+                    {children}
+                    <TransitionOverlay />
+                  </motion.main>
 
-                    <motion.div
-                      key="footer"
-                      initial={isInitialRender ? "hidden" : "visible"}
-                      animate="visible"
-                      variants={footerVariants}
-                    >
-                      <Footer />
-                    </motion.div>
-                  </>
-                )}
-              </AnimatePresence>
+                  <motion.div
+                    key="footer"
+                    initial="hidden"
+                    animate={contentReady ? "visible" : "hidden"}
+                    variants={footerVariants}
+                  >
+                    <Footer />
+                  </motion.div>
+                </>
+              )}
             </div>
           </NavigationProvider>
           <Analytics />

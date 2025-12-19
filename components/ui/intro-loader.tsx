@@ -1,7 +1,7 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 
 interface IntroLoaderProps {
   onLoadComplete: () => void
@@ -10,6 +10,14 @@ interface IntroLoaderProps {
 export function IntroLoader({ onLoadComplete }: IntroLoaderProps) {
   const [progress, setProgress] = useState(0)
   const [showContent, setShowContent] = useState(false)
+  const [isExiting, setIsExiting] = useState(false)
+
+  const handleComplete = useCallback(() => {
+    setIsExiting(true)
+    setTimeout(() => {
+      onLoadComplete()
+    }, 600)
+  }, [onLoadComplete])
 
   useEffect(() => {
     const contentTimer = setTimeout(() => setShowContent(true), 100)
@@ -23,7 +31,7 @@ export function IntroLoader({ onLoadComplete }: IntroLoaderProps) {
         const next = prev + increment
         if (next >= 100) {
           clearInterval(progressTimer)
-          setTimeout(() => onLoadComplete(), 500)
+          setTimeout(() => handleComplete(), 400)
           return 100
         }
         return next
@@ -34,7 +42,7 @@ export function IntroLoader({ onLoadComplete }: IntroLoaderProps) {
       clearTimeout(contentTimer)
       clearInterval(progressTimer)
     }
-  }, [onLoadComplete])
+  }, [handleComplete])
 
   const lineOne = "HI, MY NAME IS"
   const firstName = "RUSHIR"
@@ -81,11 +89,8 @@ export function IntroLoader({ onLoadComplete }: IntroLoaderProps) {
     <motion.div
       className="fixed inset-0 z-[100] bg-background flex flex-col items-center justify-center px-6 sm:px-8"
       initial={{ opacity: 1 }}
-      exit={{
-        opacity: 0,
-        scale: 0.98,
-        transition: { duration: 0.6, ease: [0.4, 0, 0.2, 1] },
-      }}
+      animate={{ opacity: isExiting ? 0 : 1, scale: isExiting ? 0.98 : 1 }}
+      transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
     >
       {showContent && (
         <div className="flex flex-col items-center justify-center w-full max-w-5xl mx-auto">
@@ -154,13 +159,10 @@ export function IntroLoader({ onLoadComplete }: IntroLoaderProps) {
             animate={{ opacity: 1 }}
             transition={{ delay: 1.4, duration: 0.5 }}
           >
-            {/* Progress bar container */}
-            <div className="relative h-[1px] bg-primary/20 overflow-hidden">
-              <motion.div
-                className="absolute left-0 top-0 h-full bg-primary"
-                initial={{ width: "0%" }}
-                animate={{ width: `${progress}%` }}
-                transition={{ duration: 0.05, ease: "linear" }}
+            <div className="relative h-[2px] bg-primary/20 overflow-hidden">
+              <div
+                className="absolute left-0 top-0 h-full bg-primary transition-[width] duration-75 ease-linear"
+                style={{ width: `${progress}%` }}
               />
             </div>
 
