@@ -117,7 +117,7 @@ The thesis lays the groundwork for future work in scalable physics-based machine
 
 **END TRANSMISSION**
     `,
-    tags: ["research", "defense", "PINNs", "MACE-PINNs"],
+    tags: ["research", "defense", "PINNs"],
     status: "published",
   },
   {
