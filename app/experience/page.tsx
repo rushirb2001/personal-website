@@ -164,7 +164,7 @@ export default function ExperiencePage() {
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.15, delay: index * 0.05 }}
-              className="border-b border-primary/10"
+              className="border-b border-primary/10 min-h-[300px] md:min-h-[300px]"
             >
               {/* Clickable Row */}
               <div
