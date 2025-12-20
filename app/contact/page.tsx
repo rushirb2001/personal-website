@@ -86,11 +86,11 @@ export default function ContactPage() {
             <div className="divide-y divide-primary/10">
               <a href={`mailto:${CONTACT_INFO.email}`} className="p-4 flex items-center gap-3 hover:bg-primary/5 transition-colors">
                 <Mail className="h-4 w-4 text-primary/50 flex-shrink-0" />
-                <span className="font-sf-mono text-primary/70 break-all text-sm">{CONTACT_INFO.email}</span>
+                <span className="font-sf-mono text-primary/70 break-all text-xs tracking-[-0.1em]">{CONTACT_INFO.email}</span>
               </a>
               <a href={`tel:${CONTACT_INFO.phone}`} className="p-4 flex items-center gap-3 hover:bg-primary/5 transition-colors">
                 <Phone className="h-4 w-4 text-primary/50 flex-shrink-0" />
-                <span className="font-sf-mono text-primary/70 text-sm">{CONTACT_INFO.phone}</span>
+                <span className="font-sf-mono text-primary/70 text-xs tracking-[-0.1em]">{CONTACT_INFO.phone}</span>
               </a>
             </div>
           </div>
