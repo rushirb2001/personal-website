@@ -259,7 +259,7 @@ export default function PublicationsPage() {
                           <span className="font-sf-mono text-primary/40 uppercase tracking-wider text-sm">
                             AUTHORS
                           </span>
-                          <p className="font-sf-mono text-primary/70 mt-1 text-sm">{selectedPublication.authors}</p>
+                          <p className="font-sf-mono text-primary/70 mt-1 text-xs tracking-[-0.1em]">{selectedPublication.authors}</p>
                         </div>
                         
                         <div>
