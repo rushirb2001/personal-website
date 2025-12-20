@@ -170,6 +170,7 @@ export default function PublicationsPage() {
           <span>LINK</span>
         </div>
 
+        <div className="min-h-[300px] md:min-h-[300px]">
         {visiblePublications.map((pub, index) => (
           <div key={pub.id}>
             <motion.div
@@ -349,6 +350,7 @@ export default function PublicationsPage() {
             </AnimatePresence>
           </div>
         ))}
+        </div>
 
         <motion.div
           className="flex items-center justify-between border-t border-primary/20 pt-3 mt-4 px-3"
