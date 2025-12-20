@@ -155,7 +155,7 @@ export default function ExperiencePage() {
         </div>
 
         {/* Experience List */}
-        <div className="md:min-h-[240px]">
+        <div className="md:min-h-[220px]">
         {visibleExperiences.map((exp, index) => {
           const actualIndex = filteredExperiences.indexOf(exp)
 
