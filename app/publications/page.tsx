@@ -174,7 +174,7 @@ export default function PublicationsPage() {
               <div className="md:hidden px-3 py-3">
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-sf-mono font-medium line-clamp- text-left mb-2 text-sm">{pub.title}</h3>
+                    <h3 className="font-sf-mono font-medium line-clamp- text-left mb-2 tracking-tighter text-sm">{pub.title}</h3>
                     <p
                       className={`font-sf-mono text-xs ${selectedPublication?.id === pub.id ? "text-background/60" : "text-primary/50"}`}
                     >
@@ -285,19 +285,19 @@ export default function PublicationsPage() {
           transition={{ duration: 0.2, delay: 0.3 }}
         >
           <div className="flex flex-wrap gap-1 sm:gap-2 md:gap-4 text-[9px] sm:text-[10px] font-sf-mono text-primary/40 uppercase tracking-wider">
-            <span className="text-sm">
+            <span className="text-xs tracking-tighter">
               {stats.total} {isMobile ? "PUB" : "PUBLICATIONS"}
             </span>
             <span className="text-primary/20">/</span>
-            <span className="text-sm">
+            <span className="text-xs tracking-tighter">
               {stats.totalCitations} {isMobile ? "CIT" : "CITATIONS"}
             </span>
             <span className="text-primary/20">/</span>
-            <span className="text-sm">
+            <span className="text-xs tracking-tighter">
               {stats.venues} {isMobile ? "VEN" : "VENUES"}
             </span>
             <span className="text-primary/20">/</span>
-            <span className="text-sm">{isMobile ? stats.yearRangeMobile : stats.yearRangeDesktop}</span>
+            <span className="text-xs tracking-tighter">{isMobile ? stats.yearRangeMobile : stats.yearRangeDesktop}</span>
           </div>
           <div className="text-[9px] sm:text-[10px] font-sf-mono text-primary/30"><span className="text-xs">{"LAST.UPDATED: 2025"}</span></div>
         </motion.div>
