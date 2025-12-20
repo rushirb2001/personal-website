@@ -1047,3 +1047,22 @@ main {
     transition: none !important;
   }
 }
+
+@media (hover: none) and (pointer: coarse) {
+  .hover\:bg-primary\/5:hover,
+  .hover\:bg-primary\/10:hover,
+  .hover\:bg-primary\/20:hover,
+  .hover\:bg-primary\/90:hover {
+    background-color: inherit;
+  }
+  
+  .hover\:border-primary\/40:hover,
+  .hover\:border-primary\/30:hover {
+    border-color: inherit;
+  }
+  
+  .hover\:text-primary:hover,
+  .hover\:text-background:hover {
+    color: inherit;
+  }
+}
