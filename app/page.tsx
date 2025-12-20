@@ -181,7 +181,7 @@ export default function Home() {
 
             {/* About Block */}
             <motion.div
-              className="border border-primary/20 bg-background flex-1 min-w-0 flex flex-col"
+              className="border border-primary/20 bg-background flex-1 min-w-0 flex flex-col hidden md:flex"
               initial={{ opacity: 0, x: 10 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.3, delay: 0.1 }}
