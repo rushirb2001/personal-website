@@ -14,7 +14,7 @@ export interface Publication {
   citations: number
 }
 
-export const ITEMS_PER_PAGE = 5
+export const ITEMS_PER_PAGE = 3
 
 export const publications: readonly Publication[] = [
   {
