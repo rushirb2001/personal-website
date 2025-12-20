@@ -157,7 +157,7 @@ export default function ExperiencePage() {
                     <div className="flex items-center justify-between gap-2">
                       <div className="flex-1 min-w-0">
                         <h3 className="font-sf-mono font-medium text-base">{exp.title}</h3>
-                        <p className={`font-sf-mono text-sm tracking-tighter ${selectedExp === actualIndex ? "text-background/60" : "text-primary/50"}`}>
+                        <p className={`font-sf-mono tracking-tighter text-sm ${selectedExp === actualIndex ? "text-background/60" : "text-primary/50"}`}>
                           {exp.company} • {exp.location} • {exp.period}
                         </p>
                       </div>
@@ -259,13 +259,13 @@ export default function ExperiencePage() {
           transition={{ duration: 0.2, delay: 0.3 }}
         >
           <div className="flex flex-wrap gap-1 sm:gap-2 md:gap-4 text-[9px] sm:text-[10px] font-sf-mono text-primary/40 uppercase tracking-wider">
-            <span className="text-sm">{experiences.length} {isMobile ? "ROLES" : "POSITIONS"}</span>
+            <span className="text-xs tracking-tighter">{experiences.length} {isMobile ? "ROLES" : "POSITIONS"}</span>
             <span className="text-primary/20">/</span>
-            <span className="text-sm">{experiences.length} {isMobile ? "CO" : "COMPANIES"}</span>
+            <span className="text-xs tracking-tighter">{experiences.length} {isMobile ? "CO" : "COMPANIES"}</span>
             <span className="text-primary/20">/</span>
-            <span className="text-sm">2022-24</span>
+            <span className="text-xs tracking-tighter">2022-24</span>
           </div>
-          <div className="text-[9px] sm:text-[10px] font-sf-mono text-primary/30"><span className="text-sm">LAST.UPDATED: 2025</span></div>
+          <div className="text-[9px] sm:text-[10px] font-sf-mono text-primary/30"><span className="">LAST.UPDATED: 2025</span></div>
         </motion.div>
       </div>
     </PageLayout>
