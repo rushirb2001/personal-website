@@ -241,7 +241,7 @@ function ExpandableDescription({ text }: { text: string }) {
               {/* Truncated Text */}
               <p
                 ref={measureRef}
-                className={`text-[10px] font-sf-mono text-primary/70 leading-relaxed uppercase tracking-tight ${
+                className={`font-sf-mono text-primary/70 leading-relaxed uppercase tracking-tight text-sm ${
                   needsTruncation ? "line-clamp-[6]" : ""
                 }`}
               >
@@ -424,7 +424,7 @@ export default function ProjectsPage() {
                   <div className="border-b border-primary/20 px-3 py-2 flex items-center justify-between bg-transparent">
                     <div className="flex items-center gap-2">
                       <Terminal className="h-3 w-3 text-primary" />
-                      <span className="font-sf-mono font-bold text-primary tracking-wider text-sm">
+                      <span className="font-sf-mono font-bold text-primary tracking-wider text-base">
                         {project.category.toUpperCase()}
                       </span>
                     </div>
@@ -510,20 +510,20 @@ export default function ProjectsPage() {
           transition={{ duration: 0.2, delay: 0.3 }}
         >
           <div className="flex gap-1 sm:gap-2 text-[9px] sm:text-[10px] font-sf-mono text-primary/40 uppercase tracking-wider">
-            <span className="text-sm">
+            <span className="text-xs tracking-tighter">
               {projects.length} {isMobile ? "PROJ" : "PROJECTS"}
             </span>
             <span className="text-primary/20">/</span>
-            <span className="text-sm">
+            <span className="text-xs tracking-tighter">
               {categories.length - 1} {isMobile ? "CAT" : "CATEGORIES"}
             </span>
             <span className="text-primary/20">/</span>
-            <span className="text-sm">
+            <span className="text-xs tracking-tighter">
               {filteredProjects.length} {isMobile ? "SHOWN" : "FILTERED"}
             </span>
           </div>
           {showPaginationControls && (
-            <span className="sm:text-[10px] font-sf-mono text-primary/30 text-sm font-semibold">
+            <span className="sm:text-[10px] font-sf-mono text-primary/30 font-semibold text-xs tracking-tighter">
               {startIndex + 1}-{Math.min(startIndex + ITEMS_PER_PAGE, filteredProjects.length)} OF{" "}
               {filteredProjects.length}
             </span>
