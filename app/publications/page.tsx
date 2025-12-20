@@ -241,14 +241,14 @@ export default function PublicationsPage() {
                   className="overflow-hidden border-b border-primary/20"
                 >
                   <div className="bg-primary/5 p-4 md:p-6">
-                    <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-6">
+                    <div className="grid grid-cols-2 md:grid-cols-[2fr_1fr] gap-6">
                       <div className="space-y-4">
                         
                         <div>
                           <span className="font-sf-mono text-primary/40 uppercase tracking-wider text-sm">
                             ABSTRACT
                           </span>
-                          <p className="font-sf-mono text-primary/70 mt-1 leading-relaxed border-l-2 border-primary/20 pl-3 tracking-tighter text-sm">
+                          <p className="font-sf-mono text-primary/70 mt-1 leading-relaxed border-l-2 border-primary/20 pl-3 tracking-tighter text-xs">
                             {selectedPublication.abstract}
                           </p>
                         </div>
