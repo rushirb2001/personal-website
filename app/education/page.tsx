@@ -67,7 +67,7 @@ export default function EducationPage() {
             <div className="border-b border-primary/20 px-3 py-2 bg-primary/5">
               <div className="flex items-center justify-between">
                 <span className="font-sf-mono font-bold tracking-widest text-base">{edu.degree}</span>
-                <span className="font-sf-mono text-primary/30 text-lg">[{String(index + 1).padStart(2, "0")}]</span>
+                <span className="font-sf-mono text-primary/30 text-base">[{String(index + 1).padStart(2, "0")}]</span>
               </div>
             </div>
 
@@ -82,8 +82,8 @@ export default function EducationPage() {
             >
               <div className="flex items-start justify-between gap-4">
                 <div className="flex-1">
-                  <h3 className="font-sf-mono font-medium mb-2 text-sm">{edu.field}</h3>
-                  <p className={`font-sf-mono mb-3 text-xs ${expandedIndex === index ? "text-background/70" : "text-primary/60"}`}>
+                  <h3 className="font-sf-mono font-medium mb-2 text-base">{edu.field}</h3>
+                  <p className={`font-sf-mono mb-3 text-sm ${expandedIndex === index ? "text-background/70" : "text-primary/60"}`}>
                     {edu.institution}
                   </p>
                   
@@ -92,7 +92,7 @@ export default function EducationPage() {
                       <Calendar className="h-3 w-3" />
                       {edu.period}
                     </span>
-                    <span className="flex items-center gap-1 text-xs">
+                    <span className="flex items-center gap-1 text-sm tracking-tighter">
                       <MapPin className="h-3 w-3" />
                       {edu.location}
                     </span>
@@ -166,11 +166,11 @@ export default function EducationPage() {
           className="flex items-center justify-between border-t border-primary/20 pt-3"
         >
           <div className="flex gap-1 sm:gap-2 text-[9px] sm:text-[10px] font-sf-mono text-primary/40 uppercase tracking-wider">
-            <span className="text-sm">2 {isMobile ? "DEG" : "DEGREES"}</span>
+            <span className="text-xs tracking-tighter">2 {isMobile ? "DEG" : "DEGREES"}</span>
             <span className="text-primary/20">/</span>
-            <span className="text-sm">2 {isMobile ? "INST" : "INSTITUTIONS"}</span>
+            <span className="tracking-tighter text-xs">2 {isMobile ? "INST" : "INSTITUTIONS"}</span>
             <span className="text-primary/20">/</span>
-            <span className="text-sm">2019-25</span>
+            <span className="text-xs tracking-tighter">2019-25</span>
           </div>
           <div className="font-sf-mono text-primary/30 text-sm">LAST.UPDATED: 2025</div>
         </motion.div>
