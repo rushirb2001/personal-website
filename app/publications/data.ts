@@ -1,5 +1,5 @@
 export type PublicationStatus = "PUBLISHED" | "IN-REVIEW" | "PAY-LOCK"
-export type PublicationType = "DISSERTATION" | "JOURNAL ARTICLE" | "CONFERENCE PAPER"
+export type PublicationType = "JOURNAL" | "CONFERENCE" | "DISSERTATION"
 
 export interface Publication {
   id: string
@@ -29,7 +29,7 @@ export const publications: readonly Publication[] = [
     year: "2022",
     month: "06",
     status: "PUBLISHED",
-    type: "CONFERENCE PAPER",
+    type: "CONFERENCE",
     doi: "10.1234/NU.2022.437",
     pdfLink: "#",
     citations: 12,
@@ -44,7 +44,7 @@ export const publications: readonly Publication[] = [
     year: "2023",
     month: "07",
     status: "PUBLISHED",
-    type: "JOURNAL ARTICLE",
+    type: "JOURNAL",
     doi: "10.1109/ACCESS.2023.3294576",
     pdfLink: "https://ieeexplore.ieee.org/document/10188662",
     citations: 45,
@@ -59,7 +59,7 @@ export const publications: readonly Publication[] = [
     year: "2024",
     month: "03",
     status: "PUBLISHED",
-    type: "JOURNAL ARTICLE",
+    type: "JOURNAL",
     doi: "10.1002/SPY2.343",
     pdfLink: "https://onlinelibrary.wiley.com/doi/abs/10.1002/spy2.343",
     citations: 28,
