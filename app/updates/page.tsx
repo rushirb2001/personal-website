@@ -243,7 +243,7 @@ export default function UpdatesPage() {
                         <button
                           key={tag}
                           onClick={() => toggleTag(tag)}
-                          className={`px-2 py-1 font-sf-mono border transition-colors text-sm ${
+                          className={`px-2 py-1 font-sf-mono border transition-colors text-xs tracking-tighter ${
                             selectedTags.includes(tag)
                               ? "bg-primary text-background border-primary"
                               : "border-primary/20 text-primary/60 hover:border-primary/40"
