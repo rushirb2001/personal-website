@@ -66,7 +66,7 @@ export default function EducationPage() {
             {/* Header */}
             <div className="border-b border-primary/20 px-3 py-2 bg-primary/5">
               <div className="flex items-center justify-between">
-                <span className="font-sf-mono font-bold tracking-widest text-lg">{edu.degree}</span>
+                <span className="font-sf-mono font-bold tracking-widest text-base">{edu.degree}</span>
                 <span className="font-sf-mono text-primary/30 text-lg">[{String(index + 1).padStart(2, "0")}]</span>
               </div>
             </div>
@@ -82,8 +82,8 @@ export default function EducationPage() {
             >
               <div className="flex items-start justify-between gap-4">
                 <div className="flex-1">
-                  <h3 className="font-sf-mono font-medium mb-2 text-base">{edu.field}</h3>
-                  <p className={`font-sf-mono mb-3 text-sm ${expandedIndex === index ? "text-background/70" : "text-primary/60"}`}>
+                  <h3 className="font-sf-mono font-medium mb-2 text-sm">{edu.field}</h3>
+                  <p className={`font-sf-mono mb-3 text-xs ${expandedIndex === index ? "text-background/70" : "text-primary/60"}`}>
                     {edu.institution}
                   </p>
                   
@@ -92,7 +92,7 @@ export default function EducationPage() {
                       <Calendar className="h-3 w-3" />
                       {edu.period}
                     </span>
-                    <span className="flex items-center gap-1 text-sm">
+                    <span className="flex items-center gap-1 text-xs">
                       <MapPin className="h-3 w-3" />
                       {edu.location}
                     </span>
