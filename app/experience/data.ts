@@ -12,6 +12,20 @@ export const ITEMS_PER_PAGE = 5
 
 export const experiences: readonly Experience[] = [
   {
+    title: "SCIENTIFIC AI DEVELOPMENT INTERN",
+    company: "CADENCE DESIGN SYSTEMS",
+    location: "SANTA FE, NM",
+    period: "JUL'25 - OCT'25",
+    description:
+      "Built end-to-end ML pipeline orchestrator and distributed clustering system for protein sequence processing, achieving significant performance improvements in preprocessing and computational efficiency.",
+    responsibilities: [
+      "Built end-to-end ML pipeline orchestrator with PyTorch Lightning, processing 1M protein sequences (5120 embedding size), reducing preprocessing time by 60% across 20+ production experiments",
+      "Engineered distributed clustering system with scikit-learn and CUDA-RAPIDS, improving cluster quality by 35% and reducing computational overhead by 45% for downstream ML teams in protein prediction from 2D/3D based structures",
+      "Developed multi-modal model training framework with PyTorch Lightning and custom CUDA kernels, achieving 80% faster training convergence and 6x speedup in hyperparameter optimization",
+    ],
+    skills: ["PYTORCH LIGHTNING", "CUDA", "RAPIDS", "SCIKIT-LEARN", "ML PIPELINES"],
+  },
+  {
     title: "GENAI ENGINEERING INTERN",
     company: "TALIN LABS INC",
     location: "REMOTE",
