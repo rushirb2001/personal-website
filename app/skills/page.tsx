@@ -74,7 +74,7 @@ function calculateTotals() {
 function SkillTag({ name, isHighlighted }: { name: string; isHighlighted?: boolean }) {
   return (
     <span
-      className={`inline-block px-1.5 py-0.5 text-[9px] md:text-xs font-sf-mono uppercase tracking-wide border transition-all duration-100 whitespace-nowrap ${
+      className={`inline-block px-1.5 py-0.5 md:text-xs font-sf-mono uppercase tracking-wide border transition-all duration-100 whitespace-nowrap text-xs ${
         isHighlighted
           ? "bg-primary text-background border-primary"
           : "bg-background text-primary/70 border-primary/20 hover:bg-primary hover:text-background hover:border-primary"
@@ -103,7 +103,7 @@ function SubcategoryRow({
       }`}
     >
       <span
-        className={`font-sf-mono uppercase tracking-wider cursor-pointer transition-colors duration-100 text-right text-xs ${
+        className={`font-sf-mono uppercase tracking-wider cursor-pointer transition-colors duration-100 text-right text-sm ${
           isContainerHovered || isHovered ? "text-primary/70" : "text-primary/40"
         }`}
         onMouseEnter={() => setIsHovered(true)}
@@ -149,10 +149,10 @@ function MobileCollapsibleCategory({
         }`}
       >
         <div className="flex items-center gap-2">
-          <h3 className="text-xs font-sf-mono font-bold tracking-widest">{title}</h3>
+          <h3 className="font-sf-mono font-bold tracking-widest text-base">{title}</h3>
         </div>
         <div className="flex items-center gap-2">
-          <span className={`text-[9px] font-sf-mono ${isExpanded ? "text-background/50" : "text-primary/30"}`}>
+          <span className={`font-sf-mono text-base ${isExpanded ? "text-background/50" : "text-primary/30"}`}>
             [{String(index + 1).padStart(2, "0")}]
           </span>
           <motion.div animate={{ rotate: isExpanded ? 180 : 0 }} transition={{ duration: 0.2 }}>
@@ -306,18 +306,18 @@ export default function SkillsPage() {
           transition={{ duration: 0.2, delay: 0.5 }}
         >
           <div className="flex gap-1 sm:gap-2 md:gap-4 text-[9px] sm:text-[10px] font-sf-mono text-primary/40 uppercase tracking-wider">
-            <span className="text-sm">5 {isMobile ? "CAT" : "CATEGORIES"}</span>
+            <span className="tracking-tighter text-xs">5 {isMobile ? "CAT" : "CATEGORIES"}</span>
             <span className="text-primary/20">/</span>
-            <span className="text-sm">
+            <span className="text-xs tracking-tighter">
               {totalSubcategories} {isMobile ? "SUB" : "SUBCATEGORIES"}
             </span>
             <span className="text-primary/20">/</span>
-            <span className="text-sm">
+            <span className="text-xs tracking-tighter">
               {totalTech} {isMobile ? "TECH" : "TECHNOLOGIES"}
             </span>
           </div>
           <div className="sm:text-[10px] font-sf-mono text-primary/30 text-sm">
-            <span className="text-sm">{isMobile ? "2025" : "LAST.UPDATED: 2025"}</span>
+            <span className="text-xs tracking-tighter">{isMobile ? "2025" : "LAST.UPDATED: 2025"}</span>
           </div>
         </motion.div>
       </div>
