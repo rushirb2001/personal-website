@@ -333,7 +333,7 @@ export default function UpdatesPage() {
                 <div className="p-3">
                   {/* Header */}
                   <div className="flex items-start justify-between gap-3 mb-2">
-                    <h2 className="font-sf-mono flex-1 text-xl font-bold">{post.title}</h2>
+                    <h2 className="font-sf-mono flex-1 font-bold tracking-tight text-base">{post.title}</h2>
                     <div className="flex items-center text-primary/50 font-sf-mono whitespace-nowrap text-sm">
                       <Calendar className="h-3 w-3 mr-1" />
                       {formatDate(new Date(post.date))}
