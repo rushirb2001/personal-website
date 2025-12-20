@@ -78,7 +78,7 @@ export default function PublicationsPage() {
                 className="w-full flex items-center justify-between px-3 py-2 bg-primary/5 hover:bg-primary/10 transition-colors duration-200"
               >
                 <div className="flex items-center gap-2">
-                  <span className="font-sf-mono text-primary/60 text-sm">TYPE</span>
+                  <span className="font-sf-mono text-primary/60 text-sm">FILTER</span>
                   <span className="text-primary/20">|</span>
                   <span className="font-sf-mono text-primary text-sm">
                     SHOWING '
@@ -129,11 +129,11 @@ export default function PublicationsPage() {
 
             {/* Pagination Controls - Only show when needed */}
             {showPaginationControls && (
-              <div className="flex-[4] flex items-start gap-2">
+              <div className="flex-[4] flex gap-2 self-start">
                 <button
                   onClick={() => setStartIndex((prev) => Math.max(0, prev - ITEMS_PER_PAGE))}
                   disabled={!canShowPrevious}
-                  className={`flex-1 h-full min-h-[42px] flex items-center justify-center border transition-all duration-150 ${
+                  className={`flex-1 h-[42px] flex items-center justify-center border transition-all duration-150 ${
                     canShowPrevious
                       ? "bg-primary text-background border-primary/40 hover:bg-primary/90"
                       : "border-primary/10 text-primary/20 cursor-not-allowed"
@@ -148,7 +148,7 @@ export default function PublicationsPage() {
                     )
                   }
                   disabled={!canShowNext}
-                  className={`flex-1 h-full min-h-[42px] flex items-center justify-center border transition-all duration-150 ${
+                  className={`flex-1 h-[42px] flex items-center justify-center border transition-all duration-150 ${
                     canShowNext
                       ? "bg-primary text-background border-primary/40 hover:bg-primary/90"
                       : "border-primary/10 text-primary/20 cursor-not-allowed"
