@@ -341,7 +341,7 @@ export default function UpdatesPage() {
                   </div>
 
                   {/* Summary */}
-                  <p className="text-primary/60 mb-2 font-sf-mono line-clamp-2 text-sm">{post.summary}</p>
+                  <p className="text-primary/60 mb-2 font-sf-mono line-clamp-2 tracking-tighter text-xs">{post.summary}</p>
 
                   {/* Footer */}
                   <div className="flex items-center justify-between">
