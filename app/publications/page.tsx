@@ -1,44 +1,45 @@
 "use client"
 
-import { useState, useEffect, useMemo } from "react"
+import { useState, useEffect, useMemo, useRef } from "react"
 import { PageLayout } from "@/components/layout/page-layout"
 import { motion, AnimatePresence } from "framer-motion"
-import { ExternalLink, ChevronDown, ChevronLeft, ChevronRight, X } from "lucide-react"
+import { ExternalLink, ChevronDown, X, ChevronLeft, ChevronRight } from "lucide-react"
 import { useMediaQuery } from "@/hooks/use-media-query"
-import { publications, ITEMS_PER_PAGE, type Publication } from "./data"
+import { publications, ITEMS_PER_PAGE, type Publication, type PublicationType } from "./data"
 
-type PublicationType = "All" | "Journal" | "Conference" | "Dissertation"
-
-const PUBLICATION_TYPES: PublicationType[] = ["All", "Journal", "Conference", "Dissertation"]
-
-function getPublicationType(venue: string): PublicationType {
-  const venueLower = venue.toLowerCase()
-  if (venueLower.includes("dissertation") || venueLower.includes("thesis")) return "Dissertation"
-  if (venueLower.includes("conference") || venueLower.includes("symposium") || venueLower.includes("workshop"))
-    return "Conference"
-  return "Journal"
-}
+const TYPE_CATEGORIES: Array<"All" | PublicationType> = ["All", "DISSERTATION", "JOURNAL ARTICLE", "CONFERENCE PAPER"]
 
 export default function PublicationsPage() {
   const [selectedPublication, setSelectedPublication] = useState<Publication | null>(null)
   const [hoveredId, setHoveredId] = useState<string | null>(null)
   const [startIndex, setStartIndex] = useState(0)
-  const [selectedType, setSelectedType] = useState<PublicationType>("All")
-  const [isFilterOpen, setIsFilterOpen] = useState(false)
+  const [typeFilter, setTypeFilter] = useState<"All" | PublicationType>("All")
+  const [isTypeDropdownOpen, setIsTypeDropdownOpen] = useState(false)
+  const typeDropdownRef = useRef<HTMLDivElement>(null)
   const isMobile = useMediaQuery("(max-width: 768px)")
 
   const filteredPublications = useMemo(() => {
     let filtered = [...publications]
-    if (selectedType !== "All") {
-      filtered = filtered.filter((pub) => getPublicationType(pub.venue) === selectedType)
+    if (typeFilter !== "All") {
+      filtered = filtered.filter((pub) => pub.type === typeFilter)
     }
     return filtered.sort((a, b) => b.citations - a.citations)
-  }, [selectedType])
+  }, [typeFilter])
 
   useEffect(() => {
     setStartIndex(0)
     setSelectedPublication(null)
-  }, [selectedType])
+  }, [typeFilter])
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (typeDropdownRef.current && !typeDropdownRef.current.contains(event.target as Node)) {
+        setIsTypeDropdownOpen(false)
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => document.removeEventListener("mousedown", handleClickOutside)
+  }, [])
 
   const stats = useMemo(() => {
     const totalCitations = publications.reduce((sum, pub) => sum + pub.citations, 0)
@@ -51,7 +52,6 @@ export default function PublicationsPage() {
     return { totalCitations, yearRangeDesktop, yearRangeMobile, venues, total: publications.length }
   }, [])
 
-  // Sliding window pagination: show ITEMS_PER_PAGE items at a time
   const visiblePublications = filteredPublications.slice(startIndex, startIndex + ITEMS_PER_PAGE)
 
   // Pagination controls
@@ -79,38 +79,38 @@ export default function PublicationsPage() {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="flex flex-col md:flex-row items-center justify-center gap-2 py-3 mb-2"
+          className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3 mb-3 py-0"
         >
-          {/* Category Filter Dropdown */}
-          <div className="relative">
+          {/* Type Filter Dropdown */}
+          <div ref={typeDropdownRef} className="relative">
             <button
-              onClick={() => setIsFilterOpen(!isFilterOpen)}
-              className="flex items-center gap-2 px-3 py-1.5 text-[10px] font-sf-mono uppercase tracking-wider border border-primary/30 bg-background hover:bg-primary/10 transition-colors min-w-[140px] justify-between"
+              onClick={() => setIsTypeDropdownOpen(!isTypeDropdownOpen)}
+              className="flex items-center justify-between gap-2 px-3 py-1.5 text-[10px] font-sf-mono uppercase tracking-wider border border-primary/30 bg-background hover:bg-primary/5 transition-colors min-w-[160px]"
             >
-              <span>{selectedType}</span>
-              <ChevronDown className={`w-3 h-3 transition-transform ${isFilterOpen ? "rotate-180" : ""}`} />
+              <span className="truncate">{typeFilter === "All" ? "ALL TYPES" : typeFilter}</span>
+              <ChevronDown className={`w-3 h-3 transition-transform ${isTypeDropdownOpen ? "rotate-180" : ""}`} />
             </button>
             <AnimatePresence>
-              {isFilterOpen && (
+              {isTypeDropdownOpen && (
                 <motion.div
                   initial={{ opacity: 0, y: -5 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -5 }}
                   transition={{ duration: 0.15 }}
-                  className="absolute top-full left-0 mt-1 w-full bg-background border border-primary/30 z-50"
+                  className="absolute top-full left-0 mt-1 w-full bg-background border border-primary/30 z-50 shadow-lg"
                 >
-                  {PUBLICATION_TYPES.map((type) => (
+                  {TYPE_CATEGORIES.map((type) => (
                     <button
                       key={type}
                       onClick={() => {
-                        setSelectedType(type)
-                        setIsFilterOpen(false)
+                        setTypeFilter(type)
+                        setIsTypeDropdownOpen(false)
                       }}
-                      className={`w-full px-3 py-1.5 text-[10px] font-sf-mono uppercase tracking-wider text-left transition-colors ${
-                        selectedType === type ? "bg-primary text-background" : "hover:bg-primary/10"
+                      className={`w-full px-3 py-2 text-[10px] font-sf-mono uppercase tracking-wider text-left hover:bg-primary/10 transition-colors ${
+                        typeFilter === type ? "bg-primary/10 text-primary" : "text-primary/70"
                       }`}
                     >
-                      {type}
+                      {type === "All" ? "ALL TYPES" : type}
                     </button>
                   ))}
                 </motion.div>
@@ -124,10 +124,10 @@ export default function PublicationsPage() {
               <button
                 onClick={() => setStartIndex((prev) => Math.max(0, prev - ITEMS_PER_PAGE))}
                 disabled={!canShowPrevious}
-                className={`p-1.5 border transition-all duration-150 ${
+                className={`flex items-center justify-center w-8 h-8 border transition-all duration-150 ${
                   canShowPrevious
                     ? "bg-primary text-background border-primary/40 hover:bg-primary/90"
-                    : "border-primary/10 text-primary/20 cursor-not-allowed"
+                    : "border-primary/10 text-primary/20 cursor-not-allowed opacity-0 pointer-events-none"
                 }`}
               >
                 <ChevronLeft className="w-4 h-4" />
@@ -140,10 +140,10 @@ export default function PublicationsPage() {
                   setStartIndex((prev) => Math.min(prev + ITEMS_PER_PAGE, filteredPublications.length - ITEMS_PER_PAGE))
                 }
                 disabled={!canShowNext}
-                className={`p-1.5 border transition-all duration-150 ${
+                className={`flex items-center justify-center w-8 h-8 border transition-all duration-150 ${
                   canShowNext
                     ? "bg-primary text-background border-primary/40 hover:bg-primary/90"
-                    : "border-primary/10 text-primary/20 cursor-not-allowed"
+                    : "border-primary/10 text-primary/20 cursor-not-allowed opacity-0 pointer-events-none"
                 }`}
               >
                 <ChevronRight className="w-4 h-4" />
@@ -152,7 +152,6 @@ export default function PublicationsPage() {
           )}
         </motion.div>
 
-        {/* Table Header */}
         <div className="hidden md:grid grid-cols-[40px_1fr_180px_60px_40px_40px] gap-4 px-3 py-2 border-b border-primary/30 font-sf-mono text-primary/50 uppercase tracking-wider text-sm">
           <span></span>
           <span>TITLE</span>
@@ -163,8 +162,8 @@ export default function PublicationsPage() {
         </div>
 
         {filteredPublications.length === 0 ? (
-          <div className="py-8 text-center font-sf-mono text-primary/40 text-sm">
-            No publications found for "{selectedType}"
+          <div className="py-12 text-center">
+            <p className="font-sf-mono text-primary/40 text-sm">No publications found for this type.</p>
           </div>
         ) : (
           visiblePublications.map((pub, index) => (
@@ -333,7 +332,6 @@ export default function PublicationsPage() {
                               {selectedPublication.authors}
                             </p>
                           </div>
-
                           <div>
                             <span className="font-sf-mono text-primary/40 uppercase tracking-wider text-sm">DOI</span>
                             <p className="font-sf-mono text-primary/50 mt-1 break-all text-xs tracking-[-0.1em]">
@@ -358,9 +356,8 @@ export default function PublicationsPage() {
         >
           <div className="flex flex-wrap gap-1 sm:gap-2 md:gap-4 text-[9px] sm:text-[10px] font-sf-mono text-primary/40 uppercase tracking-wider">
             <span className="text-xs tracking-tighter">
-              {filteredPublications.length === stats.total
-                ? `${stats.total} ${isMobile ? "PUB" : "PUBLICATIONS"}`
-                : `${filteredPublications.length}/${stats.total} ${isMobile ? "PUB" : "PUBLICATIONS"}`}
+              {typeFilter !== "All" ? `${filteredPublications.length}/` : ""}
+              {stats.total} {isMobile ? "PUB" : "PUBLICATIONS"}
             </span>
             <span className="text-primary/20">/</span>
             <span className="text-xs tracking-tighter">
