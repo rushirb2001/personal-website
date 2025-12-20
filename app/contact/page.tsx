@@ -73,7 +73,7 @@ export default function ContactPage() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.2, delay: 0.1 }}
-          className="grid grid-cols-1 md:grid-cols-2 gap-3"
+          className="grid grid-cols-2 gap-3"
         >
           {/* Contact Info */}
           <div className="border border-primary/20 bg-background">
