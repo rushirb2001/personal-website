@@ -241,7 +241,7 @@ export default function PublicationsPage() {
                   className="overflow-hidden border-b border-primary/20"
                 >
                   <div className="bg-primary/5 p-4 md:p-6">
-                    <div className="grid grid-cols-2 md:grid-cols-[2fr_1fr] gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-6">
                       <div className="space-y-4">
                         
                         <div>
