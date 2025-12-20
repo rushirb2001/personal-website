@@ -298,7 +298,7 @@ export default function UpdatesPage() {
         </div>
 
         {/* Posts List */}
-        <div className="space-y-2 min-h-[400px] md:min-h-[400px]">
+        <div className="space-y-2 min-h-[360px] md:min-h-[360px]">
           {visiblePosts.length > 0 ? (
             visiblePosts.map((post, index) => (
               <motion.div
