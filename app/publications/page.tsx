@@ -264,7 +264,7 @@ export default function PublicationsPage() {
                         
                         <div>
                           <span className="font-sf-mono text-primary/40 uppercase tracking-wider text-sm">DOI</span>
-                          <p className="font-sf-mono text-primary/50 mt-1 break-all text-sm">
+                          <p className="font-sf-mono text-primary/50 mt-1 break-all text-xs tracking-[-0.1em]">
                             {selectedPublication.doi}
                           </p>
                         </div>
