@@ -8,7 +8,7 @@ export interface Experience {
   skills: string[]
 }
 
-export const ITEMS_PER_PAGE = 5
+export const ITEMS_PER_PAGE = 3
 
 export const experiences: readonly Experience[] = [
   {
