@@ -123,7 +123,7 @@ export default function ContactPage() {
           transition={{ duration: 0.2, delay: 0.3 }}
           className="flex items-center justify-between border-t border-primary/20 pt-3"
         >
-          <div className="font-sf-mono text-primary/40 uppercase tracking-wider text-sm">
+          <div className="font-sf-mono text-primary/40 uppercase text-xs tracking-tighter">
             RESPONSE TIME: 24-48 HOURS
           </div>
           <div className="font-sf-mono text-primary/30 text-sm">LAST.UPDATED: 2025</div>
