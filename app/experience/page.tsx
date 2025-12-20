@@ -13,6 +13,7 @@ export default function ExperiencePage() {
   const [startIndex, setStartIndex] = useState(0)
   const isMobile = useMediaQuery("(max-width: 768px)")
 
+  console.log(experiences.length)
   const visibleExperiences = experiences.slice(startIndex, startIndex + ITEMS_PER_PAGE)
   const canShowPrevious = startIndex > 0
   const canShowNext = startIndex + ITEMS_PER_PAGE < experiences.length
