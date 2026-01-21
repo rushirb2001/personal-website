@@ -76,98 +76,113 @@ export default function LinkedInBannerPage() {
         />
 
         {/* Main Content Container */}
-        <div className="relative h-full flex items-center justify-between px-16">
-          {/* Left Section - Name & Title */}
-          <div className="flex flex-col justify-center">
-            {/* Decorative Line */}
-            <div 
-              className="w-24 h-[2px] mb-6"
-              style={{ backgroundColor: theme === "light" ? "#1a1a1a" : "#e8e8e8" }}
-            />
-            
-            {/* Name */}
-            <h1 
-              className="font-sf-mono font-bold tracking-tight leading-none"
-              style={{ fontSize: "72px" }}
-            >
-              RUSHIR BHAVSAR
-            </h1>
-            
-            {/* Title */}
-            <p 
-              className="font-sf-mono tracking-widest mt-4 opacity-60"
-              style={{ fontSize: "18px", letterSpacing: "0.2em" }}
-            >
-              DATA SCIENTIST & AI ENGINEER
-            </p>
-
-            {/* Subtitle */}
-            <p 
-              className="font-sf-mono mt-2 opacity-40"
-              style={{ fontSize: "14px", letterSpacing: "0.1em" }}
-            >
-              MS Computer Science @ Arizona State University
-            </p>
-          </div>
-
-          {/* Center Section - Vertical Divider */}
-          <div 
-            className="h-48 w-[1px] opacity-20"
-            style={{ backgroundColor: theme === "light" ? "#1a1a1a" : "#e8e8e8" }}
-          />
-
-          {/* Right Section - Specializations */}
-          <div className="flex flex-col justify-center">
-            {/* Section Header */}
-            <div className="flex items-center gap-3 mb-6">
-              <span 
-                className="font-sf-mono text-xs tracking-widest opacity-40"
-                style={{ letterSpacing: "0.15em" }}
-              >
-                SPECIALIZATIONS
-              </span>
+        <div className="relative h-full flex items-center px-16">
+          {/* Left Section (30%) - Design Element for Profile Photo */}
+          <div className="w-3/12 h-full flex items-center justify-center">
+            {/* Geometric design element */}
+            <div className="relative w-64 h-64">
+              {/* Outer frame */}
               <div 
-                className="flex-1 h-[1px] opacity-20 w-32"
-                style={{ backgroundColor: theme === "light" ? "#1a1a1a" : "#e8e8e8" }}
+                className="absolute inset-0 border-2"
+                style={{ borderColor: theme === "light" ? "#1a1a1a" : "#e8e8e8", opacity: 0.3 }}
+              />
+              
+              {/* Inner diagonal lines for visual interest */}
+              <div 
+                className="absolute top-0 left-0 w-full h-full"
+                style={{
+                  backgroundImage: `linear-gradient(135deg, transparent 48%, ${theme === "light" ? "#1a1a1a" : "#e8e8e8"} 48%, ${theme === "light" ? "#1a1a1a" : "#e8e8e8"} 52%, transparent 52%)`,
+                  opacity: 0.1
+                }}
+              />
+              
+              {/* Center accent */}
+              <div 
+                className="absolute top-1/2 left-1/2 w-20 h-20 border-2"
+                style={{ 
+                  borderColor: theme === "light" ? "#1a1a1a" : "#e8e8e8",
+                  opacity: 0.3,
+                  transform: "translate(-50%, -50%)"
+                }}
               />
             </div>
-
-            {/* Specialization Tags - 2 Column Grid */}
-            <div className="grid grid-cols-2 gap-x-6 gap-y-2">
-              {specializations.map((spec, idx) => (
-                <div key={idx} className="flex items-center gap-2">
-                  <span 
-                    className="w-1.5 h-1.5"
-                    style={{ backgroundColor: theme === "light" ? "#1a1a1a" : "#e8e8e8", opacity: 0.4 }}
-                  />
-                  <span 
-                    className="font-sf-mono opacity-70"
-                    style={{ fontSize: "14px" }}
-                  >
-                    {spec}
-                  </span>
-                </div>
-              ))}
-            </div>
-
-            {/* Tech Stack Row */}
-            <div className="flex items-center gap-3 mt-8">
-              {techStack.map((tech, idx) => (
-                <span 
-                  key={idx}
-                  className="font-sf-mono px-2 py-1 border opacity-50"
-                  style={{ 
-                    fontSize: "11px",
-                    borderColor: theme === "light" ? "rgba(26,26,26,0.3)" : "rgba(232,232,232,0.3)",
-                  }}
-                >
-                  {tech}
-                </span>
-              ))}
-            </div>
           </div>
 
+          {/* Right Section (70%) - All Content */}
+          <div className="w-9/12 h-full flex flex-col justify-center pl-12">
+            {/* Name & Title */}
+            <div className="mb-8">
+              <h1 
+                className="font-sf-mono font-bold tracking-tight leading-none mb-2"
+                style={{ fontSize: "56px", letterSpacing: "-0.01em" }}
+              >
+                RUSHIR BHAVSAR
+              </h1>
+              
+              <p 
+                className="font-sf-mono tracking-wide opacity-70"
+                style={{ fontSize: "20px", letterSpacing: "0.05em" }}
+              >
+                DATA SCIENTIST & AI ENGINEER
+              </p>
+            </div>
 
+            {/* Content Grid */}
+            <div className="grid grid-cols-2 gap-12">
+              {/* Left Column - Specializations */}
+              <div>
+                <span 
+                  className="font-sf-mono text-xs tracking-widest opacity-50 block mb-4"
+                  style={{ letterSpacing: "0.15em" }}
+                >
+                  SPECIALIZATIONS
+                </span>
+                
+                <div className="space-y-2">
+                  {specializations.map((spec, idx) => (
+                    <div key={idx} className="flex items-center gap-2">
+                      <span 
+                        className="w-1.5 h-1.5"
+                        style={{ backgroundColor: theme === "light" ? "#1a1a1a" : "#e8e8e8", opacity: 0.5 }}
+                      />
+                      <span 
+                        className="font-sf-mono opacity-75"
+                        style={{ fontSize: "13px" }}
+                      >
+                        {spec}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Right Column - Tech Stack */}
+              <div>
+                <span 
+                  className="font-sf-mono text-xs tracking-widest opacity-50 block mb-4"
+                  style={{ letterSpacing: "0.15em" }}
+                >
+                  TECH STACK
+                </span>
+                
+                <div className="flex flex-wrap gap-2">
+                  {techStack.map((tech, idx) => (
+                    <span 
+                      key={idx}
+                      className="font-sf-mono px-2.5 py-1.5 border font-medium"
+                      style={{ 
+                        fontSize: "11px",
+                        borderColor: theme === "light" ? "rgba(26,26,26,0.25)" : "rgba(232,232,232,0.25)",
+                        opacity: 0.8,
+                      }}
+                    >
+                      {tech}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
