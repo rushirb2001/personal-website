@@ -154,7 +154,7 @@ export default function LinkedInBannerPage() {
             </div>
 
             {/* Tech Stack - Centered and Prominent */}
-            <div className="py-2">
+            <div className="py-4">
               
               
               <div className="flex flex-wrap gap-2.5 justify-center">
