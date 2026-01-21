@@ -128,7 +128,7 @@ export default function LinkedInBannerPage() {
             {/* Role Titles with Pipes */}
             <div className="mb-6">
               <p 
-                className="font-sf-mono tracking-wide opacity-80 text-5xl font-bold py-7 my-7"
+                className="font-sf-mono tracking-wide opacity-80 text-5xl font-bold py-7 my-0"
                 style={{ letterSpacing: "0.08em" }}
               >
                 ML ENGINEER | GENAI ENGINEER
@@ -154,7 +154,7 @@ export default function LinkedInBannerPage() {
             </div>
 
             {/* Tech Stack - Centered and Prominent */}
-            <div className="py-6">
+            <div className="py-2">
               
               
               <div className="flex flex-wrap gap-2.5 justify-center">
