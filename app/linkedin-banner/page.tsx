@@ -70,7 +70,7 @@ export default function LinkedInBannerPage() {
           className="absolute inset-0 opacity-[0.03]"
           style={{
             backgroundImage: `linear-gradient(${theme === "light" ? "#000" : "#fff"} 1px, transparent 1px), linear-gradient(90deg, ${theme === "light" ? "#000" : "#fff"} 1px, transparent 1px)`,
-            backgroundSize: "40px 40px",
+            backgroundSize: "44px 44px",
             backgroundPosition: "0 0",
           }}
         />
