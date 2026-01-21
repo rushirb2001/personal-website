@@ -155,7 +155,7 @@ export default function LinkedInBannerPage() {
 
             {/* Tech Stack - Centered and Prominent */}
             <div className="w-full py-4">
-              <div className="flex justify-between items-center w-full px-8">
+              <div className="flex justify-between items-center w-full px-8 gap-4">
                 {techStack.map((tech, idx) => (
                   <span 
                     key={idx}
