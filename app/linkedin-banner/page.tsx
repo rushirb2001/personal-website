@@ -167,36 +167,7 @@ export default function LinkedInBannerPage() {
             </div>
           </div>
 
-          {/* Decorative Elements - Corner Brackets */}
-          <div className="absolute top-8 left-8 w-8 h-8 border-l-2 border-t-2 opacity-20"
-            style={{ borderColor: theme === "light" ? "#1a1a1a" : "#e8e8e8" }}
-          />
-          <div className="absolute top-8 right-8 w-8 h-8 border-r-2 border-t-2 opacity-20"
-            style={{ borderColor: theme === "light" ? "#1a1a1a" : "#e8e8e8" }}
-          />
-          <div className="absolute bottom-8 left-8 w-8 h-8 border-l-2 border-b-2 opacity-20"
-            style={{ borderColor: theme === "light" ? "#1a1a1a" : "#e8e8e8" }}
-          />
-          <div className="absolute bottom-8 right-8 w-8 h-8 border-r-2 border-b-2 opacity-20"
-            style={{ borderColor: theme === "light" ? "#1a1a1a" : "#e8e8e8" }}
-          />
 
-          {/* Bottom Status Bar */}
-          <div 
-            className="absolute bottom-6 left-16 right-16 flex items-center justify-between opacity-30"
-          >
-            <span className="font-sf-mono" style={{ fontSize: "10px", letterSpacing: "0.1em" }}>
-              PHOENIX, AZ
-            </span>
-            <div className="flex items-center gap-6">
-              <span className="font-sf-mono" style={{ fontSize: "10px", letterSpacing: "0.1em" }}>
-                github.com/rushirb2001
-              </span>
-              <span className="font-sf-mono" style={{ fontSize: "10px", letterSpacing: "0.1em" }}>
-                OPEN TO OPPORTUNITIES
-              </span>
-            </div>
-          </div>
         </div>
       </div>
 
