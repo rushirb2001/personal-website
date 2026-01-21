@@ -102,7 +102,7 @@ export default function LinkedInBannerPage() {
                 const distance = Math.abs(idx - center);
                 const sigma = 5; // Standard deviation
                 const gaussianValue = Math.exp(-(distance * distance) / (2 * sigma * sigma));
-                const height = gaussianValue * 180; // Max height in pixels
+                const height = gaussianValue * 252; // Max height in pixels (40% increase)
                 
                 // Calculate opacity gradient (darker at center, lighter at edges)
                 const opacityValue = 0.3 + (gaussianValue * 0.5); // Range: 0.3 to 0.8
