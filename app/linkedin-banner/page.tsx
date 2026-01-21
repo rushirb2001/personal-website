@@ -77,36 +77,49 @@ export default function LinkedInBannerPage() {
 
         {/* Main Content Container */}
         <div className="relative h-full flex items-center">
-          {/* Left Section (30%) - Subtle Design Element */}
-          <div className="w-3/12 h-full relative flex items-center px-12">
-            {/* Vertical accent bars with varying heights */}
-            <div className="flex items-center gap-2 h-64">
-              <div 
-                className="w-1 h-32"
-                style={{ backgroundColor: theme === "light" ? "#1a1a1a" : "#e8e8e8", opacity: 0.15 }}
-              />
-              <div 
-                className="w-1 h-48"
-                style={{ backgroundColor: theme === "light" ? "#1a1a1a" : "#e8e8e8", opacity: 0.25 }}
-              />
-              <div 
-                className="w-1.5 h-56"
-                style={{ backgroundColor: theme === "light" ? "#1a1a1a" : "#e8e8e8", opacity: 0.35 }}
-              />
-              <div 
-                className="w-1 h-40"
-                style={{ backgroundColor: theme === "light" ? "#1a1a1a" : "#e8e8e8", opacity: 0.2 }}
-              />
-            </div>
-            
-            {/* Subtle text element */}
-            <div className="absolute bottom-12 left-12">
+          {/* Left Section (30%) - Gaussian Distribution Design */}
+          <div className="w-3/12 h-full relative flex flex-col items-center justify-center">
+            {/* Initials at top */}
+            <div className="mb-8">
               <span 
-                className="font-sf-mono font-bold opacity-10"
-                style={{ fontSize: "80px", letterSpacing: "-0.05em", lineHeight: "1" }}
+                className="font-sf-mono font-bold"
+                style={{ 
+                  fontSize: "48px", 
+                  letterSpacing: "0.05em",
+                  color: theme === "light" ? "#1a1a1a" : "#e8e8e8",
+                  opacity: 0.8
+                }}
               >
                 RB
               </span>
+            </div>
+            
+            {/* Gaussian Distribution - 25 Bins */}
+            <div className="flex items-end justify-center gap-1 h-48">
+              {Array.from({ length: 25 }).map((_, idx) => {
+                // Calculate Gaussian height (bell curve)
+                const center = 12; // Middle bin
+                const distance = Math.abs(idx - center);
+                const sigma = 5; // Standard deviation
+                const gaussianValue = Math.exp(-(distance * distance) / (2 * sigma * sigma));
+                const height = gaussianValue * 180; // Max height in pixels
+                
+                // Calculate opacity gradient (darker at center, lighter at edges)
+                const opacityValue = 0.3 + (gaussianValue * 0.5); // Range: 0.3 to 0.8
+                
+                return (
+                  <div
+                    key={idx}
+                    className="w-2"
+                    style={{
+                      height: `${height}px`,
+                      backgroundColor: theme === "light" ? "#1a1a1a" : "#e8e8e8",
+                      opacity: opacityValue,
+                      transition: "all 0.3s ease"
+                    }}
+                  />
+                );
+              })}
             </div>
           </div>
 
