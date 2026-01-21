@@ -3,24 +3,21 @@
 import { useState } from "react"
 
 const specializations = [
-  "Distributed Model Training",
-  "RAG & Agentic Pipelines",
-  "Multi-Modal Learning",
-  "LLM Fine-Tuning & RLHF",
-  "Protein Structure Prediction",
-  "Real-Time Inference Systems",
+  "Machine Learning",
+  "Deep Learning", 
+  "Computer Vision",
+  "NLP",
+  "LLMs",
+  "Generative AI",
+  "MLOps",
 ]
 
-const libraries = [
+const techStack = [
   "PyTorch",
-  "PyTorch Lightning",
-  "LangChain",
-  "LangGraph",
-  "Hugging Face",
-  "vLLM",
-  "CUDA",
-  "DeepSpeed",
-  "Ray",
+  "TensorFlow",
+  "AWS",
+  "Python",
+  "Kubernetes",
   "Spark",
 ]
 
@@ -28,7 +25,7 @@ export default function LinkedInBannerPage() {
   const [theme, setTheme] = useState<"light" | "dark">("light")
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-8 bg-neutral-300 dark:bg-neutral-800">
+    <div className="min-h-screen flex flex-col items-center justify-center p-8 bg-neutral-200 dark:bg-neutral-900">
       {/* Controls */}
       <div className="mb-8 flex items-center gap-4">
         <span className="font-sf-mono text-sm text-neutral-600 dark:text-neutral-400">THEME:</span>
@@ -54,154 +51,157 @@ export default function LinkedInBannerPage() {
         </button>
       </div>
 
-      <p className="font-sf-mono text-xs text-neutral-500 mb-4 py-6">
+      <p className="font-sf-mono text-xs text-neutral-500 mb-4">
         LinkedIn Banner Size: 1584 x 396px — Screenshot this banner below
       </p>
 
-      {/* LinkedIn Banner - Exact Size with 4:1 Ratio */}
+      {/* LinkedIn Banner - Exact Size */}
       <div 
-        className="relative overflow-hidden flex-shrink-0"
+        className="relative overflow-hidden"
         style={{ 
           width: "1584px", 
           height: "396px",
           backgroundColor: theme === "light" ? "#f5f5f5" : "#0e0e0e",
           color: theme === "light" ? "#1a1a1a" : "#e8e8e8",
-          aspectRatio: "4 / 1",
         }}
       >
         {/* Subtle Grid Pattern */}
         <div 
-          className="absolute inset-0 opacity-[0.02]"
+          className="absolute inset-0 opacity-[0.03]"
           style={{
             backgroundImage: `linear-gradient(${theme === "light" ? "#000" : "#fff"} 1px, transparent 1px), linear-gradient(90deg, ${theme === "light" ? "#000" : "#fff"} 1px, transparent 1px)`,
             backgroundSize: "40px 40px",
+            backgroundPosition: "0 0",
           }}
         />
 
-        {/* Main Content Container - Full Edge to Edge */}
-        <div className="relative h-full w-full flex items-center">
-          {/* LEFT SECTION - 50% */}
-          <div className="w-1/2 h-full flex flex-col justify-center px-12 py-0">
+        {/* Main Content Container */}
+        <div className="relative h-full flex items-center justify-between px-16">
+          {/* Left Section - Name & Title */}
+          <div className="flex flex-col justify-center">
+            {/* Decorative Line */}
+            <div 
+              className="w-24 h-[2px] mb-6"
+              style={{ backgroundColor: theme === "light" ? "#1a1a1a" : "#e8e8e8" }}
+            />
+            
             {/* Name */}
-            <div className="mb-6">
-              <h1 
-                className="font-sf-mono font-bold tracking-tight leading-none"
-                style={{ fontSize: "56px", letterSpacing: "-0.02em" }}
-              >
-                RUSHIR
-              </h1>
-              <h1 
-                className="font-sf-mono font-bold tracking-tight leading-none"
-                style={{ fontSize: "56px", letterSpacing: "-0.02em" }}
-              >
-                BHAVSAR
-              </h1>
-            </div>
+            <h1 
+              className="font-sf-mono font-bold tracking-tight leading-none"
+              style={{ fontSize: "72px" }}
+            >
+              RUSHIR BHAVSAR
+            </h1>
+            
+            {/* Title */}
+            <p 
+              className="font-sf-mono tracking-widest mt-4 opacity-60"
+              style={{ fontSize: "18px", letterSpacing: "0.2em" }}
+            >
+              DATA SCIENTIST & AI ENGINEER
+            </p>
 
-            {/* Positions - Large & Bold */}
-            <div className="space-y-1 mb-4">
-              <div>
-                <span 
-                  className="font-sf-mono font-bold tracking-wide"
-                  style={{ fontSize: "24px", letterSpacing: "0.01em", lineHeight: "1.2" }}
-                >
-                  ML ENGINEER
-                </span>
-              </div>
-              <div>
-                <span 
-                  className="font-sf-mono font-bold tracking-wide"
-                  style={{ fontSize: "24px", letterSpacing: "0.01em", lineHeight: "1.2" }}
-                >
-                  GENAI ENGINEER
-                </span>
-              </div>
-            </div>
-
-            {/* GitHub - Highlighted */}
-            <div className="mt-4">
-              <span 
-                className="font-sf-mono text-xs opacity-50"
-                style={{ letterSpacing: "0.2em", display: "block", marginBottom: "4px" }}
-              >
-                CONNECT
-              </span>
-              <span 
-                className="font-sf-mono font-bold"
-                style={{ fontSize: "16px", letterSpacing: "0.02em", display: "block" }}
-              >
-                github.com/rushirb2001
-              </span>
-            </div>
+            {/* Subtitle */}
+            <p 
+              className="font-sf-mono mt-2 opacity-40"
+              style={{ fontSize: "14px", letterSpacing: "0.1em" }}
+            >
+              MS Computer Science @ Arizona State University
+            </p>
           </div>
 
-          {/* CENTER DIVIDER */}
+          {/* Center Section - Vertical Divider */}
           <div 
-            className="h-full w-[1px]"
-            style={{ backgroundColor: theme === "light" ? "#1a1a1a" : "#e8e8e8", opacity: 0.1 }}
+            className="h-48 w-[1px] opacity-20"
+            style={{ backgroundColor: theme === "light" ? "#1a1a1a" : "#e8e8e8" }}
           />
 
-          {/* RIGHT SECTION - 50% */}
-          <div className="w-1/2 h-full flex flex-col justify-center px-12 py-0 overflow-hidden">
-            {/* SPECIALIZATIONS SECTION */}
-            <div className="mb-6">
+          {/* Right Section - Specializations */}
+          <div className="flex flex-col justify-center">
+            {/* Section Header */}
+            <div className="flex items-center gap-3 mb-6">
               <span 
-                className="font-sf-mono text-xs font-bold opacity-50 block mb-4"
-                style={{ letterSpacing: "0.2em" }}
+                className="font-sf-mono text-xs tracking-widest opacity-40"
+                style={{ letterSpacing: "0.15em" }}
               >
                 SPECIALIZATIONS
               </span>
-              
-              <div className="space-y-2">
-                {specializations.map((spec, idx) => (
-                  <div key={idx} className="flex items-start gap-2">
-                    <span 
-                      className="w-2 h-2 mt-1.5 flex-shrink-0"
-                      style={{ backgroundColor: theme === "light" ? "#1a1a1a" : "#e8e8e8" }}
-                    />
-                    <span 
-                      className="font-sf-mono font-medium"
-                      style={{ fontSize: "14px", lineHeight: "1.3", opacity: 0.85 }}
-                    >
-                      {spec}
-                    </span>
-                  </div>
-                ))}
-              </div>
+              <div 
+                className="flex-1 h-[1px] opacity-20 w-32"
+                style={{ backgroundColor: theme === "light" ? "#1a1a1a" : "#e8e8e8" }}
+              />
             </div>
 
-            {/* TECHNOLOGIES SECTION */}
-            <div>
-              <span 
-                className="font-sf-mono text-xs font-bold opacity-50 block mb-3"
-                style={{ letterSpacing: "0.2em" }}
-              >
-                TECHNOLOGIES
-              </span>
-              
-              <div className="flex flex-wrap gap-1.5">
-                {libraries.map((lib, idx) => (
+            {/* Specialization Tags - 2 Column Grid */}
+            <div className="grid grid-cols-2 gap-x-6 gap-y-2">
+              {specializations.map((spec, idx) => (
+                <div key={idx} className="flex items-center gap-2">
                   <span 
-                    key={idx}
-                    className="font-sf-mono px-2.5 py-1.5 border font-medium whitespace-nowrap"
-                    style={{ 
-                      fontSize: "11px",
-                      borderColor: theme === "light" ? "rgba(26,26,26,0.25)" : "rgba(232,232,232,0.25)",
-                      opacity: 0.8,
-                      letterSpacing: "0.01em"
-                    }}
+                    className="w-1.5 h-1.5"
+                    style={{ backgroundColor: theme === "light" ? "#1a1a1a" : "#e8e8e8", opacity: 0.4 }}
+                  />
+                  <span 
+                    className="font-sf-mono opacity-70"
+                    style={{ fontSize: "14px" }}
                   >
-                    {lib}
+                    {spec}
                   </span>
-                ))}
-              </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Tech Stack Row */}
+            <div className="flex items-center gap-3 mt-8">
+              {techStack.map((tech, idx) => (
+                <span 
+                  key={idx}
+                  className="font-sf-mono px-2 py-1 border opacity-50"
+                  style={{ 
+                    fontSize: "11px",
+                    borderColor: theme === "light" ? "rgba(26,26,26,0.3)" : "rgba(232,232,232,0.3)",
+                  }}
+                >
+                  {tech}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          {/* Decorative Elements - Corner Brackets */}
+          <div className="absolute top-8 left-8 w-8 h-8 border-l-2 border-t-2 opacity-20"
+            style={{ borderColor: theme === "light" ? "#1a1a1a" : "#e8e8e8" }}
+          />
+          <div className="absolute top-8 right-8 w-8 h-8 border-r-2 border-t-2 opacity-20"
+            style={{ borderColor: theme === "light" ? "#1a1a1a" : "#e8e8e8" }}
+          />
+          <div className="absolute bottom-8 left-8 w-8 h-8 border-l-2 border-b-2 opacity-20"
+            style={{ borderColor: theme === "light" ? "#1a1a1a" : "#e8e8e8" }}
+          />
+          <div className="absolute bottom-8 right-8 w-8 h-8 border-r-2 border-b-2 opacity-20"
+            style={{ borderColor: theme === "light" ? "#1a1a1a" : "#e8e8e8" }}
+          />
+
+          {/* Bottom Status Bar */}
+          <div 
+            className="absolute bottom-6 left-16 right-16 flex items-center justify-between opacity-30"
+          >
+            <span className="font-sf-mono" style={{ fontSize: "10px", letterSpacing: "0.1em" }}>
+              PHOENIX, AZ
+            </span>
+            <div className="flex items-center gap-6">
+              <span className="font-sf-mono" style={{ fontSize: "10px", letterSpacing: "0.1em" }}>
+                github.com/rushirb2001
+              </span>
+              <span className="font-sf-mono" style={{ fontSize: "10px", letterSpacing: "0.1em" }}>
+                OPEN TO OPPORTUNITIES
+              </span>
             </div>
           </div>
         </div>
       </div>
 
       {/* Instructions */}
-      <div className="mt-8 text-center py-8">
+      <div className="mt-8 text-center">
         <p className="font-sf-mono text-xs text-neutral-500 mb-2">
           Instructions: Take a screenshot of the banner above
         </p>
