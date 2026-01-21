@@ -156,7 +156,7 @@ export default function LinkedInBannerPage() {
             {/* Tech Stack - Centered and Prominent */}
             <div className="py-6">
               <span 
-                className="font-sf-mono text-xs tracking-widest opacity-40 block mb-4"
+                className="font-sf-mono tracking-widest opacity-40 block mb-4 font-black text-lg"
                 style={{ letterSpacing: "0.2em" }}
               >
                 TECH STACK
