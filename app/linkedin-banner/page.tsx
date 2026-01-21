@@ -77,61 +77,45 @@ export default function LinkedInBannerPage() {
 
         {/* Main Content Container */}
         <div className="relative h-full flex items-center">
-          {/* Left Section (30%) - Circular Gaussian Distribution Design */}
-          <div className="w-3/12 h-full relative flex items-center justify-center">
-            {/* Circular Gaussian - 25 Bars */}
-            <div className="relative" style={{ width: "200px", height: "200px" }}>
-              {/* Initials at center */}
-              <div className="absolute inset-0 flex items-center justify-center">
-                <span 
-                  className="font-sf-mono font-bold"
-                  style={{ 
-                    fontSize: "40px", 
-                    letterSpacing: "0.05em",
-                    color: theme === "light" ? "#1a1a1a" : "#e8e8e8",
-                    opacity: 0.8
-                  }}
-                >
-                  RB
-                </span>
-              </div>
-              
-              {/* Radial bars arranged in circle */}
+          {/* Left Section (30%) - Gaussian Distribution Design */}
+          <div className="w-3/12 h-full relative flex flex-col items-center justify-center">
+            {/* Initials at top */}
+            <div className="mb-8">
+              <span 
+                className="font-sf-mono font-bold"
+                style={{ 
+                  fontSize: "48px", 
+                  letterSpacing: "0.05em",
+                  color: theme === "light" ? "#1a1a1a" : "#e8e8e8",
+                  opacity: 0.8
+                }}
+              >
+                RB
+              </span>
+            </div>
+            
+            {/* Gaussian Distribution - 25 Bins */}
+            <div className="flex items-end justify-center gap-1 h-48">
               {Array.from({ length: 25 }).map((_, idx) => {
-                // Calculate angle for circular arrangement
-                const angle = (idx * 360) / 25;
-                const radian = (angle * Math.PI) / 180;
-                
-                // Calculate Gaussian distribution based on position
-                const center = 12.5; // Middle position
+                // Calculate Gaussian height (bell curve)
+                const center = 12; // Middle bin
                 const distance = Math.abs(idx - center);
-                const sigma = 6;
+                const sigma = 5; // Standard deviation
                 const gaussianValue = Math.exp(-(distance * distance) / (2 * sigma * sigma));
+                const height = gaussianValue * 180; // Max height in pixels
                 
-                // Bar length based on Gaussian
-                const barLength = 30 + gaussianValue * 50; // Range: 30px to 80px
-                
-                // Opacity gradient
-                const opacityValue = 0.25 + (gaussianValue * 0.55);
-                
-                // Position from center
-                const centerX = 100;
-                const centerY = 100;
-                const startRadius = 35; // Inner circle radius
+                // Calculate opacity gradient (darker at center, lighter at edges)
+                const opacityValue = 0.3 + (gaussianValue * 0.5); // Range: 0.3 to 0.8
                 
                 return (
                   <div
                     key={idx}
-                    className="absolute origin-left"
+                    className="w-2"
                     style={{
-                      left: `${centerX}px`,
-                      top: `${centerY}px`,
-                      width: `${barLength}px`,
-                      height: "3px",
+                      height: `${height}px`,
                       backgroundColor: theme === "light" ? "#1a1a1a" : "#e8e8e8",
                       opacity: opacityValue,
-                      transform: `rotate(${angle}deg) translateX(${startRadius}px)`,
-                      transformOrigin: "0 50%",
+                      transition: "all 0.3s ease"
                     }}
                   />
                 );
@@ -140,77 +124,59 @@ export default function LinkedInBannerPage() {
           </div>
 
           {/* Right Section (70%) - All Content */}
-          <div className="w-9/12 h-full flex flex-col justify-center pr-16 pl-8">
-            {/* Name & Title */}
-            <div className="mb-8">
-              <h1 
-                className="font-sf-mono font-bold tracking-tight leading-none mb-2"
-                style={{ fontSize: "56px", letterSpacing: "-0.01em" }}
-              >
-                RUSHIR BHAVSAR
-              </h1>
-              
+          <div className="w-9/12 h-full flex flex-col justify-center items-center pr-16 pl-8 text-center">
+            {/* Role Titles with Pipes */}
+            <div className="mb-6">
               <p 
-                className="font-sf-mono tracking-wide opacity-70"
-                style={{ fontSize: "20px", letterSpacing: "0.05em" }}
+                className="font-sf-mono font-bold tracking-wide opacity-80"
+                style={{ fontSize: "20px", letterSpacing: "0.08em" }}
               >
-                DATA SCIENTIST & AI ENGINEER
+                ML ENGINEER | GENAI ENGINEER | DATA SCIENTIST
               </p>
             </div>
 
-            {/* Content Grid */}
-            <div className="grid grid-cols-2 gap-12">
-              {/* Left Column - Specializations */}
-              <div>
-                <span 
-                  className="font-sf-mono text-xs tracking-widest opacity-50 block mb-4"
-                  style={{ letterSpacing: "0.15em" }}
-                >
-                  SPECIALIZATIONS
-                </span>
-                
-                <div className="space-y-2">
-                  {specializations.map((spec, idx) => (
-                    <div key={idx} className="flex items-center gap-2">
-                      <span 
-                        className="w-1.5 h-1.5"
-                        style={{ backgroundColor: theme === "light" ? "#1a1a1a" : "#e8e8e8", opacity: 0.5 }}
-                      />
-                      <span 
-                        className="font-sf-mono opacity-75"
-                        style={{ fontSize: "13px" }}
-                      >
-                        {spec}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
+            {/* Main Statement - Large and Prominent */}
+            <div className="mb-8 max-w-5xl">
+              <p 
+                className="font-sf-mono font-medium leading-relaxed"
+                style={{ 
+                  fontSize: "16px", 
+                  letterSpacing: "0.01em",
+                  lineHeight: "1.6",
+                  opacity: 0.85
+                }}
+              >
+                I build agentic AI systems with LLM orchestration, tool calling architectures, and multi-agent workflows, 
+                develop CUDA-accelerated ML pipelines with contrastive learning and embedding-based retrieval, 
+                and ship production GenAI platforms with evaluation frameworks for retrieval quality and factual grounding 
+                across enterprise deployments.
+              </p>
+            </div>
 
-              {/* Right Column - Tech Stack */}
-              <div>
-                <span 
-                  className="font-sf-mono text-xs tracking-widest opacity-50 block mb-4"
-                  style={{ letterSpacing: "0.15em" }}
-                >
-                  TECH STACK
-                </span>
-                
-                <div className="flex flex-wrap gap-2">
-                  {techStack.map((tech, idx) => (
-                    <span 
-                      key={idx}
-                      className="font-sf-mono px-2.5 py-1.5 border font-medium"
-                      style={{ 
-                        fontSize: "11px",
-                        borderColor: theme === "light" ? "rgba(26,26,26,0.25)" : "rgba(232,232,232,0.25)",
-                        opacity: 0.8,
-                      }}
-                    >
-                      {tech}
-                    </span>
-                  ))}
-                </div>
+            {/* Tech Stack - Centered and Prominent */}
+            <div>
+              <span 
+                className="font-sf-mono text-xs tracking-widest opacity-40 block mb-4"
+                style={{ letterSpacing: "0.2em" }}
+              >
+                TECH STACK
+              </span>
+              
+              <div className="flex flex-wrap gap-2.5 justify-center">
+                {techStack.map((tech, idx) => (
+                  <span 
+                    key={idx}
+                    className="font-sf-mono px-3.5 py-2 border font-semibold"
+                    style={{ 
+                      fontSize: "13px",
+                      borderColor: theme === "light" ? "rgba(26,26,26,0.3)" : "rgba(232,232,232,0.3)",
+                      opacity: 0.85,
+                      letterSpacing: "0.03em"
+                    }}
+                  >
+                    {tech}
+                  </span>
+                ))}
               </div>
             </div>
           </div>
