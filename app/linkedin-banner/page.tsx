@@ -90,15 +90,15 @@ export default function LinkedInBannerPage() {
             </h1>
             
             {/* Position Titles */}
-            <div className="flex flex-col gap-1">
+            <div className="flex flex-col gap-2">
               <div className="flex items-center gap-3">
                 <div 
                   className="w-8 h-[2px]"
                   style={{ backgroundColor: theme === "light" ? "#1a1a1a" : "#e8e8e8" }}
                 />
                 <span 
-                  className="font-sf-mono font-medium tracking-wide"
-                  style={{ fontSize: "18px", letterSpacing: "0.05em" }}
+                  className="font-sf-mono font-bold tracking-wide"
+                  style={{ fontSize: "28px", letterSpacing: "0.05em" }}
                 >
                   MACHINE LEARNING ENGINEER
                 </span>
@@ -109,8 +109,8 @@ export default function LinkedInBannerPage() {
                   style={{ backgroundColor: theme === "light" ? "#1a1a1a" : "#e8e8e8" }}
                 />
                 <span 
-                  className="font-sf-mono font-medium tracking-wide"
-                  style={{ fontSize: "18px", letterSpacing: "0.05em" }}
+                  className="font-sf-mono font-bold tracking-wide"
+                  style={{ fontSize: "28px", letterSpacing: "0.05em" }}
                 >
                   GENAI ENGINEER
                 </span>
@@ -118,13 +118,14 @@ export default function LinkedInBannerPage() {
             </div>
 
             {/* Contact Info */}
-            <div className="flex items-center gap-6 mt-8 opacity-50">
-              <span className="font-sf-mono" style={{ fontSize: "11px", letterSpacing: "0.05em" }}>
-                rbhavsar@asu.edu
-              </span>
-              <span className="font-sf-mono" style={{ fontSize: "11px", letterSpacing: "0.05em" }}>
+            <div className="mt-8">
+              <a 
+                href="https://github.com/rushirb2001" 
+                className="font-sf-mono font-medium opacity-80 hover:opacity-100 transition-opacity"
+                style={{ fontSize: "12px", letterSpacing: "0.05em" }}
+              >
                 github.com/rushirb2001
-              </span>
+              </a>
             </div>
           </div>
 
