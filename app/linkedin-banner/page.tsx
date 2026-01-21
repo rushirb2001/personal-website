@@ -140,7 +140,7 @@ export default function LinkedInBannerPage() {
               <p 
                 className="font-sf-mono font-medium leading-relaxed"
                 style={{ 
-                  fontSize: "16px", 
+                  fontSize: "21px", 
                   letterSpacing: "0.01em",
                   lineHeight: "1.6",
                   opacity: 0.85
