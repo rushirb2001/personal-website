@@ -58,14 +58,15 @@ export default function LinkedInBannerPage() {
         LinkedIn Banner Size: 1584 x 396px — Screenshot this banner below
       </p>
 
-      {/* LinkedIn Banner - Exact Size */}
+      {/* LinkedIn Banner - Exact Size with 4:1 Ratio */}
       <div 
-        className="relative overflow-hidden"
+        className="relative overflow-hidden flex-shrink-0"
         style={{ 
           width: "1584px", 
           height: "396px",
           backgroundColor: theme === "light" ? "#f5f5f5" : "#0e0e0e",
           color: theme === "light" ? "#1a1a1a" : "#e8e8e8",
+          aspectRatio: "4 / 1",
         }}
       >
         {/* Subtle Grid Pattern */}
@@ -77,12 +78,12 @@ export default function LinkedInBannerPage() {
           }}
         />
 
-        {/* Main Content Container */}
-        <div className="relative h-full flex items-center justify-between px-16">
-          {/* LEFT SECTION - 45% */}
-          <div className="flex-1 flex flex-col justify-center pr-12">
+        {/* Main Content Container - Full Edge to Edge */}
+        <div className="relative h-full w-full flex items-center">
+          {/* LEFT SECTION - 50% */}
+          <div className="w-1/2 h-full flex flex-col justify-center px-12 py-0">
             {/* Name */}
-            <div className="mb-8">
+            <div className="mb-6">
               <h1 
                 className="font-sf-mono font-bold tracking-tight leading-none"
                 style={{ fontSize: "56px", letterSpacing: "-0.02em" }}
@@ -98,11 +99,11 @@ export default function LinkedInBannerPage() {
             </div>
 
             {/* Positions - Large & Bold */}
-            <div className="space-y-2">
+            <div className="space-y-1 mb-4">
               <div>
                 <span 
                   className="font-sf-mono font-bold tracking-wide"
-                  style={{ fontSize: "24px", letterSpacing: "0.01em", lineHeight: "1.3" }}
+                  style={{ fontSize: "24px", letterSpacing: "0.01em", lineHeight: "1.2" }}
                 >
                   ML ENGINEER
                 </span>
@@ -110,21 +111,18 @@ export default function LinkedInBannerPage() {
               <div>
                 <span 
                   className="font-sf-mono font-bold tracking-wide"
-                  style={{ fontSize: "24px", letterSpacing: "0.01em", lineHeight: "1.3" }}
+                  style={{ fontSize: "24px", letterSpacing: "0.01em", lineHeight: "1.2" }}
                 >
                   GENAI ENGINEER
                 </span>
               </div>
             </div>
 
-            {/* Spacer */}
-            <div className="my-6" />
-
             {/* GitHub - Highlighted */}
-            <div>
+            <div className="mt-4">
               <span 
                 className="font-sf-mono text-xs opacity-50"
-                style={{ letterSpacing: "0.2em", display: "block", marginBottom: "6px" }}
+                style={{ letterSpacing: "0.2em", display: "block", marginBottom: "4px" }}
               >
                 CONNECT
               </span>
@@ -139,31 +137,31 @@ export default function LinkedInBannerPage() {
 
           {/* CENTER DIVIDER */}
           <div 
-            className="h-80 w-[2px]"
+            className="h-full w-[1px]"
             style={{ backgroundColor: theme === "light" ? "#1a1a1a" : "#e8e8e8", opacity: 0.1 }}
           />
 
-          {/* RIGHT SECTION - 55% */}
-          <div className="flex-1 flex flex-col justify-center pl-12">
+          {/* RIGHT SECTION - 50% */}
+          <div className="w-1/2 h-full flex flex-col justify-center px-12 py-0 overflow-hidden">
             {/* SPECIALIZATIONS SECTION */}
-            <div className="mb-10">
+            <div className="mb-6">
               <span 
-                className="font-sf-mono text-xs font-bold opacity-50 block mb-6"
+                className="font-sf-mono text-xs font-bold opacity-50 block mb-4"
                 style={{ letterSpacing: "0.2em" }}
               >
                 SPECIALIZATIONS
               </span>
               
-              <div className="space-y-3">
+              <div className="space-y-2">
                 {specializations.map((spec, idx) => (
-                  <div key={idx} className="flex items-start gap-3">
+                  <div key={idx} className="flex items-start gap-2">
                     <span 
-                      className="w-2 h-2 mt-2 flex-shrink-0"
+                      className="w-2 h-2 mt-1.5 flex-shrink-0"
                       style={{ backgroundColor: theme === "light" ? "#1a1a1a" : "#e8e8e8" }}
                     />
                     <span 
                       className="font-sf-mono font-medium"
-                      style={{ fontSize: "15px", lineHeight: "1.4", opacity: 0.85 }}
+                      style={{ fontSize: "14px", lineHeight: "1.3", opacity: 0.85 }}
                     >
                       {spec}
                     </span>
@@ -175,19 +173,19 @@ export default function LinkedInBannerPage() {
             {/* TECHNOLOGIES SECTION */}
             <div>
               <span 
-                className="font-sf-mono text-xs font-bold opacity-50 block mb-4"
+                className="font-sf-mono text-xs font-bold opacity-50 block mb-3"
                 style={{ letterSpacing: "0.2em" }}
               >
                 TECHNOLOGIES
               </span>
               
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-1.5">
                 {libraries.map((lib, idx) => (
                   <span 
                     key={idx}
-                    className="font-sf-mono px-3 py-2 border font-medium"
+                    className="font-sf-mono px-2.5 py-1.5 border font-medium whitespace-nowrap"
                     style={{ 
-                      fontSize: "12px",
+                      fontSize: "11px",
                       borderColor: theme === "light" ? "rgba(26,26,26,0.25)" : "rgba(232,232,232,0.25)",
                       opacity: 0.8,
                       letterSpacing: "0.01em"
