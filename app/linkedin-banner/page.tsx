@@ -156,57 +156,63 @@ export default function LinkedInBannerPage() {
           />
 
           {/* Right Half - Specializations & Libraries */}
-          <div className="flex-1 flex flex-col justify-center pl-16">
-            {/* Specializations Header */}
-            <span 
-              className="font-sf-mono opacity-40 mb-4"
-              style={{ fontSize: "10px", letterSpacing: "0.15em" }}
-            >
-              SPECIALIZATIONS
-            </span>
+          <div className="flex-1 flex flex-col justify-center pl-20">
+            {/* Specializations Section */}
+            <div className="mb-12">
+              {/* Specializations Header */}
+              <span 
+                className="font-sf-mono opacity-40 mb-5 block"
+                style={{ fontSize: "10px", letterSpacing: "0.15em" }}
+              >
+                SPECIALIZATIONS
+              </span>
 
-            {/* Specializations */}
-            <div className="grid grid-cols-2 gap-x-6 gap-y-2 mb-8">
-              {specializations.map((spec, idx) => (
-                <div key={idx} className="flex items-start gap-2">
-                  <span 
-                    className="w-2 h-2 mt-1 flex-shrink-0"
-                    style={{ backgroundColor: theme === "light" ? "#1a1a1a" : "#e8e8e8", opacity: 0.5 }}
-                  />
-                  <span 
-                    className="font-sf-mono font-medium opacity-75"
-                    style={{ fontSize: "15px", lineHeight: "1.3" }}
-                  >
-                    {spec}
-                  </span>
-                </div>
-              ))}
+              {/* Specializations Grid */}
+              <div className="grid grid-cols-2 gap-x-8 gap-y-4">
+                {specializations.map((spec, idx) => (
+                  <div key={idx} className="flex items-start gap-3">
+                    <span 
+                      className="w-2 h-2 mt-1.5 flex-shrink-0"
+                      style={{ backgroundColor: theme === "light" ? "#1a1a1a" : "#e8e8e8", opacity: 0.6 }}
+                    />
+                    <span 
+                      className="font-sf-mono font-medium opacity-80"
+                      style={{ fontSize: "14px", lineHeight: "1.4" }}
+                    >
+                      {spec}
+                    </span>
+                  </div>
+                ))}
+              </div>
             </div>
 
-            {/* Libraries Header */}
-            <span 
-              className="font-sf-mono opacity-40 mb-3"
-              style={{ fontSize: "10px", letterSpacing: "0.15em" }}
-            >
-              TECHNOLOGIES
-            </span>
+            {/* Technologies Section */}
+            <div>
+              {/* Technologies Header */}
+              <span 
+                className="font-sf-mono opacity-40 mb-5 block"
+                style={{ fontSize: "10px", letterSpacing: "0.15em" }}
+              >
+                TECHNOLOGIES
+              </span>
 
-            {/* Libraries */}
-            <div className="flex flex-wrap gap-1.5">
-              {libraries.map((lib, idx) => (
-                <span 
-                  key={idx}
-                  className="font-sf-mono px-3 py-1.5 border font-medium"
-                  style={{ 
-                    fontSize: "12px",
-                    borderColor: theme === "light" ? "rgba(26,26,26,0.3)" : "rgba(232,232,232,0.3)",
-                    opacity: 0.75,
-                    letterSpacing: "0.02em"
-                  }}
-                >
-                  {lib}
-                </span>
-              ))}
+              {/* Technologies Tags */}
+              <div className="flex flex-wrap gap-2.5">
+                {libraries.map((lib, idx) => (
+                  <span 
+                    key={idx}
+                    className="font-sf-mono px-3 py-2 border font-medium"
+                    style={{ 
+                      fontSize: "12px",
+                      borderColor: theme === "light" ? "rgba(26,26,26,0.25)" : "rgba(232,232,232,0.25)",
+                      opacity: 0.8,
+                      letterSpacing: "0.02em"
+                    }}
+                  >
+                    {lib}
+                  </span>
+                ))}
+              </div>
             </div>
           </div>
         </div>
