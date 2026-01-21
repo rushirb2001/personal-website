@@ -161,9 +161,9 @@ export default function LinkedInBannerPage() {
                 {techStack.map((tech, idx) => (
                   <span 
                     key={idx}
-                    className="font-sf-mono px-3.5 py-2 border font-semibold"
+                    className="font-sf-mono px-4 py-2.5 border font-semibold"
                     style={{ 
-                      fontSize: "13px",
+                      fontSize: "18px",
                       borderColor: theme === "light" ? "rgba(26,26,26,0.3)" : "rgba(232,232,232,0.3)",
                       opacity: 0.85,
                       letterSpacing: "0.03em"
