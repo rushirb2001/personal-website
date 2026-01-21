@@ -78,7 +78,7 @@ export default function LinkedInBannerPage() {
         {/* Main Content Container */}
         <div className="relative h-full flex items-center">
           {/* Left Section (30%) - Gaussian Distribution Design */}
-          <div className="h-full relative flex flex-col items-center justify-center w-[27%]">
+          <div className="h-full relative flex flex-col items-center justify-center w-3/12">
             {/* Initials at top */}
             <div className="mb-8">
               <span 
