@@ -77,107 +77,93 @@ export default function LinkedInBannerPage() {
           }}
         />
 
-        {/* Main Content Container - Two Half Design */}
-        <div className="relative h-full flex items-center px-20">
-          {/* Left Half - Name & Positions */}
-          <div className="flex-1 flex flex-col justify-center pr-16">
+        {/* Main Content Container */}
+        <div className="relative h-full flex items-center justify-between px-16">
+          {/* LEFT SECTION - 45% */}
+          <div className="flex-1 flex flex-col justify-center pr-12">
             {/* Name */}
-            <h1 
-              className="font-sf-mono font-bold tracking-tight leading-none mb-4"
-              style={{ fontSize: "48px", letterSpacing: "-0.01em" }}
-            >
-              RUSHIR BHAVSAR
-            </h1>
-
-            {/* Name Underline */}
-            <div 
-              className="mb-6"
-              style={{ 
-                height: "2px", 
-                backgroundColor: theme === "light" ? "#1a1a1a" : "#e8e8e8",
-                width: "300px"
-              }}
-            />
-
-            {/* Position 1 */}
-            <div className="flex items-center gap-3 mb-3">
-              <div 
-                className="h-[3px]"
-                style={{ 
-                  backgroundColor: theme === "light" ? "#1a1a1a" : "#e8e8e8",
-                  width: "16px",
-                  flexShrink: 0
-                }}
-              />
-              <span 
-                className="font-sf-mono font-bold tracking-wide whitespace-nowrap"
-                style={{ fontSize: "28px", letterSpacing: "0.02em" }}
+            <div className="mb-8">
+              <h1 
+                className="font-sf-mono font-bold tracking-tight leading-none"
+                style={{ fontSize: "56px", letterSpacing: "-0.02em" }}
               >
-                MACHINE LEARNING ENGINEER
-              </span>
+                RUSHIR
+              </h1>
+              <h1 
+                className="font-sf-mono font-bold tracking-tight leading-none"
+                style={{ fontSize: "56px", letterSpacing: "-0.02em" }}
+              >
+                BHAVSAR
+              </h1>
             </div>
 
-            {/* Position 2 */}
-            <div className="flex items-center gap-3 mb-8">
-              <div 
-                className="h-[3px]"
-                style={{ 
-                  backgroundColor: theme === "light" ? "#1a1a1a" : "#e8e8e8",
-                  width: "16px",
-                  flexShrink: 0
-                }}
-              />
-              <span 
-                className="font-sf-mono font-bold tracking-wide whitespace-nowrap"
-                style={{ fontSize: "28px", letterSpacing: "0.02em" }}
-              >
-                GENAI ENGINEER
-              </span>
+            {/* Positions - Large & Bold */}
+            <div className="space-y-2">
+              <div>
+                <span 
+                  className="font-sf-mono font-bold tracking-wide"
+                  style={{ fontSize: "24px", letterSpacing: "0.01em", lineHeight: "1.3" }}
+                >
+                  ML ENGINEER
+                </span>
+              </div>
+              <div>
+                <span 
+                  className="font-sf-mono font-bold tracking-wide"
+                  style={{ fontSize: "24px", letterSpacing: "0.01em", lineHeight: "1.3" }}
+                >
+                  GENAI ENGINEER
+                </span>
+              </div>
             </div>
 
-            {/* GitHub Link */}
+            {/* Spacer */}
+            <div className="my-6" />
+
+            {/* GitHub - Highlighted */}
             <div>
-              <span className="font-sf-mono" style={{ fontSize: "10px", letterSpacing: "0.15em", opacity: 0.4 }}>
-                GITHUB
+              <span 
+                className="font-sf-mono text-xs opacity-50"
+                style={{ letterSpacing: "0.2em", display: "block", marginBottom: "6px" }}
+              >
+                CONNECT
               </span>
-              <p 
-                className="font-sf-mono font-medium tracking-wide mt-1"
-                style={{ fontSize: "16px", letterSpacing: "0.05em" }}
+              <span 
+                className="font-sf-mono font-bold"
+                style={{ fontSize: "16px", letterSpacing: "0.02em", display: "block" }}
               >
                 github.com/rushirb2001
-              </p>
+              </span>
             </div>
           </div>
 
-          {/* Vertical Divider */}
+          {/* CENTER DIVIDER */}
           <div 
-            className="h-64 w-[1px] opacity-15"
-            style={{ backgroundColor: theme === "light" ? "#1a1a1a" : "#e8e8e8" }}
+            className="h-80 w-[2px]"
+            style={{ backgroundColor: theme === "light" ? "#1a1a1a" : "#e8e8e8", opacity: 0.1 }}
           />
 
-          {/* Right Half - Specializations & Libraries */}
-          <div className="flex-1 flex flex-col justify-center pl-20">
-            {/* Specializations Section */}
-            <div className="mb-12">
-              {/* Specializations Header */}
+          {/* RIGHT SECTION - 55% */}
+          <div className="flex-1 flex flex-col justify-center pl-12">
+            {/* SPECIALIZATIONS SECTION */}
+            <div className="mb-10">
               <span 
-                className="font-sf-mono opacity-40 mb-5 block"
-                style={{ fontSize: "10px", letterSpacing: "0.15em" }}
+                className="font-sf-mono text-xs font-bold opacity-50 block mb-6"
+                style={{ letterSpacing: "0.2em" }}
               >
                 SPECIALIZATIONS
               </span>
-
-              {/* Specializations Grid */}
-              <div className="grid grid-cols-2 gap-x-8 gap-y-4">
+              
+              <div className="space-y-3">
                 {specializations.map((spec, idx) => (
                   <div key={idx} className="flex items-start gap-3">
                     <span 
-                      className="w-2 h-2 mt-1.5 flex-shrink-0"
-                      style={{ backgroundColor: theme === "light" ? "#1a1a1a" : "#e8e8e8", opacity: 0.6 }}
+                      className="w-2 h-2 mt-2 flex-shrink-0"
+                      style={{ backgroundColor: theme === "light" ? "#1a1a1a" : "#e8e8e8" }}
                     />
                     <span 
-                      className="font-sf-mono font-medium opacity-80"
-                      style={{ fontSize: "14px", lineHeight: "1.4" }}
+                      className="font-sf-mono font-medium"
+                      style={{ fontSize: "15px", lineHeight: "1.4", opacity: 0.85 }}
                     >
                       {spec}
                     </span>
@@ -186,18 +172,16 @@ export default function LinkedInBannerPage() {
               </div>
             </div>
 
-            {/* Technologies Section */}
+            {/* TECHNOLOGIES SECTION */}
             <div>
-              {/* Technologies Header */}
               <span 
-                className="font-sf-mono opacity-40 mb-5 block"
-                style={{ fontSize: "10px", letterSpacing: "0.15em" }}
+                className="font-sf-mono text-xs font-bold opacity-50 block mb-4"
+                style={{ letterSpacing: "0.2em" }}
               >
                 TECHNOLOGIES
               </span>
-
-              {/* Technologies Tags */}
-              <div className="flex flex-wrap gap-2.5">
+              
+              <div className="flex flex-wrap gap-2">
                 {libraries.map((lib, idx) => (
                   <span 
                     key={idx}
@@ -206,7 +190,7 @@ export default function LinkedInBannerPage() {
                       fontSize: "12px",
                       borderColor: theme === "light" ? "rgba(26,26,26,0.25)" : "rgba(232,232,232,0.25)",
                       opacity: 0.8,
-                      letterSpacing: "0.02em"
+                      letterSpacing: "0.01em"
                     }}
                   >
                     {lib}
