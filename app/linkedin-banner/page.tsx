@@ -78,7 +78,7 @@ export default function LinkedInBannerPage() {
         {/* Main Content Container */}
         <div className="relative h-full flex items-center">
           {/* Left Section (30%) - Gaussian Distribution Design */}
-          <div className="h-full relative flex flex-col items-center justify-center w-3/12">
+          <div className="h-full relative flex flex-col items-center justify-center w-[27%]">
             {/* Initials at top */}
             <div className="mb-8">
               <span 
@@ -100,9 +100,9 @@ export default function LinkedInBannerPage() {
                 // Calculate Gaussian height (bell curve)
                 const center = 12; // Middle bin
                 const distance = Math.abs(idx - center);
-                const sigma = 5; // Standard deviation
+                const sigma = 15; // Standard deviation
                 const gaussianValue = Math.exp(-(distance * distance) / (2 * sigma * sigma));
-                const height = gaussianValue * 252; // Max height in pixels (40% increase)
+                const height = gaussianValue * 180; // Max height in pixels
                 
                 // Calculate opacity gradient (darker at center, lighter at edges)
                 const opacityValue = 0.3 + (gaussianValue * 0.5); // Range: 0.3 to 0.8
