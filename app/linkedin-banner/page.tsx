@@ -77,45 +77,61 @@ export default function LinkedInBannerPage() {
 
         {/* Main Content Container */}
         <div className="relative h-full flex items-center">
-          {/* Left Section (30%) - Gaussian Distribution Design */}
-          <div className="w-3/12 h-full relative flex flex-col items-center justify-center">
-            {/* Initials at top */}
-            <div className="mb-8">
-              <span 
-                className="font-sf-mono font-bold"
-                style={{ 
-                  fontSize: "48px", 
-                  letterSpacing: "0.05em",
-                  color: theme === "light" ? "#1a1a1a" : "#e8e8e8",
-                  opacity: 0.8
-                }}
-              >
-                RB
-              </span>
-            </div>
-            
-            {/* Gaussian Distribution - 25 Bins */}
-            <div className="flex items-end justify-center gap-1 h-48">
+          {/* Left Section (30%) - Circular Gaussian Distribution Design */}
+          <div className="w-3/12 h-full relative flex items-center justify-center">
+            {/* Circular Gaussian - 25 Bars */}
+            <div className="relative" style={{ width: "200px", height: "200px" }}>
+              {/* Initials at center */}
+              <div className="absolute inset-0 flex items-center justify-center">
+                <span 
+                  className="font-sf-mono font-bold"
+                  style={{ 
+                    fontSize: "40px", 
+                    letterSpacing: "0.05em",
+                    color: theme === "light" ? "#1a1a1a" : "#e8e8e8",
+                    opacity: 0.8
+                  }}
+                >
+                  RB
+                </span>
+              </div>
+              
+              {/* Radial bars arranged in circle */}
               {Array.from({ length: 25 }).map((_, idx) => {
-                // Calculate Gaussian height (bell curve)
-                const center = 12; // Middle bin
-                const distance = Math.abs(idx - center);
-                const sigma = 5; // Standard deviation
-                const gaussianValue = Math.exp(-(distance * distance) / (2 * sigma * sigma));
-                const height = gaussianValue * 180; // Max height in pixels
+                // Calculate angle for circular arrangement
+                const angle = (idx * 360) / 25;
+                const radian = (angle * Math.PI) / 180;
                 
-                // Calculate opacity gradient (darker at center, lighter at edges)
-                const opacityValue = 0.3 + (gaussianValue * 0.5); // Range: 0.3 to 0.8
+                // Calculate Gaussian distribution based on position
+                const center = 12.5; // Middle position
+                const distance = Math.abs(idx - center);
+                const sigma = 6;
+                const gaussianValue = Math.exp(-(distance * distance) / (2 * sigma * sigma));
+                
+                // Bar length based on Gaussian
+                const barLength = 30 + gaussianValue * 50; // Range: 30px to 80px
+                
+                // Opacity gradient
+                const opacityValue = 0.25 + (gaussianValue * 0.55);
+                
+                // Position from center
+                const centerX = 100;
+                const centerY = 100;
+                const startRadius = 35; // Inner circle radius
                 
                 return (
                   <div
                     key={idx}
-                    className="w-2"
+                    className="absolute origin-left"
                     style={{
-                      height: `${height}px`,
+                      left: `${centerX}px`,
+                      top: `${centerY}px`,
+                      width: `${barLength}px`,
+                      height: "3px",
                       backgroundColor: theme === "light" ? "#1a1a1a" : "#e8e8e8",
                       opacity: opacityValue,
-                      transition: "all 0.3s ease"
+                      transform: `rotate(${angle}deg) translateX(${startRadius}px)`,
+                      transformOrigin: "0 50%",
                     }}
                   />
                 );
