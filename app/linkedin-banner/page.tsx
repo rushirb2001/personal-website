@@ -51,7 +51,7 @@ export default function LinkedInBannerPage() {
         </button>
       </div>
 
-      <p className="font-sf-mono text-xs text-neutral-500 mb-4">
+      <p className="font-sf-mono text-xs text-neutral-500 mb-4 py-4">
         LinkedIn Banner Size: 1584 x 396px — Screenshot this banner below
       </p>
 
@@ -189,7 +189,7 @@ export default function LinkedInBannerPage() {
       </div>
 
       {/* Instructions */}
-      <div className="mt-8 text-center">
+      <div className="mt-8 text-center py-8">
         <p className="font-sf-mono text-xs text-neutral-500 mb-2">
           Instructions: Take a screenshot of the banner above
         </p>
