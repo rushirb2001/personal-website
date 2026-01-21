@@ -76,40 +76,42 @@ export default function LinkedInBannerPage() {
         />
 
         {/* Main Content Container */}
-        <div className="relative h-full flex items-center px-16">
-          {/* Left Section (30%) - Design Element for Profile Photo */}
-          <div className="w-3/12 h-full flex items-center justify-center">
-            {/* Geometric design element */}
-            <div className="relative w-64 h-64">
-              {/* Outer frame */}
+        <div className="relative h-full flex items-center">
+          {/* Left Section (30%) - Subtle Design Element */}
+          <div className="w-3/12 h-full relative flex items-center px-12">
+            {/* Vertical accent bars with varying heights */}
+            <div className="flex items-center gap-2 h-64">
               <div 
-                className="absolute inset-0 border-2"
-                style={{ borderColor: theme === "light" ? "#1a1a1a" : "#e8e8e8", opacity: 0.3 }}
+                className="w-1 h-32"
+                style={{ backgroundColor: theme === "light" ? "#1a1a1a" : "#e8e8e8", opacity: 0.15 }}
               />
-              
-              {/* Inner diagonal lines for visual interest */}
               <div 
-                className="absolute top-0 left-0 w-full h-full"
-                style={{
-                  backgroundImage: `linear-gradient(135deg, transparent 48%, ${theme === "light" ? "#1a1a1a" : "#e8e8e8"} 48%, ${theme === "light" ? "#1a1a1a" : "#e8e8e8"} 52%, transparent 52%)`,
-                  opacity: 0.1
-                }}
+                className="w-1 h-48"
+                style={{ backgroundColor: theme === "light" ? "#1a1a1a" : "#e8e8e8", opacity: 0.25 }}
               />
-              
-              {/* Center accent */}
               <div 
-                className="absolute top-1/2 left-1/2 w-20 h-20 border-2"
-                style={{ 
-                  borderColor: theme === "light" ? "#1a1a1a" : "#e8e8e8",
-                  opacity: 0.3,
-                  transform: "translate(-50%, -50%)"
-                }}
+                className="w-1.5 h-56"
+                style={{ backgroundColor: theme === "light" ? "#1a1a1a" : "#e8e8e8", opacity: 0.35 }}
               />
+              <div 
+                className="w-1 h-40"
+                style={{ backgroundColor: theme === "light" ? "#1a1a1a" : "#e8e8e8", opacity: 0.2 }}
+              />
+            </div>
+            
+            {/* Subtle text element */}
+            <div className="absolute bottom-12 left-12">
+              <span 
+                className="font-sf-mono font-bold opacity-10"
+                style={{ fontSize: "80px", letterSpacing: "-0.05em", lineHeight: "1" }}
+              >
+                RB
+              </span>
             </div>
           </div>
 
           {/* Right Section (70%) - All Content */}
-          <div className="w-9/12 h-full flex flex-col justify-center pl-12">
+          <div className="w-9/12 h-full flex flex-col justify-center pr-16 pl-8">
             {/* Name & Title */}
             <div className="mb-8">
               <h1 
