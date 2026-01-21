@@ -102,7 +102,7 @@ export default function LinkedInBannerPage() {
             {/* Position 1 */}
             <div className="flex items-center gap-3 mb-3">
               <div 
-                className="h-[2.5px]"
+                className="h-[3px]"
                 style={{ 
                   backgroundColor: theme === "light" ? "#1a1a1a" : "#e8e8e8",
                   width: "16px",
@@ -120,7 +120,7 @@ export default function LinkedInBannerPage() {
             {/* Position 2 */}
             <div className="flex items-center gap-3 mb-8">
               <div 
-                className="h-[2.5px]"
+                className="h-[3px]"
                 style={{ 
                   backgroundColor: theme === "light" ? "#1a1a1a" : "#e8e8e8",
                   width: "16px",
