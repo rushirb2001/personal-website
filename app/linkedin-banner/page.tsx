@@ -166,16 +166,16 @@ export default function LinkedInBannerPage() {
             </span>
 
             {/* Specializations */}
-            <div className="flex flex-col gap-1.5 mb-8">
+            <div className="grid grid-cols-2 gap-x-6 gap-y-2 mb-8">
               {specializations.map((spec, idx) => (
-                <div key={idx} className="flex items-center gap-2">
+                <div key={idx} className="flex items-start gap-2">
                   <span 
-                    className="w-1.5 h-1.5"
-                    style={{ backgroundColor: theme === "light" ? "#1a1a1a" : "#e8e8e8", opacity: 0.4 }}
+                    className="w-2 h-2 mt-1 flex-shrink-0"
+                    style={{ backgroundColor: theme === "light" ? "#1a1a1a" : "#e8e8e8", opacity: 0.5 }}
                   />
                   <span 
-                    className="font-sf-mono opacity-70"
-                    style={{ fontSize: "13px" }}
+                    className="font-sf-mono font-medium opacity-75"
+                    style={{ fontSize: "15px", lineHeight: "1.3" }}
                   >
                     {spec}
                   </span>
@@ -192,15 +192,16 @@ export default function LinkedInBannerPage() {
             </span>
 
             {/* Libraries */}
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-1.5">
               {libraries.map((lib, idx) => (
                 <span 
                   key={idx}
-                  className="font-sf-mono px-2.5 py-1 border"
+                  className="font-sf-mono px-3 py-1.5 border font-medium"
                   style={{ 
-                    fontSize: "10px",
-                    borderColor: theme === "light" ? "rgba(26,26,26,0.2)" : "rgba(232,232,232,0.2)",
-                    opacity: 0.65,
+                    fontSize: "12px",
+                    borderColor: theme === "light" ? "rgba(26,26,26,0.3)" : "rgba(232,232,232,0.3)",
+                    opacity: 0.75,
+                    letterSpacing: "0.02em"
                   }}
                 >
                   {lib}
