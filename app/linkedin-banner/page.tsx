@@ -79,41 +79,64 @@ export default function LinkedInBannerPage() {
 
         {/* Main Content Container - Two Half Design */}
         <div className="relative h-full flex items-center px-20">
-          {/* Left Half - Positions */}
+          {/* Left Half - Name & Positions */}
           <div className="flex-1 flex flex-col justify-center pr-16">
-            {/* Position Titles */}
-            <div className="flex flex-col gap-2">
-              <div>
-                <span 
-                  className="font-sf-mono font-bold tracking-tight leading-none"
-                  style={{ fontSize: "52px", letterSpacing: "-0.02em" }}
-                >
-                  MACHINE LEARNING
-                </span>
-                <br />
-                <span 
-                  className="font-sf-mono font-bold tracking-tight"
-                  style={{ fontSize: "52px", letterSpacing: "-0.02em" }}
-                >
-                  ENGINEER
-                </span>
-              </div>
-              <div className="flex items-center gap-3 mt-4">
-                <div 
-                  className="w-12 h-[2px]"
-                  style={{ backgroundColor: theme === "light" ? "#1a1a1a" : "#e8e8e8" }}
-                />
-                <span 
-                  className="font-sf-mono font-bold tracking-wide"
-                  style={{ fontSize: "24px", letterSpacing: "0.05em" }}
-                >
-                  GENAI ENGINEER
-                </span>
-              </div>
+            {/* Name */}
+            <h1 
+              className="font-sf-mono font-bold tracking-tight leading-none mb-4"
+              style={{ fontSize: "48px", letterSpacing: "-0.01em" }}
+            >
+              RUSHIR BHAVSAR
+            </h1>
+
+            {/* Name Underline */}
+            <div 
+              className="mb-6"
+              style={{ 
+                height: "2px", 
+                backgroundColor: theme === "light" ? "#1a1a1a" : "#e8e8e8",
+                width: "300px"
+              }}
+            />
+
+            {/* Position 1 */}
+            <div className="flex items-center gap-3 mb-3">
+              <div 
+                className="h-[2.5px]"
+                style={{ 
+                  backgroundColor: theme === "light" ? "#1a1a1a" : "#e8e8e8",
+                  width: "16px",
+                  flexShrink: 0
+                }}
+              />
+              <span 
+                className="font-sf-mono font-bold tracking-wide whitespace-nowrap"
+                style={{ fontSize: "28px", letterSpacing: "0.02em" }}
+              >
+                MACHINE LEARNING ENGINEER
+              </span>
+            </div>
+
+            {/* Position 2 */}
+            <div className="flex items-center gap-3 mb-8">
+              <div 
+                className="h-[2.5px]"
+                style={{ 
+                  backgroundColor: theme === "light" ? "#1a1a1a" : "#e8e8e8",
+                  width: "16px",
+                  flexShrink: 0
+                }}
+              />
+              <span 
+                className="font-sf-mono font-bold tracking-wide whitespace-nowrap"
+                style={{ fontSize: "28px", letterSpacing: "0.02em" }}
+              >
+                GENAI ENGINEER
+              </span>
             </div>
 
             {/* GitHub Link */}
-            <div className="mt-8">
+            <div>
               <span className="font-sf-mono" style={{ fontSize: "10px", letterSpacing: "0.15em", opacity: 0.4 }}>
                 GITHUB
               </span>
