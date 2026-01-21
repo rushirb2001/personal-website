@@ -138,7 +138,7 @@ export default function LinkedInBannerPage() {
             {/* Main Statement - Large and Prominent */}
             <div className="mb-8 max-w-5xl">
               <p 
-                className="font-sf-mono font-medium leading-relaxed"
+                className="font-sans font-medium leading-relaxed"
                 style={{ 
                   fontSize: "21px", 
                   letterSpacing: "0.01em",
