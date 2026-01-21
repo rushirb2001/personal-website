@@ -154,14 +154,12 @@ export default function LinkedInBannerPage() {
             </div>
 
             {/* Tech Stack - Centered and Prominent */}
-            <div className="py-4">
-              
-              
-              <div className="flex flex-wrap gap-2.5 justify-center">
+            <div className="w-full py-4">
+              <div className="flex justify-between items-center w-full px-8">
                 {techStack.map((tech, idx) => (
                   <span 
                     key={idx}
-                    className="font-sf-mono px-4 py-2.5 border font-semibold"
+                    className="font-sans px-4 py-2.5 border font-semibold text-center flex-1"
                     style={{ 
                       fontSize: "18px",
                       borderColor: theme === "light" ? "rgba(26,26,26,0.3)" : "rgba(232,232,232,0.3)",
