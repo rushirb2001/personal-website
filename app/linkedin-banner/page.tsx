@@ -128,10 +128,10 @@ export default function LinkedInBannerPage() {
             {/* Role Titles with Pipes */}
             <div className="mb-6">
               <p 
-                className="font-sf-mono tracking-wide opacity-80 font-black py-3.5"
-                style={{ fontSize: "28px", letterSpacing: "0.08em" }}
+                className="font-sf-mono tracking-wide opacity-80 font-black py-3.5 text-3xl"
+                style={{ letterSpacing: "0.08em" }}
               >
-                ML ENGINEER | GENAI ENGINEER | DATA SCIENTIST
+                ML ENGINEER | GENAI ENGINEER
               </p>
             </div>
 
