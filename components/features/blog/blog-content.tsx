@@ -4,7 +4,6 @@ import { useEffect, useState } from "react"
 import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
 import Image from "next/image"
-import mermaid from "mermaid"
 
 interface BlogContentProps {
   content: string
@@ -13,46 +12,38 @@ interface BlogContentProps {
 export function BlogContent({ content }: BlogContentProps) {
   const [mounted, setMounted] = useState(false)
 
-  // Initialize mermaid when component mounts
+  // Initialize mermaid only when mermaid diagrams are present
   useEffect(() => {
     setMounted(true)
-
-    // Configure mermaid with dark theme to match site aesthetic
-    mermaid.initialize({
-      startOnLoad: true,
-      theme: "dark",
-      securityLevel: "loose",
-      fontFamily: "SF Mono, monospace",
-      fontSize: 12,
-      darkMode: true,
-      themeVariables: {
-        primaryColor: "#cccccc",
-        primaryTextColor: "#ffffff",
-        primaryBorderColor: "#444444",
-        lineColor: "#666666",
-        secondaryColor: "#333333",
-        tertiaryColor: "#222222",
-      },
-    })
-
-    // Render any mermaid diagrams
-    setTimeout(() => {
-      mermaid.contentLoaded()
-    }, 300)
   }, [])
 
-  // Function to process code blocks and identify mermaid diagrams
-  const processMermaidDiagrams = () => {
-    if (mounted) {
-      setTimeout(() => {
-        mermaid.contentLoaded()
-      }, 100)
-    }
-  }
-
-  // Process diagrams when content changes
+  // Lazy-load and initialize mermaid only when diagrams exist
   useEffect(() => {
-    processMermaidDiagrams()
+    const initMermaid = async () => {
+      if (document.querySelector('.language-mermaid, pre code.mermaid, .mermaid')) {
+        const mermaid = (await import('mermaid')).default
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: "dark",
+          securityLevel: "strict",
+          fontFamily: "SF Mono, monospace",
+          fontSize: 12,
+          darkMode: true,
+          themeVariables: {
+            primaryColor: "#cccccc",
+            primaryTextColor: "#ffffff",
+            primaryBorderColor: "#444444",
+            lineColor: "#666666",
+            secondaryColor: "#333333",
+            tertiaryColor: "#222222",
+          },
+        })
+        mermaid.run()
+      }
+    }
+    if (mounted) {
+      initMermaid()
+    }
   }, [content, mounted])
 
   if (!mounted) {

@@ -93,9 +93,9 @@ export function UpdatesBanner() {
         {showDropdown && (
           <motion.div
             ref={dropdownRef}
-            initial={{ opacity: 0, y: -10, height: 0 }}
-            animate={{ opacity: 1, y: 0, height: "auto" }}
-            exit={{ opacity: 0, y: -10, height: 0 }}
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.2 }}
             className="fixed top-[calc(3.5rem+1.75rem)] md:top-[calc(4rem+1.75rem)] left-0 z-50 w-64 border border-primary/30 bg-background/95 backdrop-blur-sm shadow-sm rounded-b-md"
           >

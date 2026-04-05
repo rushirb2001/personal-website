@@ -101,6 +101,7 @@ export default function AboutPage() {
                   alt="Profile"
                   width={400}
                   height={400}
+                  priority
                   className="w-full grayscale"
                 />
                            </div>
