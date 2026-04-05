@@ -139,14 +139,6 @@ body {
   overflow-x: hidden;
 }
 
-/* Apply subtle blur to card elements */
-.card,
-.modal-content,
-.folder-card {
-  backdrop-filter: blur(var(--subtle-blur));
-  -webkit-backdrop-filter: blur(var(--subtle-blur));
-}
-
 /* Mobile-first responsive styles */
 .section-title {
   position: relative;
@@ -294,19 +286,6 @@ body {
   background-color: #0e0e0e;
 }
 
-/* Pulse animation for timeline dots */
-@keyframes pulse {
-  0%,
-  100% {
-    opacity: 0.8;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.1);
-  }
-}
-
 /* Unsettling text selection */
 ::selection {
   background-color: color-mix(in srgb, var(--primary) 50%, transparent);
@@ -332,49 +311,10 @@ body {
   background-color: color-mix(in srgb, var(--primary) 30%, transparent);
 }
 
-/* Blink animation for status indicators */
-@keyframes statusBlink {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.7;
-  }
-}
-
-.status-active {
-  animation: statusBlink 4s infinite;
-}
-
 /* Hover tracking effect */
 .tracking-hover:hover {
   letter-spacing: 0.05em;
   transition: letter-spacing 0.5s ease;
-}
-
-/* Recording indicator dot */
-.recording-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background-color: #ff3b30;
-  animation: pulse-recording 2s infinite;
-}
-
-@keyframes pulse-recording {
-  0% {
-    opacity: 0.4;
-    transform: scale(0.95);
-  }
-  50% {
-    opacity: 0.9;
-    transform: scale(1);
-  }
-  100% {
-    opacity: 0.4;
-    transform: scale(0.95);
-  }
 }
 
 /* Last accessed timestamp */
@@ -395,16 +335,20 @@ html.dark {
   color: var(--foreground);
 }
 
-/* Ensure fixed elements transition smoothly */
+/* Targeted theme transitions */
+body,
 header,
 footer,
-.fixed-element {
-  transition: background-color 0.3s ease, border-color 0.3s ease;
-}
-
-/* Ensure content transitions smoothly */
-* {
-  transition: background-color 0.5s ease, border-color 0.5s ease, color 0.5s ease;
+.card,
+.modal-content,
+.folder-card,
+.fixed-element,
+nav,
+button,
+a,
+input,
+textarea {
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
 }
 
 /* Z-index hierarchy */
@@ -524,125 +468,6 @@ main {
   );
 }
 
-/* Glitch animation */
-@keyframes glitch {
-  0% {
-    transform: translate(0);
-  }
-  20% {
-    transform: translate(-2px, 2px);
-  }
-  40% {
-    transform: translate(-2px, -2px);
-  }
-  60% {
-    transform: translate(2px, 2px);
-  }
-  80% {
-    transform: translate(2px, -2px);
-  }
-  100% {
-    transform: translate(0);
-  }
-}
-
-.animate-glitch {
-  animation: glitch 0.2s ease-in-out;
-}
-
-/* Cold boot text flicker */
-@keyframes textFlicker {
-  0% {
-    opacity: 0.8;
-  }
-  10% {
-    opacity: 0.1;
-  }
-  20% {
-    opacity: 0.9;
-  }
-  30% {
-    opacity: 0.7;
-  }
-  40% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.5;
-  }
-  60% {
-    opacity: 0.8;
-  }
-  70% {
-    opacity: 0.7;
-  }
-  80% {
-    opacity: 0.9;
-  }
-  90% {
-    opacity: 0.8;
-  }
-  100% {
-    opacity: 1;
-  }
-}
-
-.animate-flicker {
-  animation: textFlicker 2s linear;
-}
-
-/* System boot progress bar */
-@keyframes bootProgress {
-  from {
-    width: 0;
-  }
-  to {
-    width: 100%;
-  }
-}
-
-.animate-boot-progress {
-  animation: bootProgress 5s linear forwards;
-}
-
-/* Terminal typing cursor animation */
-@keyframes cursorBlink {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0;
-  }
-}
-
-.animate-cursor-blink::after {
-  content: "|";
-  animation: cursorBlink 1s infinite;
-  margin-left: 2px;
-}
-
-/* Subtle data transfer animation */
-@keyframes dataTransfer {
-  0% {
-    background-position: 0% 0%;
-  }
-  100% {
-    background-position: 100% 0%;
-  }
-}
-
-.animate-data-transfer {
-  background: linear-gradient(
-    90deg,
-    color-mix(in srgb, var(--primary) 10%, transparent) 0%,
-    color-mix(in srgb, var(--primary) 30%, transparent) 50%,
-    color-mix(in srgb, var(--primary) 10%, transparent) 100%
-  );
-  background-size: 200% 100%;
-  animation: dataTransfer 2s linear infinite;
-}
-
 /* Systemic, abrupt animations */
 @keyframes systemicGlitch {
   0% {
@@ -707,34 +532,6 @@ main {
   animation: mechanicalPulse 1s steps(1) infinite;
 }
 
-/* System boot progress bar */
-@keyframes systemicProgress {
-  from {
-    width: 0;
-  }
-  to {
-    width: 100%;
-  }
-}
-
-.animate-systemic-progress {
-  animation: systemicProgress 5s linear forwards;
-}
-
-/* Folder hover effect */
-@keyframes folderHover {
-  0% {
-    transform: translateY(0);
-  }
-  100% {
-    transform: translateY(-2px);
-  }
-}
-
-.folder-hover:hover {
-  animation: folderHover 0.2s forwards;
-}
-
 /* Folder shadow effect */
 .folder-shadow {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -742,20 +539,6 @@ main {
 
 .folder-shadow:hover {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-}
-
-@keyframes pulseBorder {
-  0%,
-  100% {
-    border-color: color-mix(in srgb, var(--primary) 20%, transparent);
-  }
-  50% {
-    border-color: color-mix(in srgb, var(--primary) 40%, transparent);
-  }
-}
-
-.pulse-animation {
-  animation: pulseBorder 2s infinite;
 }
 
 /* Terminal-specific styles */
@@ -886,11 +669,6 @@ main {
 
   .last-accessed {
     font-size: 0.5rem;
-  }
-
-  .recording-dot {
-    width: 4px;
-    height: 4px;
   }
 
   .modal-content {
