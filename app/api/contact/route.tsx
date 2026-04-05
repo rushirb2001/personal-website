@@ -2,7 +2,13 @@ import { NextResponse } from "next/server"
 import { z } from "zod"
 import { Resend } from "resend"
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+function getResendClient() {
+  const apiKey = process.env.RESEND_API_KEY
+  if (!apiKey) {
+    throw new Error("RESEND_API_KEY environment variable is not set")
+  }
+  return new Resend(apiKey)
+}
 
 const contactSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -27,7 +33,7 @@ export async function POST(request: Request) {
     const { name, email, message } = validatedFields.data
 
     // Send email using Resend
-    const { data, error } = await resend.emails.send({
+    const { data, error } = await getResendClient().emails.send({
       from: "Rushir's Portfolio Contact Form <onboarding@resend.dev>", // Use your verified domain
       to: ["bhavsarrushir@gmail.com"],
       replyTo: email,
