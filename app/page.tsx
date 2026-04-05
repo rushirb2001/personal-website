@@ -105,10 +105,11 @@ export default function Home() {
                     <div className="text-lg">{bootText}</div>
                     <div className="h-0.5 bg-primary/30 mt-4 relative">
                       <div
-                        className="absolute top-0 left-0 h-full bg-primary/50"
+                        className="absolute top-0 left-0 h-full w-full bg-primary/50"
                         style={{
-                          width: `${(bootStage / bootSequence.length) * 100}%`,
-                          transition: "width 0.5s ease-out",
+                          transform: `scaleX(${bootStage / bootSequence.length})`,
+                          transformOrigin: "left",
+                          transition: "transform 0.5s ease-out",
                         }}
                       ></div>
                     </div>

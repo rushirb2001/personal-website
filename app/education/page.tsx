@@ -5,49 +5,10 @@ import { MapPin } from "lucide-react"
 import { PageLayout } from "@/components/layout/page-layout"
 import { AcademicRecordModal } from "@/components/features/education/academic-record-modal"
 import { FileText, Lock, CheckCircle, Clock } from "lucide-react"
+import { education } from "@/lib/education-data"
 
 export default function EducationPage() {
   const [selectedRecord, setSelectedRecord] = useState<number | null>(null)
-
-  const education = [
-    {
-      degree: "MASTER OF SCIENCE",
-      field: "DATA SCIENCE, ANALYTICS AND ENGINEERING",
-      institution: "ARIZONA STATE UNIVERSITY",
-      period: "AUG 2023 - JUN 2025",
-      id: "UNITED STATES",
-      description:
-        "Pursuing advanced studies in data science and AI, focusing on machine learning techniques, data mining, and statistical analysis.",
-      courses: [
-        { name: "Artificial Intelligence" },
-        { name: "Data Mining" },
-        { name: "Convex Optimisation" },
-        { name: "Statistical Machine Learning" },
-      ],
-      location: "ARIZONA, USA",
-      status: "GRADUATED",
-      validationId: "VLD-" + Math.floor(Math.random() * 10000),
-      indexCode: "AC-" + Math.floor(Math.random() * 1000) + "-" + "110",
-    },
-    {
-      degree: "BACHELOR OF SCIENCE",
-      field: "COMPUTER SCIENCE",
-      institution: "INSTITUTE OF TECHNOLOGY, NIRMA UNIVERSITY",
-      period: "JUL 2019 - JUN 2023",
-      id: "INDIA",
-      description: "Completed undergraduate studies in computer science with a focus on AI and machine learning.",
-      courses: [
-        { name: "Deep Learning" },
-        { name: "Machine Learning" },
-        { name: "Natural Language Processing" },
-        { name: "Scientific Computing" },
-      ],
-      location: "AHMEDABAD, INDIA",
-      status: "GRADUATED",
-      validationId: "VLD-" + Math.floor(Math.random() * 10000),
-      indexCode: "AC-" + Math.floor(Math.random() * 1000) + "-" + "219",
-    },
-  ]
 
   const handleOpenRecord = (index: number) => {
     setSelectedRecord(index)
