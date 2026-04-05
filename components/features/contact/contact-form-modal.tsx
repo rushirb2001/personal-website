@@ -133,10 +133,13 @@ export function ContactFormModal({ isOpen, onClose }: ContactFormModalProps) {
             transition={{ duration: 0.2 }}
             className="w-full max-w-[95%] md:max-w-md bg-background dark:bg-eerie-black border border-primary/30 shadow-lg"
             onClick={(e) => e.stopPropagation()}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="contact-modal-title"
           >
             {/* Header */}
             <div className="flex justify-between items-center p-3 md:p-4 border-b border-primary/20">
-              <div className="text-xs md:text-sm font-sf-mono">COMPOSE EMAIL</div>
+              <div id="contact-modal-title" className="text-xs md:text-sm font-sf-mono">COMPOSE EMAIL</div>
               <button onClick={onClose} className="text-primary/70 hover:text-primary font-sf-mono text-xs">
                 [ CLOSE ]
               </button>

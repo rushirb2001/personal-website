@@ -104,12 +104,15 @@ export function SkillExplorer({ group, isOpen, onClose }: SkillExplorerProps) {
             exit={{ scale: 0.95, opacity: 0 }}
             transition={systemicTransition}
             onClick={(e) => e.stopPropagation()}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="skill-modal-title"
           >
             {/* Header */}
             <div className="border-b border-primary/20 p-2 md:p-3 flex justify-between items-center bg-secondary/30 dark:bg-eerie-darkgray/30">
               <div className="flex items-center">
                 <FileText className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2 text-primary/70" />
-                <h2 className="text-xs md:text-sm font-sf-mono truncate">{group.title} - SKILL INVENTORY</h2>
+                <h2 id="skill-modal-title" className="text-xs md:text-sm font-sf-mono truncate">{group.title} - SKILL INVENTORY</h2>
               </div>
               <button
                 onClick={onClose}

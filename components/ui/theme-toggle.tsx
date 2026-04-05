@@ -67,7 +67,7 @@ export function ThemeToggle() {
         <Button
           variant="outline"
           size="icon"
-          className="rounded-none border-primary/20 w-9 h-9 bg-eerie-offwhite dark:bg-eerie-black"
+          className="rounded-none border-primary/20 min-w-[48px] min-h-[48px] bg-eerie-offwhite dark:bg-eerie-black"
         >
           <span className="sr-only">Toggle theme</span>
         </Button>
@@ -77,7 +77,7 @@ export function ThemeToggle() {
         variant="outline"
         size="icon"
         onClick={toggleTheme}
-        className="rounded-none border-primary/20 w-9 h-9 bg-eerie-offwhite dark:bg-eerie-black"
+        className="rounded-none border-primary/20 min-w-[48px] min-h-[48px] bg-eerie-offwhite dark:bg-eerie-black"
         aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
       >
         {theme === "dark" ? <Sun className="h-[1.2rem] w-[1.2rem]" /> : <Moon className="h-[1.2rem] w-[1.2rem]" />}

@@ -64,12 +64,15 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
             transition={{ duration: 0.2 }}
             className="w-full max-w-4xl h-[70vh] bg-background dark:bg-eerie-black border border-primary/30 shadow-lg flex flex-col"
             onClick={(e) => e.stopPropagation()}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="resume-modal-title"
           >
             {/* Header */}
             <div className="dark:bg-primary/10 bg-white px-3 md:px-4 py-2 md:py-3 flex justify-between items-center border-b border-primary/30">
               <div className="flex items-center">
                 <FileText className="h-4 w-4 mr-2 text-primary/70" />
-                <span className="text-xs md:text-sm font-sf-mono text-primary/70 truncate">
+                <span id="resume-modal-title" className="text-xs md:text-sm font-sf-mono text-primary/70 truncate">
                   PERSONNEL DOCUMENT [ RESUME-471 ]
                 </span>
               </div>
