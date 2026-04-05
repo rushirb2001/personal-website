@@ -24,6 +24,7 @@ export function Header() {
           href="/"
           onClick={handleHomeClick}
           className="text-base md:text-lg font-sf-mono font-medium tracking-tighter truncate cursor-pointer"
+          aria-label="Home"
         >
           RUSHIR BHAVSAR
         </a>

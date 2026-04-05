@@ -356,12 +356,15 @@ export default function ExperiencePage() {
               transition={{ duration: 0.2 }}
               className="w-full max-w-[95vw] sm:max-w-md lg:max-w-3xl max-h-[90vh] overflow-y-auto bg-background dark:bg-eerie-black border border-primary/30 shadow-2xl"
               onClick={(e) => e.stopPropagation()}
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="experience-modal-title"
             >
               {/* Header */}
               <div className="bg-primary/5 px-4 py-3 flex justify-between items-center border-b border-primary/30">
                 <div className="flex items-center gap-2">
                   <Terminal className="h-4 w-4 text-primary/70" />
-                  <span className="text-sm font-sf-mono text-primary/70">FULL EXPERIENCE RECORD</span>
+                  <span id="experience-modal-title" className="text-sm font-sf-mono text-primary/70">FULL EXPERIENCE RECORD</span>
                 </div>
                 <button
                   onClick={closeModal}

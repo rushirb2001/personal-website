@@ -61,7 +61,7 @@ export function NavMenu() {
       )}
 
       {/* Desktop navigation */}
-      <nav className="hidden md:flex items-center space-x-6 font-sf-mono text-xs tracking-wider">
+      <nav aria-label="Main navigation" className="hidden md:flex items-center space-x-6 font-sf-mono text-xs tracking-wider">
         {NAV_ITEMS.map((item) => (
           <button
             key={item.path}

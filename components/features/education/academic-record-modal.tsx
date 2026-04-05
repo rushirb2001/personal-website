@@ -49,12 +49,15 @@ export function AcademicRecordModal({ isOpen, onClose, record }: AcademicRecordM
             transition={{ duration: 0.2 }}
             className="w-full max-w-[95%] md:max-w-3xl mx-auto bg-background dark:bg-eerie-black border border-primary/30 shadow-lg"
             onClick={(e) => e.stopPropagation()}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="education-modal-title"
           >
             {/* Header */}
             <div className="dark:bg-primary/10 bg-white px-3 md:px-4 py-2 md:py-3 flex justify-between items-center border-b border-primary/30">
               <div className="flex items-center">
                 <FileText className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2 text-primary/70" />
-                <span className="text-xs md:text-sm font-sf-mono text-primary/70 truncate">
+                <span id="education-modal-title" className="text-xs md:text-sm font-sf-mono text-primary/70 truncate">
                   ACADEMIC RECORD [ {record.id} ]
                 </span>
               </div>

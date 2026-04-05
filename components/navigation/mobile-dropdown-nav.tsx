@@ -30,7 +30,7 @@ export function MobileDropdownNav() {
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center justify-between px-2 py-1 border border-primary/20 text-xs font-sf-mono w-32"
+        className="flex items-center justify-between px-2 py-1 border border-primary/20 text-xs font-sf-mono w-32 min-h-[48px]"
         aria-expanded={isOpen}
         aria-haspopup="true"
       >
