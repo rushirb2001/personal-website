@@ -36,38 +36,12 @@ export default function ClientLayout({
 
     checkTouch()
 
-    // Preload SF fonts
-    const sfProFont = document.createElement("link")
-    sfProFont.rel = "preload"
-    sfProFont.href = "https://fonts.cdnfonts.com/css/sf-pro-display"
-    sfProFont.as = "style"
-    document.head.appendChild(sfProFont)
-
-    const sfMonoFont = document.createElement("link")
-    sfMonoFont.rel = "preload"
-    sfMonoFont.href = "https://fonts.cdnfonts.com/css/sf-mono"
-    sfMonoFont.as = "style"
-    document.head.appendChild(sfMonoFont)
-
     // Mark initial render complete after a short delay
     const initialRenderTimer = setTimeout(() => {
       setIsInitialRender(false)
     }, 300)
 
     return () => clearTimeout(initialRenderTimer)
-  }, [])
-
-  // Apply initial theme before hydration
-  useEffect(() => {
-    // This runs on the client side after hydration
-    const theme =
-      localStorage.getItem("theme") || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
-
-    if (theme === "dark") {
-      document.documentElement.classList.add("dark")
-    } else {
-      document.documentElement.classList.remove("dark")
-    }
   }, [])
 
   useEffect(() => {
@@ -128,19 +102,6 @@ export default function ClientLayout({
           name="viewport"
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
         />
-        {/* EmailJS Script */}
-        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-        <script type="text/javascript">
-          {`
-            (function() {
-              try {
-                emailjs.init("vCNvTU_mqabgUgPcO");
-              } catch (e) {
-                console.error("Error initializing EmailJS:", e);
-              }
-            })();
-          `}
-        </script>
         {/* Apply theme directly with inline script */}
         <script
           dangerouslySetInnerHTML={{
