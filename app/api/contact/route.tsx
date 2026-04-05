@@ -16,8 +16,51 @@ const contactSchema = z.object({
   message: z.string().min(10, "Message must be at least 10 characters"),
 })
 
+// --- HTML escaping to prevent injection in email templates ---
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;")
+}
+
+// --- In-memory rate limiter ---
+const RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000 // 15 minutes
+const RATE_LIMIT_MAX = 5
+const rateLimitMap = new Map<string, number[]>()
+
+function isRateLimited(ip: string): boolean {
+  const now = Date.now()
+  const timestamps = rateLimitMap.get(ip) ?? []
+
+  // Remove entries outside the current window
+  const recent = timestamps.filter((t) => now - t < RATE_LIMIT_WINDOW_MS)
+  rateLimitMap.set(ip, recent)
+
+  if (recent.length >= RATE_LIMIT_MAX) {
+    return true
+  }
+
+  recent.push(now)
+  return false
+}
+
 export async function POST(request: Request) {
   try {
+    // Rate limiting
+    const ip =
+      request.headers.get("x-forwarded-for") ||
+      request.headers.get("x-real-ip") ||
+      "unknown"
+
+    if (isRateLimited(ip)) {
+      return NextResponse.json(
+        { error: "Too many requests. Please try again later." },
+        { status: 429 },
+      )
+    }
     const body = await request.json()
 
     // Validate the request body
@@ -35,7 +78,7 @@ export async function POST(request: Request) {
     // Send email using Resend
     const { data, error } = await getResendClient().emails.send({
       from: "Rushir's Portfolio Contact Form <onboarding@resend.dev>", // Use your verified domain
-      to: ["bhavsarrushir@gmail.com"],
+      to: [process.env.CONTACT_EMAIL || "bhavsarrushir@gmail.com"],
       replyTo: email,
       subject: `New Contact Form Message from ${name}`,
       html: `
@@ -94,17 +137,17 @@ export async function POST(request: Request) {
               
               <div class="field">
                 <div class="label">FROM</div>
-                <div class="value">${name}</div>
+                <div class="value">${escapeHtml(name)}</div>
               </div>
               
               <div class="field">
                 <div class="label">EMAIL</div>
-                <div class="value">${email}</div>
+                <div class="value">${escapeHtml(email)}</div>
               </div>
               
               <div class="field">
                 <div class="label">MESSAGE</div>
-                <div class="message-content">${message}</div>
+                <div class="message-content">${escapeHtml(message)}</div>
               </div>
             </div>
           </body>
