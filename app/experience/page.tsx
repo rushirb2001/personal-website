@@ -1,9 +1,10 @@
 "use client"
 
 import { PageLayout } from "@/components/layout/page-layout"
-import { useState, useEffect } from "react"
+import { useState, useCallback } from "react"
 import { ChevronLeft, ChevronRight, MapPin, Clock, TrendingUp, TrendingDown, Terminal } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
+import { useEscapeKey } from "@/hooks/use-escape-key"
 
 interface Metric {
   label: string
@@ -146,16 +147,10 @@ export default function ExperiencePage() {
     setSelectedExp(null)
   }
 
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        closeModal()
-      }
-    }
-
-    window.addEventListener("keydown", handleKeyDown)
-    return () => window.removeEventListener("keydown", handleKeyDown)
+  const handleEscapeClose = useCallback(() => {
+    closeModal()
   }, [])
+  useEscapeKey(handleEscapeClose)
 
   // Extract keywords from responsibilities
   const extractKeywords = (responsibilities: string[]) => {

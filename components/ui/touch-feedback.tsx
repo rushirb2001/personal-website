@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
+import { useTouchDevice } from "@/hooks/use-touch-device"
 
 interface TouchPoint {
   id: number
@@ -12,16 +13,9 @@ interface TouchPoint {
 
 export function TouchFeedback() {
   const [touchPoints, setTouchPoints] = useState<TouchPoint[]>([])
-  const [isTouchDevice, setIsTouchDevice] = useState(false)
+  const isTouchDevice = useTouchDevice()
 
   useEffect(() => {
-    // Check if this is a touch device
-    const checkTouch = () => {
-      setIsTouchDevice("ontouchstart" in window || navigator.maxTouchPoints > 0)
-    }
-
-    checkTouch()
-
     // Only add listeners if this is a touch device
     if (!isTouchDevice) return
 

@@ -2,12 +2,13 @@
 
 import type React from "react"
 
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, useCallback } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { ArrowRight, ChevronDown } from "lucide-react"
 import { useNavigation } from "@/contexts/navigation-context"
 import { getRecentPosts } from "@/lib/blog-data"
 import { formatDate } from "@/lib/utils"
+import { useClickOutside } from "@/hooks/use-click-outside"
 
 export function UpdatesBanner() {
   const [showAlternateText, setShowAlternateText] = useState(false)
@@ -30,21 +31,10 @@ export function UpdatesBanner() {
   }, [])
 
   // Handle click outside to close dropdown
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        bannerRef.current &&
-        !dropdownRef.current.contains(event.target as Node) &&
-        !bannerRef.current.contains(event.target as Node)
-      ) {
-        setShowDropdown(false)
-      }
-    }
-
-    document.addEventListener("mousedown", handleClickOutside)
-    return () => document.removeEventListener("mousedown", handleClickOutside)
-  }, [])
+  // Use a wrapper ref that covers both banner and dropdown
+  const wrapperRef = useRef<HTMLDivElement>(null)
+  const handleClickOutside = useCallback(() => setShowDropdown(false), [])
+  useClickOutside(wrapperRef, handleClickOutside)
 
   const handleBannerClick = () => {
     setShowDropdown((prev) => !prev)
@@ -63,7 +53,7 @@ export function UpdatesBanner() {
   }
 
   return (
-    <div className="relative">
+    <div className="relative" ref={wrapperRef}>
       {/* Banner */}
       <div
         ref={bannerRef}

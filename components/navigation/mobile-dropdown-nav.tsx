@@ -1,11 +1,12 @@
 "use client"
 
-import { useState, useRef, useEffect } from "react"
+import { useState, useRef, useCallback } from "react"
 import { usePathname } from "next/navigation"
 import { ChevronDown, ChevronUp } from "lucide-react"
 import { useNavigation } from "@/contexts/navigation-context"
 import { motion, AnimatePresence } from "framer-motion"
 import { NAV_ITEMS } from "@/lib/constants"
+import { useClickOutside } from "@/hooks/use-click-outside"
 
 export function MobileDropdownNav() {
   const [isOpen, setIsOpen] = useState(false)
@@ -22,18 +23,8 @@ export function MobileDropdownNav() {
   }
 
   // Close dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsOpen(false)
-      }
-    }
-
-    document.addEventListener("mousedown", handleClickOutside)
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside)
-    }
-  }, [])
+  const handleClickOutside = useCallback(() => setIsOpen(false), [])
+  useClickOutside(dropdownRef, handleClickOutside)
 
   return (
     <div className="relative" ref={dropdownRef}>

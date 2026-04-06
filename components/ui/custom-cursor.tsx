@@ -2,12 +2,13 @@
 
 import { useState, useEffect, useRef } from "react"
 import { motion, useMotionValue, useSpring } from "framer-motion"
+import { useTouchDevice } from "@/hooks/use-touch-device"
 
 export function CustomCursor() {
   const [cursorType, setCursorType] = useState<"default" | "pointer" | "text">("default")
   const [isVisible, setIsVisible] = useState(false)
   const [isClicked, setIsClicked] = useState(false)
-  const [isTouchDevice, setIsTouchDevice] = useState(false)
+  const isTouchDevice = useTouchDevice()
   const lastUpdateTime = useRef(0)
 
   // Motion values for cursor movement
@@ -20,15 +21,6 @@ export function CustomCursor() {
   const followerY = useSpring(mouseY, { damping: 12, stiffness: 300, mass: 0.5 })
 
   useEffect(() => {
-    // Detect touch device
-    const detectTouch = () => {
-      setIsTouchDevice(
-        "ontouchstart" in window || navigator.maxTouchPoints > 0 || (navigator as any).msMaxTouchPoints > 0,
-      )
-    }
-
-    detectTouch()
-
     // If it's a touch device, don't initialize the custom cursor
     if (isTouchDevice) {
       document.documentElement.classList.remove("hide-cursor")

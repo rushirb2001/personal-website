@@ -15,6 +15,7 @@ import { TouchFeedback } from "@/components/ui/touch-feedback"
 import { motion, AnimatePresence } from "framer-motion"
 import { Analytics } from "@vercel/analytics/react"
 import { SpeedInsights } from "@vercel/speed-insights/next"
+import { useTouchDevice } from "@/hooks/use-touch-device"
 
 export default function ClientLayout({
   children,
@@ -23,18 +24,11 @@ export default function ClientLayout({
 }) {
   const [isMounted, setIsMounted] = useState(false)
   const [isTransitionReady, setIsTransitionReady] = useState(false)
-  const [isTouchDevice, setIsTouchDevice] = useState(false)
+  const isTouchDevice = useTouchDevice()
   const [isInitialRender, setIsInitialRender] = useState(true)
 
   useEffect(() => {
     setIsMounted(true)
-
-    // Check if this is a touch device
-    const checkTouch = () => {
-      setIsTouchDevice("ontouchstart" in window || navigator.maxTouchPoints > 0)
-    }
-
-    checkTouch()
 
     // Mark initial render complete after a short delay
     const initialRenderTimer = setTimeout(() => {
