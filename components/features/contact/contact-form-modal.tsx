@@ -1,11 +1,12 @@
 "use client"
 
 import type React from "react"
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Send } from "lucide-react"
 import { z } from "zod"
+import { useEscapeKey } from "@/hooks/use-escape-key"
 
 interface ContactFormModalProps {
   isOpen: boolean
@@ -33,13 +34,7 @@ export function ContactFormModal({ isOpen, onClose }: ContactFormModalProps) {
   }>({})
 
   // Close on escape key
-  useEffect(() => {
-    const handleEsc = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose()
-    }
-    window.addEventListener("keydown", handleEsc)
-    return () => window.removeEventListener("keydown", handleEsc)
-  }, [onClose])
+  useEscapeKey(onClose)
 
   // Handle form input changes
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {

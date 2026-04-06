@@ -1,9 +1,10 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useCallback } from "react"
 import { ChevronDown, ChevronUp, FileText } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import type { SkillGroup } from "./skill-folder"
+import { useEscapeKey } from "@/hooks/use-escape-key"
 
 interface SkillExplorerProps {
   group: SkillGroup
@@ -37,18 +38,10 @@ export function SkillExplorer({ group, isOpen, onClose }: SkillExplorerProps) {
   }, [isOpen])
 
   // Add ESC key handler
-  useEffect(() => {
-    if (!isOpen) return
-
-    const handleEscKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        onClose()
-      }
-    }
-
-    window.addEventListener("keydown", handleEscKey)
-    return () => window.removeEventListener("keydown", handleEscKey)
+  const handleEscape = useCallback(() => {
+    if (isOpen) onClose()
   }, [isOpen, onClose])
+  useEscapeKey(handleEscape)
 
   // Sort skills based on current sort field and direction
   const sortedSkills = [...group.skills].sort((a, b) => {

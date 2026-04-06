@@ -1,10 +1,10 @@
 "use client"
 
-import { useState, useRef } from "react"
+import { useState, useRef, useCallback } from "react"
 import { usePathname } from "next/navigation"
 import { ChevronDown, ChevronUp } from "lucide-react"
 import { useNavigation } from "@/contexts/navigation-context"
-import { useOnClickOutside } from "@/lib/use-optimized-event"
+import { useClickOutside } from "@/hooks/use-click-outside"
 import { NAV_ITEMS } from "@/lib/constants"
 
 // Update the component to use the constants
@@ -15,7 +15,8 @@ export function NavMenu() {
   const { navigateTo } = useNavigation()
 
   // Close dropdown when clicking outside
-  useOnClickOutside(dropdownRef, () => setIsOpen(false))
+  const handleClickOutside = useCallback(() => setIsOpen(false), [])
+  useClickOutside(dropdownRef, handleClickOutside)
 
   const handleNavigation = (path: string) => {
     navigateTo(path)
