@@ -26,3 +26,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Claude Code agent state
+.claude/
+
+# Editor workspace files
+*.code-workspace
