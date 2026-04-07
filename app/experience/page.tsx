@@ -1,374 +1,353 @@
 "use client"
 
 import { PageLayout } from "@/components/layout/page-layout"
-import { useState, useCallback } from "react"
-import { ChevronLeft, ChevronRight, MapPin, Clock, TrendingUp, TrendingDown, Terminal } from "lucide-react"
+import { useState, useEffect } from "react"
+import { ChevronDown, ChevronLeft, ChevronRight, X } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
-import { useEscapeKey } from "@/hooks/use-escape-key"
-import { experiences, type Experience } from "@/lib/experience-data"
+import { useMediaQuery } from "@/hooks/use-media-query"
+import { experiences, ITEMS_PER_PAGE, type Experience } from "./data"
+
+const categories = ["All", "Internship", "Full-Time"]
+const mobileLabels: Record<string, string> = {
+  All: "ALL",
+  Internship: "INTERN",
+  "Full-Time": "FT",
+}
+
+function getCategory(exp: Experience): string {
+  if (exp.title.toLowerCase().includes("intern")) return "Internship"
+  return "Full-Time"
+}
 
 export default function ExperiencePage() {
-  const [currentPage, setCurrentPage] = useState(0)
-  const [selectedExp, setSelectedExp] = useState<Experience | null>(null)
-  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [selectedExp, setSelectedExp] = useState<number | null>(null)
+  const [hoveredId, setHoveredId] = useState<number | null>(null)
+  const [startIndex, setStartIndex] = useState(0)
+  const [selectedCategory, setSelectedCategory] = useState("All")
+  const [isCategoryOpen, setIsCategoryOpen] = useState(false)
+  const isMobile = useMediaQuery("(max-width: 768px)")
 
-  const itemsPerPage = typeof window !== "undefined" && window?.innerWidth < 768 ? 3 : 3
-  const totalPages = Math.ceil(experiences.length / itemsPerPage)
+  const filteredExperiences =
+    selectedCategory === "All" ? experiences : experiences.filter((exp) => getCategory(exp) === selectedCategory)
 
-  const getCurrentExperiences = () => {
-    const start = currentPage * itemsPerPage
-    return experiences.slice(start, start + itemsPerPage)
-  }
+  const visibleExperiences = filteredExperiences.slice(startIndex, startIndex + ITEMS_PER_PAGE)
+  const canShowPrevious = startIndex > 0
+  const canShowNext = startIndex + ITEMS_PER_PAGE < filteredExperiences.length
+  const showPaginationControls = filteredExperiences.length > ITEMS_PER_PAGE
 
-  const goToNextPage = () => {
-    if (currentPage < totalPages - 1) {
-      setCurrentPage(currentPage + 1)
-    }
-  }
-
-  const goToPrevPage = () => {
-    if (currentPage > 0) {
-      setCurrentPage(currentPage - 1)
-    }
-  }
-
-  const openModal = (exp: Experience) => {
-    setSelectedExp(exp)
-    setIsModalOpen(true)
-  }
-
-  const closeModal = () => {
-    setIsModalOpen(false)
+  useEffect(() => {
+    setStartIndex(0)
     setSelectedExp(null)
-  }
+  }, [selectedCategory])
 
-  const handleEscapeClose = useCallback(() => {
-    closeModal()
-  }, [])
-  useEscapeKey(handleEscapeClose)
-
-  // Extract keywords from responsibilities
-  const extractKeywords = (responsibilities: string[]) => {
-    const allText = responsibilities.join(" ").toLowerCase()
-    const keywords: string[] = []
-
-    // Tech/Tools
-    if (allText.includes("aws") || allText.includes("azure") || allText.includes("cloud")) keywords.push("CLOUD")
-    if (allText.includes("docker") || allText.includes("kubernetes") || allText.includes("k8s"))
-      keywords.push("CONTAINERS")
-    if (allText.includes("pytorch") || allText.includes("tensorflow") || allText.includes("ml")) keywords.push("ML/AI")
-    if (allText.includes("api") || allText.includes("rest")) keywords.push("API")
-    if (allText.includes("ci/cd") || allText.includes("jenkins") || allText.includes("pipeline"))
-      keywords.push("DEVOPS")
-
-    // Domains
-    if (allText.includes("vision") || allText.includes("image") || allText.includes("ocr"))
-      keywords.push("COMPUTER VISION")
-    if (allText.includes("nlp") || allText.includes("chatbot") || allText.includes("language")) keywords.push("NLP")
-    if (allText.includes("healthcare") || allText.includes("medical") || allText.includes("eeg"))
-      keywords.push("HEALTHCARE")
-
-    // Skills
-    if (allText.includes("deploy") || allText.includes("production")) keywords.push("DEPLOYMENT")
-    if (allText.includes("optimize") || allText.includes("performance")) keywords.push("OPTIMIZATION")
-    if (allText.includes("automat")) keywords.push("AUTOMATION")
-
-    return keywords.slice(0, 4) // Limit to 4 keywords
-  }
+  useEffect(() => {
+    const handleEscKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && selectedExp !== null) {
+        setSelectedExp(null)
+      }
+    }
+    document.addEventListener("keydown", handleEscKey)
+    return () => document.removeEventListener("keydown", handleEscKey)
+  }, [selectedExp])
 
   return (
-    <PageLayout title="EXPERIENCE" subtitle="CORPORATE INDUSTRY WORK">
-      <div className="h-full flex flex-col">
-        <div className="flex justify-between items-center mb-3 pb-2">
-          <div className="text-xs font-sf-mono flex items-center">
-            <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse mr-2"></div>
-            <span>ROLES</span>
-          </div>
-          <div className="text-xs font-sf-mono">
-            SHOWING {currentPage * itemsPerPage + 1}-{Math.min((currentPage + 1) * itemsPerPage, experiences.length)}{" "}
-            POSITION
-            {Math.min((currentPage + 1) * itemsPerPage, experiences.length) - currentPage * itemsPerPage !== 1
-              ? "S"
-              : ""}{" "}
-            OF {experiences.length} ROLE{experiences.length !== 1 ? "S" : ""}
-          </div>
-        </div>
-        <div className="border-b border-primary/20 mb-3"></div>
-
-        <div className="flex-1 space-y-3">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={currentPage}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className="space-y-3 my-3"
-            >
-              {getCurrentExperiences().map((exp) => {
-                return (
-                  <div
-                    key={exp.id}
-                    onClick={() => openModal(exp)}
-                    className="border border-primary/20 hover:border-primary/50 bg-primary/5 hover:bg-primary/10 transition-all duration-200 cursor-pointer group p-3"
-                  >
-                    {/* Header Row */}
-                    <div className="space-y-1 mb-2">
-                      {/* First Line: Position | Company, Location, Time */}
-                      <div className="flex items-start justify-between gap-4">
-                        <h3 className="text-sm md:text-base font-medium leading-tight w-[40%] sm:w-auto">
-                          {exp.title}
-                        </h3>
-                        <div className="hidden sm:flex items-center gap-3 text-xs text-primary/60 font-sf-mono flex-shrink-0">
-                          <span>{exp.company}</span>
-                          <span className="text-primary/40">|</span>
-                          <span className="flex items-center gap-1">
-                            <MapPin className="h-3 w-3" />
-                            {exp.location}
-                          </span>
-                          <span className="text-primary/40">|</span>
-                          <span className="flex items-center gap-1">
-                            <Clock className="h-3 w-3" />
-                            {exp.period}
-                          </span>
-                        </div>
-                        <div className="flex sm:hidden flex-col gap-1 text-xs text-primary/60 font-sf-mono w-[60%] text-right">
-                          <span className="flex items-center gap-1 justify-end">
-                            {exp.company}
-                            <MapPin className="h-3 w-3" />
-                            {exp.location}
-                          </span>
-                          <span className="flex items-center gap-1 justify-end">
-                            <Clock className="h-3 w-3" />
-                            {exp.period}
-                          </span>
-                        </div>
-                      </div>
-
-                      {/* Second Line: Metrics */}
-                      <div className="hidden sm:flex gap-1.5">
-                        {exp.metrics.map((metric, i) => (
-                          <div
-                            key={i}
-                            className="text-xs font-sf-mono bg-primary/10 border border-primary/20 px-2 py-0.5 flex items-center gap-1.5 whitespace-nowrap"
-                          >
-                            <span className="text-primary/60">{metric.label}</span>
-                            {metric.isIncrease ? (
-                              <TrendingUp className="h-3 w-3 text-green-500" />
-                            ) : (
-                              <TrendingDown className="h-3 w-3 text-red-500" />
-                            )}
-                            <span className="font-medium">{metric.value}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Description */}
-                    <p className="text-xs text-primary/70 mb-2 leading-relaxed">{exp.description}</p>
-
-                    {/* Footer */}
-                    <div className="flex items-center justify-between mt-2 pt-2 border-t border-primary/10 gap-2">
-                      <div className="flex gap-1.5 min-w-0 flex-1">
-                        <div className="flex gap-1.5 flex-wrap max-h-[24px] overflow-hidden">
-                          {extractKeywords(exp.responsibilities).map((keyword, idx) => (
-                            <span
-                              key={idx}
-                              className="text-xs font-sf-mono bg-primary/5 border border-primary/15 text-primary/60 px-1.5 py-0.5 whitespace-nowrap"
-                            >
-                              {keyword}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                      <span className="text-xs text-primary/50 group-hover:text-primary/70 transition-colors flex-shrink-0 whitespace-nowrap ml-2">
-                        VIEW FULL DETAILS →
-                      </span>
-                    </div>
-                  </div>
-                )
-              })}
-            </motion.div>
-          </AnimatePresence>
-        </div>
-
-        {totalPages > 1 && (
-          <div className="flex justify-between items-center mt-4 pt-3 border-t border-primary/20">
+    <PageLayout title="EXPERIENCE" subtitle="WORK HISTORY">
+      <div className="space-y-0">
+        <div className="flex gap-2 mb-3">
+          {/* Category Dropdown */}
+          <div className={`border border-primary/20 ${showPaginationControls ? "flex-[6]" : "w-full"}`}>
             <button
-              onClick={goToPrevPage}
-              disabled={currentPage === 0}
-              className={`flex items-center text-xs font-sf-mono px-2 py-1 border border-primary/30 ${
-                currentPage === 0
-                  ? "opacity-50 cursor-not-allowed"
-                  : "hover:bg-primary/10 hover:border-primary/50 cursor-pointer"
-              }`}
+              onClick={() => setIsCategoryOpen(!isCategoryOpen)}
+              className="w-full flex items-center justify-between px-3 py-2 bg-primary/5 hover:bg-primary/10 transition-colors duration-200"
             >
-              <ChevronLeft className="h-3 w-3 mr-1" />
-              PREV
+              <div className="flex items-center gap-2">
+                <span className="font-sf-mono text-primary/60 text-sm">FILTER</span>
+                <span className="text-primary/20">|</span>
+                <span className="font-sf-mono text-primary text-sm">
+                  SHOWING '
+                  {isMobile
+                    ? mobileLabels[selectedCategory] || selectedCategory.toUpperCase()
+                    : selectedCategory.toUpperCase()}
+                  '
+                </span>
+              </div>
+              <motion.div animate={{ rotate: isCategoryOpen ? 180 : 0 }} transition={{ duration: 0.2 }}>
+                <ChevronDown className="w-3 h-3 text-primary/50" />
+              </motion.div>
             </button>
-
-            <div className="text-xs font-sf-mono">
-              {Array.from({ length: totalPages }).map((_, i) => (
-                <span
-                  key={i}
-                  className={`inline-block w-2 h-2 mx-1 border border-primary/30 ${
-                    i === currentPage ? "bg-primary/70" : "bg-primary/20"
-                  }`}
-                ></span>
-              ))}
-            </div>
-
-            <button
-              onClick={goToNextPage}
-              disabled={currentPage === totalPages - 1}
-              className={`flex items-center text-xs font-sf-mono px-2 py-1 border border-primary/30 ${
-                currentPage === totalPages - 1
-                  ? "opacity-50 cursor-not-allowed"
-                  : "hover:bg-primary/10 hover:border-primary/50 cursor-pointer"
-              }`}
-            >
-              NEXT
-              <ChevronRight className="h-3 w-3 ml-1" />
-            </button>
-          </div>
-        )}
-      </div>
-
-      {/* Full Details Modal */}
-      <AnimatePresence>
-        {isModalOpen && selectedExp && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
-            onClick={closeModal}
-          >
-            <motion.div
-              initial={{ scale: 0.95, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.95, opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className="w-full max-w-[95vw] sm:max-w-md lg:max-w-3xl max-h-[90vh] overflow-y-auto bg-background dark:bg-eerie-black border border-primary/30 shadow-2xl"
-              onClick={(e) => e.stopPropagation()}
-              role="dialog"
-              aria-modal="true"
-              aria-labelledby="experience-modal-title"
-            >
-              {/* Header */}
-              <div className="bg-primary/5 px-4 py-3 flex justify-between items-center border-b border-primary/30">
-                <div className="flex items-center gap-2">
-                  <Terminal className="h-4 w-4 text-primary/70" />
-                  <span id="experience-modal-title" className="text-sm font-sf-mono text-primary/70">FULL EXPERIENCE RECORD</span>
-                </div>
-                <button
-                  onClick={closeModal}
-                  className="text-primary/70 hover:text-primary transition-colors text-xs font-sf-mono"
+            <AnimatePresence>
+              {isCategoryOpen && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="overflow-hidden border-t border-primary/10"
                 >
-                  [ ESC ]
-                </button>
-              </div>
-
-              {/* Content */}
-              <div className="p-3 sm:p-4 md:p-6">
-                <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-4 md:gap-6">
-                  {/* Main content */}
-                  <div className="space-y-3 md:space-y-4">
-                    <div>
-                      <div className="text-xs font-sf-mono text-primary/50 mb-1">POSITION:</div>
-                      <h2 className="text-base md:text-lg font-medium">{selectedExp.title}</h2>
-                    </div>
-
-                    <div>
-                      <div className="text-xs font-sf-mono text-primary/50 mb-1">KEY METRICS:</div>
-                      <div className="flex gap-2 flex-wrap">
-                        {selectedExp.metrics.map((metric, idx) => (
-                          <span
-                            key={idx}
-                            className="text-xs font-sf-mono bg-primary/5 border border-primary/20 text-primary/70 px-2 py-0.5 flex items-center gap-1"
-                          >
-                            {metric.label}
-                            {metric.isIncrease ? (
-                              <TrendingUp className="h-3 w-3 text-green-500" />
-                            ) : (
-                              <TrendingDown className="h-3 w-3 text-red-500" />
-                            )}
-                            {metric.value}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div>
-                      <div className="text-xs font-sf-mono text-primary/50 mb-1">ACHIEVEMENTS & RESPONSIBILITIES:</div>
-                      <div className="space-y-2 md:space-y-3 mt-2 md:mt-3">
-                        {selectedExp.responsibilities.map((resp, i) => (
-                          <div key={i} className="flex gap-3 group">
-                            <div className="w-5 h-5 sm:w-6 sm:h-6 border border-primary/30 bg-primary/5 flex items-center justify-center text-xs font-sf-mono text-primary/70 flex-shrink-0 group-hover:bg-primary/10 transition-colors">
-                              {i + 1}
-                            </div>
-                            <div className="flex-1">
-                              <p className="text-xs sm:text-sm leading-relaxed text-primary/90">{resp}</p>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
+                  <div className="p-3">
+                    <div className="flex flex-wrap gap-1.5">
+                      {categories.map((category) => (
+                        <button
+                          key={category}
+                          onClick={() => {
+                            setSelectedCategory(category)
+                            setIsCategoryOpen(false)
+                          }}
+                          className={`px-2 py-1 text-[9px] font-sf-mono border transition-colors duration-200 ${
+                            selectedCategory === category
+                              ? "bg-primary text-background border-primary"
+                              : "bg-primary text-background border-primary/40 hover:bg-primary/90"
+                          }`}
+                        >
+                          <span className="hidden md:inline text-sm">{category.toUpperCase()}</span>
+                          <span className="md:hidden">{mobileLabels[category] || category.toUpperCase()}</span>
+                        </button>
+                      ))}
                     </div>
                   </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
 
-                  {/* Metadata sidebar - hidden on mobile, visible on desktop */}
-                  <div className="hidden lg:block lg:border-l lg:border-primary/20 lg:pl-6 space-y-3 md:space-y-4">
-                    <div>
-                      <div className="text-xs font-sf-mono text-primary/50 mb-1">ORGANIZATION:</div>
-                      <p className="text-xs font-sf-mono">{selectedExp.company}</p>
-                    </div>
+          {/* Pagination Controls - Only show when needed */}
+          {showPaginationControls && (
+            <div className="flex-[4] flex items-start gap-2">
+              <button
+                onClick={() => {
+                  setSelectedExp(null)
+                  setStartIndex((prev) => Math.max(0, prev - ITEMS_PER_PAGE))
+                }}
+                disabled={!canShowPrevious}
+                className={`flex-1 h-[42px] border flex items-center justify-center transition-all duration-150 ${
+                  canShowPrevious
+                    ? "bg-primary text-background border-primary/40 hover:bg-primary/90"
+                    : "border-primary/10 text-primary/10 cursor-not-allowed"
+                }`}
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => {
+                  setSelectedExp(null)
+                  setStartIndex((prev) => prev + ITEMS_PER_PAGE)
+                }}
+                disabled={!canShowNext}
+                className={`flex-1 h-[42px] border flex items-center justify-center transition-all duration-150 ${
+                  canShowNext
+                    ? "bg-primary text-background border-primary/40 hover:bg-primary/90"
+                    : "border-primary/10 text-primary/10 cursor-not-allowed"
+                }`}
+              >
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
+          )}
+        </div>
 
-                    <div>
-                      <div className="text-xs font-sf-mono text-primary/50 mb-1">LOCATION:</div>
-                      <p className="text-xs font-sf-mono flex items-center gap-1">
-                        <MapPin className="h-3 w-3" />
-                        {selectedExp.location}
-                      </p>
-                    </div>
+        {/* Table Header - Desktop Only */}
+        <div className="hidden md:grid grid-cols-[2fr_1.5fr_1.2fr_1fr_40px] gap-2 px-3 py-2 border-b border-primary/30 font-sf-mono text-primary/50 uppercase tracking-wider text-sm">
+          <span>POSITION</span>
+          <span>COMPANY</span>
+          <span>PERIOD</span>
+          <span>LOCATION</span>
+          <span></span>
+        </div>
 
-                    <div>
-                      <div className="text-xs font-sf-mono text-primary/50 mb-1">DURATION:</div>
-                      <p className="text-xs font-sf-mono flex items-center gap-1">
-                        <Clock className="h-3 w-3" />
-                        {selectedExp.period}
-                      </p>
-                    </div>
+        {/* Experience List */}
+        <div className="min-h-[200px] md:min-h-[240px]">
+        {visibleExperiences.map((exp, index) => {
+          const actualIndex = filteredExperiences.indexOf(exp)
 
-                    <div>
-                      <div className="text-xs font-sf-mono text-primary/50 mb-1">STATUS:</div>
+          return (
+            <motion.div
+              key={`${exp.company}-${exp.title}`}
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.15, delay: index * 0.05 }}
+              className="border-b border-primary/10"
+            >
+              {/* Clickable Row */}
+              <div
+                onClick={() => setSelectedExp(selectedExp === actualIndex ? null : actualIndex)}
+                onMouseEnter={() => setHoveredId(actualIndex)}
+                onMouseLeave={() => setHoveredId(null)}
+                className={`cursor-pointer transition-all duration-150 ${
+                  selectedExp === actualIndex
+                    ? hoveredId === actualIndex
+                      ? "bg-primary/90 text-background"
+                      : "bg-primary text-background"
+                    : hoveredId === actualIndex
+                      ? "bg-primary/10"
+                      : ""
+                }`}
+              >
+                {/* Desktop Row */}
+                <div className="hidden md:grid grid-cols-[2fr_1.5fr_1.2fr_1fr_40px] gap-2 px-3 py-3 items-center">
+                  <span className="font-sf-mono font-medium text-lg tracking-tighter">{exp.title}</span>
+                  <span
+                    className={`font-sf-mono text-base tracking-tighter ${selectedExp === actualIndex ? "text-background/70" : "text-primary/60"}`}
+                  >
+                    {exp.company}
+                  </span>
+                  <span
+                    className={`font-sf-mono text-base ${selectedExp === actualIndex ? "text-background/70" : "text-primary/50"}`}
+                  >
+                    {exp.period}
+                  </span>
+                  <span
+                    className={`font-sf-mono text-sm ${selectedExp === actualIndex ? "text-background/70" : "text-primary/50"}`}
+                  >
+                    {exp.location}
+                  </span>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      setSelectedExp(selectedExp === actualIndex ? null : actualIndex)
+                    }}
+                    className={`flex items-center justify-center w-8 h-8 border transition-all duration-200 ${
+                      selectedExp === actualIndex
+                        ? "bg-background border-background/30 text-primary hover:bg-background/90"
+                        : "bg-primary border-primary/40 text-background hover:bg-primary/90"
+                    }`}
+                  >
+                    <motion.div
+                      animate={{ rotate: selectedExp === actualIndex ? 180 : 0 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      {selectedExp === actualIndex ? <X className="w-5 h-5" /> : <ChevronDown className="h-5 w-5" />}
+                    </motion.div>
+                  </button>
+                </div>
+
+                {/* Mobile Row */}
+                <div className="md:hidden px-3 py-2">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-sf-mono font-medium text-base">{exp.title}</h3>
                       <p
-                        className={`text-xs font-sf-mono ${selectedExp.status === "ACTIVE" ? "text-green-500" : selectedExp.status === "COMPLETED" ? "text-green-500" : "text-primary/70"}`}
+                        className={`font-sf-mono tracking-tighter text-sm ${selectedExp === actualIndex ? "text-background/60" : "text-primary/50"}`}
                       >
-                        {selectedExp.status}
+                        {exp.company} • {exp.location} • {exp.period}
                       </p>
                     </div>
-
-                    <div className="border-t border-primary/20"></div>
-
-                    <div>
-                      <div className="text-xs font-sf-mono text-primary/50 mb-1">OVERVIEW:</div>
-                      <p className="text-xs font-sf-mono leading-relaxed border-l-2 border-primary/20 pl-3 py-1">
-                        {selectedExp.description}
-                      </p>
-                    </div>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        setSelectedExp(selectedExp === actualIndex ? null : actualIndex)
+                      }}
+                      className={`flex items-center justify-center w-7 h-7 border flex-shrink-0 transition-all duration-200 ${
+                        selectedExp === actualIndex
+                          ? "bg-background border-background/30 text-primary hover:bg-background/90"
+                          : "bg-primary border-primary/40 text-background hover:bg-primary/90"
+                      }`}
+                    >
+                      <motion.div
+                        animate={{ rotate: selectedExp === actualIndex ? 180 : 0 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        {selectedExp === actualIndex ? <X className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+                      </motion.div>
+                    </button>
                   </div>
                 </div>
               </div>
 
-              {/* Footer */}
-              <div className="border-t border-primary/20 p-4 bg-primary/5 flex justify-between items-center">
-                <div className="text-xs font-sf-mono text-primary/50">CORPORATE INDUSTRY EXPERIENCE</div>
-                <div className="text-xs font-sf-mono text-primary/50">ASSIGNMENT: {selectedExp.assignmentId}</div>
-              </div>
+              {/* Expandable Details */}
+              <AnimatePresence>
+                {selectedExp === actualIndex && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="overflow-hidden"
+                  >
+                    <div className="bg-primary/5 p-3 md:p-6 px-3 py-3">
+                      <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] md:gap-6">
+                        {/* Left: Responsibilities */}
+                        <div>
+                          <span className="font-sf-mono text-primary/40 uppercase tracking-wider text-sm">
+                            KEY ACHIEVEMENTS
+                          </span>
+                          <div className="space-y-2 mt-2">
+                            {exp.responsibilities.map((resp, idx) => (
+                              <div key={idx} className="flex gap-2">
+                                <div className="w-4 h-4 border border-primary/20 bg-primary/5 flex items-center justify-center text-[9px] font-sf-mono text-primary/50 flex-shrink-0">
+                                  {idx + 1}
+                                </div>
+                                <p className="font-sf-mono text-primary/70 leading-relaxed text-xs tracking-wide">
+                                  {resp}
+                                </p>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* Right: Skills */}
+                        <div className="md:border-l md:border-primary/10 md:pl-6">
+                          <span className="font-sf-mono text-primary/40 uppercase tracking-wider text-sm">
+                            TECH STACK
+                          </span>
+                          <div className="flex flex-wrap gap-1 mt-2">
+                            {exp.skills.map((skill, idx) => (
+                              <span
+                                key={idx}
+                                className="px-1.5 py-0.5 font-sf-mono border border-primary/20 bg-primary/5 hover:bg-primary hover:text-background transition-colors text-xs"
+                              >
+                                {skill}
+                              </span>
+                            ))}
+                          </div>
+
+                          {/* Overview - Desktop Only */}
+                          <div className="hidden md:block mt-4 pt-4 border-t border-primary/10">
+                            <span className="font-sf-mono text-primary/40 uppercase tracking-wider text-sm">
+                              OVERVIEW
+                            </span>
+                            <p className="font-sf-mono text-primary/60 mt-2 leading-relaxed text-xs">
+                              {exp.description}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          )
+        })}
+        </div>
+        {/* Footer Stats */}
+        <motion.div
+          className="flex items-center justify-between border-t border-primary/20 pt-3 mt-4 px-3"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.2, delay: 0.3 }}
+        >
+          <div className="flex flex-wrap gap-1 sm:gap-2 md:gap-4 text-[9px] sm:text-[10px] font-sf-mono text-primary/40 uppercase tracking-wider">
+            <span className="text-xs tracking-tighter">
+              {experiences.length} {isMobile ? "ROLES" : "POSITIONS"}
+            </span>
+            <span className="text-primary/20">/</span>
+            <span className="text-xs tracking-tighter">
+              {filteredExperiences.length} {isMobile ? "SHOWN" : "FILTERED"}
+            </span>
+          </div>
+          {showPaginationControls && (
+            <span className="sm:text-[10px] font-sf-mono text-primary/30 font-semibold text-xs tracking-tighter">
+              {startIndex + 1}-{Math.min(startIndex + ITEMS_PER_PAGE, filteredExperiences.length)} OF{" "}
+              {filteredExperiences.length}
+            </span>
+          )}
+          {!showPaginationControls && (
+            <div className="text-[9px] sm:text-[10px] font-sf-mono text-primary/30">
+              <span className="text-sm">LAST.UPDATED: 2025</span>
+            </div>
+          )}
+        </motion.div>
+      </div>
     </PageLayout>
   )
 }
