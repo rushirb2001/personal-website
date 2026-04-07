@@ -1,508 +1,387 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { PageLayout } from "@/components/layout/page-layout"
 import { motion, AnimatePresence } from "framer-motion"
-import { FileText, ChevronRight } from "lucide-react"
+import { ExternalLink, ChevronDown, X, ChevronLeft, ChevronRight } from "lucide-react"
 import { useMediaQuery } from "@/hooks/use-media-query"
+import { publications, ITEMS_PER_PAGE, type Publication, type PublicationType } from "./data"
 
-// Define the publication type
-interface Publication {
-  id: string
-  title: string
-  venue: string
-  authors: string
-  abstract: string
-  year: string
-  month: string
-  status: "RELEASED" | "PENDING" | "RESTRICTED"
-  classification: "PUBLIC" | "CONFIDENTIAL"
-  doi: string
-  projectRef: string
-  reviewedBy: string
-  dataSize: string
-  pdfLink: string
+const categories: ("All" | PublicationType)[] = ["All", "JOURNAL", "CONFERENCE", "DISSERTATION"]
+const mobileLabels: Record<string, string> = {
+  All: "ALL",
+  JOURNAL: "JNL",
+  CONFERENCE: "CONF",
+  DISSERTATION: "DISS",
 }
 
 export default function PublicationsPage() {
   const [selectedPublication, setSelectedPublication] = useState<Publication | null>(null)
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const [activeTab, setActiveTab] = useState<"details" | "metadata">("details")
+  const [hoveredId, setHoveredId] = useState<string | null>(null)
+  const [startIndex, setStartIndex] = useState(0)
+  const [selectedCategory, setSelectedCategory] = useState<"All" | PublicationType>("All")
+  const [isCategoryOpen, setIsCategoryOpen] = useState(false)
   const isMobile = useMediaQuery("(max-width: 768px)")
 
-  // Publications data
-  const publications: Publication[] = [
-    {
-      id: "CV | MEDICINE",
-      title: "DEEP ENSEMBLE MAMMOGRAM CLASSIFICATION USING ONE-SHOT SEGMENTATION",
-      venue: "NIRMA UNIVERSITY CONFERENCE",
-      authors: "R. BHAVSAR, S. PATEL, A. SHAH",
-      abstract:
-        "This study presents a novel approach to mammogram classification through deep ensemble learning and one-shot segmentation techniques. By aggregating over 7,000 images from 7 distinct sources and applying panoptic annotation with semantic segmentation, we achieved a 23% improvement in cancerous mammogram classification accuracy over baseline methods, reaching 81% accuracy. The methodology combines ResNet, U-Net, EfficientNet, and MobileNet architectures with one-shot transfer learning and Tree-based Boosting Ensembling.",
-      year: "2022",
-      month: "06",
-      status: "RELEASED",
-      classification: "PUBLIC",
-      doi: "10.1234/NU.2022.437",
-      projectRef: "MED-AI-1872",
-      reviewedBy: "PEER-COMMITTEE",
-      dataSize: "12.8MB",
-      pdfLink: "#",
-    },
-    {
-      id: "QML | ASTROPHYSICS",
-      title: "CLASSIFICATION OF POTENTIALLY HAZARDOUS ASTEROIDS USING SUPERVISED QUANTUM MACHINE LEARNING",
-      venue: "IEEE ACCESS",
-      authors: "R. BHAVSAR, N. K. JADAV, U. BODKHE, R. GUPTA, S. TANWAR, G. SHARMA, P. N. BOKORO, R. SHARMA",
-      abstract:
-        "Quantum computing (QC) and quantum machine learning (QML) are emerging technologies with the potential to revolutionize the way we approach complex problems in mathematics, physics, and other fields. The increasing availability of data and computing power has led to a rise in using Artificial Intelligence (AI) to solve real-time problems. In space science, employing AI-based approaches to address various challenges, including the potential risks posed by asteroids, is becoming increasingly necessary. This research explores the application of Quantum Machine Learning (QML) for asteroid hazard classification, achieving significant improvements in computational efficiency and classification accuracy.",
-      year: "2023",
-      month: "07",
-      status: "RELEASED",
-      classification: "PUBLIC",
-      doi: "10.1109/ACCESS.2023.3294576",
-      projectRef: "QC-AST-2213",
-      reviewedBy: "IEEE EDITORIAL BOARD",
-      dataSize: "7.3MB",
-      pdfLink: "https://ieeexplore.ieee.org/document/10188662",
-    },
-    {
-      id: "NLP | BLOCKCHAIN",
-      title: "METAHATE: AI-BASED HATE SPEECH DETECTION FOR SECURED ONLINE GAMING IN METAVERSE USING BLOCKCHAIN",
-      venue: "SECURITY AND PRIVACY",
-      authors:
-        "H. SANGHVI, R. BHAVSAR, V. HUNDLANI, L. GOHIL, T. VYAS, A. NAIR, S. DESAI, N. K. JADAV, S. TANWAR, R. SHARMA, N. YAMSANI",
-      abstract:
-        "The emergence of Web 3.0, blockchain technology (BC), and artificial intelligence (AI) are transforming multiplayer online gaming in the metaverse. This development has its concerns about safety and inclusivity. Hate speech, in particular, poses a significant threat to the harmony of these online communities. This article proposes a novel framework, MetaHate, that employs AI and BC to detect and combat hate speech in online gaming environments within the metaverse. Various machine learning (ML) models are applied to analyze Hindi–English code mixed datasets, with gradient boosting proving the most effective, achieving 86.01% accuracy.",
-      year: "2024",
-      month: "03",
-      status: "RELEASED",
-      classification: "PUBLIC",
-      doi: "10.1002/SPY2.343",
-      projectRef: "NLP-META-3341",
-      reviewedBy: "WILEY EDITORIAL BOARD",
-      dataSize: "5.2MB",
-      pdfLink: "https://onlinelibrary.wiley.com/doi/abs/10.1002/spy2.343",
-    },
-    {
-      id: "PINNS | DL",
-      title: "MACE-PINNS: MULTI-NETWORK DRIVEN DECOUPLING OF INTERDEPENDENT PHYSICS IN COUPLED PDE SYSTEMS",
-      venue: "ARIZONA STATE UNIVERSITY DISSERTATIONS & THESES",
-      authors: "R. BHAVSAR",
-      abstract:
-        "Physics-Informed Neural Networks (PINNs) provide an innovative framework for solving complex nonlinear Partial Differential Equations (PDEs) by embedding the governing equations directly into neural networks. To address challenges with standard PINNs, the Multi-network Architecture for Coupled Equations Physics-Informed Neural Networks (MACE-PINNs) is introduced. This approach employs parallel subnetworks to independently approximate coupled variables, interconnected via iterative residual constraints. Experimental results demonstrate robust pattern reproduction spanning 5 parametric variations for each RDS, with L2 errors ranging from 10−3 to 10−2.",
-      year: "2025",
-      month: "01",
-      status: "RELEASED",
-      classification: "PUBLIC",
-      doi: "10.48550/DISSERTATION.31994438",
-      projectRef: "AI-PDE-4127",
-      reviewedBy: "DISSERTATION COMMITTEE",
-      dataSize: "18.6MB",
-      pdfLink: "https://keep.lib.asu.edu/items/201211",
-    },
-  ]
+  const filteredPublications = useMemo(() => {
+    const filtered =
+      selectedCategory === "All" ? [...publications] : publications.filter((pub) => pub.type === selectedCategory)
+    return filtered.sort((a, b) => b.citations - a.citations)
+  }, [selectedCategory])
 
-  // Open modal with selected publication
-  const openDossier = (publication: Publication) => {
-    setSelectedPublication(publication)
-    setIsModalOpen(true)
-    setActiveTab("details") // Reset to details tab when opening
-  }
+  useEffect(() => {
+    setStartIndex(0)
+    setSelectedPublication(null)
+  }, [selectedCategory])
 
-  // Close modal
-  const closeDossier = () => {
-    setIsModalOpen(false)
-    setTimeout(() => setSelectedPublication(null), 300) // Clear after animation
-  }
+  const stats = useMemo(() => {
+    const totalCitations = publications.reduce((sum, pub) => sum + pub.citations, 0)
+    const years = publications.map((p) => Number.parseInt(p.year))
+    const yearRangeDesktop = `${Math.min(...years)}-${Math.max(...years)}`
+    const yearRangeMobile = `${Math.min(...years)}-${Math.max(...years)
+      .toString()
+      .slice(-2)}`
+    const venues = new Set(publications.map((p) => p.venue)).size
+    return { totalCitations, yearRangeDesktop, yearRangeMobile, venues, total: publications.length }
+  }, [])
 
-  // Handle ESC key press
+  // Sliding window pagination: show ITEMS_PER_PAGE items at a time
+  const visiblePublications = filteredPublications.slice(startIndex, startIndex + ITEMS_PER_PAGE)
+
+  // Pagination controls
+  const canShowPrevious = startIndex > 0
+  const canShowNext = startIndex + ITEMS_PER_PAGE < filteredPublications.length
+  const showPaginationControls = filteredPublications.length > ITEMS_PER_PAGE
+
   useEffect(() => {
     const handleEscKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape" && isModalOpen) {
-        closeDossier()
+      if (event.key === "Escape" && selectedPublication) {
+        setSelectedPublication(null)
       }
     }
-
-    // Add event listener
     document.addEventListener("keydown", handleEscKey)
-
-    // Cleanup
-    return () => {
-      document.removeEventListener("keydown", handleEscKey)
-    }
-  }, [isModalOpen]) // Re-add listener if modal state changes
-
-  // Format date as YYYY.MM
-  const formatDate = (year: string, month: string) => {
-    return `${year}.${month.padStart(2, "0")}`
-  }
-
-  // Get status color
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "RELEASED":
-        return "text-green-500"
-      case "PENDING":
-        return "text-yellow-500"
-      case "RESTRICTED":
-        return "text-red-500"
-      default:
-        return "text-primary/70"
-    }
-  }
+    return () => document.removeEventListener("keydown", handleEscKey)
+  }, [selectedPublication])
 
   return (
-    <PageLayout title="PUBLICATIONS" subtitle="RESEARCH AND THESIS">
-      <div className="space-y-6">
-        {/* Dossier index cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {publications.map((pub) => (
-            <div
-              key={pub.id}
-              onClick={() => openDossier(pub)}
-              className="relative h-52 cursor-pointer group transition-all duration-200 hover:-translate-y-1"
+    <PageLayout title="PUBLICATIONS" subtitle="RESEARCH & PAPERS">
+      <div className="space-y-0">
+        <div className="flex gap-2 mb-3">
+          {/* Category Dropdown */}
+          <div className={`border border-primary/20 ${showPaginationControls ? "flex-[6]" : "w-full"}`}>
+            <button
+              onClick={() => setIsCategoryOpen(!isCategoryOpen)}
+              className="w-full flex items-center justify-between px-3 py-2 bg-primary/5 hover:bg-primary/10 transition-colors duration-200"
             >
-              {/* Folder tab */}
-              <div className="absolute top-8 left-[10%] right-[10%] h-8 bg-secondary dark:bg-eerie-darkgray border-t border-l border-r border-primary/40 rounded-t-md z-10 flex items-center justify-center shadow-sm">
-                <div className="text-xs font-sf-mono text-primary/70">[ DOMAIN: {pub.id} ]</div>
+              <div className="flex items-center gap-2">
+                <span className="font-sf-mono text-primary/60 text-sm">FILTER</span>
+                <span className="text-primary/20">|</span>
+                <span className="font-sf-mono text-primary text-sm">
+                  SHOWING '
+                  {isMobile
+                    ? mobileLabels[selectedCategory] || selectedCategory.toUpperCase()
+                    : selectedCategory.toUpperCase()}
+                  '
+                </span>
               </div>
-
-              {/* Folder body */}
-              <div className="absolute top-16 left-4 right-4 bottom-0 bg-secondary/90 dark:bg-eerie-darkgray/90 border border-primary/40 rounded-b-md rounded-tr-md shadow-md transition-all duration-200 group-hover:shadow-lg">
-                {/* Folder content */}
-                <div className="p-4 h-full flex flex-col">
-                  <div className="flex-grow space-y-2 mb-2 mt-1">
-                    {/* Title */}
-                    <h3 className="text-sm font-sf-mono font-medium">{pub.title}</h3>
-
-                    {/* Venue and Date */}
-                    <div className="flex items-center justify-between text-xs">
-                      <div className="flex items-center flex-1 min-w-0">
-                        <FileText className="h-3 w-3 mr-2 text-primary/50 flex-shrink-0" />
-                        <span className="truncate">{pub.venue}</span>
-                      </div>
-                      <div className="text-xs font-sf-mono text-primary/60 flex-shrink-0">
-                        {formatDate(pub.year, pub.month)}
-                      </div>
+              <motion.div animate={{ rotate: isCategoryOpen ? 180 : 0 }} transition={{ duration: 0.2 }}>
+                <ChevronDown className="w-3 h-3 text-primary/50" />
+              </motion.div>
+            </button>
+            <AnimatePresence>
+              {isCategoryOpen && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="overflow-hidden border-t border-primary/10"
+                >
+                  <div className="p-3">
+                    <div className="flex flex-wrap gap-1.5">
+                      {categories.map((category) => (
+                        <button
+                          key={category}
+                          onClick={() => {
+                            setSelectedCategory(category)
+                            setIsCategoryOpen(false)
+                          }}
+                          className={`px-2 py-1 text-[9px] font-sf-mono border transition-colors duration-200 ${
+                            selectedCategory === category
+                              ? "bg-primary text-background border-primary"
+                              : "bg-primary text-background border-primary/40 hover:bg-primary/90"
+                          }`}
+                        >
+                          <span className="hidden md:inline text-sm">{category.toUpperCase()}</span>
+                          <span className="md:hidden">{mobileLabels[category] || category.toUpperCase()}</span>
+                        </button>
+                      ))}
                     </div>
                   </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
 
-                  {/* Folder footer */}
-                  <div className="border-t border-primary/20 pt-2 mt-auto">
-                    <div className="flex justify-between items-center">
-                      <div className={`text-[0.6rem] font-sf-mono ${getStatusColor(pub.status)}`}>
-                        STATUS: {pub.status}
+          {showPaginationControls && (
+            <div className="flex-[4] flex items-start gap-2">
+              <button
+                onClick={() => {
+                  setSelectedPublication(null)
+                  setStartIndex((prev) => Math.max(0, prev - ITEMS_PER_PAGE))
+                }}
+                disabled={!canShowPrevious}
+                className={`flex-1 h-[42px] border flex items-center justify-center transition-all duration-150 ${
+                  canShowPrevious
+                    ? "bg-primary text-background border-primary/40 hover:bg-primary/90"
+                    : "border-primary/10 text-primary/10 cursor-not-allowed"
+                }`}
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => {
+                  setSelectedPublication(null)
+                  setStartIndex((prev) => prev + ITEMS_PER_PAGE)
+                }}
+                disabled={!canShowNext}
+                className={`flex-1 h-[42px] border flex items-center justify-center transition-all duration-150 ${
+                  canShowNext
+                    ? "bg-primary text-background border-primary/40 hover:bg-primary/90"
+                    : "border-primary/10 text-primary/10 cursor-not-allowed"
+                }`}
+              >
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
+          )}
+        </div>
+
+        <div className="hidden md:grid grid-cols-[40px_1fr_180px_60px_40px_40px] gap-4 px-3 py-2 border-b border-primary/30 font-sf-mono text-primary/50 uppercase tracking-wider text-sm">
+          <span></span>
+          <span>TITLE</span>
+          <span>VENUE</span>
+          <span>YEAR</span>
+          <span>CIT</span>
+          <span>LINK</span>
+        </div>
+
+        <div className="min-h-[280px] md:min-h-[360px]">
+          {visiblePublications.map((pub, index) => (
+            <div key={pub.id}>
+              <motion.div
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.15, delay: index * 0.05 }}
+                className={`border-b border-primary/10 transition-all duration-150 cursor-pointer ${
+                  selectedPublication?.id === pub.id
+                    ? hoveredId === pub.id
+                      ? "bg-primary/70 text-background"
+                      : "bg-primary text-background"
+                    : hoveredId === pub.id
+                      ? "bg-primary/10"
+                      : ""
+                }`}
+                onMouseEnter={() => setHoveredId(pub.id)}
+                onMouseLeave={() => setHoveredId(null)}
+                onClick={() => setSelectedPublication(selectedPublication?.id === pub.id ? null : pub)}
+              >
+                <div className="hidden md:grid grid-cols-[40px_1fr_180px_60px_40px_40px] gap-4 px-3 py-3 items-center">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      setSelectedPublication(selectedPublication?.id === pub.id ? null : pub)
+                    }}
+                    className={`flex items-center justify-center w-8 h-8 border transition-all duration-200 ${
+                      selectedPublication?.id === pub.id
+                        ? "bg-background text-primary border-background/30 hover:bg-background/90"
+                        : "bg-primary text-background border-primary/40 hover:bg-primary/90"
+                    }`}
+                  >
+                    <motion.div
+                      animate={{ rotate: selectedPublication?.id === pub.id ? 180 : 0 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      {selectedPublication?.id === pub.id ? (
+                        <X className="w-5 h-5" />
+                      ) : (
+                        <ChevronDown className="w-5 h-5" />
+                      )}
+                    </motion.div>
+                  </button>
+                  <span className="font-sf-mono font-medium pr-4 text-base">{pub.title}</span>
+                  <span
+                    className={`font-sf-mono text-base ${selectedPublication?.id === pub.id ? "text-background/70" : "text-primary/60"}`}
+                  >
+                    {pub.venue}
+                  </span>
+                  <span
+                    className={`font-sf-mono tracking-tighter text-sm ${selectedPublication?.id === pub.id ? "text-background/70" : "text-primary/50"}`}
+                  >
+                    {pub.year}.{pub.month}
+                  </span>
+                  <span
+                    className={`font-sf-mono font-medium text-base ${selectedPublication?.id === pub.id ? "text-background" : "text-primary/70"}`}
+                  >
+                    {pub.citations}
+                  </span>
+                  <a
+                    href={pub.pdfLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(e) => e.stopPropagation()}
+                    className={`flex items-center justify-center w-8 h-8 border transition-colors ${
+                      selectedPublication?.id === pub.id
+                        ? "bg-background text-primary border-background/30 hover:bg-background/90"
+                        : "bg-primary text-background border-primary/40 hover:bg-primary/90"
+                    }`}
+                  >
+                    <ExternalLink className="w-5 h-5" />
+                  </a>
+                </div>
+
+                <div className="md:hidden px-3 py-3">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-sf-mono font-medium line-clamp- text-left mb-2 tracking-tighter text-sm">
+                        {pub.title}
+                      </h3>
+                      <p
+                        className={`font-sf-mono text-xs ${selectedPublication?.id === pub.id ? "text-background/60" : "text-primary/50"}`}
+                      >
+                        {pub.venue}
+                      </p>
+                    </div>
+                    <div className="flex flex-col items-end gap-1 shrink-0">
+                      <div className="flex items-center gap-1">
+                        <a
+                          href={pub.pdfLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={(e) => e.stopPropagation()}
+                          className={`flex items-center justify-center w-8 h-8 border transition-all duration-200 ${
+                            selectedPublication?.id === pub.id
+                              ? "bg-background text-primary border-background/30 hover:bg-background/90"
+                              : "bg-primary text-background border-primary/40 hover:bg-primary/90"
+                          }`}
+                        >
+                          <ExternalLink className="w-5 h-5" />
+                        </a>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            setSelectedPublication(selectedPublication?.id === pub.id ? null : pub)
+                          }}
+                          className={`flex items-center justify-center w-8 h-8 border transition-all duration-200 ${
+                            selectedPublication?.id === pub.id
+                              ? "bg-background text-primary border-background/30 hover:bg-background/90"
+                              : "bg-primary text-background border-primary/40 hover:bg-primary/90"
+                          }`}
+                        >
+                          <motion.div
+                            animate={{ rotate: selectedPublication?.id === pub.id ? 180 : 0 }}
+                            transition={{ duration: 0.2 }}
+                          >
+                            {selectedPublication?.id === pub.id ? (
+                              <X className="w-5 h-5" />
+                            ) : (
+                              <ChevronDown className="w-5 h-5" />
+                            )}
+                          </motion.div>
+                        </button>
                       </div>
-                      <div className="text-xs flex items-center text-primary/60 group-hover:text-primary/80 transition-colors animate-mechanical-pulse">
-                        <ChevronRight className="h-3 w-3 mr-1" />
-                        <span className="font-sf-mono tracking-wide text-[0.65rem]">VIEW PUBLICATION DETAILS</span>
+                      <div className="flex flex-col items-end gap-0.5 text-right">
+                        <span
+                          className={`text-[9px] font-sf-mono ${selectedPublication?.id === pub.id ? "text-background/60" : "text-primary/50"}`}
+                        >
+                          {pub.year} | {pub.citations} CIT
+                        </span>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
+              </motion.div>
+
+              <AnimatePresence>
+                {selectedPublication?.id === pub.id && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="overflow-hidden border-b border-primary/20"
+                  >
+                    <div className="bg-primary/5 p-4 md:p-6">
+                      <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-6">
+                        <div className="space-y-4">
+                          <div>
+                            <span className="font-sf-mono text-primary/40 uppercase tracking-wider text-xs">
+                              ABSTRACT
+                            </span>
+                            <p className="font-sf-mono text-primary/70 mt-1 leading-relaxed border-l-2 border-primary/20 pl-3 tracking-tighter text-xs">
+                              {selectedPublication.abstract}
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="space-y-3 md:border-l md:border-primary/10 md:pl-6 grid grid-cols-2 md:grid-cols-1">
+                          <div>
+                            <span className="font-sf-mono text-primary/40 uppercase tracking-wider text-xs">
+                              AUTHORS
+                            </span>
+                            <p className="font-sf-mono text-primary/70 mt-1 text-xs tracking-[-0.1em]">
+                              {selectedPublication.authors}
+                            </p>
+                          </div>
+
+                          <div>
+                            <span className="font-sf-mono text-primary/40 uppercase tracking-wider text-sm">DOI</span>
+                            <p className="font-sf-mono text-primary/50 mt-1 break-all text-xs tracking-[-0.1em]">
+                              {selectedPublication.doi}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           ))}
         </div>
 
-        <div className="text-xs text-primary/30 font-sf-mono text-center mt-8">
-          CLICK ON ANY PUBLICATION TO VIEW FULL DETAILS AND ACCESS PDF
-        </div>
+        <motion.div
+          className="flex items-center justify-between border-t border-primary/20 pt-3 mt-4 px-3"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.2, delay: 0.3 }}
+        >
+          <div className="flex flex-wrap gap-1 sm:gap-2 md:gap-4 text-[9px] sm:text-[10px] font-sf-mono text-primary/40 uppercase tracking-wider">
+            <span className="text-xs tracking-tighter">
+              {stats.total} {isMobile ? "PUB" : "PUBLICATIONS"}
+            </span>
+            <span className="text-primary/20">/</span>
+            <span className="text-xs tracking-tighter">
+              {filteredPublications.length} {isMobile ? "SHOWN" : "FILTERED"}
+            </span>
+            <span className="text-primary/20">/</span>
+            <span className="text-xs tracking-tighter">
+              {stats.totalCitations} {isMobile ? "CIT" : "CITATIONS"}
+            </span>
+          </div>
+          {showPaginationControls && (
+            <span className="sm:text-[10px] font-sf-mono text-primary/30 font-semibold text-xs tracking-tighter">
+              {startIndex + 1}-{Math.min(startIndex + ITEMS_PER_PAGE, filteredPublications.length)} OF{" "}
+              {filteredPublications.length}
+            </span>
+          )}
+          {!showPaginationControls && (
+            <div className="text-[9px] sm:text-[10px] font-sf-mono text-primary/30">
+              <span className="text-xs">LAST.UPDATED: 2025</span>
+            </div>
+          )}
+        </motion.div>
       </div>
-
-      {/* Full dossier modal - Desktop version */}
-      <AnimatePresence>
-        {isModalOpen && selectedPublication && !isMobile && (
-          <motion.div
-            initial={{ opacity: 0, backdropFilter: "blur(0px)" }}
-            animate={{ opacity: 1, backdropFilter: "blur(8px)" }}
-            exit={{ opacity: 0, backdropFilter: "blur(0px)" }}
-            transition={{ duration: 0.3 }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
-            onClick={closeDossier}
-          >
-            <motion.div
-              initial={{ scale: 0.95, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.95, opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className="w-full max-w-3xl bg-background dark:bg-eerie-black border border-primary/30 shadow-lg"
-              onClick={(e) => e.stopPropagation()}
-            >
-              {/* Dossier header */}
-              <div className="dark:bg-primary/10 bg-white px-4 py-3 flex justify-between items-center border-b border-primary/30">
-                <div className="flex items-center">
-                  <span className="text-sm font-sf-mono text-primary/70">[ CASE: {selectedPublication.id} ]</span>
-                </div>
-                <div className="flex items-center space-x-6">
-                  <span className="text-sm font-sf-mono text-primary/70">{selectedPublication.venue}</span>
-                  <span className="text-sm font-sf-mono text-primary/70">
-                    PUBLISHED: {formatDate(selectedPublication.year, selectedPublication.month)}
-                  </span>
-                </div>
-                <button
-                  onClick={closeDossier}
-                  className="text-primary/70 hover:text-primary transition-colors ml-4 font-sf-mono text-xs"
-                  aria-label="Close"
-                >
-                  [ CLOSE ]
-                </button>
-              </div>
-
-              {/* Dossier content */}
-              <div className="p-6">
-                <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-6">
-                  {/* Main content */}
-                  <div className="space-y-4">
-                    <div>
-                      <div className="text-xs font-sf-mono text-primary/50 mb-1">TITLE:</div>
-                      <h2 className="text-lg font-medium">{selectedPublication.title}</h2>
-                    </div>
-
-                    <div>
-                      <div className="text-xs font-sf-mono text-primary/50 mb-1">ABSTRACT:</div>
-                      <p className="text-xs font-sf-mono leading-relaxed border-l-2 border-primary/20 pl-3 py-1">
-                        {selectedPublication.abstract}
-                      </p>
-                    </div>
-
-                    <div>
-                      <div className="text-xs font-sf-mono text-primary/50 mb-1">KEYWORDS:</div>
-                      <div className="flex flex-wrap gap-2">
-                        {selectedPublication.id.split(" | ").map((keyword, idx) => (
-                          <span
-                            key={idx}
-                            className="text-xs font-sf-mono px-2 py-0.5 border border-primary/20 text-primary/70 bg-primary/5"
-                          >
-                            {keyword}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Metadata sidebar */}
-                  <div className="border-l border-primary/20 pl-6 space-y-4">
-                    <div className="text-sm font-medium mb-2">METADATA</div>
-
-                    <div>
-                      <div className="text-xs font-sf-mono text-primary/50 mb-1">VENUE:</div>
-                      <p className="text-xs font-sf-mono">{selectedPublication.venue}</p>
-                    </div>
-
-                    <div>
-                      <div className="text-xs font-sf-mono text-primary/50 mb-1">AUTHORS:</div>
-                      <p className="text-xs font-sf-mono">{selectedPublication.authors}</p>
-                    </div>
-
-                    <div>
-                      <div className="text-xs font-sf-mono text-primary/50 mb-1">DOI:</div>
-                      <p className="text-xs font-sf-mono">{selectedPublication.doi}</p>
-                    </div>
-
-                    <div>
-                      <div className="text-xs font-sf-mono text-primary/50 mb-1">STATUS:</div>
-                      <p className={`text-xs font-sf-mono ${getStatusColor(selectedPublication.status)}`}>
-                        {selectedPublication.status}
-                      </p>
-                    </div>
-
-                    <div className="border-t border-primary/20"></div>
-
-                    <div>
-                      <div className="text-xs font-sf-mono text-primary/50 mb-1">FILE ACCESS:</div>
-                      <div className="flex space-x-2">
-                        <a
-                          href={selectedPublication.pdfLink}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center text-xs font-sf-mono text-primary/70 hover:text-primary hover:bg-primary/10 border border-primary/30 hover:border-primary/60 px-2 py-1 transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5"
-                        >
-                          <FileText className="h-3 w-3 mr-1" />
-                          VIEW PDF
-                        </a>
-                      </div>
-                    </div>
-
-                    <div className="border-t border-primary/20"></div>
-
-                    <div className="pt-4 mt-4 flex items-center">
-                      <div className="w-2 h-2 rounded-full bg-green-500 mr-2 animate-mechanical-pulse"></div>
-                      <div className="text-xs font-sf-mono text-primary/40">DOSSIER VERIFIED</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Dossier footer */}
-              <div className="border-t border-primary/20 p-4 bg-primary/5 flex justify-between items-center">
-                <div className="text-xs font-sf-mono text-primary/50">PEER-REVIEWED RESEARCH</div>
-                <div className="text-xs font-sf-mono text-primary/50">PUBLISHED: {selectedPublication.year}</div>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-
-        {/* Mobile-specific compact modal */}
-        {isModalOpen && selectedPublication && isMobile && (
-          <motion.div
-            initial={{ opacity: 0, backdropFilter: "blur(0px)" }}
-            animate={{ opacity: 1, backdropFilter: "blur(8px)" }}
-            exit={{ opacity: 0, backdropFilter: "blur(0px)" }}
-            transition={{ duration: 0.3 }}
-            className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center"
-            onClick={closeDossier}
-          >
-            <motion.div
-              initial={{ y: 50, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: 50, opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className="w-[90%] max-h-[70vh] mx-auto bg-background dark:bg-eerie-black border border-primary/30 shadow-lg rounded-md flex flex-col"
-              onClick={(e) => e.stopPropagation()}
-            >
-              {/* Mobile header */}
-              <div className="bg-primary/10 px-3 py-2 flex justify-between items-center border-b border-primary/30">
-                <div className="flex items-center">
-                  <span className="text-xs font-sf-mono text-primary/70">[ {selectedPublication.id} ]</span>
-                </div>
-                <button
-                  onClick={closeDossier}
-                  className="text-primary/70 hover:text-primary transition-colors font-sf-mono text-xs"
-                  aria-label="Close"
-                >
-                  [ CLOSE ]
-                </button>
-              </div>
-
-              {/* Mobile title */}
-              <div className="px-3 py-2 border-b border-primary/20">
-                <h2 className="text-sm font-medium font-sf-mono truncate">{selectedPublication.title}</h2>
-                <div className="flex justify-between items-center mt-1">
-                  <div className={`text-[0.65rem] font-sf-mono ${getStatusColor(selectedPublication.status)}`}>
-                    {selectedPublication.status}
-                  </div>
-                  <div className="text-[0.65rem] font-sf-mono text-primary/60">
-                    {formatDate(selectedPublication.year, selectedPublication.month)}
-                  </div>
-                </div>
-              </div>
-
-              {/* Mobile tabs */}
-              <div className="flex border-b border-primary/20">
-                <button
-                  onClick={() => setActiveTab("details")}
-                  className={`flex-1 py-2 text-xs font-sf-mono ${
-                    activeTab === "details" ? "bg-primary/10 text-primary" : "text-primary/60"
-                  }`}
-                >
-                  DETAILS
-                </button>
-                <button
-                  onClick={() => setActiveTab("metadata")}
-                  className={`flex-1 py-2 text-xs font-sf-mono ${
-                    activeTab === "metadata" ? "bg-primary/10 text-primary" : "text-primary/60"
-                  }`}
-                >
-                  METADATA
-                </button>
-              </div>
-
-              {/* Mobile content - scrollable */}
-              <div className="flex-1 overflow-y-auto">
-                {activeTab === "details" ? (
-                  <div className="p-3 space-y-3">
-                    <div>
-                      <div className="text-[0.65rem] font-sf-mono text-primary/50 mb-1">VENUE:</div>
-                      <p className="text-[0.65rem] font-sf-mono">{selectedPublication.venue}</p>
-                    </div>
-
-                    <div>
-                      <div className="text-[0.65rem] font-sf-mono text-primary/50 mb-1">AUTHORS:</div>
-                      <p className="text-[0.65rem] font-sf-mono">{selectedPublication.authors}</p>
-                    </div>
-
-                    <div>
-                      <div className="text-[0.65rem] font-sf-mono text-primary/50 mb-1">ABSTRACT:</div>
-                      <p className="text-[0.65rem] font-sf-mono leading-relaxed border-l border-primary/20 pl-2 py-1">
-                        {selectedPublication.abstract}
-                      </p>
-                    </div>
-
-                    <div>
-                      <div className="text-[0.65rem] font-sf-mono text-primary/50 mb-1">KEYWORDS:</div>
-                      <div className="flex flex-wrap gap-2">
-                        {selectedPublication.id.split(" | ").map((keyword, idx) => (
-                          <span
-                            key={idx}
-                            className="text-xs font-sf-mono px-2 py-0.5 border border-primary/20 text-primary/70 bg-primary/5"
-                          >
-                            {keyword}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div>
-                      <div className="text-[0.65rem] font-sf-mono text-primary/50 mb-1">DOI:</div>
-                      <p className="text-[0.65rem] font-sf-mono break-all">{selectedPublication.doi}</p>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="p-3 space-y-3">
-                    <div>
-                      <div className="text-[0.65rem] font-sf-mono text-primary/50 mb-1">VENUE:</div>
-                      <p className="text-[0.65rem] font-sf-mono">{selectedPublication.venue}</p>
-                    </div>
-
-                    <div>
-                      <div className="text-[0.65rem] font-sf-mono text-primary/50 mb-1">AUTHORS:</div>
-                      <p className="text-[0.65rem] font-sf-mono">{selectedPublication.authors}</p>
-                    </div>
-
-                    <div>
-                      <div className="text-[0.65rem] font-sf-mono text-primary/50 mb-1">DOI:</div>
-                      <p className="text-[0.65rem] font-sf-mono break-all">{selectedPublication.doi}</p>
-                    </div>
-
-                    <div>
-                      <div className="text-[0.65rem] font-sf-mono text-primary/50 mb-1">STATUS:</div>
-                      <p className={`text-[0.65rem] font-sf-mono ${getStatusColor(selectedPublication.status)}`}>
-                        {selectedPublication.status}
-                      </p>
-                    </div>
-
-                    <div className="border-t border-primary/20"></div>
-
-                    <div>
-                      <div className="text-[0.65rem] font-sf-mono text-primary/50 mb-1">FILE ACCESS:</div>
-                      <div className="flex space-x-2">
-                        <a
-                          href={selectedPublication.pdfLink}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center justify-center w-full text-xs font-sf-mono text-primary/70 hover:text-primary hover:bg-primary/10 border border-primary/30 hover:border-primary/60 py-1.5 transition-all duration-200 hover:shadow-md"
-                        >
-                          <FileText className="h-3 w-3 mr-1.5" />
-                          VIEW DOCUMENT
-                        </a>
-                      </div>
-                    </div>
-
-                    <div className="border-t border-primary/20"></div>
-
-                    <div className="pt-2 mt-2 flex items-center">
-                      <div className="w-1.5 h-1.5 rounded-full bg-green-500 mr-1.5 animate-mechanical-pulse"></div>
-                      <div className="text-[0.65rem] font-sf-mono text-primary/40">DOSSIER VERIFIED</div>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </PageLayout>
   )
 }

@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-// Update the import paths to match our new structure
 import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
 import { LastAccessed } from "@/components/ui/last-accessed"
@@ -12,10 +11,10 @@ import { useEffect, useState } from "react"
 import { ClientOnly } from "@/components/ui/client-only"
 import { CustomCursor } from "@/components/ui/custom-cursor"
 import { TouchFeedback } from "@/components/ui/touch-feedback"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion } from "framer-motion"
 import { Analytics } from "@vercel/analytics/react"
 import { SpeedInsights } from "@vercel/speed-insights/next"
-import { useTouchDevice } from "@/hooks/use-touch-device"
+import { IntroLoader } from "@/components/ui/intro-loader"
 
 export default function ClientLayout({
   children,
@@ -24,18 +23,19 @@ export default function ClientLayout({
 }) {
   const [isMounted, setIsMounted] = useState(false)
   const [isTransitionReady, setIsTransitionReady] = useState(false)
-  const isTouchDevice = useTouchDevice()
-  const [isInitialRender, setIsInitialRender] = useState(true)
+  const [isTouchDevice, setIsTouchDevice] = useState(false)
+  const [showIntro, setShowIntro] = useState(true)
+  const [contentReady, setContentReady] = useState(false)
 
   useEffect(() => {
     setIsMounted(true)
 
-    // Mark initial render complete after a short delay
-    const initialRenderTimer = setTimeout(() => {
-      setIsInitialRender(false)
-    }, 300)
+    // Check if this is a touch device
+    const checkTouch = () => {
+      setIsTouchDevice("ontouchstart" in window || navigator.maxTouchPoints > 0)
+    }
 
-    return () => clearTimeout(initialRenderTimer)
+    checkTouch()
   }, [])
 
   useEffect(() => {
@@ -49,6 +49,13 @@ export default function ClientLayout({
     }
   }, [isMounted])
 
+  const handleIntroComplete = () => {
+    setShowIntro(false)
+    setTimeout(() => {
+      setContentReady(true)
+    }, 100)
+  }
+
   // Animation variants for header and footer
   const headerVariants = {
     hidden: { opacity: 0, y: -20 },
@@ -56,7 +63,7 @@ export default function ClientLayout({
       opacity: 1,
       y: 0,
       transition: {
-        duration: 0.3,
+        duration: 0.4,
         ease: [0.4, 0, 0.2, 1],
       },
     },
@@ -68,9 +75,9 @@ export default function ClientLayout({
       opacity: 1,
       y: 0,
       transition: {
-        duration: 0.3,
+        duration: 0.4,
         ease: [0.4, 0, 0.2, 1],
-        delay: 0.1,
+        delay: 0.15,
       },
     },
   }
@@ -80,9 +87,9 @@ export default function ClientLayout({
     visible: {
       opacity: 1,
       transition: {
-        duration: 0.4,
+        duration: 0.5,
         ease: [0.4, 0, 0.2, 1],
-        delay: 0.2,
+        delay: 0.1,
       },
     },
   }
@@ -96,40 +103,44 @@ export default function ClientLayout({
           name="viewport"
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
         />
-        {/* Apply theme directly with inline script */}
+        {/* EmailJS Script */}
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+        <script type="text/javascript">
+          {`
+            (function() {
+              try {
+                emailjs.init("vCNvTU_mqabgUgPcO");
+              } catch (e) {
+                console.error("Error initializing EmailJS:", e);
+              }
+            })();
+          `}
+        </script>
         <script
           dangerouslySetInnerHTML={{
             __html: `
               (function() {
                 try {
-                  // Check for stored theme preference
-                  let theme = localStorage.getItem('theme');
-                  
-                  // If no theme is set, use system preference
-                  if (!theme) {
-                    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                    theme = prefersDark ? 'dark' : 'light';
-                    localStorage.setItem('theme', theme);
-                  }
-                  
-                  // Apply the theme immediately before any rendering
-                  if (theme === 'dark') {
-                    document.documentElement.classList.add('dark');
-                  } else {
-                    document.documentElement.classList.remove('dark');
-                  }
-                } catch (e) {
-                  console.error('Error applying theme:', e);
-                }
+                  var theme = localStorage.getItem('theme') || 'light';
+                  var root = document.documentElement;
+                  root.classList.remove('light', 'dark');
+                  root.classList.add(theme);
+                  root.style.colorScheme = theme;
+                } catch (e) {}
               })();
             `,
           }}
         />
       </head>
-      <body className="font-sf-pro">
+      <body className="font-sf-pro bg-background text-foreground theme-transition">
         <ThemeProvider>
           <NavigationProvider isReady={isTransitionReady}>
-            <div className="flex flex-col min-h-screen overflow-hidden">
+            {showIntro && isMounted && <IntroLoader onLoadComplete={handleIntroComplete} />}
+
+            <div
+              className="flex flex-col min-h-screen overflow-hidden"
+              style={{ visibility: showIntro ? "hidden" : "visible" }}
+            >
               {/* Only render client-side components after mounting */}
               <ClientOnly>
                 {!isTouchDevice && <CustomCursor />}
@@ -137,40 +148,38 @@ export default function ClientLayout({
                 <LastAccessed />
               </ClientOnly>
 
-              <AnimatePresence mode="wait">
-                {isMounted && (
-                  <>
-                    <motion.div
-                      key="header"
-                      initial={isInitialRender ? "hidden" : "visible"}
-                      animate="visible"
-                      variants={headerVariants}
-                    >
-                      <Header />
-                    </motion.div>
+              {!showIntro && (
+                <>
+                  <motion.div
+                    key="header"
+                    initial="hidden"
+                    animate={contentReady ? "visible" : "hidden"}
+                    variants={headerVariants}
+                  >
+                    <Header />
+                  </motion.div>
 
-                    <motion.main
-                      className="flex-1 pt-16 pb-16 overflow-y-auto relative"
-                      key="main-content"
-                      initial={isInitialRender ? "hidden" : "visible"}
-                      animate="visible"
-                      variants={contentVariants}
-                    >
-                      {children}
-                      <TransitionOverlay />
-                    </motion.main>
+                  <motion.main
+                    className="flex-1 pt-16 pb-16 overflow-y-auto relative theme-transition"
+                    key="main-content"
+                    initial="hidden"
+                    animate={contentReady ? "visible" : "hidden"}
+                    variants={contentVariants}
+                  >
+                    {children}
+                    <TransitionOverlay />
+                  </motion.main>
 
-                    <motion.div
-                      key="footer"
-                      initial={isInitialRender ? "hidden" : "visible"}
-                      animate="visible"
-                      variants={footerVariants}
-                    >
-                      <Footer />
-                    </motion.div>
-                  </>
-                )}
-              </AnimatePresence>
+                  <motion.div
+                    key="footer"
+                    initial="hidden"
+                    animate={contentReady ? "visible" : "hidden"}
+                    variants={footerVariants}
+                  >
+                    <Footer />
+                  </motion.div>
+                </>
+              )}
             </div>
           </NavigationProvider>
           <Analytics />

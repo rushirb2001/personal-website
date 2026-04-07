@@ -1,147 +1,298 @@
 "use client"
 
+import React from "react"
+
+import type { ReactNode } from "react"
+
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { PageLayout } from "@/components/layout/page-layout"
-import { ChevronRight, ExternalLink, Github, Terminal } from "lucide-react"
+import {
+  ChevronLeft,
+  ChevronRight,
+  ChevronDown,
+  ExternalLink,
+  Github,
+  Terminal,
+  Code2,
+  Database,
+  Cloud,
+  Smartphone,
+  Zap,
+  X,
+} from "lucide-react"
+import { projects, categories, type Project } from "./data"
+import { useMediaQuery } from "@/hooks/use-media-query"
+import {
+  SiNextdotjs,
+  SiReact,
+  SiTypescript,
+  SiPython,
+  SiPytorch,
+  SiTensorflow,
+  SiPostgresql,
+  SiMongodb,
+  SiMysql,
+  SiRedis,
+  SiGooglecloud,
+  SiDocker,
+  SiKubernetes,
+  SiTailwindcss,
+  SiD3Dotjs,
+  SiNodedotjs,
+  SiFirebase,
+  SiRedux,
+  SiFastapi,
+  SiExpress,
+  SiFlask,
+  SiDjango,
+  SiJavascript,
+  SiHtml5,
+  SiCss3,
+  SiGit,
+  SiGraphql,
+  SiSocketdotio,
+  SiJest,
+  SiJupyter,
+  SiVercel,
+  SiNetlify,
+  SiVite,
+  SiNginx,
+  SiElasticsearch,
+  SiApachekafka,
+  SiApachespark,
+  SiSqlite,
+  SiSupabase,
+  SiPrisma,
+  SiNumpy,
+  SiPandas,
+  SiScikitlearn,
+  SiOpenai,
+  SiOpencv,
+} from "react-icons/si"
+import { GiFlax } from "react-icons/gi"
 
-interface Project {
-  id: string
-  title: string
-  description: string
-  fullDescription: string
-  technologies: string[]
-  category: "Machine Learning" | "Data Science" | "Web Development" | "Other"
-  status: "COMPLETED" | "IN PROGRESS" | "ARCHIVED"
-  date: string
-  github?: string
-  demo?: string
-  highlights: string[]
+const techIconMap: Record<string, ReactNode> = {
+  next: SiNextdotjs,
+  react: SiReact,
+  vite: SiVite,
+  tailwind: SiTailwindcss,
+  typescript: SiTypescript,
+  javascript: SiJavascript,
+  python: SiPython,
+  html: SiHtml5,
+  css: SiCss3,
+  pytorch: SiPytorch,
+  tensorflow: SiTensorflow,
+  numpy: SiNumpy,
+  pandas: SiPandas,
+  sklearn: SiScikitlearn,
+  scikit: SiScikitlearn,
+  openai: SiOpenai,
+  opencv: SiOpencv,
+  postgres: SiPostgresql,
+  mongo: SiMongodb,
+  mysql: SiMysql,
+  redis: SiRedis,
+  sqlite: SiSqlite,
+  supabase: SiSupabase,
+  prisma: SiPrisma,
+  elasticsearch: SiElasticsearch,
+  gcp: SiGooglecloud,
+  vercel: SiVercel,
+  netlify: SiNetlify,
+  docker: SiDocker,
+  kubernetes: SiKubernetes,
+  k8s: SiKubernetes,
+  nginx: SiNginx,
+  node: SiNodedotjs,
+  fastapi: SiFastapi,
+  express: SiExpress,
+  flask: SiFlask,
+  flax: GiFlax,
+  django: SiDjango,
+  d3: SiD3Dotjs,
+  graphql: SiGraphql,
+  socket: SiSocketdotio,
+  websocket: SiSocketdotio,
+  kafka: SiApachekafka,
+  spark: SiApachespark,
+  redux: SiRedux,
+  firebase: SiFirebase,
+  git: SiGit,
+  jest: SiJest,
+  jupyter: SiJupyter,
 }
 
-const projects: Project[] = [
-  {
-    id: "proj_physics_nnetworks_001",
-    title: "Multi-Arch Physics Informed Neural Network for PDE Solution",
-    description:
-      "Coupled Ensemble Physics-Informed Neural Networks (MACE-PINN) for solving coupled partial differential equations.",
-    fullDescription:
-      "A novel neural network architecture for solving coupled partial differential equations using parallel subnetworks with adaptive loss weighting. Successfully applied to Gray-Scott and Ginzburg-Landau reaction-diffusion systems.",
-    technologies: ["Python", "PyTorch"],
-    category: "Machine Learning",
-    status: "COMPLETED",
-    date: "2025-04",
-    github: "https://github.com/rushirb2001/thesis-mace-pinn",
-    demo: "https://demo.example.com",
-    highlights: [
-      "Implemented Parallel Subnetwork Architecture",
-      "Integrated Fourier Feature Embeddings for input scaling and area limiting for PDE solution",
-      "Designed Gradient Norm Adaptive Weighting for balancing between trivial and domain-specific solution learning",
-      "Published findings to ASU Thesis Directory",
-    ],
-  },
-  {
-    id: "proj_personal_portfolio_002",
-    title: "Personal Portfolio",
-    description: "Interactive OS-Emulated Design Portfolio",
-    fullDescription:
-      "This portfolio represents a deliberate fusion of modern web development practices and thoughtful user experience design. Built as a platform to present technical work in machine learning and AI, the site demonstrates proficiency in full-stack development, performance optimization, and design-systems-skills that extend beyond data science into production software engineering.",
-    technologies: ["react", "Node.js", "typescript", "tailwind", "nextjs"],
-    category: "Web Development",
-    status: "COMPLETED",
-    date: "2024-06",
-    highlights: [
-      "Processed and visualized 100K+ data points in real-time",
-      "Built custom charting library with D3.js",
-      "Implemented WebSocket connections for live updates",
-      "Achieved 99.9% uptime over 6 months",
-    ],
-  },
-  {
-    id: "proj_ml_pipeline_003",
-    title: "Machine Learning Pipeline for Diamond Shape Segmentation",
-    description: "End-to-end ML pipeline for automated image segmentation.",
-    fullDescription:
-      "A computer vision pipeline for automated diamond image segmentation using GrabCut algorithm with CLAHE preprocessing. This project segments diamonds from background images across 14 different shape categories.",
-    technologies: ["Python", "PyTorch", "Docker", "OpenCV", "Jupyter"],
-    category: "Machine Learning",
-    status: "COMPLETED",
-    date: "2024-10",
-    github: "https://github.com/username/ml-pipeline",
-    highlights: [
-      "Achieved 95% accuracy on custom dataset",
-      "Implemented distributed training across multiple GPUs",
-      "Built RESTful API for model inference",
-      "Containerized deployment with Docker",
-    ],
-  },
-  {
-    id: "proj_yelp_ml_004",
-    title: "Yelp ML Platform",
-    description:
-      "A production-ready ML platform for business recommendations and sentiment analysis using the Yelp dataset.",
-    fullDescription:
-      "A comprehensive fitness tracking application that helps users monitor their workouts, nutrition, and progress over time. Features include workout planning, progress tracking, and social sharing.",
-    technologies: ["Docker", "FastAPI", "PySpark", "github"],
-    category: "Data Science",
-    status: "COMPLETED",
-    date: "2024-03",
-    highlights: [
-      "Architectured a Collaborative filtering recommendation system using ALS (Alternating Least Squares)",
-      "Implemented Large-scale data processing with Apache Spark",
-      "Built ETL pipelines for JSON to Parquet transformation",
-      "Integrated CI/CD pipeline with GitHub Actions",
-    ],
-  },
-]
-
-const categories = ["All", "Web Development", "Machine Learning", "Data Science", "Mobile", "Other"]
-
-// Technology icon mapping
-const techIconMap: Record<string, string> = {
-  javascript: "javascript",
-  typescript: "typescript",
-  react: "react",
-  nextjs: "nextdotjs",
-  nodejs: "nodedotjs",
-  "node.js": "nodedotjs",
-  python: "python",
-  jupyter: "jupyter",
-  pytorch: "pytorch",
-  opencv: "opencv",
-  docker: "docker",
-  github: "github",
-  mongodb: "mongodb",
-  redis: "redis",
-  tailwind: "tailwindcss",
-  pyspark: "apachespark",
+const fallbackIconMap: Record<string, ReactNode> = {
+  sql: Database,
+  database: Database,
+  cloud: Cloud,
+  mobile: Smartphone,
+  native: Smartphone,
+  ios: Smartphone,
+  android: Smartphone,
+  api: Zap,
+  jax: Code2,
+  azure: Cloud,
+  aws: Cloud,
 }
 
 const getTechIcon = (tech: string) => {
-  const normalized = tech
-    .toLowerCase()
-    .replace(/\s+/g, "")
-    .replace(/[^a-z0-9]/g, "")
-  const iconName = techIconMap[normalized] || normalized
+  const techLower = tech.toLowerCase()
+  const iconClass = "w-4 h-4"
+
+  const mainKey = Object.keys(techIconMap).find((key) => techLower.includes(key))
+  if (mainKey) {
+    const Icon = techIconMap[mainKey]
+    return <Icon className={iconClass} />
+  }
+
+  const fallbackKey = Object.keys(fallbackIconMap).find((key) => techLower.includes(key))
+  if (fallbackKey) {
+    const Icon = fallbackIconMap[fallbackKey]
+    return <Icon className={iconClass} />
+  }
+
+  return <span className="text-[8px] font-bold font-sf-mono">{tech.substring(0, 3).toUpperCase()}</span>
+}
+
+const getStatusColor = (status: string) => {
+  switch (status) {
+    case "COMPLETED":
+      return "text-green-500"
+    case "IN PROGRESS":
+      return "text-yellow-500"
+    case "ARCHIVED":
+      return "text-primary/50"
+    default:
+      return "text-primary/70"
+  }
+}
+
+const mobileLabels: Record<string, string> = {
+  All: "ALL",
+  "Web Development": "WEB",
+  "Machine Learning": "ML",
+  "Data Science": "DATA",
+  Mobile: "MOBILE",
+  Other: "OTHER",
+}
+
+const ITEMS_PER_PAGE_DESKTOP = 4
+const ITEMS_PER_PAGE_MOBILE = 2
+
+function ExpandableDescription({ text }: { text: string }) {
+  const [isExpanded, setIsExpanded] = useState(false)
+  const [needsTruncation, setNeedsTruncation] = useState(false)
+  const measureRef = React.useRef<HTMLParagraphElement>(null)
+
+  useEffect(() => {
+    if (measureRef.current) {
+      const lineHeight = Number.parseInt(getComputedStyle(measureRef.current).lineHeight) || 16
+      const maxHeight = lineHeight * 10
+      setNeedsTruncation(measureRef.current.scrollHeight > maxHeight)
+    }
+  }, [text])
+
+  // Reset expansion when text changes
+  useEffect(() => {
+    setIsExpanded(false)
+  }, [text])
 
   return (
-    <img
-      src={`https://cdn.simpleicons.org/${iconName}`}
-      alt={tech}
-      className="w-5 h-5"
-      onError={(e) => {
-        ;(e.target as HTMLImageElement).src = `data:image/svg+xml,${encodeURIComponent(
-          '<svg fill="white" viewBox="0 0 24 24"><path d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" stroke="white" strokeWidth="2" fill="none"/></svg>',
-        )}`
-      }}
-    />
+    <div className="relative">
+      {/* Mobile View */}
+      <div className="md:hidden">
+        <AnimatePresence mode="wait">
+          {isExpanded ? (
+            <motion.div
+              key="expanded"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.15 }}
+              className="border border-primary/20 bg-primary/5"
+            >
+              {/* Scrollable Content Container */}
+              <div className="max-h-40 overflow-y-auto p-3 overscroll-contain">
+                <p className="text-[10px] font-sf-mono text-primary/70 leading-relaxed uppercase tracking-tight">
+                  {text}
+                </p>
+              </div>
+              
+              {/* Collapse Button - Fixed at bottom */}
+              <button
+                onClick={() => setIsExpanded(false)}
+                className="w-full px-3 py-2 border-t border-primary/20 bg-primary text-background flex items-center justify-center gap-2 transition-colors duration-150 hover:bg-primary/90"
+              >
+                <X className="w-3 h-3" />
+                <span className="text-[9px] font-sf-mono uppercase tracking-wider">CLOSE</span>
+              </button>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="collapsed"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.15 }}
+            >
+              {/* Truncated Text */}
+              <p
+                ref={measureRef}
+                className={`font-sf-mono text-primary/70 leading-relaxed uppercase tracking-tight text-sm ${
+                  needsTruncation ? "line-clamp-[6]" : ""
+                }`}
+              >
+                {text}
+              </p>
+              
+              {/* Expand Trigger */}
+              {needsTruncation && (
+                <button
+                  onClick={() => setIsExpanded(true)}
+                  className="mt-2 w-full py-1.5 border border-primary/20 bg-transparent text-primary/60 flex items-center justify-center gap-2 transition-all duration-150 hover:bg-primary/10 hover:border-primary/40 hover:text-primary"
+                >
+                  <ChevronDown className="w-3 h-3" />
+                  <span className="text-[9px] font-sf-mono uppercase tracking-wider">MORE</span>
+                </button>
+              )}
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
+      {/* Desktop View */}
+      <p className="hidden md:block text-xs font-sf-mono text-primary/70 leading-relaxed uppercase tracking-tight">
+        {text}
+      </p>
+    </div>
   )
 }
 
 export default function ProjectsPage() {
   const [selectedCategory, setSelectedCategory] = useState("All")
   const [selectedProject, setSelectedProject] = useState<Project | null>(null)
+  const [hoveredId, setHoveredId] = useState<string | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [startIndex, setStartIndex] = useState(0)
+  const [isCategoryOpen, setIsCategoryOpen] = useState(false)
+  const isMobile = useMediaQuery("(max-width: 768px)")
+
+  const ITEMS_PER_PAGE = isMobile ? ITEMS_PER_PAGE_MOBILE : ITEMS_PER_PAGE_DESKTOP
+
+  const filteredProjects =
+    selectedCategory === "All" ? projects : projects.filter((p) => p.category === selectedCategory)
+
+  const visibleProjects = filteredProjects.slice(startIndex, startIndex + ITEMS_PER_PAGE)
+  const canShowPrevious = startIndex > 0
+  const canShowNext = startIndex + ITEMS_PER_PAGE < filteredProjects.length
+  const showPaginationControls = filteredProjects.length > ITEMS_PER_PAGE
+
+  useEffect(() => {
+    setStartIndex(0)
+  }, [selectedCategory])
 
   useEffect(() => {
     const handleEscKey = (e: KeyboardEvent) => {
@@ -149,13 +300,9 @@ export default function ProjectsPage() {
         closeModal()
       }
     }
-
     window.addEventListener("keydown", handleEscKey)
     return () => window.removeEventListener("keydown", handleEscKey)
   }, [isModalOpen])
-
-  const filteredProjects =
-    selectedCategory === "All" ? projects : projects.filter((p) => p.category === selectedCategory)
 
   const openModal = (project: Project) => {
     setSelectedProject(project)
@@ -167,149 +314,236 @@ export default function ProjectsPage() {
     setTimeout(() => setSelectedProject(null), 200)
   }
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "COMPLETED":
-        return "text-green-500"
-      case "IN PROGRESS":
-        return "text-yellow-500"
-      case "ARCHIVED":
-        return "text-primary/50"
-      default:
-        return "text-primary/70"
-    }
-  }
-
   return (
-    <PageLayout title="PROJECTS" subtitle="Personal & Professional Development Work">
-      <div className="h-[calc(100vh-12rem)] flex flex-col">
-        {/* Category Filter - Fixed at 30% height */}
-        <div className="h-[10%] flex-shrink-0 border-b border-primary/20">
-          <div className="h-full flex items-center justify-center px-2 md:px-6">
-            <div className="flex flex-wrap gap-2 justify-center">
-              {categories.map((category) => {
-                // Define compact mobile labels
-                const mobileLabels: Record<string, string> = {
-                  All: "ALL",
-                  "Web Development": "WEB DEV",
-                  "Machine Learning": "ML",
-                  "Data Science": "DS",
-                  Mobile: "MOBILE",
-                  Other: "OTHER",
-                }
-
-                return (
-                  <button
-                    key={category}
-                    onClick={() => setSelectedCategory(category)}
-                    className={`text-xs font-sf-mono px-2 md:px-3 py-1.5 border transition-colors ${
-                      selectedCategory === category
-                        ? "bg-primary/10 border-primary/40 text-primary"
-                        : "bg-transparent border-primary/20 text-primary/60 hover:border-primary/30 hover:text-primary/80"
-                    }`}
-                  >
-                    <span className="hidden md:inline">{category.toUpperCase()}</span>
-                    <span className="md:hidden">{mobileLabels[category]}</span>
-                  </button>
-                )
-              })}
-            </div>
+    <PageLayout title="PROJECTS" subtitle="PERSONAL & PROFESSIONAL WORK">
+      <div className="flex flex-col gap-3">
+        {/* Category Filter + Pagination Controls */}
+        <div className={`flex gap-2 ${showPaginationControls ? "" : ""}`}>
+          {/* Category Dropdown - Full width when no pagination, 60% with pagination */}
+          <div className={`border border-primary/20 ${showPaginationControls ? "flex-[6]" : "w-full"}`}>
+            <button
+              onClick={() => setIsCategoryOpen(!isCategoryOpen)}
+              className="w-full flex items-center justify-between px-3 py-2 bg-primary/5 hover:bg-primary/10 transition-colors duration-200"
+            >
+              <div className="flex items-center gap-2">
+                <span className="font-sf-mono text-primary/60 text-sm">FILTER</span>
+                <span className="text-primary/20">|</span>
+                <span className="font-sf-mono text-primary text-sm">
+                  SHOWING '
+                  {isMobile
+                    ? mobileLabels[selectedCategory] || selectedCategory.toUpperCase()
+                    : selectedCategory.toUpperCase()}
+                  '
+                </span>
+              </div>
+              <motion.div animate={{ rotate: isCategoryOpen ? 180 : 0 }} transition={{ duration: 0.2 }}>
+                <ChevronDown className="w-3 h-3 text-primary/50" />
+              </motion.div>
+            </button>
+            <AnimatePresence>
+              {isCategoryOpen && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="overflow-hidden border-t border-primary/10"
+                >
+                  <div className="p-3">
+                    <div className="flex flex-wrap gap-1.5">
+                      {categories.map((category) => (
+                        <button
+                          key={category}
+                          onClick={() => {
+                            setSelectedCategory(category)
+                            setIsCategoryOpen(false)
+                          }}
+                          className={`px-2 py-1 text-[9px] font-sf-mono border transition-colors duration-200 ${
+                            selectedCategory === category
+                              ? "bg-primary text-background border-primary"
+                              : "bg-primary text-background border-primary/40 hover:bg-primary/90"
+                          }`}
+                        >
+                          <span className="hidden md:inline text-sm">{category.toUpperCase()}</span>
+                          <span className="md:hidden">{mobileLabels[category] || category.toUpperCase()}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
+
+          {/* Pagination Controls - Only show when needed, takes 40% */}
+          {showPaginationControls && (
+            <div className="flex-[4] flex items-start gap-2">
+              <button
+                onClick={() => setStartIndex((prev) => Math.max(0, prev - ITEMS_PER_PAGE))}
+                disabled={!canShowPrevious}
+                className={`flex-1 h-[42px] border flex items-center justify-center transition-all duration-150 ${
+                  canShowPrevious
+                    ? "bg-primary text-background border-primary/40 hover:bg-primary/90"
+                    : "border-primary/10 text-primary/10 cursor-not-allowed"
+                }`}
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => setStartIndex((prev) => prev + ITEMS_PER_PAGE)}
+                disabled={!canShowNext}
+                className={`flex-1 h-[42px] border flex items-center justify-center transition-all duration-150 ${
+                  canShowNext
+                    ? "bg-primary text-background border-primary/40 hover:bg-primary/90"
+                    : "border-primary/10 text-primary/10 cursor-not-allowed"
+                }`}
+              >
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
+          )}
         </div>
 
-        {/* Projects Grid - Takes remaining 70% height with scroll */}
-        <div className="h-[90%] flex-shrink-0 overflow-y-auto px-6 py-6">
-          {filteredProjects.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {filteredProjects.map((project, index) => (
+        {/* Projects Grid - No Side Navigation */}
+        <div className="min-h-[300px] md:min-h-[300px]">
+          {visibleProjects.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 h-full">
+              {visibleProjects.map((project, index) => (
                 <motion.div
                   key={project.id}
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                  onClick={() => openModal(project)}
-                  className="border border-primary/20 hover:border-primary/40 bg-background dark:bg-eerie-black/50 transition-all duration-200 cursor-pointer"
+                  transition={{ delay: index * 0.05 }}
+                  onMouseEnter={() => setHoveredId(project.id)}
+                  onMouseLeave={() => setHoveredId(null)}
+                  className={`border border-primary/20 bg-background transition-all duration-150 cursor-pointer ${
+                    hoveredId === project.id ? "border-primary/40 bg-primary/5" : ""
+                  }`}
                 >
-                  {/* Header Bar */}
-                  <div className="border-b border-primary/20 px-3 py-2 flex items-center justify-between bg-primary/5">
-                    {selectedCategory === "All" ? (
-                      <>
-                        <div className="flex items-center gap-2">
-                          <Terminal className="h-3 w-3 text-primary/70" />
-                          <span className="text-xs font-sf-mono text-primary/70">{project.id}</span>
+                  {/* Header - Lighter with inline tech icons */}
+                  <div className="border-b border-primary/20 px-3 py-2 flex items-center justify-between bg-transparent">
+                    <div className="flex items-center gap-2">
+                      <Terminal className="h-3 w-3 text-primary" />
+                      <span className="font-sf-mono font-bold text-primary tracking-wider text-base">
+                        {project.category.toUpperCase()}
+                      </span>
+                    </div>
+                    <div className="flex gap-1">
+                      {project.technologies.slice(0, 4).map((tech) => (
+                        <div
+                          key={tech}
+                          className="w-6 h-6 border border-primary/20 flex items-center justify-center text-primary/60 hover:bg-primary/10 hover:text-primary transition-colors"
+                          title={tech}
+                        >
+                          {getTechIcon(tech)}
                         </div>
-                        <div className={`text-xs font-sf-mono ${getStatusColor(project.status)}`}>{project.status}</div>
-                      </>
-                    ) : (
-                      <div className="w-full flex items-center justify-center">
-                        <div className={`text-xs font-sf-mono ${getStatusColor(project.status)}`}>{project.status}</div>
-                      </div>
-                    )}
+                      ))}
+                      {project.technologies.length > 4 && (
+                        <div className="w-6 h-6 border border-primary/20 flex items-center justify-center text-[8px] font-sf-mono text-primary/50">
+                          +{project.technologies.length - 4}
+                        </div>
+                      )}
+                    </div>
                   </div>
 
-                  {/* Tech Stack Icons Row */}
-                  <div className="border-b border-primary/10 px-3 py-3 flex gap-2">
-                    {project.technologies.slice(0, 5).map((tech) => (
-                      <div
-                        key={tech}
-                        className="w-10 h-10 border border-primary/20 bg-primary/5 flex items-center justify-center text-primary/60 hover:bg-primary/10 hover:text-primary transition-colors relative"
-                        title={tech}
-                      >
-                        {getTechIcon(tech)}
-                      </div>
-                    ))}
-                    {project.technologies.length > 5 && (
-                      <div className="w-10 h-10 border border-primary/20 bg-primary/5 flex items-center justify-center text-[0.5rem] font-sf-mono text-primary/60">
-                        +{project.technologies.length - 5}
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Content */}
-                  <div className="p-4 space-y-3">
-                    <div>
-                      <h3 className="text-sm font-sf-mono font-medium group-hover:text-primary/90 transition-colors h-10 line-clamp-2 flex items-start mb-1 mt-0 py-0">
+                  {/* Body - Content with vertical button stack */}
+                  <div className="flex">
+                    {/* Content Area */}
+                    <div className="flex-1 p-3">
+                      <h3 className="font-sf-mono font-bold uppercase mb-2 tracking-wider text-base">
                         {project.title}
                       </h3>
-                      <p className="text-xs text-primary/70 leading-relaxed h-10 line-clamp-2">{project.description}</p>
+                      <ExpandableDescription text={project.description} />
                     </div>
 
-                    {/* Category & Date */}
-                    {selectedCategory === "All" && (
-                      <div className="flex items-center justify-between text-xs font-sf-mono text-primary/50 pt-2 border-t border-primary/10">
-                        <span>{project.category.toUpperCase()}</span>
-                        <span>{project.date}</span>
-                      </div>
-                    )}
-                  </div>
+                    {/* Buttons - Vertically centered, fixed height */}
+                    <div className="flex flex-col justify-center gap-2 px-3 py-3">
+                      <a
+                        href={project.github || "#"}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          if (!project.github) e.preventDefault()
+                        }}
+                        className={`px-3 py-2 border transition-all duration-150 ${
+                          project.github
+                            ? "bg-primary text-background border-primary hover:bg-primary/90"
+                            : "bg-primary/10 text-primary/30 border-primary/20 cursor-not-allowed"
+                        }`}
+                      >
+                        <div className="flex items-center justify-center gap-1.5">
+                          <Github className="w-3 h-3" />
+                          <span className="font-sf-mono text-sm">CODE</span>
+                        </div>
+                      </a>
 
-                  {/* Footer Action */}
-                  <div className="border-t border-primary/20 px-4 py-2 flex items-center justify-between bg-primary/5 group-hover:bg-primary/10 transition-colors">
-                    <span className="text-xs font-sf-mono text-primary/60">VIEW DETAILS</span>
-                    <ChevronRight className="h-3 w-3 text-primary/60 group-hover:translate-x-1 transition-transform" />
+                      <button
+                        onClick={() => openModal(project)}
+                        className="px-3 py-2 border bg-primary text-background border-primary hover:bg-primary/90 transition-all duration-150"
+                      >
+                        <div className="flex items-center justify-center gap-1.5">
+                          <ChevronRight className="w-3 h-3" />
+                          <span className="font-sf-mono text-sm">VIEW</span>
+                        </div>
+                      </button>
+                    </div>
                   </div>
                 </motion.div>
               ))}
             </div>
           ) : (
-            <div className="h-full flex items-center justify-center">
-              <div className="flex items-center gap-3">
-                <Terminal className="w-5 h-5 text-foreground" />
-                <p className="text-sm font-sf-mono text-primary/70 font-mono">NEW PROJECTS COMING SOON...</p>
+            <div className="flex items-center justify-center h-full min-h-[300px] md:min-h-[300px]">
+              <div className="flex items-center gap-2">
+                <Terminal className="w-4 h-4 text-primary/50" />
+                <p className="text-xs font-sf-mono text-primary/50">CHECK BACK AGAIN SOON, MORE PROJECTS TO COME...</p>
               </div>
             </div>
           )}
         </div>
+
+        {/* Footer Stats */}
+        <motion.div
+          className="flex items-center justify-between border-t border-primary/20 pt-3"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.2, delay: 0.3 }}
+        >
+          <div className="flex gap-1 sm:gap-2 text-[9px] sm:text-[10px] font-sf-mono text-primary/40 uppercase tracking-wider">
+            <span className="text-xs tracking-tighter">
+              {projects.length} {isMobile ? "PROJ" : "PROJECTS"}
+            </span>
+            <span className="text-primary/20">/</span>
+            <span className="text-xs tracking-tighter">
+              {categories.length - 1} {isMobile ? "CAT" : "CATEGORIES"}
+            </span>
+            <span className="text-primary/20">/</span>
+            <span className="text-xs tracking-tighter">
+              {filteredProjects.length} {isMobile ? "SHOWN" : "FILTERED"}
+            </span>
+          </div>
+          {showPaginationControls && (
+            <span className="sm:text-[10px] font-sf-mono text-primary/30 font-semibold text-xs tracking-tighter">
+              {startIndex + 1}-{Math.min(startIndex + ITEMS_PER_PAGE, filteredProjects.length)} OF{" "}
+              {filteredProjects.length}
+            </span>
+          )}
+          {!showPaginationControls && (
+            <div className="text-[9px] sm:text-[10px] font-sf-mono text-primary/30">
+              <span className="text-sm">LAST.UPDATED: 2025</span>
+            </div>
+          )}
+        </motion.div>
       </div>
 
-      {/* Project Detail Modal */}
+      {/* Modal - Wide Horizontal Layout */}
       <AnimatePresence>
         {isModalOpen && selectedProject && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-3 md:p-6"
             onClick={closeModal}
           >
             <motion.div
@@ -317,99 +551,160 @@ export default function ProjectsPage() {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="w-full max-w-4xl bg-background dark:bg-eerie-black border border-primary/30 shadow-2xl max-h-[90vh] overflow-y-auto"
+              className="w-full max-w-5xl bg-background border border-primary/30 shadow-lg max-h-[90vh] overflow-hidden flex flex-col"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Header */}
-              <div className="bg-primary/5 px-4 py-3 flex justify-between items-center border-b border-primary/30 sticky top-0 z-10">
+              <div className="border-b border-primary/20 px-3 md:px-4 py-2 md:py-3 flex justify-between items-center bg-primary/5">
                 <div className="flex items-center gap-2">
-                  <Terminal className="h-4 w-4 text-primary/70" />
-                  <span className="text-sm font-sf-mono text-primary/70">{selectedProject.title.toUpperCase()}</span>
+                  <Terminal className="h-5 w-5 md:h-4 md:w-4 text-primary" />
+                  <span className="font-sf-mono font-bold uppercase tracking-wider text-primary line-clamp-3 md:text-sm text-xs">
+                    {selectedProject.title}
+                  </span>
                 </div>
                 <button
                   onClick={closeModal}
-                  className="text-primary/70 hover:text-primary transition-colors text-xs font-sf-mono"
+                  className="bg-primary text-background border border-primary/40 hover:bg-primary/90 transition-all duration-200 font-sf-mono flex items-center justify-center w-7 h-7 md:w-auto md:px-2 md:py-1"
                 >
-                  [ ESC ]
+                  <span className="hidden md:inline text-[10px]">ESC</span>
+                  <X className="w-3 h-3 md:hidden" />
                 </button>
               </div>
 
-              {/* Content */}
-              <div className="p-6">
-                <div className="grid grid-cols-1 gap-6">
-                  {/* Main Content */}
-                  <div className="space-y-6">
-                    <div>
-                      <div className="text-xs font-sf-mono text-primary/50 mb-1">DESCRIPTION:</div>
-                      <p className="text-sm leading-relaxed text-primary/90">{selectedProject.fullDescription}</p>
+              {/* Content - Single Column */}
+              <div className="p-4 md:p-6 overflow-y-auto flex-1 space-y-4 md:space-y-5">
+                {/* Description */}
+                <div>
+                  <div className="flex items-center gap-2 mb-2 md:mb-3 pb-2 border-b border-primary/10">
+                    <div className="w-5 h-5 border border-primary/30 bg-primary/10 flex items-center justify-center text-[10px] font-sf-mono text-primary/70">
+                      01
                     </div>
+                    <span className="text-[9px] md:text-sm font-sf-mono text-primary/50 uppercase tracking-wider">
+                      DESCRIPTION
+                    </span>
+                  </div>
+                  <ExpandableDescription text={selectedProject.fullDescription} />
+                </div>
 
-                    <div>
-                      <div className="text-xs font-sf-mono text-primary/50 mb-2">KEY HIGHLIGHTS:</div>
-                      <div className="space-y-2">
-                        {selectedProject.highlights.map((highlight, i) => (
-                          <div key={i} className="flex gap-3">
-                            <div className="w-6 h-6 border border-primary/30 bg-primary/5 flex items-center justify-center text-xs font-sf-mono text-primary/70 flex-shrink-0">
-                              {i + 1}
-                            </div>
-                            <p className="text-sm leading-relaxed text-primary/90 pt-0.5">{highlight}</p>
-                          </div>
-                        ))}
-                      </div>
+                {/* Highlights */}
+                <div>
+                  <div className="flex items-center gap-2 mb-2 md:mb-3 pb-2 border-b border-primary/10">
+                    <div className="w-5 h-5 border border-primary/30 bg-primary/10 flex items-center justify-center text-[10px] font-sf-mono text-primary/70 flex-shrink-0">
+                      02
                     </div>
-
-                    <div>
-                      <div className="text-xs font-sf-mono text-primary/50 mb-2">TECHNOLOGIES:</div>
-                      <div className="flex flex-wrap gap-2">
-                        {selectedProject.technologies.map((tech) => (
-                          <span
-                            key={tech}
-                            className="text-xs font-sf-mono bg-primary/5 border border-primary/30 text-primary/70 px-2 py-1"
-                          >
-                            {tech}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Links */}
-                    {(selectedProject.github || selectedProject.demo) && (
-                      <div className="border-t border-primary/20 pt-4">
-                        <div className="text-xs font-sf-mono text-primary/50 mb-2">LINKS:</div>
-                        <div className="flex gap-3">
-                          {selectedProject.github && (
-                            <a
-                              href={selectedProject.github}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="flex items-center gap-2 text-xs font-sf-mono bg-primary/5 border border-primary/30 text-primary/70 hover:bg-primary/10 hover:border-primary/40 hover:text-primary transition-colors px-3 py-2 w-full"
-                            >
-                              <Github className="h-4 w-4" />
-                              VIEW SOURCE
-                            </a>
-                          )}
-                          {selectedProject.demo && (
-                            <a
-                              href={selectedProject.demo}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="flex items-center gap-2 text-xs font-sf-mono bg-primary/5 border border-primary/30 text-primary/70 hover:bg-primary/10 hover:border-primary/40 hover:text-primary transition-colors px-3 py-2 w-full"
-                            >
-                              <ExternalLink className="h-4 w-4" />
-                              LIVE DEMO
-                            </a>
-                          )}
+                    <span className="text-[9px] md:text-sm font-sf-mono text-primary/50 uppercase tracking-wider">
+                      KEY HIGHLIGHTS
+                    </span>
+                  </div>
+                  <div className="space-y-2 md:space-y-3">
+                    {selectedProject.highlights.map((highlight, i) => (
+                      <div key={i} className="flex gap-2">
+                        <div className="w-5 h-5 border border-primary/20 bg-primary/5 flex items-center justify-center text-[9px] font-sf-mono text-primary/60 flex-shrink-0">
+                          {i + 1}
                         </div>
+                        <p className="text-[10px] md:text-xs font-sf-mono text-primary/70 leading-relaxed">
+                          {highlight}
+                        </p>
                       </div>
-                    )}
+                    ))}
                   </div>
                 </div>
               </div>
 
-              {/* Footer */}
-              <div className="border-t border-primary/20 p-4 bg-primary/5 flex justify-between items-center">
-                <div className="text-xs font-sf-mono text-primary/50">PERSONAL & PROFESSIONAL PROJECTS</div>
-                <div className="text-xs font-sf-mono text-primary/50">ID: {selectedProject.id}</div>
+              {/* Footer - Proper Alignment */}
+              <div className="border-t border-primary/20 px-3 md:px-4 py-2 md:py-3 bg-primary/5">
+                {/* Desktop Layout - Single Row */}
+                <div className="hidden md:flex items-center justify-between gap-3">
+                  {/* Technologies - Left */}
+                  <div className="flex items-center gap-2 flex-wrap flex-1">
+                    <span className="text-[9px] font-sf-mono text-primary/50 uppercase tracking-wider">
+                      TECH STACK:
+                    </span>
+                    {selectedProject.technologies.map((tech) => (
+                      <span
+                        key={tech}
+                        className="text-[9px] font-sf-mono border border-primary bg-background text-primary/70 px-2 py-1 hover:bg-primary hover:text-background transition-colors"
+                      >
+                        {tech.toUpperCase()}
+                      </span>
+                    ))}
+                  </div>
+
+                  {/* Action Buttons - Right */}
+                  {(selectedProject.github || selectedProject.demo) && (
+                    <div className="flex gap-2 flex-shrink-0">
+                      {selectedProject.github && (
+                        <a
+                          href={selectedProject.github}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-2 text-[10px] font-sf-mono border border-primary bg-primary text-background hover:bg-primary/90 transition-all duration-150 px-4 py-2"
+                        >
+                          <Github className="h-3 w-3" />
+                          <span>SOURCE</span>
+                        </a>
+                      )}
+                      {selectedProject.demo && (
+                        <a
+                          href={selectedProject.demo}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-2 text-[10px] font-sf-mono border border-primary bg-primary text-background hover:bg-primary/90 transition-all duration-150 px-4 py-2"
+                        >
+                          <ExternalLink className="h-3 w-3" />
+                          <span>DEMO</span>
+                        </a>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                {/* Mobile Layout - Single Row */}
+                <div className="flex md:hidden items-center justify-between">
+                  {/* Tech Icons - Left */}
+                  <div className="flex gap-1 flex-wrap">
+                    {selectedProject.technologies.slice(0, 5).map((tech) => (
+                      <div
+                        key={tech}
+                        className="w-7 h-7 border border-primary bg-primary text-background flex items-center justify-center hover:bg-primary/90 transition-colors"
+                        title={tech}
+                      >
+                        {getTechIcon(tech)}
+                      </div>
+                    ))}
+                    {selectedProject.technologies.length > 5 && (
+                      <div className="w-7 h-7 border border-primary bg-primary text-background flex items-center justify-center text-[8px] font-sf-mono">
+                        +{selectedProject.technologies.length - 5}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Action Buttons - Right */}
+                  {(selectedProject.github || selectedProject.demo) && (
+                    <div className="flex gap-2 flex-shrink-0">
+                      {selectedProject.github && (
+                        <a
+                          href={selectedProject.github}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="w-10 h-7 border border-primary bg-primary text-background hover:bg-primary/90 transition-all duration-150 flex items-center justify-center"
+                        >
+                          <Github className="h-3 w-3" />
+                        </a>
+                      )}
+                      {selectedProject.demo && (
+                        <a
+                          href={selectedProject.demo}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="w-10 h-7 border border-primary bg-primary text-background hover:bg-primary/90 transition-all duration-150 flex items-center justify-center"
+                        >
+                          <ExternalLink className="h-3 w-3" />
+                        </a>
+                      )}
+                    </div>
+                  )}
+                </div>
               </div>
             </motion.div>
           </motion.div>
