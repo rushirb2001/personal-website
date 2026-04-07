@@ -1,5 +1,11 @@
 {
   "name": "severance-portfolio",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
   "dependencies": {
     "@emailjs/browser": "^3.11.0",
     "@radix-ui/react-slot": "^1.2.4",
