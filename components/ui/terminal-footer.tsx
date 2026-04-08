@@ -243,9 +243,6 @@ const TerminalFooter = memo(function TerminalFooter() {
         handleNavigation(navItem.path)
       } else if (page === "home") {
         handleNavigation("/")
-      } else if (page === "updates") {
-        // Add specific handling for updates page
-        handleNavigation("/updates")
       } else if (page === "projects") {
         // Add specific handling for projects page
         handleNavigation("/projects")
