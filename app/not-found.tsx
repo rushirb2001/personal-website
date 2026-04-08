@@ -2,24 +2,22 @@ import Link from "next/link"
 
 export default function NotFound() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-[60vh] px-4 text-center">
-      <div className="border border-primary/20 bg-card rounded-sm p-8 max-w-md w-full">
-        <p className="text-xs tracking-[0.3em] uppercase text-muted-foreground mb-4 font-mono">
-          Record Not Found
+    <main className="min-h-screen bg-background text-foreground font-sf-mono flex items-center justify-center px-6">
+      <div className="max-w-md w-full">
+        <p className="text-[10px] uppercase tracking-[0.25em] text-foreground/50 mb-3">
+          404
         </p>
-        <h2 className="text-lg font-medium text-foreground mb-2">
-          404 — This file does not exist.
-        </h2>
-        <p className="text-sm text-muted-foreground mb-6">
-          The requested record could not be located in the system.
+        <h1 className="text-lg font-medium mb-2">This page does not exist.</h1>
+        <p className="text-sm text-foreground/70 mb-6">
+          Nothing here. Probably never was.
         </p>
         <Link
           href="/"
-          className="inline-block px-4 py-2 text-xs tracking-[0.2em] uppercase border border-primary/30 hover:border-primary/60 bg-background text-foreground transition-colors rounded-sm"
+          className="text-sm underline underline-offset-4 decoration-foreground/30 hover:decoration-foreground"
         >
-          Return to Lobby
+          back home
         </Link>
       </div>
-    </div>
+    </main>
   )
 }

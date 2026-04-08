@@ -1,7 +1,6 @@
 "use client"
 
 export default function GlobalError({
-  error,
   reset,
 }: {
   error: Error & { digest?: string }
@@ -9,25 +8,61 @@ export default function GlobalError({
 }) {
   return (
     <html lang="en">
-      <body className="bg-neutral-50 dark:bg-neutral-950 text-neutral-900 dark:text-neutral-100 font-sans">
-        <div className="flex flex-col items-center justify-center min-h-screen px-4 text-center">
-          <div className="border border-red-300 dark:border-red-800 bg-red-50 dark:bg-red-950/20 rounded-sm p-8 max-w-md w-full">
-            <p className="text-xs tracking-[0.3em] uppercase text-red-600 dark:text-red-400 mb-4 font-mono">
-              Critical System Failure
-            </p>
-            <h2 className="text-lg font-medium mb-2">
-              Something went fundamentally wrong.
-            </h2>
-            <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-6">
-              Please contact your department supervisor.
-            </p>
-            <button
-              onClick={reset}
-              className="px-4 py-2 text-xs tracking-[0.3em] uppercase border border-neutral-300 dark:border-neutral-700 hover:border-neutral-500 transition-colors rounded-sm"
-            >
-              Restart Session
-            </button>
-          </div>
+      <body
+        style={{
+          fontFamily:
+            'ui-monospace, "SF Mono", Menlo, Monaco, "Cascadia Mono", monospace',
+          background: "#f7f7f7",
+          color: "#1f1f1f",
+          margin: 0,
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: "1.5rem",
+        }}
+      >
+        <div style={{ maxWidth: "28rem" }}>
+          <p
+            style={{
+              fontSize: "10px",
+              textTransform: "uppercase",
+              letterSpacing: "0.25em",
+              opacity: 0.5,
+              margin: "0 0 0.75rem",
+            }}
+          >
+            Critical error
+          </p>
+          <h1
+            style={{
+              fontSize: "1.125rem",
+              fontWeight: 500,
+              margin: "0 0 0.5rem",
+            }}
+          >
+            Something broke at the root.
+          </h1>
+          <p style={{ fontSize: "0.875rem", opacity: 0.7, margin: "0 0 1.5rem" }}>
+            Refresh the page. If it keeps happening, please email{" "}
+            bhavsarrushir@gmail.com.
+          </p>
+          <button
+            onClick={reset}
+            style={{
+              fontSize: "0.875rem",
+              textDecoration: "underline",
+              textUnderlineOffset: "4px",
+              background: "none",
+              border: "none",
+              color: "inherit",
+              fontFamily: "inherit",
+              cursor: "pointer",
+              padding: 0,
+            }}
+          >
+            try again
+          </button>
         </div>
       </body>
     </html>
