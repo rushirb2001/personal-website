@@ -7,7 +7,6 @@ import { ArrowRight, Github, Linkedin, Mail, FileText, MapPin, ChevronLeft, Chev
 import { PageLayout } from "@/components/layout/page-layout"
 import { Button } from "@/components/ui/button"
 import { useNavigation } from "@/contexts/navigation-context"
-import { UpdatesBanner } from "@/components/features/updates/updates-banner"
 import { ResumeModal } from "@/components/features/resume/resume-modal"
 import Image from "next/image"
 import Link from "next/link"
@@ -154,10 +153,6 @@ export default function Home() {
 
   return (
     <>
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3, duration: 0.5 }}>
-        <UpdatesBanner />
-      </motion.div>
-
       <PageLayout title="RUSHIR BHAVSAR" subtitle="DATA SCIENTIST • AI ENGINEER • ML RESEARCHER">
         <div className="flex flex-col gap-3 h-full min-w-0 overflow-hidden">
           {/* Top Section: Photo + About */}
