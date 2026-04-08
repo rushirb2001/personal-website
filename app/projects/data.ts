@@ -15,36 +15,6 @@ export interface Project {
 
 export const projects: Project[] = [
   {
-    id: "proj_portfolio_001",
-    title: "Personal Portfolio Website",
-    description: "Professional portfolio built with Next.js 14, TypeScript, and Tailwind CSS",
-    fullDescription:
-      "A modern, high-performance portfolio website showcasing machine learning engineering projects and technical expertise. Built with Next.js 14 App Router and React Server Components, featuring custom animations, responsive design, and optimal performance. The site demonstrates production-grade software engineering practices with modular component architecture, comprehensive type safety, and accessibility compliance. Achieves 95+ Lighthouse performance score and perfect accessibility ratings through strategic optimization including server-side rendering, code splitting, image lazy loading, and minimal JavaScript bundles.",
-    technologies: [
-      "Next.js 14",
-      "TypeScript",
-      "React",
-      "Tailwind CSS",
-      "Framer Motion",
-      "shadcn/ui",
-      "Radix UI",
-      "Vercel",
-    ],
-    category: "Web Development",
-    status: "COMPLETED",
-    date: "2024-10",
-    github: "https://github.com/rushirb2001/v0-untitled-project",
-    demo: "https://rushirbhavsar.vercel.app",
-    highlights: [
-      "Achieved Lighthouse scores: 95+ Performance, 100 Accessibility, 100 Best Practices, 100 SEO",
-      "Implemented Server Components architecture reducing client-side JavaScript by 40%",
-      "Built custom design system with dark/light mode and fluid responsive layouts",
-      "Optimized Core Web Vitals: LCP < 2.0s, FCP < 1.2s, CLS < 0.1",
-      "Deployed on Vercel edge network with automated CI/CD pipeline",
-    ],
-    feature: false,
-  },
-  {
     id: "proj_yelp_ml_002",
     title: "Yelp ML Platform",
     description: "Production-ready ML platform for business recommendations and sentiment analysis",
