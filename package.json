@@ -39,5 +39,13 @@
     "postcss": "8.5.6",
     "tailwindcss": "^4.1.9",
     "typescript": "5.9.2"
+  },
+  "packageManager": "pnpm@10.31.0",
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@tailwindcss/oxide",
+      "esbuild",
+      "sharp"
+    ]
   }
 }
