@@ -1,462 +1,435 @@
 "use client"
 
-import type React from "react"
-import { useState, useRef, useEffect, useCallback } from "react"
-import { motion, AnimatePresence } from "framer-motion"
-import { ArrowRight, Github, Linkedin, Mail, FileText, MapPin, ChevronLeft, ChevronRight } from "lucide-react"
-import { PageLayout } from "@/components/layout/page-layout"
-import { Button } from "@/components/ui/button"
-import { useNavigation } from "@/contexts/navigation-context"
-import { ResumeModal } from "@/components/features/resume/resume-modal"
 import Image from "next/image"
-import Link from "next/link"
-import { projects } from "@/app/projects/data"
+import { useRef, useState } from "react"
 
-const specializations = [
+const TABS = ["Work", "Projects", "Education"] as const
+
+// 3 work entries share the 70vh content area with individual heights
+const WORK = [
   {
-    items: [
-      "Machine Learning",
-      "Deep Learning",
-      "Computer Vision",
-      "NLP",
-      "LLMs",
-      "Generative AI",
-      "Neural Networks",
-      "Transformers",
-      "MLOps",
-      "RL",
-    ],
-    speed: 30,
-    reverse: false,
+    company: "ASU",
+    role: "ML Researcher",
+    year: "2026",
+    desc: "Building a modular PyTorch Lightning + JAX framework so Applied Materials can stress-test whether neural networks can replace traditional plasma solvers in their etch chambers.",
+    stack: "PyTorch Lightning · JAX · Hydra · WandB",
+    vh: 24,
   },
   {
-    items: [
-      "PyTorch",
-      "TensorFlow",
-      "JAX",
-      "Hugging Face",
-      "LangChain",
-      "DeepSpeed",
-      "Ray",
-      "vLLM",
-      "LoRA/QLoRA",
-      "CUDA",
-    ],
-    speed: 35,
-    reverse: true,
+    company: "Cadence",
+    role: "ML Engineer",
+    year: "2025",
+    desc: "ESM2 + contrastive-learning pipeline batched through cuDF and PyTorch Lightning. Replaced GP bottleneck with cuML/RAFT — batch sizes jumped 150 → 50K+ at 7.2 ms / sequence.",
+    stack: "ESM2 · cuDF · cuML · RAFT · OmegaConf",
+    vh: 23,
   },
   {
-    items: [
-      "AWS SageMaker",
-      "Apache Spark",
-      "Vector DBs",
-      "Kubernetes",
-      "Docker",
-      "FastAPI",
-      "PostgreSQL",
-      "MLFlow",
-      "Databricks",
-      "Redis",
-    ],
-    speed: 28,
-    reverse: false,
+    company: "Talin Labs",
+    role: "GenAI Engineer",
+    year: "2024",
+    desc: "Deployed a fine-tuned Mistral-7B-Q8 on Kubernetes behind FastAPI with a six-agent LangChain orchestration. Sub-200 ms p95 for 10K users; 88% on 10K human-evaluated queries.",
+    stack: "Mistral-7B · Kubernetes · FastAPI · LangChain · LangGraph",
+    vh: 23,
   },
 ]
 
-const stats = [
-  { label: "PROJECTS", value: "15+" },
-  { label: "PUBLICATIONS", value: "3+" },
-  { label: "EXPERIENCE", value: "2+ YRS" },
+// Right-column content area = 70vh (100 - 20 intro - 10 nav)
+// Pager footer = 5vh, leaving 65vh for cards.
+// 4 projects share the 65vh with individual heights.
+const PROJECTS = [
+  {
+    name: "MACE-PINN",
+    type: "Master's thesis · 2025",
+    desc: "Parallel-subnetwork PINN with random Fourier feature embeddings for coupled PDE systems. 40–60% lower L2 error than single-network baselines on Gray-Scott and Ginzburg-Landau.",
+    stack: "JAX · Flax · NumPy",
+    links: [
+      { label: "github", href: "https://github.com/rushirb2001/thesis-mace-pinn" },
+      { label: "paper", href: "https://keep.lib.asu.edu/items/201211" },
+    ],
+    vh: 18,
+  },
+  {
+    name: "MedQuery",
+    type: "LLM benchmark · 2025",
+    desc: "10K-query classification benchmark across four difficulty levels and nine categories — comparing local quantised models (MLX, llama.cpp) against frontier APIs honestly.",
+    stack: "LangGraph · LangChain · FAISS · OpenAI",
+    links: [{ label: "github", href: "https://github.com/rushirb2001" }],
+    vh: 18,
+  },
+  {
+    name: "HybridFlow",
+    type: "Retrieval system · 2025",
+    desc: "Hybrid Qdrant + Neo4j + SQLite retrieval across surgical textbooks with sub-12 ms P50 multi-hop reasoning through ten tool functions.",
+    stack: "Qdrant · Neo4j · SQLite · FastAPI",
+    links: [{ label: "github", href: "https://github.com/rushirb2001" }],
+    vh: 17,
+  },
+  {
+    name: "Yelp recs & sentiment",
+    type: "Coursework, prod-quality · 2024",
+    desc: "Spark ALS recommender plus a sentiment classifier behind FastAPI microservices serving 5M+ interactions at sub-100 ms p95, with Redis caching and MLflow tracking.",
+    stack: "PySpark · FastAPI · MLflow · Docker · Redis",
+    links: [
+      { label: "github", href: "https://github.com/rushirb2001/yelp-ml-platform" },
+    ],
+    vh: 17,
+  },
 ]
 
-const quickLinks = [
-  { label: "PROJECTS", path: "/projects" },
-  { label: "EXPERIENCE", path: "/experience" },
-  { label: "PUBLICATIONS", path: "/publications" },
+const EDUCATION = [
+  {
+    degree: "MS in Data Science",
+    school: "Arizona State University",
+    detail: "HPC concentration · 2025",
+    coursework:
+      "Statistical ML · Distributed Systems · GPU Computing · Deep Learning Theory · Numerical Methods · Optimization",
+    highlights:
+      "Master's thesis on physics-informed neural networks for coupled PDE systems · GPA 4.0",
+    vh: 35,
+  },
+  {
+    degree: "BTech in Computer Science & Engineering",
+    school: "Nirma University, Ahmedabad",
+    detail: "2023",
+    coursework:
+      "Algorithms · Operating Systems · Computer Networks · Databases · Compilers · Linear Algebra",
+    highlights:
+      "Graduated with distinction · ACM student chapter · Undergraduate research on graph algorithms",
+    vh: 35,
+  },
 ]
 
-interface MarqueeRowProps {
-  items: string[]
-  speed: number
-  reverse: boolean
+function Pager({
+  page,
+  pageCount,
+  onChange,
+}: {
+  page: number
+  pageCount: number
+  onChange: (p: number) => void
+}) {
+  if (pageCount <= 1) return null
+  const atFirst = page === 0
+  const atLast = page === pageCount - 1
+  return (
+    <div className="h-[5vh] flex items-stretch">
+      <button
+        onClick={() => onChange(Math.max(0, page - 1))}
+        disabled={atFirst}
+        aria-label="Previous"
+        className={`flex-1 text-xs font-bold uppercase tracking-[0.25em] text-white transition-colors ${
+          atFirst
+            ? "bg-[hsl(0_0%_25%)] cursor-not-allowed"
+            : "bg-black hover:bg-[hsl(0_0%_15%)]"
+        }`}
+        style={{ fontFamily: "var(--font-jetbrains)" }}
+      >
+        ← Prev
+      </button>
+      <div
+        className="flex-1 bg-[hsl(0_0%_89.9%)] text-foreground tabular-nums flex items-center justify-center gap-3 text-xs"
+        style={{ fontFamily: "var(--font-jetbrains)" }}
+      >
+        <span className="font-bold">{String(page + 1).padStart(2, "0")}</span>
+        <span className="text-foreground/40">/</span>
+        <span>{String(pageCount).padStart(2, "0")}</span>
+      </div>
+      <button
+        onClick={() => onChange(Math.min(pageCount - 1, page + 1))}
+        disabled={atLast}
+        aria-label="Next"
+        className={`flex-1 text-xs font-bold uppercase tracking-[0.25em] text-white transition-colors ${
+          atLast
+            ? "bg-[hsl(0_0%_25%)] cursor-not-allowed"
+            : "bg-black hover:bg-[hsl(0_0%_15%)]"
+        }`}
+        style={{ fontFamily: "var(--font-jetbrains)" }}
+      >
+        Next →
+      </button>
+    </div>
+  )
 }
 
-function MarqueeRow({ items, speed, reverse }: MarqueeRowProps) {
-  const ref = useRef<HTMLDivElement>(null)
-  const [offset, setOffset] = useState(0)
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!ref.current) return
-    const rect = ref.current.getBoundingClientRect()
-    const x = e.clientX - rect.left
-    const centerX = rect.width / 2
-    const direction = x < centerX ? -1 : 1
-    const intensity = Math.abs(x - centerX) / centerX
-    const finalDirection = reverse ? -direction : direction
-    setOffset(finalDirection * intensity * 30)
-  }
+function WorkContent() {
+  const [page, setPage] = useState(0)
+  const pageCount = 1
+  const visible = WORK
 
   return (
-    <div
-      ref={ref}
-      className="py-2 relative overflow-hidden cursor-pointer border-t border-primary/10 first:border-t-0"
-      onMouseMove={handleMouseMove}
-      onMouseLeave={() => setOffset(0)}
-    >
-      <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
-      <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
-      <div className="overflow-hidden">
-        <div
-          className={`flex items-center whitespace-nowrap ${reverse ? "animate-[marqueeReverse_var(--speed)_linear_infinite]" : "animate-[marquee_var(--speed)_linear_infinite]"} hover:[animation-duration:calc(var(--speed)*2)]`}
-          style={
-            {
-              "--speed": `${speed}s`,
-              transform: `translateX(${offset}px)`,
-              transition: "transform 0.3s ease-out",
-            } as React.CSSProperties
-          }
-        >
-          {[...items, ...items].map((item, idx) => (
-            <span key={idx} className="flex items-center shrink-0">
-              <span className="font-sf-mono text-primary/70 px-3 uppercase tracking-wider text-base">{item}</span>
-              <span className="w-1 h-1 rounded-full bg-primary/30 shrink-0" />
-            </span>
-          ))}
-        </div>
+    <div className="h-full w-full flex flex-col">
+      <div
+        className="flex-1 min-h-0 px-12"
+        style={{
+          background:
+            "linear-gradient(180deg, hsl(0 0% 93%) 0%, hsl(0 0% 86%) 100%)",
+        }}
+      >
+        {visible.map((w) => (
+          <article
+            key={w.company}
+            className="grid grid-cols-[1fr_3fr] gap-8 px-1 items-center"
+            style={{ height: `${w.vh}vh` }}
+          >
+            <div>
+              <p
+                className="uppercase tracking-[0.15em] text-lg font-black text-foreground"
+                style={{ fontFamily: "var(--font-jetbrains)" }}
+              >
+                {w.company}
+              </p>
+              <p className="mt-2 text-[11px] text-foreground/65">{w.role}</p>
+              <p className="text-[10px] text-foreground/45">{w.year}</p>
+            </div>
+            <div>
+              <p className="text-xs leading-relaxed text-foreground">{w.desc}</p>
+              <p className="mt-3 text-[9px] uppercase tracking-[0.15em] text-foreground/55">
+                {w.stack}
+              </p>
+            </div>
+          </article>
+        ))}
+      </div>
+      <Pager page={page} pageCount={pageCount} onChange={setPage} />
+    </div>
+  )
+}
+
+function ProjectsContent() {
+  const [page, setPage] = useState(0)
+  const pageCount = 1 // all 4 fit; pager kept for future content
+  const visible = PROJECTS
+
+  return (
+    <div className="h-full w-full flex flex-col">
+      <div
+        className="flex-1 min-h-0 px-12"
+        style={{
+          background:
+            "linear-gradient(180deg, hsl(0 0% 93%) 0%, hsl(0 0% 86%) 100%)",
+        }}
+      >
+        {visible.map((p) => (
+          <article
+            key={p.name}
+            className="grid grid-cols-[1fr_3fr] gap-8 px-1 items-center"
+            style={{ height: `${p.vh}vh` }}
+          >
+              <div>
+                <p
+                  className="uppercase tracking-[0.05em] text-base font-black text-foreground leading-tight"
+                  style={{ fontFamily: "var(--font-jetbrains)" }}
+                >
+                  {p.name}
+                </p>
+                <p className="mt-2 text-[10px] uppercase tracking-[0.1em] text-foreground/55">
+                  {p.type}
+                </p>
+              </div>
+              <div>
+                <p className="text-xs leading-relaxed text-foreground">{p.desc}</p>
+                <p className="mt-3 text-[9px] uppercase tracking-[0.15em] text-foreground/55">
+                  {p.stack}
+                </p>
+                <div className="mt-2 flex items-center gap-4 text-[11px]">
+                  {p.links.map((l) => (
+                    <a
+                      key={l.label}
+                      href={l.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="underline underline-offset-4 decoration-foreground/40 hover:decoration-foreground transition-colors"
+                    >
+                      {l.label}
+                    </a>
+                  ))}
+                </div>
+              </div>
+          </article>
+        ))}
+      </div>
+      <Pager page={page} pageCount={pageCount} onChange={setPage} />
+    </div>
+  )
+}
+
+function EducationContent() {
+  return (
+    <div className="h-full w-full flex flex-col">
+      <div
+        className="flex-1 min-h-0 px-12"
+        style={{
+          background:
+            "linear-gradient(180deg, hsl(0 0% 93%) 0%, hsl(0 0% 86%) 100%)",
+        }}
+      >
+        {EDUCATION.map((e) => (
+          <article
+            key={e.degree}
+            className="grid grid-cols-[1fr_3fr] gap-8 px-1 items-center"
+            style={{ height: `${e.vh}vh` }}
+          >
+            <div>
+              <p
+                className="uppercase tracking-[0.05em] text-lg font-black text-foreground leading-tight"
+                style={{ fontFamily: "var(--font-jetbrains)" }}
+              >
+                {e.degree}
+              </p>
+              <p className="mt-2 text-[11px] text-foreground/65">{e.school}</p>
+              <p className="text-[10px] text-foreground/45">{e.detail}</p>
+            </div>
+            <div className="flex flex-col gap-3">
+              <div>
+                <p className="text-[9px] uppercase tracking-[0.15em] text-foreground/55 mb-1">
+                  Coursework
+                </p>
+                <p className="text-xs leading-relaxed text-foreground">
+                  {e.coursework}
+                </p>
+              </div>
+              <div>
+                <p className="text-[9px] uppercase tracking-[0.15em] text-foreground/55 mb-1">
+                  Highlights
+                </p>
+                <p className="text-xs leading-relaxed text-foreground">
+                  {e.highlights}
+                </p>
+              </div>
+            </div>
+          </article>
+        ))}
       </div>
     </div>
   )
 }
 
-export default function Home() {
-  const { navigateTo } = useNavigation()
-  const [isResumeModalOpen, setIsResumeModalOpen] = useState(false)
-  const [currentFeaturedIndex, setCurrentFeaturedIndex] = useState(0)
+export default function HomePage() {
+  const [active, setActive] = useState(0)
+  const prev = useRef(0)
+  const direction = active >= prev.current ? 1 : -1
 
-  const featuredProjects = projects.filter((p) => p.feature)
-
-  const goToNextFeatured = useCallback(() => {
-    setCurrentFeaturedIndex((prev) => (prev + 1) % featuredProjects.length)
-  }, [featuredProjects.length])
-
-  const goToPrevFeatured = useCallback(() => {
-    setCurrentFeaturedIndex((prev) => (prev - 1 + featuredProjects.length) % featuredProjects.length)
-  }, [featuredProjects.length])
-
-  useEffect(() => {
-    if (featuredProjects.length <= 1) return
-    const interval = setInterval(goToNextFeatured, 5000) // Increased to 5 seconds
-    return () => clearInterval(interval)
-  }, [featuredProjects.length, goToNextFeatured])
-
-  const currentFeatured = featuredProjects[currentFeaturedIndex]
+  const handleClick = (i: number) => {
+    if (i === active) return
+    prev.current = active
+    setActive(i)
+  }
 
   return (
-    <>
-      <PageLayout title="RUSHIR BHAVSAR" subtitle="DATA SCIENTIST • AI ENGINEER • ML RESEARCHER">
-        <div className="flex flex-col gap-3 h-full min-w-0 overflow-hidden">
-          {/* Top Section: Photo + About */}
-          <div className="flex flex-col md:flex-row gap-3 items-stretch min-w-0">
-            {/* Photo Block */}
-            <motion.div
-              className="border border-primary/20 bg-background p-2 md:w-[180px] lg:w-[200px] shrink-0"
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.3 }}
-            >
-              <div className="relative w-full h-full min-h-[160px]">
-                <Image
-                  src="/images/design-mode/new_personal_photo(1).png"
-                  alt="Profile"
-                  fill
-                  className="object-cover grayscale hover:grayscale-0 transition-all duration-500"
-                />
-              </div>
-            </motion.div>
-
-            {/* About Block */}
-            <motion.div
-              className="border border-primary/20 bg-background flex-1 min-w-0 flex flex-col hidden md:flex"
-              initial={{ opacity: 0, x: 10 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.3, delay: 0.1 }}
-            >
-              <div className="border-b border-primary/20 px-3 py-1.5 bg-primary/5">
-                <div className="flex items-center justify-between">
-                  <h3 className="font-sf-mono font-bold text-primary tracking-tighter text-base">ABOUT</h3>
-                  <span className="font-sf-mono text-primary/30 text-base hidden md:block">[01]</span>
-                </div>
-              </div>
-              <div className="px-3 py-2 flex-1 flex flex-col justify-between overflow-hidden">
-                <div className="py-3 px-2">
-                  <p className="text-primary/70 leading-relaxed font-mono tracking-tight md:text-base text-sm">
-                    I am a Data Scientist and AI Engineer specializing in{" "}
-                    <span className="text-primary font-medium">machine learning</span>,{" "}
-                    <span className="text-primary font-medium">deep learning</span>, and{" "}
-                    <span className="text-primary font-medium">AI systems development</span>.
-                  </p>
-                  <p className="text-primary/60 leading-relaxed font-mono tracking-tight mt-2 sm:text-sm hidden md:block">
-                    Experience across healthcare, astronomy, and enterprise AI domains.
-                  </p>
-                </div>
-                <div className="flex flex-wrap items-center justify-between gap-2 px-2 py-2 border-t border-primary/10 hidden md:flex">
-                  <div className="flex items-center gap-1.5">
-                    <Link
-                      href="https://github.com/rushirb2001"
-                      target="_blank"
-                      className="w-7 h-7 flex items-center justify-center border border-primary/20 bg-primary text-primary-foreground transition-all group"
-                    >
-                      <Github className="h-3.5 w-3.5 group-hover:-translate-y-0.5 transition-transform" />
-                    </Link>
-                    <Link
-                      href="https://linkedin.com/in/rushir-bhavsar/"
-                      target="_blank"
-                      className="w-7 h-7 flex items-center justify-center border border-primary/20 bg-primary text-primary-foreground transition-all group"
-                    >
-                      <Linkedin className="h-3.5 w-3.5 group-hover:-translate-y-0.5 transition-transform" />
-                    </Link>
-
-                    <span className="hidden md:flex items-center font-sf-mono text-primary/40 ml-3 text-sm">
-                      <MapPin className="h-3.5 w-3.5 mr-1" />
-                      PHOENIX, AZ
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <Button
-                      variant="ghost"
-                      className="h-7 px-2 border border-primary/20 text-base font-sf-mono bg-primary text-primary-foreground transition-all group rounded-none"
-                      onClick={() => setIsResumeModalOpen(true)}
-                    >
-                      <FileText className="h-3 w-3 mr-1 group-hover:-translate-y-0.5 transition-transform" />
-                      RESUME
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      className="h-7 px-2 border border-primary/20 text-base font-sf-mono bg-primary text-primary-foreground transition-all group rounded-none"
-                      onClick={() => navigateTo("/contact")}
-                    >
-                      CONTACT
-                      <ArrowRight className="h-2.5 w-2.5 ml-1 group-hover:translate-x-1 transition-transform" />
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          </div>
-
-          {/* Middle Section: Stats + Specializations */}
-          <div className="flex flex-col md:flex-row gap-3 items-stretch min-w-0">
-            {/* Stats Block */}
-            <motion.div
-              className="border border-primary/20 bg-background md:w-[180px] lg:w-[200px] shrink-0 hidden md:block"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: 0.15 }}
-            >
-              <div className="border-b border-primary/20 px-3 py-1.5 bg-primary/5">
-                <div className="flex items-center justify-between">
-                  <h3 className="font-sf-mono font-bold text-primary tracking-tighter text-base">STATS</h3>
-                  <span className="font-sf-mono text-primary/30 text-base">[02]</span>
-                </div>
-              </div>
-              <div className="p-2">
-                {stats.map((stat, idx) => (
-                  <div
-                    key={idx}
-                    className="flex items-center justify-between py-2 border-b border-primary/5 last:border-b-0"
-                  >
-                    <span className="font-sf-mono text-primary/40 uppercase text-base">{stat.label}</span>
-                    <span className="font-sf-mono font-bold text-primary text-base">{stat.value}</span>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
-
-            {/* Specializations Block */}
-            <motion.div
-              className="border border-primary/20 bg-background flex-1 min-w-0 overflow-hidden hidden md:block"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: 0.2 }}
-            >
-              <div className="border-b border-primary/20 px-3 py-1.5 bg-primary/5">
-                <div className="flex items-center justify-between">
-                  <h3 className="font-sf-mono font-bold text-primary tracking-tighter text-base">SPECIALIZATIONS</h3>
-                  <span className="font-sf-mono text-primary/30 text-base">[03]</span>
-                </div>
-              </div>
-              {specializations.map((row, idx) => (
-                <MarqueeRow key={idx} items={row.items} speed={row.speed} reverse={row.reverse} />
-              ))}
-            </motion.div>
-          </div>
-
-          {/* Bottom Section: Featured Project + Quick Actions */}
-          <div className="flex flex-col md:flex-row gap-3 items-stretch min-w-0">
-            {/* Featured Project */}
-            <motion.div
-              className="border border-primary/20 bg-background flex-1 min-w-0 flex flex-col hidden md:block"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: 0.3 }}
-            >
-              <div className="border-b border-primary/20 px-3 py-1.5 bg-primary/5">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <h3 className="font-sf-mono font-bold text-primary tracking-tighter text-base">FEATURED</h3>
-                    {featuredProjects.length > 1 && (
-                      <span className="text-[8px] font-sf-mono text-primary/30">
-                        {currentFeaturedIndex + 1}/{featuredProjects.length}
-                      </span>
-                    )}
-                  </div>
-                  <div className="flex items-center gap-1">
-                    {featuredProjects.length > 1 && (
-                      <button
-                        onClick={goToPrevFeatured}
-                        className="w-5 h-5 flex items-center justify-center border border-primary/20 bg-primary text-primary-foreground transition-all hover:w-7"
-                      >
-                        <ChevronLeft className="h-3 w-3" />
-                      </button>
-                    )}
-                    <Button
-                      variant="ghost"
-                      className="h-5 px-2 border border-primary/20 text-base font-sf-mono bg-primary text-primary-foreground transition-all group rounded-none"
-                      onClick={() => navigateTo("/projects")}
-                    >
-                      ALL
-                      <ArrowRight className="h-2.5 w-2.5 ml-1 group-hover:translate-x-1 transition-transform" />
-                    </Button>
-                    {featuredProjects.length > 1 && (
-                      <button
-                        onClick={goToNextFeatured}
-                        className="w-5 h-5 flex items-center justify-center border border-primary/20 bg-primary text-primary-foreground transition-all hover:w-7"
-                      >
-                        <ChevronRight className="h-3 w-3" />
-                      </button>
-                    )}
-                  </div>
-                </div>
-              </div>
-              <div className="p-3 flex-1 flex relative overflow-hidden">
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={currentFeatured?.id}
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -20 }}
-                    transition={{ duration: 0.2 }}
-                    className="flex-1 flex"
-                  >
-                    <div className="flex gap-3 w-full">
-                      <div className="flex-1 flex flex-col justify-center min-w-0">
-                        <h4 className="font-sf-mono font-bold text-primary mb-1 line-clamp-2 text-base">
-                          {currentFeatured?.title}
-                        </h4>
-                        <p className="font-mono text-primary/60 line-clamp-2 text-xs">{currentFeatured?.description}</p>
-                      </div>
-                      <div className="flex flex-col gap-1 items-end justify-center shrink-0">
-                        {currentFeatured?.technologies.slice(0, 3).map((tech, idx) => (
-                          <span
-                            key={idx}
-                            className="px-1.5 py-0.5 text-[8px] font-sf-mono border border-primary/20 text-primary/60 whitespace-nowrap"
-                          >
-                            {tech}
-                          </span>
-                        ))}
-                        {currentFeatured?.technologies && currentFeatured.technologies.length > 3 && (
-                          <span className="text-[8px] font-sf-mono text-primary/30">
-                            +{currentFeatured.technologies.length - 3}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  </motion.div>
-                </AnimatePresence>
-              </div>
-            </motion.div>
-
-            {/* Quick Actions */}
-            <motion.div
-              className="border border-primary/20 bg-background md:w-[180px] lg:w-[200px] shrink-0"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: 0.35 }}
-            >
-              <div className="border-b border-primary/20 px-3 py-1.5 bg-primary/5">
-                <div className="flex items-center justify-between">
-                  <h3 className="font-sf-mono font-bold text-primary tracking-tighter text-base">EXPLORE</h3>
-                  <span className="font-sf-mono text-primary/30 text-base hidden md:block">[05]</span>
-                </div>
-              </div>
-              {/* Desktop View */}
-              <div className="hidden md:flex p-2 flex-col gap-1.5">
-                {quickLinks.map((item, idx) => (
-                  <Button
-                    key={idx}
-                    variant="ghost"
-                    className="h-7 w-full justify-between text-base font-sf-mono border border-primary/20 bg-primary text-primary-foreground transition-all group rounded-none"
-                    onClick={() => navigateTo(item.path)}
-                  >
-                    {item.label}
-                    <ArrowRight className="h-3 w-3 group-hover:translate-x-1.5 transition-transform" />
-                  </Button>
-                ))}
-              </div>
-
-              {/* Mobile View - 2 Column Grid */}
-              <div className="md:hidden p-2">
-                <div className="grid grid-cols-2 gap-1.5">
-                  {/* Left Column - Social Links */}
-                  <div className="flex flex-col gap-1.5">
-                    <a
-                      href="https://github.com/yourusername"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="h-7 w-full flex items-center justify-between px-2 text-base font-sf-mono uppercase border border-primary/20 bg-primary text-background transition-all duration-150 hover:bg-primary/90"
-                    >
-                      <span>GITHUB</span>
-                      <Github className="h-3 w-3" />
-                    </a>
-                    <a
-                      href="https://linkedin.com/in/yourusername"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="h-7 w-full flex items-center justify-between px-2 text-base font-sf-mono uppercase border border-primary/20 bg-primary text-background transition-all duration-150 hover:bg-primary/90"
-                    >
-                      <span>LINKEDIN</span>
-                      <Linkedin className="h-3 w-3" />
-                    </a>
-                    <button
-                      onClick={() => navigateTo("/contact")}
-                      className="h-7 w-full flex items-center justify-between px-2 text-base font-sf-mono uppercase border border-primary/20 bg-primary text-background transition-all duration-150 hover:bg-primary/90"
-                    >
-                      <span>CONTACT</span>
-                      <Mail className="h-3 w-3" />
-                    </button>
-                  </div>
-
-                  {/* Right Column - Navigation Links */}
-                  <div className="flex flex-col gap-1.5">
-                    {quickLinks.slice(0, 3).map((item, idx) => (
-                      <button
-                        key={idx}
-                        onClick={() => navigateTo(item.path)}
-                        className="h-7 w-full flex items-center justify-between px-2 text-base font-sf-mono uppercase border border-primary/20 bg-primary text-background transition-all duration-150 hover:bg-primary/90 group"
-                      >
-                        <span>{item.label}</span>
-                        <ArrowRight className="h-3 w-3 group-hover:translate-x-0.5 transition-transform" />
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </motion.div>
+    <div className="flex h-screen w-full">
+      <div className="w-[20%] h-screen bg-[hsl(0_0%_88%)] flex flex-col">
+        <div className="relative w-full h-[35vh]">
+          <Image
+            src="/images/design-mode/new_personal_photo(1).png"
+            alt="Rushir Bhavsar"
+            fill
+            sizes="30vw"
+            className="object-cover object-[60%_30%]"
+            priority
+          />
+        </div>
+        <div className="w-full h-[5vh] bg-black flex items-center justify-center">
+          <p className="uppercase tracking-[0.5em] text-white text-sm font-black w-full text-center pl-[0.5em]" style={{ fontFamily: "var(--font-jetbrains)" }}>
+            ML Engineer
+          </p>
+        </div>
+        <div className="w-full h-[4vh] bg-[hsl(0_0%_25%)] flex items-center justify-center">
+          <p className="uppercase tracking-[0.4em] text-white/85 text-[10px] font-bold w-full text-center pl-[0.4em]" style={{ fontFamily: "var(--font-jetbrains)" }}>
+            Tempe, AZ
+          </p>
+        </div>
+        <div className="w-full h-[28vh] p-4 flex flex-col bg-[hsl(0_0%_73%)]" style={{ fontFamily: "var(--font-source-code)" }}>
+          <nav className="flex-1 flex items-center justify-center">
+            <ul className="flex flex-col gap-3 text-base tracking-[0.1em] text-foreground">
+              <li>
+                <a href="mailto:bhavsarrushir@gmail.com" className="underline underline-offset-4 decoration-foreground/40 hover:decoration-foreground transition-colors">
+                  email
+                </a>
+              </li>
+              <li>
+                <a href="https://linkedin.com/in/rushir-bhavsar/" target="_blank" rel="noopener noreferrer" className="underline underline-offset-4 decoration-foreground/40 hover:decoration-foreground transition-colors">
+                  linkedin
+                </a>
+              </li>
+              <li>
+                <a href="https://github.com/rushirb2001" target="_blank" rel="noopener noreferrer" className="underline underline-offset-4 decoration-foreground/40 hover:decoration-foreground transition-colors">
+                  github
+                </a>
+              </li>
+              <li>
+                <a href="/resume.pdf" target="_blank" rel="noopener noreferrer" className="underline underline-offset-4 decoration-foreground/40 hover:decoration-foreground transition-colors">
+                  resume (pdf)
+                </a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+        <div className="w-full h-[28vh] bg-black p-4 flex items-center justify-center" style={{ fontFamily: "var(--font-source-code)" }}>
+          <p className="text-base leading-relaxed text-white max-w-[18ch] text-left">
+            Open to full-time{" "}
+            <span className="underline underline-offset-4 decoration-white/50">
+              ML systems / ML infra
+            </span>{" "}
+            roles. Currently researching at{" "}
+            <span className="underline underline-offset-4 decoration-white/50">
+              ASU
+            </span>
+            .
+          </p>
+        </div>
+      </div>
+      <div className="w-[80%] h-screen bg-[hsl(0_0%_89.9%)] flex flex-col">
+        <div className="w-full h-[20vh] bg-[hsl(0_0%_89.9%)] flex items-center px-12">
+          <p className="text-xs leading-relaxed text-foreground w-full">
+            ML engineer drawn to the parts most people skip: orchestration,
+            the CUDA kernel that&apos;s actually the bottleneck, the eval
+            framework nobody wanted to build but everyone needed. Currently
+            at ASU teaching neural networks to simulate plasma inside
+            semiconductor etch chambers, after a stretch at Cadence on
+            protein property prediction at million-sequence scale. Looking
+            for roles where the inference path is as interesting as the
+            training path, and where shipping the system matters as much as
+            the model that lives inside it.
+          </p>
+        </div>
+        <div className="w-full h-[10vh] bg-black flex items-stretch">
+          {TABS.map((label, i) => {
+            const isActive = i === active
+            return (
+              <button
+                key={label}
+                onClick={() => handleClick(i)}
+                className={`group flex-1 flex items-center justify-center gap-3 uppercase tracking-[0.3em] text-sm font-bold cursor-pointer transition-colors duration-200 ${
+                  isActive
+                    ? "bg-[hsl(0_0%_89.9%)] text-black"
+                    : "text-white hover:bg-[hsl(0_0%_89.9%)] hover:text-black"
+                }`}
+                style={{ fontFamily: "var(--font-jetbrains)" }}
+              >
+                <span
+                  className={`text-xs transition-opacity duration-200 ${
+                    isActive ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+                  }`}
+                >
+                  ▼
+                </span>
+                <span>{label}</span>
+              </button>
+            )
+          })}
+        </div>
+        <div className="flex-1 min-h-0 overflow-hidden relative">
+          <div
+            key={active}
+            className="slide-pane absolute inset-0"
+            style={{ ["--slide-dir" as string]: direction === 1 ? "1" : "-1" }}
+          >
+            {active === 0 && <WorkContent />}
+            {active === 1 && <ProjectsContent />}
+            {active === 2 && <EducationContent />}
           </div>
         </div>
-      </PageLayout>
-
-      <ResumeModal isOpen={isResumeModalOpen} onClose={() => setIsResumeModalOpen(false)} />
-    </>
+      </div>
+    </div>
   )
 }

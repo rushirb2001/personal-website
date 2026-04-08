@@ -14,24 +14,29 @@ export default function Error({
   }, [error])
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[60vh] px-4 text-center">
-      <div className="border border-destructive/30 bg-destructive/5 rounded-sm p-8 max-w-md w-full">
-        <p className="text-xs tracking-[0.3em] uppercase text-destructive mb-4 font-mono">
-          System Error Detected
+    <main className="min-h-screen bg-background text-foreground font-sf-mono flex items-center justify-center px-6">
+      <div className="max-w-md w-full">
+        <p className="text-[10px] uppercase tracking-[0.25em] text-foreground/50 mb-3">
+          Error
         </p>
-        <h2 className="text-lg font-medium text-foreground mb-2">
-          An unexpected error has occurred.
-        </h2>
-        <p className="text-sm text-muted-foreground mb-6">
-          Your outie has been notified. Please try again.
+        <h1 className="text-lg font-medium mb-2">Something broke.</h1>
+        <p className="text-sm text-foreground/70 mb-6">
+          Sorry about that. Try refreshing — if it keeps happening, email me at{" "}
+          <a
+            href="mailto:bhavsarrushir@gmail.com"
+            className="underline underline-offset-4 decoration-foreground/30 hover:decoration-foreground"
+          >
+            bhavsarrushir@gmail.com
+          </a>
+          .
         </p>
         <button
           onClick={reset}
-          className="px-4 py-2 text-xs tracking-[0.2em] uppercase border border-primary/30 hover:border-primary/60 bg-background text-foreground transition-colors rounded-sm"
+          className="text-sm underline underline-offset-4 decoration-foreground/30 hover:decoration-foreground"
         >
-          Retry Refinement
+          try again
         </button>
       </div>
-    </div>
+    </main>
   )
 }
