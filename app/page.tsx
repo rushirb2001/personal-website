@@ -316,7 +316,9 @@ export default function HomePage() {
   }
 
   return (
-    <div className="flex h-screen w-full">
+    <>
+      <MobileView />
+      <div className="hidden md:flex h-screen w-full">
       <div className="w-[20%] h-screen bg-[hsl(0_0%_88%)] flex flex-col">
         <div className="relative w-full h-[35vh]">
           <Image
@@ -430,6 +432,270 @@ export default function HomePage() {
           </div>
         </div>
       </div>
+      </div>
+    </>
+  )
+}
+
+function MobileView() {
+  return (
+    <div className="md:hidden w-full bg-[hsl(0_0%_89.9%)] text-foreground min-h-screen">
+      {/* HERO — photo + scroll-below tile */}
+      <div className="flex items-stretch">
+        <div className="relative w-2/3 aspect-[3/2]">
+          <Image
+            src="/images/design-mode/new_personal_photo(1).png"
+            alt="Rushir Bhavsar"
+            fill
+            sizes="66vw"
+            className="object-cover object-[60%_30%]"
+            priority
+          />
+        </div>
+        <a
+          href="#intro"
+          className="w-1/3 bg-[hsl(0_0%_25%)] text-white flex flex-col items-center justify-center gap-2 active:opacity-80 transition-opacity"
+        >
+          <span className="text-3xl leading-none">↓</span>
+          <span
+            className="text-[10px] uppercase tracking-[0.2em] text-center"
+            style={{ fontFamily: "var(--font-jetbrains)" }}
+          >
+            scroll
+            <br />
+            below
+          </span>
+        </a>
+      </div>
+
+      {/* Title block — Lumia-style giant lowercase */}
+      <div className="px-6 py-8 bg-background">
+        <h1
+          className="text-6xl font-black leading-[0.85] lowercase tracking-tight"
+          style={{ fontFamily: "var(--font-jetbrains)" }}
+        >
+          rushir.
+        </h1>
+        <p
+          className="mt-2 text-base lowercase text-foreground/55 tracking-tight"
+          style={{ fontFamily: "var(--font-jetbrains)" }}
+        >
+          ml engineer in tempe, arizona
+        </p>
+      </div>
+
+      {/* Tile grid — status + 4 link tiles */}
+      <div className="grid grid-cols-2 gap-0 bg-background">
+        {/* STATUS — full-width black tile, spans 2 columns */}
+        <div
+          className="col-span-2 bg-black text-white px-5 py-4 flex flex-col gap-2"
+          style={{ fontFamily: "var(--font-source-code)" }}
+        >
+          <p className="text-sm leading-relaxed">
+            Open to full-time{" "}
+            <span className="underline underline-offset-4 decoration-white/50">
+              ML systems / ML infra
+            </span>{" "}
+            roles. Currently researching at{" "}
+            <span className="underline underline-offset-4 decoration-white/50">
+              ASU
+            </span>
+            .
+          </p>
+        </div>
+
+        {/* 4 link tiles */}
+        {[
+          { label: "email", href: "mailto:bhavsarrushir@gmail.com", bg: "bg-foreground" },
+          {
+            label: "linkedin",
+            href: "https://linkedin.com/in/rushir-bhavsar/",
+            bg: "bg-[hsl(0_0%_25%)]",
+          },
+          {
+            label: "github",
+            href: "https://github.com/rushirb2001",
+            bg: "bg-[hsl(0_0%_25%)]",
+          },
+          {
+            label: "resume",
+            href: "/resume.pdf",
+            bg: "bg-foreground",
+          },
+        ].map((l) => (
+          <a
+            key={l.label}
+            href={l.href}
+            target={l.href.startsWith("http") || l.href.endsWith(".pdf") ? "_blank" : undefined}
+            rel="noopener noreferrer"
+            className={`${l.bg} text-white aspect-[2.5/1] flex items-center justify-start px-5 lowercase text-xl font-black tracking-tight active:opacity-80 transition-opacity`}
+            style={{ fontFamily: "var(--font-jetbrains)" }}
+          >
+            {l.label}
+          </a>
+        ))}
+      </div>
+
+      {/* SHORT INTRO panorama section */}
+      <MobileSection title="intro" arrow={false}>
+        <div className="px-6 py-6 bg-[hsl(0_0%_94%)]">
+          <p className="text-sm leading-relaxed text-foreground">
+            ML engineer drawn to the parts most people skip: orchestration,
+            the CUDA kernel that&apos;s actually the bottleneck, the eval
+            framework nobody wanted to build but everyone needed. Currently
+            at ASU teaching neural networks to simulate plasma inside
+            semiconductor etch chambers, after a stretch at Cadence on
+            protein property prediction at million-sequence scale.
+          </p>
+        </div>
+      </MobileSection>
+
+      {/* WORK */}
+      <MobileSection title="work">
+        <div className="flex overflow-x-auto snap-x snap-mandatory scrollbar-none">
+          {WORK.map((w) => (
+            <article
+              key={w.company}
+              className="snap-start shrink-0 w-screen bg-background px-6 py-5 flex flex-col gap-4"
+              style={{
+                background:
+                  "linear-gradient(180deg, hsl(0 0% 96%) 0%, hsl(0 0% 88%) 100%)",
+              }}
+            >
+              <div>
+                <p
+                  className="text-3xl font-black uppercase leading-none"
+                  style={{ fontFamily: "var(--font-jetbrains)" }}
+                >
+                  {w.company}
+                </p>
+                <p className="mt-2 text-xs text-foreground/65">{w.role}</p>
+                <p className="text-[10px] text-foreground/45">{w.year}</p>
+              </div>
+              <p className="text-sm leading-relaxed">{w.desc}</p>
+              <p className="text-[9px] uppercase tracking-[0.15em] text-foreground/55">
+                {w.stack}
+              </p>
+            </article>
+          ))}
+        </div>
+      </MobileSection>
+
+      {/* PROJECTS */}
+      <MobileSection title="projects">
+        <div className="flex overflow-x-auto snap-x snap-mandatory scrollbar-none">
+          {PROJECTS.map((p) => (
+            <article
+              key={p.name}
+              className="snap-start shrink-0 w-screen bg-background px-6 py-5 flex flex-col gap-4"
+              style={{
+                background:
+                  "linear-gradient(180deg, hsl(0 0% 96%) 0%, hsl(0 0% 88%) 100%)",
+              }}
+            >
+              <div>
+                <p
+                  className="text-2xl font-black uppercase leading-tight"
+                  style={{ fontFamily: "var(--font-jetbrains)" }}
+                >
+                  {p.name}
+                </p>
+                <p className="mt-1 text-[10px] uppercase tracking-[0.1em] text-foreground/55">
+                  {p.type}
+                </p>
+              </div>
+              <p className="text-sm leading-relaxed">{p.desc}</p>
+              <div>
+                <p className="text-[9px] uppercase tracking-[0.15em] text-foreground/55 mb-2">
+                  {p.stack}
+                </p>
+                <div className="flex gap-4 text-xs">
+                  {p.links.map((l) => (
+                    <a
+                      key={l.label}
+                      href={l.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="underline underline-offset-4 decoration-foreground/40"
+                    >
+                      {l.label}
+                    </a>
+                  ))}
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+      </MobileSection>
+
+      {/* EDUCATION */}
+      <MobileSection title="education">
+        <div className="flex overflow-x-auto snap-x snap-mandatory scrollbar-none">
+          {EDUCATION.map((e) => (
+            <article
+              key={e.degree}
+              className="snap-start shrink-0 w-screen bg-background px-6 py-5 flex flex-col gap-4"
+              style={{
+                background:
+                  "linear-gradient(180deg, hsl(0 0% 96%) 0%, hsl(0 0% 88%) 100%)",
+              }}
+            >
+              <div>
+                <p
+                  className="text-2xl font-black uppercase leading-tight"
+                  style={{ fontFamily: "var(--font-jetbrains)" }}
+                >
+                  {e.degree}
+                </p>
+                <p className="mt-2 text-xs text-foreground/65">{e.school}</p>
+                <p className="text-[10px] text-foreground/45">{e.detail}</p>
+              </div>
+              <div className="space-y-3">
+                <div>
+                  <p className="text-[9px] uppercase tracking-[0.15em] text-foreground/55 mb-1">
+                    Coursework
+                  </p>
+                  <p className="text-xs leading-relaxed">{e.coursework}</p>
+                </div>
+                <div>
+                  <p className="text-[9px] uppercase tracking-[0.15em] text-foreground/55 mb-1">
+                    Highlights
+                  </p>
+                  <p className="text-xs leading-relaxed">{e.highlights}</p>
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+      </MobileSection>
+
+      {/* footer breathing room */}
+      <div className="h-12 bg-background" />
     </div>
+  )
+}
+
+function MobileSection({
+  title,
+  children,
+  arrow = true,
+}: {
+  title: string
+  children: React.ReactNode
+  arrow?: boolean
+}) {
+  return (
+    <section className="bg-background pt-6 pb-4">
+      <h2
+        className="px-6 text-5xl font-black lowercase leading-[0.85] tracking-tight text-foreground/85 mb-4 flex items-center gap-4"
+        style={{ fontFamily: "var(--font-jetbrains)" }}
+      >
+        <span>{title}</span>
+        {arrow && (
+          <span className="text-3xl text-foreground/35 leading-none">→</span>
+        )}
+      </h2>
+      {children}
+    </section>
   )
 }
