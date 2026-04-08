@@ -14,8 +14,6 @@ import { TouchFeedback } from "@/components/ui/touch-feedback"
 import { motion } from "framer-motion"
 import { Analytics } from "@vercel/analytics/react"
 import { SpeedInsights } from "@vercel/speed-insights/next"
-import { IntroLoader } from "@/components/ui/intro-loader"
-
 export default function ClientLayout({
   children,
 }: {
@@ -24,8 +22,6 @@ export default function ClientLayout({
   const [isMounted, setIsMounted] = useState(false)
   const [isTransitionReady, setIsTransitionReady] = useState(false)
   const [isTouchDevice, setIsTouchDevice] = useState(false)
-  const [showIntro, setShowIntro] = useState(true)
-  const [contentReady, setContentReady] = useState(false)
 
   useEffect(() => {
     setIsMounted(true)
@@ -48,13 +44,6 @@ export default function ClientLayout({
       return () => clearTimeout(timer)
     }
   }, [isMounted])
-
-  const handleIntroComplete = () => {
-    setShowIntro(false)
-    setTimeout(() => {
-      setContentReady(true)
-    }, 100)
-  }
 
   // Animation variants for header and footer
   const headerVariants = {
@@ -135,12 +124,7 @@ export default function ClientLayout({
       <body className="font-sf-pro bg-background text-foreground theme-transition">
         <ThemeProvider>
           <NavigationProvider isReady={isTransitionReady}>
-            {showIntro && isMounted && <IntroLoader onLoadComplete={handleIntroComplete} />}
-
-            <div
-              className="flex flex-col min-h-screen overflow-hidden"
-              style={{ visibility: showIntro ? "hidden" : "visible" }}
-            >
+            <div className="flex flex-col min-h-screen overflow-hidden">
               {/* Only render client-side components after mounting */}
               <ClientOnly>
                 {!isTouchDevice && <CustomCursor />}
@@ -148,38 +132,34 @@ export default function ClientLayout({
                 <LastAccessed />
               </ClientOnly>
 
-              {!showIntro && (
-                <>
-                  <motion.div
-                    key="header"
-                    initial="hidden"
-                    animate={contentReady ? "visible" : "hidden"}
-                    variants={headerVariants}
-                  >
-                    <Header />
-                  </motion.div>
+              <motion.div
+                key="header"
+                initial="hidden"
+                animate="visible"
+                variants={headerVariants}
+              >
+                <Header />
+              </motion.div>
 
-                  <motion.main
-                    className="flex-1 pt-16 pb-16 overflow-y-auto relative theme-transition"
-                    key="main-content"
-                    initial="hidden"
-                    animate={contentReady ? "visible" : "hidden"}
-                    variants={contentVariants}
-                  >
-                    {children}
-                    <TransitionOverlay />
-                  </motion.main>
+              <motion.main
+                className="flex-1 pt-16 pb-16 overflow-y-auto relative theme-transition"
+                key="main-content"
+                initial="hidden"
+                animate="visible"
+                variants={contentVariants}
+              >
+                {children}
+                <TransitionOverlay />
+              </motion.main>
 
-                  <motion.div
-                    key="footer"
-                    initial="hidden"
-                    animate={contentReady ? "visible" : "hidden"}
-                    variants={footerVariants}
-                  >
-                    <Footer />
-                  </motion.div>
-                </>
-              )}
+              <motion.div
+                key="footer"
+                initial="hidden"
+                animate="visible"
+                variants={footerVariants}
+              >
+                <Footer />
+              </motion.div>
             </div>
           </NavigationProvider>
           <Analytics />
