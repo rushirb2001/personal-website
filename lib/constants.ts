@@ -6,7 +6,6 @@ export const APP_NAME = "Rushir Bhavsar Portfolio"
 
 export const NAV_ITEMS = [
   { name: "HOME", path: "/" },
-  { name: "PROJECTS", path: "/projects" },
   { name: "SKILLS", path: "/skills" },
   { name: "PROJECTS", path: "/projects" },
   { name: "EXPERIENCE", path: "/experience" },
