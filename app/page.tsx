@@ -76,7 +76,10 @@ const EDUCATION = [
     detail: "HPC concentration",
     year: "2025",
     coursework: ["Statistical ML", "Distributed Systems", "GPU Computing", "Deep Learning Theory", "Numerical Methods", "Optimization"],
-    highlights: ["Thesis on physics-informed neural networks for coupled PDE systems", "GPA 4.0"],
+    highlights: [
+      { text: "Thesis on physics-informed neural networks for coupled PDE systems" },
+      { text: "GPA 3.71" },
+    ],
   },
   {
     degree: "BTech, Computer Science & Engineering",
@@ -84,7 +87,17 @@ const EDUCATION = [
     detail: "",
     year: "2023",
     coursework: ["Algorithms", "Operating Systems", "Computer Networks", "Databases", "Compilers", "Linear Algebra"],
-    highlights: ["Graduated with distinction", "ACM student chapter", "Undergraduate research on graph algorithms"],
+    highlights: [
+      { text: "Graduated with distinction" },
+      {
+        text: "Classification of potentially hazardous asteroids using supervised quantum machine learning — IEEE Access, 2023",
+        href: "https://ieeexplore.ieee.org/iel7/6287639/6514899/10188662.pdf",
+      },
+      {
+        text: "MetaHate: AI-based hate speech detection for secured online gaming in metaverse using blockchain — Security and Privacy, 2024",
+        href: "https://onlinelibrary.wiley.com/doi/abs/10.1002/spy2.343",
+      },
+    ],
   },
 ]
 
@@ -411,9 +424,21 @@ export default function BetaPage() {
                   <p className="mono small-caps faint mb-3">Highlights</p>
                   <ul className="space-y-2 mono text-[13px]">
                     {e.highlights.map((h) => (
-                      <li key={h} className="muted leading-relaxed pl-4 relative">
+                      <li key={h.text} className="muted leading-relaxed pl-4 relative">
                         <span className="absolute left-0 top-[0.55em] w-2 h-px accent-line" aria-hidden />
-                        {h}
+                        {"href" in h ? (
+                          <a
+                            href={h.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="accent-link inline"
+                          >
+                            {h.text}
+                            <span aria-hidden className="faint"> ↗</span>
+                          </a>
+                        ) : (
+                          h.text
+                        )}
                       </li>
                     ))}
                   </ul>
