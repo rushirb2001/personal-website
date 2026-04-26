@@ -1,701 +1,556 @@
 "use client"
 
 import Image from "next/image"
-import { useRef, useState } from "react"
+import { useEffect, useRef, useState, type ReactNode } from "react"
+import { TocNav } from "./TocNav"
 
-const TABS = ["Work", "Projects", "Education"] as const
-
-// 3 work entries share the 70vh content area with individual heights
 const WORK = [
   {
-    company: "ASU",
+    company: "Arizona State University",
     role: "ML Researcher",
-    year: "2026",
+    period: "Nov 2025 – Present",
     desc: "Building a modular PyTorch Lightning + JAX framework so Applied Materials can stress-test whether neural networks can replace traditional plasma solvers in their etch chambers.",
-    stack: "PyTorch Lightning · JAX · Hydra · WandB",
-    vh: 24,
+    stack: ["PyTorch Lightning", "JAX", "Hydra", "WandB"],
+    current: true,
   },
   {
-    company: "Cadence",
-    role: "ML Engineer",
-    year: "2025",
+    company: "OpenEye, Cadence Design Systems",
+    role: "ML Engineer Intern",
+    period: "Jul 2025 – Oct 2025",
     desc: "ESM2 + contrastive-learning pipeline batched through cuDF and PyTorch Lightning. Replaced GP bottleneck with cuML/RAFT — batch sizes jumped 150 → 50K+ at 7.2 ms / sequence.",
-    stack: "ESM2 · cuDF · cuML · RAFT · OmegaConf",
-    vh: 23,
+    stack: ["ESM2", "cuDF", "cuML", "RAFT", "OmegaConf"],
+    current: false,
   },
   {
     company: "Talin Labs",
-    role: "GenAI Engineer",
-    year: "2024",
+    role: "GenAI Engineering Intern",
+    period: "Jun 2024 – Sep 2024",
     desc: "Deployed a fine-tuned Mistral-7B-Q8 on Kubernetes behind FastAPI with a six-agent LangChain orchestration. Sub-200 ms p95 for 10K users; 88% on 10K human-evaluated queries.",
-    stack: "Mistral-7B · Kubernetes · FastAPI · LangChain · LangGraph",
-    vh: 23,
+    stack: ["Mistral-7B", "Kubernetes", "FastAPI", "LangChain", "LangGraph"],
+    current: false,
   },
 ]
 
-// Right-column content area = 70vh (100 - 20 intro - 10 nav)
-// Pager footer = 5vh, leaving 65vh for cards.
-// 4 projects share the 65vh with individual heights.
 const PROJECTS = [
   {
     name: "MACE-PINN",
-    type: "Master's thesis · 2025",
+    type: "Master's thesis",
+    year: "2025",
     desc: "Parallel-subnetwork PINN with random Fourier feature embeddings for coupled PDE systems. 40–60% lower L2 error than single-network baselines on Gray-Scott and Ginzburg-Landau.",
-    stack: "JAX · Flax · NumPy",
+    stack: ["JAX", "Flax", "NumPy"],
     links: [
       { label: "github", href: "https://github.com/rushirb2001/thesis-mace-pinn" },
       { label: "paper", href: "https://keep.lib.asu.edu/items/201211" },
     ],
-    vh: 18,
   },
   {
     name: "MedQuery",
-    type: "LLM benchmark · 2025",
+    type: "LLM benchmark",
+    year: "2025",
     desc: "10K-query classification benchmark across four difficulty levels and nine categories — comparing local quantised models (MLX, llama.cpp) against frontier APIs honestly.",
-    stack: "LangGraph · LangChain · FAISS · OpenAI",
+    stack: ["LangGraph", "LangChain", "FAISS", "OpenAI"],
     links: [{ label: "github", href: "https://github.com/rushirb2001" }],
-    vh: 18,
   },
   {
     name: "HybridFlow",
-    type: "Retrieval system · 2025",
+    type: "Retrieval system",
+    year: "2025",
     desc: "Hybrid Qdrant + Neo4j + SQLite retrieval across surgical textbooks with sub-12 ms P50 multi-hop reasoning through ten tool functions.",
-    stack: "Qdrant · Neo4j · SQLite · FastAPI",
+    stack: ["Qdrant", "Neo4j", "SQLite", "FastAPI"],
     links: [{ label: "github", href: "https://github.com/rushirb2001" }],
-    vh: 17,
   },
   {
     name: "Yelp recs & sentiment",
-    type: "Coursework, prod-quality · 2024",
+    type: "Coursework, prod-quality",
+    year: "2024",
     desc: "Spark ALS recommender plus a sentiment classifier behind FastAPI microservices serving 5M+ interactions at sub-100 ms p95, with Redis caching and MLflow tracking.",
-    stack: "PySpark · FastAPI · MLflow · Docker · Redis",
-    links: [
-      { label: "github", href: "https://github.com/rushirb2001/yelp-ml-platform" },
-    ],
-    vh: 17,
+    stack: ["PySpark", "FastAPI", "MLflow", "Docker", "Redis"],
+    links: [{ label: "github", href: "https://github.com/rushirb2001/yelp-ml-platform" }],
   },
 ]
 
 const EDUCATION = [
   {
-    degree: "MS in Data Science",
+    degree: "MS, Data Science",
     school: "Arizona State University",
-    detail: "HPC concentration · 2025",
-    coursework:
-      "Statistical ML · Distributed Systems · GPU Computing · Deep Learning Theory · Numerical Methods · Optimization",
-    highlights:
-      "Master's thesis on physics-informed neural networks for coupled PDE systems · GPA 4.0",
-    vh: 35,
+    detail: "HPC concentration",
+    year: "2025",
+    coursework: ["Statistical ML", "Distributed Systems", "GPU Computing", "Deep Learning Theory", "Numerical Methods", "Optimization"],
+    highlights: ["Thesis on physics-informed neural networks for coupled PDE systems", "GPA 4.0"],
   },
   {
-    degree: "BTech in Computer Science & Engineering",
+    degree: "BTech, Computer Science & Engineering",
     school: "Nirma University, Ahmedabad",
-    detail: "2023",
-    coursework:
-      "Algorithms · Operating Systems · Computer Networks · Databases · Compilers · Linear Algebra",
-    highlights:
-      "Graduated with distinction · ACM student chapter · Undergraduate research on graph algorithms",
-    vh: 35,
+    detail: "",
+    year: "2023",
+    coursework: ["Algorithms", "Operating Systems", "Computer Networks", "Databases", "Compilers", "Linear Algebra"],
+    highlights: ["Graduated with distinction", "ACM student chapter", "Undergraduate research on graph algorithms"],
   },
 ]
 
-function Pager({
-  page,
-  pageCount,
-  onChange,
-}: {
-  page: number
-  pageCount: number
-  onChange: (p: number) => void
-}) {
-  if (pageCount <= 1) return null
-  const atFirst = page === 0
-  const atLast = page === pageCount - 1
-  return (
-    <div className="h-[5vh] flex items-stretch">
-      <button
-        onClick={() => onChange(Math.max(0, page - 1))}
-        disabled={atFirst}
-        aria-label="Previous"
-        className={`flex-1 text-xs font-bold uppercase tracking-[0.25em] text-white transition-colors ${
-          atFirst
-            ? "bg-[hsl(0_0%_25%)] cursor-not-allowed"
-            : "bg-black hover:bg-[hsl(0_0%_15%)]"
-        }`}
-        style={{ fontFamily: "var(--font-jetbrains)" }}
-      >
-        ← Prev
-      </button>
-      <div
-        className="flex-1 bg-[hsl(0_0%_89.9%)] text-foreground tabular-nums flex items-center justify-center gap-3 text-xs"
-        style={{ fontFamily: "var(--font-jetbrains)" }}
-      >
-        <span className="font-bold">{String(page + 1).padStart(2, "0")}</span>
-        <span className="text-foreground/40">/</span>
-        <span>{String(pageCount).padStart(2, "0")}</span>
-      </div>
-      <button
-        onClick={() => onChange(Math.min(pageCount - 1, page + 1))}
-        disabled={atLast}
-        aria-label="Next"
-        className={`flex-1 text-xs font-bold uppercase tracking-[0.25em] text-white transition-colors ${
-          atLast
-            ? "bg-[hsl(0_0%_25%)] cursor-not-allowed"
-            : "bg-black hover:bg-[hsl(0_0%_15%)]"
-        }`}
-        style={{ fontFamily: "var(--font-jetbrains)" }}
-      >
-        Next →
-      </button>
-    </div>
-  )
-}
+const LINKS = [
+  { label: "Email", value: "bhavsarrushir@gmail.com", href: "mailto:bhavsarrushir@gmail.com" },
+  { label: "LinkedIn", value: "rushir-bhavsar", href: "https://linkedin.com/in/rushir-bhavsar/" },
+  { label: "GitHub", value: "rushirb2001", href: "https://github.com/rushirb2001" },
+  { label: "Resume", value: "PDF", href: "https://v9fl0vq2qbxv8yrh.public.blob.vercel-storage.com/RUSHIR_BHAVSAR_RESUME.pdf" },
+]
 
-function WorkContent() {
-  const [page, setPage] = useState(0)
-  const pageCount = 1
-  const visible = WORK
+export default function BetaPage() {
+  const [openSection, setOpenSection] = useState<string | null>(null)
+  const programmaticScrollRef = useRef(false)
+  const lockTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  return (
-    <div className="h-full w-full flex flex-col">
-      <div
-        className="flex-1 min-h-0 px-12"
-        style={{
-          background:
-            "linear-gradient(180deg, hsl(0 0% 93%) 0%, hsl(0 0% 86%) 100%)",
-        }}
-      >
-        {visible.map((w) => (
-          <article
-            key={w.company}
-            className="grid grid-cols-[1fr_3fr] gap-8 px-1 items-center"
-            style={{ height: `${w.vh}vh` }}
-          >
-            <div>
-              <p
-                className="uppercase tracking-[0.15em] text-lg font-black text-foreground"
-                style={{ fontFamily: "var(--font-jetbrains)" }}
-              >
-                {w.company}
-              </p>
-              <p className="mt-2 text-[11px] text-foreground/65">{w.role}</p>
-              <p className="text-[10px] text-foreground/45">{w.year}</p>
-            </div>
-            <div>
-              <p className="text-xs leading-relaxed text-foreground">{w.desc}</p>
-              <p className="mt-3 text-[9px] uppercase tracking-[0.15em] text-foreground/55">
-                {w.stack}
-              </p>
-            </div>
-          </article>
-        ))}
-      </div>
-      <Pager page={page} pageCount={pageCount} onChange={setPage} />
-    </div>
-  )
-}
+  useEffect(() => {
+    const onScroll = () => {
+      if (programmaticScrollRef.current) return
+      if (window.scrollY < 40) {
+        setOpenSection((prev) => (prev === null ? prev : null))
+      }
+    }
+    window.addEventListener("scroll", onScroll, { passive: true })
+    return () => window.removeEventListener("scroll", onScroll)
+  }, [])
 
-function ProjectsContent() {
-  const [page, setPage] = useState(0)
-  const pageCount = 1 // all 4 fit; pager kept for future content
-  const visible = PROJECTS
+  const lockScroll = (ms = 1200) => {
+    programmaticScrollRef.current = true
+    if (lockTimerRef.current) clearTimeout(lockTimerRef.current)
+    lockTimerRef.current = setTimeout(() => {
+      programmaticScrollRef.current = false
+    }, ms)
+  }
 
-  return (
-    <div className="h-full w-full flex flex-col">
-      <div
-        className="flex-1 min-h-0 px-12"
-        style={{
-          background:
-            "linear-gradient(180deg, hsl(0 0% 93%) 0%, hsl(0 0% 86%) 100%)",
-        }}
-      >
-        {visible.map((p) => (
-          <article
-            key={p.name}
-            className="grid grid-cols-[1fr_3fr] gap-8 px-1 items-center"
-            style={{ height: `${p.vh}vh` }}
-          >
-              <div>
-                <p
-                  className="uppercase tracking-[0.05em] text-base font-black text-foreground leading-tight"
-                  style={{ fontFamily: "var(--font-jetbrains)" }}
-                >
-                  {p.name}
-                </p>
-                <p className="mt-2 text-[10px] uppercase tracking-[0.1em] text-foreground/55">
-                  {p.type}
-                </p>
-              </div>
-              <div>
-                <p className="text-xs leading-relaxed text-foreground">{p.desc}</p>
-                <p className="mt-3 text-[9px] uppercase tracking-[0.15em] text-foreground/55">
-                  {p.stack}
-                </p>
-                <div className="mt-2 flex items-center gap-4 text-[11px]">
-                  {p.links.map((l) => (
-                    <a
-                      key={l.label}
-                      href={l.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="underline underline-offset-4 decoration-foreground/40 hover:decoration-foreground transition-colors"
-                    >
-                      {l.label}
-                    </a>
-                  ))}
-                </div>
-              </div>
-          </article>
-        ))}
-      </div>
-      <Pager page={page} pageCount={pageCount} onChange={setPage} />
-    </div>
-  )
-}
+  const toggleSection = (id: string) => {
+    const isOpening = openSection !== id
+    const switching = openSection !== null && openSection !== id
+    lockScroll(switching ? 1400 : 1000)
+    setOpenSection(isOpening ? id : null)
+    if (isOpening) {
+      const scrollToSection = () => {
+        const el = document.getElementById(id)
+        if (el) {
+          window.scrollTo({ top: el.offsetTop - 56, behavior: "smooth" })
+        }
+      }
+      if (switching) {
+        // Wait for the previous section's height transition (350ms) to finish
+        // so the target's offsetTop is stable before we commit a smooth scroll.
+        setTimeout(scrollToSection, 380)
+      } else {
+        requestAnimationFrame(() => requestAnimationFrame(scrollToSection))
+      }
+    }
+  }
 
-function EducationContent() {
-  return (
-    <div className="h-full w-full flex flex-col">
-      <div
-        className="flex-1 min-h-0 px-12"
-        style={{
-          background:
-            "linear-gradient(180deg, hsl(0 0% 93%) 0%, hsl(0 0% 86%) 100%)",
-        }}
-      >
-        {EDUCATION.map((e) => (
-          <article
-            key={e.degree}
-            className="grid grid-cols-[1fr_3fr] gap-8 px-1 items-center"
-            style={{ height: `${e.vh}vh` }}
-          >
-            <div>
-              <p
-                className="uppercase tracking-[0.05em] text-lg font-black text-foreground leading-tight"
-                style={{ fontFamily: "var(--font-jetbrains)" }}
-              >
-                {e.degree}
-              </p>
-              <p className="mt-2 text-[11px] text-foreground/65">{e.school}</p>
-              <p className="text-[10px] text-foreground/45">{e.detail}</p>
-            </div>
-            <div className="flex flex-col gap-3">
-              <div>
-                <p className="text-[9px] uppercase tracking-[0.15em] text-foreground/55 mb-1">
-                  Coursework
-                </p>
-                <p className="text-xs leading-relaxed text-foreground">
-                  {e.coursework}
-                </p>
-              </div>
-              <div>
-                <p className="text-[9px] uppercase tracking-[0.15em] text-foreground/55 mb-1">
-                  Highlights
-                </p>
-                <p className="text-xs leading-relaxed text-foreground">
-                  {e.highlights}
-                </p>
-              </div>
-            </div>
-          </article>
-        ))}
-      </div>
-    </div>
-  )
-}
-
-export default function HomePage() {
-  const [active, setActive] = useState(0)
-  const prev = useRef(0)
-  const direction = active >= prev.current ? 1 : -1
-
-  const handleClick = (i: number) => {
-    if (i === active) return
-    prev.current = active
-    setActive(i)
+  const goHome = () => {
+    lockScroll()
+    setOpenSection(null)
+    window.scrollTo({ top: 0, behavior: "smooth" })
   }
 
   return (
-    <>
-      <MobileView />
-      <div className="hidden md:flex h-screen w-full">
-      <div className="w-[20%] h-screen bg-[hsl(0_0%_88%)] flex flex-col">
-        <div className="relative w-full h-[35vh]">
-          <Image
-            src="/images/design-mode/new_personal_photo(1).png"
-            alt="Rushir Bhavsar"
-            fill
-            sizes="30vw"
-            className="object-cover object-[60%_30%]"
-            priority
-          />
-        </div>
-        <div className="w-full h-[5vh] bg-black flex items-center justify-center">
-          <p className="uppercase tracking-[0.5em] text-white text-sm font-black w-full text-center pl-[0.5em]" style={{ fontFamily: "var(--font-jetbrains)" }}>
-            ML Engineer
-          </p>
-        </div>
-        <div className="w-full h-[4vh] bg-[hsl(0_0%_25%)] flex items-center justify-center">
-          <p className="uppercase tracking-[0.4em] text-white/85 text-[10px] font-bold w-full text-center pl-[0.4em]" style={{ fontFamily: "var(--font-jetbrains)" }}>
-            Tempe, AZ
-          </p>
-        </div>
-        <div className="w-full h-[28vh] p-4 flex flex-col bg-[hsl(0_0%_73%)]" style={{ fontFamily: "var(--font-source-code)" }}>
-          <nav className="flex-1 flex items-center justify-center">
-            <ul className="flex flex-col gap-3 text-base tracking-[0.1em] text-foreground">
-              <li>
-                <a href="mailto:bhavsarrushir@gmail.com" className="underline underline-offset-4 decoration-foreground/40 hover:decoration-foreground transition-colors">
-                  email
-                </a>
-              </li>
-              <li>
-                <a href="https://linkedin.com/in/rushir-bhavsar/" target="_blank" rel="noopener noreferrer" className="underline underline-offset-4 decoration-foreground/40 hover:decoration-foreground transition-colors">
-                  linkedin
-                </a>
-              </li>
-              <li>
-                <a href="https://github.com/rushirb2001" target="_blank" rel="noopener noreferrer" className="underline underline-offset-4 decoration-foreground/40 hover:decoration-foreground transition-colors">
-                  github
-                </a>
-              </li>
-              <li>
-                <a href="/resume.pdf" target="_blank" rel="noopener noreferrer" className="underline underline-offset-4 decoration-foreground/40 hover:decoration-foreground transition-colors">
-                  resume (pdf)
-                </a>
-              </li>
-            </ul>
-          </nav>
-        </div>
-        <div className="w-full h-[28vh] bg-black p-4 flex items-center justify-center" style={{ fontFamily: "var(--font-source-code)" }}>
-          <p className="text-base leading-relaxed text-white max-w-[18ch] text-left">
-            Open to full-time{" "}
-            <span className="underline underline-offset-4 decoration-white/50">
-              ML systems / ML infra
-            </span>{" "}
-            roles. Currently researching at{" "}
-            <span className="underline underline-offset-4 decoration-white/50">
-              ASU
-            </span>
-            .
-          </p>
-        </div>
-      </div>
-      <div className="w-[80%] h-screen bg-[hsl(0_0%_89.9%)] flex flex-col">
-        <div className="w-full h-[20vh] bg-[hsl(0_0%_89.9%)] flex items-center px-12">
-          <p className="text-xs leading-relaxed text-foreground w-full">
-            ML engineer drawn to the parts most people skip: orchestration,
-            the CUDA kernel that&apos;s actually the bottleneck, the eval
-            framework nobody wanted to build but everyone needed. Currently
-            at ASU teaching neural networks to simulate plasma inside
-            semiconductor etch chambers, after a stretch at Cadence on
-            protein property prediction at million-sequence scale. Looking
-            for roles where the inference path is as interesting as the
-            training path, and where shipping the system matters as much as
-            the model that lives inside it.
-          </p>
-        </div>
-        <div className="w-full h-[10vh] bg-black flex items-stretch">
-          {TABS.map((label, i) => {
-            const isActive = i === active
-            return (
-              <button
-                key={label}
-                onClick={() => handleClick(i)}
-                className={`group flex-1 flex items-center justify-center gap-3 uppercase tracking-[0.3em] text-sm font-bold cursor-pointer transition-colors duration-200 ${
-                  isActive
-                    ? "bg-[hsl(0_0%_89.9%)] text-black"
-                    : "text-white hover:bg-[hsl(0_0%_89.9%)] hover:text-black"
-                }`}
-                style={{ fontFamily: "var(--font-jetbrains)" }}
-              >
-                <span
-                  className={`text-xs transition-opacity duration-200 ${
-                    isActive ? "opacity-100" : "opacity-0 group-hover:opacity-100"
-                  }`}
-                >
-                  ▼
+    <main className="min-h-screen bg-[#f4f1ec] text-[#1a1a1a]">
+      <style>{`
+        .ink { color: #1a1a1a; }
+        .muted { color: rgba(26,26,26,0.55); }
+        .faint { color: rgba(26,26,26,0.38); }
+        .rule { border-color: rgba(26,26,26,0.12); }
+        .accent { color: #1f3a5f; }
+        .accent-bg { background-color: #1f3a5f; }
+        .accent-line { background-color: #1f3a5f; }
+        .display { font-family: "Google Sans", ui-sans-serif, system-ui, sans-serif; font-optical-sizing: auto; }
+        .mono { font-family: "Google Sans Code", ui-monospace, "SFMono-Regular", "Menlo", monospace; font-variation-settings: "MONO" 1; }
+        .accent-link { position: relative; transition: color 200ms ease; }
+        .accent-link::after {
+          content: "";
+          position: absolute;
+          left: 0;
+          right: 0;
+          bottom: -2px;
+          height: 1px;
+          background-color: #1f3a5f;
+          transform-origin: left;
+          transform: scaleX(0.35);
+          transition: transform 250ms ease;
+        }
+        .accent-link:hover { color: #1f3a5f; }
+        .accent-link:hover::after { transform: scaleX(1); }
+        .small-caps {
+          text-transform: uppercase;
+          letter-spacing: 0.18em;
+          font-size: 10px;
+        }
+
+        /* Section open/close — height auto via interpolate-size */
+        .section-collapsible {
+          interpolate-size: allow-keywords;
+          height: 0;
+          overflow: hidden;
+          transition: height 350ms cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .section-collapsible[data-open="true"] {
+          height: auto;
+        }
+
+        /* Section content reveal — fade-up after expansion */
+        .section-content {
+          opacity: 0;
+          transform: translateY(8px);
+          transition:
+            opacity 400ms cubic-bezier(0.22, 1, 0.36, 1),
+            transform 400ms cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .section-collapsible[data-open="true"] .section-content {
+          opacity: 1;
+          transform: translateY(0);
+          transition-delay: 120ms;
+        }
+
+        /* Hero entrance — runs once on initial mount */
+        @keyframes hero-fade-up {
+          from { opacity: 0; transform: translateY(12px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+        .hero-anim > div > * {
+          animation: hero-fade-up 700ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
+        }
+        .hero-anim > div > *:nth-child(1) { animation-delay: 100ms; }
+        .hero-anim > div > *:nth-child(2) { animation-delay: 280ms; }
+
+        .grain::before {
+          content: "";
+          position: fixed;
+          inset: 0;
+          pointer-events: none;
+          background-image: radial-gradient(rgba(26,26,26,0.035) 1px, transparent 1px);
+          background-size: 3px 3px;
+          mix-blend-mode: multiply;
+          z-index: 1;
+        }
+      `}</style>
+
+      <div className="grain relative z-0 pb-16">
+        <TocNav active={openSection} onSelect={toggleSection} onHome={goHome} />
+
+        {/* Hero */}
+        <section className="hero-anim max-w-[1100px] mx-auto px-6 lg:px-12 pt-8 lg:pt-12 pb-10 lg:pb-14">
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-10 lg:gap-16 items-start">
+            <div>
+              <h1 className="display font-light leading-[0.92] tracking-tight text-[64px] sm:text-[88px] lg:text-[120px]">
+                Rushir
+                <br />
+                Bhavsar<span className="accent">.</span>
+              </h1>
+              <div className="display font-light text-lg lg:text-xl mt-8 leading-[1.5] max-w-[40ch]">
+                Currently at ASU, researching physics-informed neural networks
+                for plasma simulation. Previously at Cadence on protein property
+                prediction at million-sequence scale.
+                <span className="block mt-4 muted">
+                  Looking for roles in ML systems and ML infrastructure —
+                  orchestration, GPU pipelines, and evaluation harnesses.
                 </span>
-                <span>{label}</span>
-              </button>
-            )
-          })}
+              </div>
+            </div>
+
+            <div className="lg:pt-4">
+              <div className="relative w-full aspect-[3/4] overflow-hidden grayscale">
+                <Image
+                  src="/images/design-mode/new_personal_photo(1).png"
+                  alt="Rushir Bhavsar"
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 280px"
+                  className="object-cover object-[60%_30%]"
+                  priority
+                />
+                <div className="absolute inset-0 ring-1 ring-inset ring-black/10" />
+              </div>
+              <div className="mt-5 mono text-[13px] muted leading-[1.7]">
+                <p>
+                  <span className="accent">+</span> ML systems / infra
+                </p>
+                <p>
+                  <span className="accent">+</span> Tempe, Arizona
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <Section
+          id="experience"
+          title="Experience"
+          count={WORK.length}
+          open={openSection === "experience"}
+          onToggle={() => toggleSection("experience")}
+        >
+          <ol className="mt-2 lg:mt-3">
+            {WORK.map((w, i) => (
+              <li
+                key={w.company}
+                className={`grid grid-cols-1 lg:grid-cols-[140px_1fr_240px] gap-6 lg:gap-12 py-8 lg:py-10 first:pt-4 lg:first:pt-6 ${
+                  i !== WORK.length - 1 ? "border-b rule" : ""
+                }`}
+              >
+                <div className="mono text-[13px] leading-none flex lg:flex-col items-start gap-3 lg:gap-2 lg:pt-[10px]">
+                  <span className={w.current ? "accent" : "ink"}>{w.period}</span>
+                </div>
+                <div>
+                  <h3 className="display text-2xl lg:text-3xl font-light tracking-tight leading-tight">
+                    {w.role}
+                    <span className="muted"> @{w.company}</span>
+                  </h3>
+                  <p className="mt-5 leading-relaxed text-[15px] max-w-[58ch] mono">{w.desc}</p>
+                </div>
+                <div className="lg:pt-[10px]">
+                  <p className="mono small-caps faint mb-3">Stack</p>
+                  <ul className="flex flex-wrap gap-x-3 gap-y-1.5 mono text-[13px]">
+                    {w.stack.map((s) => (
+                      <li key={s} className="muted">
+                        {s}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </Section>
+
+        <Section
+          id="projects"
+          title="Selected Projects"
+          count={PROJECTS.length}
+          open={openSection === "projects"}
+          onToggle={() => toggleSection("projects")}
+        >
+          <ol className="mt-2 lg:mt-3">
+            {PROJECTS.map((p, i) => (
+              <li
+                key={p.name}
+                className={`grid grid-cols-1 lg:grid-cols-[140px_1fr_240px] gap-6 lg:gap-12 py-8 lg:py-10 first:pt-4 lg:first:pt-6 ${
+                  i !== PROJECTS.length - 1 ? "border-b rule" : ""
+                }`}
+              >
+                <div className="mono text-[13px] leading-none ink lg:pt-[10px]">
+                  {p.type}
+                </div>
+                <div>
+                  <h3 className="display text-2xl lg:text-3xl font-light tracking-tight leading-tight">
+                    {p.name}
+                  </h3>
+                  <p className="mt-5 leading-relaxed text-[15px] max-w-[58ch] mono">{p.desc}</p>
+                </div>
+                <div className="lg:pt-[10px] space-y-6">
+                  <div>
+                    <p className="mono small-caps faint mb-3">Stack</p>
+                    <ul className="flex flex-wrap gap-x-3 gap-y-1.5 mono text-[13px]">
+                      {p.stack.map((s) => (
+                        <li key={s} className="muted">
+                          {s}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div>
+                    <p className="mono small-caps faint mb-3">Links</p>
+                    <ul className="flex flex-col gap-2 mono text-[13px]">
+                      {p.links.map((l) => (
+                        <li key={l.label}>
+                          <a
+                            href={l.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="accent-link inline-flex items-center gap-1.5"
+                          >
+                            {l.label}
+                            <span aria-hidden>↗</span>
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </Section>
+
+        <Section
+          id="education"
+          title="Education"
+          count={EDUCATION.length}
+          open={openSection === "education"}
+          onToggle={() => toggleSection("education")}
+        >
+          <ol className="mt-2 lg:mt-3">
+            {EDUCATION.map((e, i) => (
+              <li
+                key={e.degree}
+                className={`grid grid-cols-1 lg:grid-cols-[140px_1fr_280px] gap-6 lg:gap-12 py-8 lg:py-10 first:pt-4 lg:first:pt-6 ${
+                  i !== EDUCATION.length - 1 ? "border-b rule" : ""
+                }`}
+              >
+                <div className="mono text-[13px] leading-none ink lg:pt-[10px]">{e.year}</div>
+                <div>
+                  <h3 className="display text-2xl lg:text-3xl font-light tracking-tight leading-tight">
+                    {e.degree}
+                  </h3>
+                  <p className="mono small-caps muted mt-2">
+                    {e.school}
+                    {e.detail && <span className="faint"> · {e.detail}</span>}
+                  </p>
+                  <div className="mt-6 space-y-4 max-w-[58ch]">
+                    <div>
+                      <p className="mono small-caps faint mb-2">Coursework</p>
+                      <p className="mono text-[13px] muted leading-relaxed">
+                        {e.coursework.join("  ·  ")}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div className="lg:pt-[10px]">
+                  <p className="mono small-caps faint mb-3">Highlights</p>
+                  <ul className="space-y-2 mono text-[13px]">
+                    {e.highlights.map((h) => (
+                      <li key={h} className="muted leading-relaxed pl-4 relative">
+                        <span className="absolute left-0 top-[0.55em] w-2 h-px accent-line" aria-hidden />
+                        {h}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </Section>
+
+        <Section
+          id="contact"
+          title="Contact"
+          open={openSection === "contact"}
+          onToggle={() => toggleSection("contact")}
+        >
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_1fr] gap-12 lg:gap-20 items-start pt-4 lg:pt-6">
+            <div>
+              <h3 className="display text-5xl lg:text-7xl font-light leading-[0.95] tracking-tight">
+                Looking for
+                <br />
+                a role<span className="accent">.</span>
+              </h3>
+              <p className="display font-light text-xl lg:text-2xl mt-8 muted max-w-[36ch] leading-snug">
+                Email&rsquo;s the fastest way to reach me. Especially open to
+                ML systems and infrastructure roles.
+              </p>
+            </div>
+            <div className="lg:pt-6">
+              <ul className="border-t rule">
+                {LINKS.map((l) => (
+                  <li
+                    key={l.label}
+                    className="border-b rule py-5 flex items-center justify-between gap-6"
+                  >
+                    <span className="mono small-caps faint">{l.label}</span>
+                    <a
+                      href={l.href}
+                      target={l.href.startsWith("http") || l.href.endsWith(".pdf") ? "_blank" : undefined}
+                      rel="noopener noreferrer"
+                      className="accent-link mono text-[14px] inline-flex items-center gap-2"
+                    >
+                      {l.value}
+                      <span aria-hidden className="faint">↗</span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </Section>
+
+      </div>
+      <footer
+        className="fixed bottom-0 left-0 right-0 z-40 border-t rule"
+        style={{ backgroundColor: "#f4f1ec" }}
+      >
+        <div className="max-w-[1100px] mx-auto px-6 lg:px-12 py-3 mono text-[10px] muted">
+          <span className="faint">© </span>Rushir Bhavsar, 2026
         </div>
-        <div className="flex-1 min-h-0 overflow-hidden relative">
-          <div
-            key={active}
-            className="slide-pane absolute inset-0"
-            style={{ ["--slide-dir" as string]: direction === 1 ? "1" : "-1" }}
-          >
-            {active === 0 && <WorkContent />}
-            {active === 1 && <ProjectsContent />}
-            {active === 2 && <EducationContent />}
+      </footer>
+    </main>
+  )
+}
+
+function Section({
+  id,
+  title,
+  count,
+  open,
+  onToggle,
+  children,
+}: {
+  id: string
+  title: string
+  count?: number
+  open: boolean
+  onToggle: () => void
+  children: ReactNode
+}) {
+  return (
+    <section
+      id={id}
+      className={`scroll-mt-14 max-w-[1100px] mx-auto px-6 lg:px-12 transition-[min-height] duration-[350ms] ease-out ${
+        open ? "min-h-[calc(100vh-3.5rem)]" : ""
+      }`}
+    >
+      <SectionHead id={id} title={title} count={count} open={open} onToggle={onToggle} />
+      <div
+        id={`${id}-content`}
+        data-open={open}
+        aria-hidden={!open}
+        className="section-collapsible"
+      >
+        <div className="section-content">
+          <div className="pt-4 lg:pt-6 pb-14 lg:pb-20 lg:min-h-[calc(100vh-9rem)] lg:flex lg:flex-col lg:justify-center">
+            {children}
           </div>
         </div>
       </div>
-      </div>
-    </>
+    </section>
   )
 }
 
-function MobileView() {
-  return (
-    <div className="md:hidden w-full bg-[hsl(0_0%_89.9%)] text-foreground min-h-screen">
-      {/* HERO — photo + scroll-below tile */}
-      <div className="flex items-stretch">
-        <div className="relative w-2/3 aspect-[3/2]">
-          <Image
-            src="/images/design-mode/new_personal_photo(1).png"
-            alt="Rushir Bhavsar"
-            fill
-            sizes="66vw"
-            className="object-cover object-[60%_30%]"
-            priority
-          />
-        </div>
-        <a
-          href="#intro"
-          className="w-1/3 bg-[hsl(0_0%_25%)] text-white flex flex-col items-center justify-center gap-2 active:opacity-80 transition-opacity"
-        >
-          <span className="text-3xl leading-none">↓</span>
-          <span
-            className="text-[10px] uppercase tracking-[0.2em] text-center"
-            style={{ fontFamily: "var(--font-jetbrains)" }}
-          >
-            scroll
-            <br />
-            below
-          </span>
-        </a>
-      </div>
-
-      {/* Title block — Lumia-style giant lowercase */}
-      <div className="px-6 py-8 bg-background">
-        <h1
-          className="text-6xl font-black leading-[0.85] lowercase tracking-tight"
-          style={{ fontFamily: "var(--font-jetbrains)" }}
-        >
-          rushir.
-        </h1>
-        <p
-          className="mt-2 text-base lowercase text-foreground/55 tracking-tight"
-          style={{ fontFamily: "var(--font-jetbrains)" }}
-        >
-          ml engineer in tempe, arizona
-        </p>
-      </div>
-
-      {/* Tile grid — status + 4 link tiles */}
-      <div className="grid grid-cols-2 gap-0 bg-background">
-        {/* STATUS — full-width black tile, spans 2 columns */}
-        <div
-          className="col-span-2 bg-black text-white px-5 py-4 flex flex-col gap-2"
-          style={{ fontFamily: "var(--font-source-code)" }}
-        >
-          <p className="text-sm leading-relaxed">
-            Open to full-time{" "}
-            <span className="underline underline-offset-4 decoration-white/50">
-              ML systems / ML infra
-            </span>{" "}
-            roles. Currently researching at{" "}
-            <span className="underline underline-offset-4 decoration-white/50">
-              ASU
-            </span>
-            .
-          </p>
-        </div>
-
-        {/* 4 link tiles */}
-        {[
-          { label: "email", href: "mailto:bhavsarrushir@gmail.com", bg: "bg-foreground" },
-          {
-            label: "linkedin",
-            href: "https://linkedin.com/in/rushir-bhavsar/",
-            bg: "bg-[hsl(0_0%_25%)]",
-          },
-          {
-            label: "github",
-            href: "https://github.com/rushirb2001",
-            bg: "bg-[hsl(0_0%_25%)]",
-          },
-          {
-            label: "resume",
-            href: "/resume.pdf",
-            bg: "bg-foreground",
-          },
-        ].map((l) => (
-          <a
-            key={l.label}
-            href={l.href}
-            target={l.href.startsWith("http") || l.href.endsWith(".pdf") ? "_blank" : undefined}
-            rel="noopener noreferrer"
-            className={`${l.bg} text-white aspect-[2.5/1] flex items-center justify-start px-5 lowercase text-xl font-black tracking-tight active:opacity-80 transition-opacity`}
-            style={{ fontFamily: "var(--font-jetbrains)" }}
-          >
-            {l.label}
-          </a>
-        ))}
-      </div>
-
-      {/* SHORT INTRO panorama section */}
-      <MobileSection title="intro" arrow={false}>
-        <div className="px-6 py-6 bg-[hsl(0_0%_94%)]">
-          <p className="text-sm leading-relaxed text-foreground">
-            ML engineer drawn to the parts most people skip: orchestration,
-            the CUDA kernel that&apos;s actually the bottleneck, the eval
-            framework nobody wanted to build but everyone needed. Currently
-            at ASU teaching neural networks to simulate plasma inside
-            semiconductor etch chambers, after a stretch at Cadence on
-            protein property prediction at million-sequence scale.
-          </p>
-        </div>
-      </MobileSection>
-
-      {/* WORK */}
-      <MobileSection title="work">
-        <div className="flex overflow-x-auto snap-x snap-mandatory scrollbar-none">
-          {WORK.map((w) => (
-            <article
-              key={w.company}
-              className="snap-start shrink-0 w-screen bg-background px-6 py-5 flex flex-col gap-4"
-              style={{
-                background:
-                  "linear-gradient(180deg, hsl(0 0% 96%) 0%, hsl(0 0% 88%) 100%)",
-              }}
-            >
-              <div>
-                <p
-                  className="text-3xl font-black uppercase leading-none"
-                  style={{ fontFamily: "var(--font-jetbrains)" }}
-                >
-                  {w.company}
-                </p>
-                <p className="mt-2 text-xs text-foreground/65">{w.role}</p>
-                <p className="text-[10px] text-foreground/45">{w.year}</p>
-              </div>
-              <p className="text-sm leading-relaxed">{w.desc}</p>
-              <p className="text-[9px] uppercase tracking-[0.15em] text-foreground/55">
-                {w.stack}
-              </p>
-            </article>
-          ))}
-        </div>
-      </MobileSection>
-
-      {/* PROJECTS */}
-      <MobileSection title="projects">
-        <div className="flex overflow-x-auto snap-x snap-mandatory scrollbar-none">
-          {PROJECTS.map((p) => (
-            <article
-              key={p.name}
-              className="snap-start shrink-0 w-screen bg-background px-6 py-5 flex flex-col gap-4"
-              style={{
-                background:
-                  "linear-gradient(180deg, hsl(0 0% 96%) 0%, hsl(0 0% 88%) 100%)",
-              }}
-            >
-              <div>
-                <p
-                  className="text-2xl font-black uppercase leading-tight"
-                  style={{ fontFamily: "var(--font-jetbrains)" }}
-                >
-                  {p.name}
-                </p>
-                <p className="mt-1 text-[10px] uppercase tracking-[0.1em] text-foreground/55">
-                  {p.type}
-                </p>
-              </div>
-              <p className="text-sm leading-relaxed">{p.desc}</p>
-              <div>
-                <p className="text-[9px] uppercase tracking-[0.15em] text-foreground/55 mb-2">
-                  {p.stack}
-                </p>
-                <div className="flex gap-4 text-xs">
-                  {p.links.map((l) => (
-                    <a
-                      key={l.label}
-                      href={l.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="underline underline-offset-4 decoration-foreground/40"
-                    >
-                      {l.label}
-                    </a>
-                  ))}
-                </div>
-              </div>
-            </article>
-          ))}
-        </div>
-      </MobileSection>
-
-      {/* EDUCATION */}
-      <MobileSection title="education">
-        <div className="flex overflow-x-auto snap-x snap-mandatory scrollbar-none">
-          {EDUCATION.map((e) => (
-            <article
-              key={e.degree}
-              className="snap-start shrink-0 w-screen bg-background px-6 py-5 flex flex-col gap-4"
-              style={{
-                background:
-                  "linear-gradient(180deg, hsl(0 0% 96%) 0%, hsl(0 0% 88%) 100%)",
-              }}
-            >
-              <div>
-                <p
-                  className="text-2xl font-black uppercase leading-tight"
-                  style={{ fontFamily: "var(--font-jetbrains)" }}
-                >
-                  {e.degree}
-                </p>
-                <p className="mt-2 text-xs text-foreground/65">{e.school}</p>
-                <p className="text-[10px] text-foreground/45">{e.detail}</p>
-              </div>
-              <div className="space-y-3">
-                <div>
-                  <p className="text-[9px] uppercase tracking-[0.15em] text-foreground/55 mb-1">
-                    Coursework
-                  </p>
-                  <p className="text-xs leading-relaxed">{e.coursework}</p>
-                </div>
-                <div>
-                  <p className="text-[9px] uppercase tracking-[0.15em] text-foreground/55 mb-1">
-                    Highlights
-                  </p>
-                  <p className="text-xs leading-relaxed">{e.highlights}</p>
-                </div>
-              </div>
-            </article>
-          ))}
-        </div>
-      </MobileSection>
-
-      {/* footer breathing room */}
-      <div className="h-12 bg-background" />
-    </div>
-  )
-}
-
-function MobileSection({
+function SectionHead({
+  id,
   title,
-  children,
-  arrow = true,
+  count,
+  open,
+  onToggle,
 }: {
+  id: string
   title: string
-  children: React.ReactNode
-  arrow?: boolean
+  count?: number
+  open: boolean
+  onToggle: () => void
 }) {
   return (
-    <section className="bg-background pt-6 pb-4">
-      <h2
-        className="px-6 text-5xl font-black lowercase leading-[0.85] tracking-tight text-foreground/85 mb-4 flex items-center gap-4"
-        style={{ fontFamily: "var(--font-jetbrains)" }}
-      >
-        <span>{title}</span>
-        {arrow && (
-          <span className="text-3xl text-foreground/35 leading-none">→</span>
+    <button
+      type="button"
+      onClick={onToggle}
+      aria-expanded={open}
+      aria-controls={`${id}-content`}
+      className="sticky top-14 z-30 -mx-6 lg:-mx-12 px-6 lg:px-12 py-3 border-b rule w-[calc(100%+3rem)] lg:w-[calc(100%+6rem)] text-left transition-[background-color,transform] duration-200 ease-out hover:bg-[rgba(31,58,95,0.05)] active:scale-[0.997] active:duration-100 cursor-pointer"
+      style={{ backgroundColor: "#f4f1ec" }}
+    >
+      <div className="grid grid-cols-1 lg:grid-cols-[140px_1fr_240px] gap-6 lg:gap-12 items-baseline">
+        <span className="display accent text-2xl lg:text-3xl font-light leading-none">+</span>
+        <h2 className="display text-2xl lg:text-3xl font-light tracking-tight leading-none">
+          {title}
+          <span className="accent">.</span>
+        </h2>
+        {count != null && (
+          <span className="mono text-[13px] faint hidden lg:inline-block text-right tracking-[0.18em]">
+            {String(count).padStart(2, "0")}
+          </span>
         )}
-      </h2>
-      {children}
-    </section>
+      </div>
+    </button>
   )
 }

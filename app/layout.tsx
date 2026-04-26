@@ -1,36 +1,5 @@
 import type { Metadata, Viewport } from "next"
-import { Geist, Geist_Mono, JetBrains_Mono, Pixelify_Sans, Source_Code_Pro } from "next/font/google"
 import "./globals.css"
-
-const geistMono = Geist_Mono({
-  subsets: ["latin"],
-  variable: "--font-mono",
-  display: "swap",
-})
-
-const pixelFont = Pixelify_Sans({
-  subsets: ["latin"],
-  variable: "--font-pixel",
-  display: "swap",
-})
-
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
-  variable: "--font-jetbrains",
-  display: "swap",
-})
-
-const sourceCodePro = Source_Code_Pro({
-  subsets: ["latin"],
-  variable: "--font-source-code",
-  display: "swap",
-})
-
-const geistSans = Geist({
-  subsets: ["latin"],
-  variable: "--font-sans",
-  display: "swap",
-})
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -54,7 +23,15 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={`${geistMono.variable} ${pixelFont.variable} ${geistSans.variable} ${jetbrainsMono.variable} ${sourceCodePro.variable}`}>
+    <html lang="en">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&family=Google+Sans+Code:ital,wght,MONO@0,300..800,1;1,300..800,1&display=swap"
+        />
+      </head>
       <body>{children}</body>
     </html>
   )
