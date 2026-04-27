@@ -10,11 +10,6 @@ export const metadata: Metadata = {
   title: "Rushir Bhavsar — ML Engineer",
   description:
     "ML engineer working at the intersection of research and production systems. Distributed pipelines, custom CUDA, physics-informed models.",
-  icons: {
-    icon: "https://v9fl0vq2qbxv8yrh.public.blob.vercel-storage.com/favicon-iZp2vAIsQyqsrMC97HCq9KOcfFFtgt.ico",
-    apple:
-      "https://v9fl0vq2qbxv8yrh.public.blob.vercel-storage.com/apple-touch-icon-i2OMEl4KJIHzWPGval5Fmnx2KxDqhQ.png",
-  },
 }
 
 export default function RootLayout({
