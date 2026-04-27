@@ -3,10 +3,10 @@
 import { useEffect, useState } from "react"
 
 const SECTIONS = [
-  { id: "experience", label: "Experience" },
-  { id: "projects", label: "Projects" },
-  { id: "education", label: "Education" },
-  { id: "contact", label: "Contact" },
+  { id: "experience", label: "Experience", short: "Exp" },
+  { id: "projects", label: "Projects", short: "Proj" },
+  { id: "education", label: "Education", short: "Edu" },
+  { id: "contact", label: "Contact", short: "Hi" },
 ]
 
 type Props = {
@@ -53,11 +53,11 @@ export function TocNav({ active, onSelect, onHome }: Props) {
         boxShadow: elevated && visible ? "0 6px 24px -10px rgba(0,0,0,0.18)" : "none",
       }}
     >
-      <div className="max-w-[1100px] mx-auto px-6 lg:px-12 h-14 flex items-center justify-between gap-4">
+      <div className="max-w-[1100px] mx-auto px-4 sm:px-6 lg:px-12 h-14 flex items-center justify-between gap-2 sm:gap-4">
         <a
-          href="/beta"
+          href="/"
           onClick={handleHome}
-          className="mono uppercase tracking-[0.15em] muted hover:text-[#1a1a1a] transition-colors flex items-center gap-2.5 shrink-0 text-[14px] sm:text-[16px]"
+          className="mono uppercase tracking-[0.15em] muted hover:text-[#1a1a1a] transition-colors flex items-center gap-2 sm:gap-2.5 shrink-0 text-[13px] sm:text-[16px]"
         >
           <span
             aria-hidden
@@ -68,8 +68,9 @@ export function TocNav({ active, onSelect, onHome }: Props) {
             ↓
           </span>
           <span className="hidden sm:inline">Rushir Bhavsar</span>
+          <span className="sm:hidden">Rushir</span>
         </a>
-        <ul className="flex items-center gap-1 sm:gap-2 mono text-[13px] sm:text-[14px]">
+        <ul className="flex items-center gap-0.5 sm:gap-2 mono text-[12px] sm:text-[14px]">
           {SECTIONS.map((s) => {
             const isActive = active === s.id
             return (
@@ -78,7 +79,8 @@ export function TocNav({ active, onSelect, onHome }: Props) {
                   href={`#${s.id}`}
                   onClick={(e) => handleSelect(e, s.id)}
                   aria-current={isActive ? "true" : undefined}
-                  className={`group flex items-center gap-2 px-3 py-1.5 rounded-sm transition-all duration-200 ${
+                  aria-label={s.label}
+                  className={`group flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1.5 rounded-sm transition-all duration-200 ${
                     isActive ? "ink" : "muted hover:text-[#1a1a1a]"
                   }`}
                   style={{
@@ -91,6 +93,7 @@ export function TocNav({ active, onSelect, onHome }: Props) {
                     </span>
                   )}
                   <span className="hidden sm:inline">{s.label}</span>
+                  <span className="sm:hidden">{s.short}</span>
                 </a>
               </li>
             )

@@ -11,6 +11,10 @@
   --color-foreground: var(--foreground);
 }
 
+@theme {
+  --breakpoint-xs: 475px;
+}
+
 @keyframes slide-pane-in {
   from {
     transform: translateX(calc(var(--slide-dir, 1) * 100%));
