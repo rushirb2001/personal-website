@@ -274,8 +274,8 @@ export default function BetaPage() {
               </div>
             </div>
 
-            <div className="xs:pt-3 lg:pt-4">
-              <div className="relative hidden xs:block xs:w-full mx-auto xs:mx-0 max-w-[280px] aspect-[3/4] overflow-hidden grayscale">
+            <div className="hidden xs:block xs:pt-3 lg:pt-4">
+              <div className="relative xs:w-full mx-auto xs:mx-0 max-w-[280px] aspect-[3/4] overflow-hidden grayscale">
                 <Image
                   src="/images/design-mode/new_personal_photo(1).png"
                   alt="Rushir Bhavsar"
