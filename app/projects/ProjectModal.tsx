@@ -2,10 +2,14 @@
 
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { useEffect, useRef } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import type { ProjectDetail, ProjectLink } from "./projects-data"
 import { ArchitectureDiagram } from "./ArchitectureDiagram"
 import { Carousel, type Slide } from "./Carousel"
+
+// Exit-animation duration; navigation is deferred this long so the card can
+// animate out before the route changes. Keep in sync with the CSS below.
+const EXIT_MS = 240
 
 export function ProjectModal({
   detail,
@@ -16,22 +20,28 @@ export function ProjectModal({
 }) {
   const router = useRouter()
   const cardRef = useRef<HTMLDivElement>(null)
+  const [closing, setClosing] = useState(false)
+  const closingRef = useRef(false)
 
   // "overlay": opened over the still-mounted home page via an intercepting
   // route — closing pops the overlay and reveals home exactly as it was.
   // "standalone": a direct or shared-link visit — closing goes to the home page.
-  const close = () => {
-    if (mode === "overlay") router.back()
-    else router.push("/")
-  }
+  // Flip into the "closing" state to play the exit animation, then navigate
+  // once it has finished. Guarded so it only fires once.
+  const close = useCallback(() => {
+    if (closingRef.current) return
+    closingRef.current = true
+    setClosing(true)
+    window.setTimeout(() => {
+      if (mode === "overlay") router.back()
+      else router.push("/")
+    }, EXIT_MS)
+  }, [mode, router])
 
   useEffect(() => {
     cardRef.current?.focus()
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        if (mode === "overlay") router.back()
-        else router.push("/")
-      }
+      if (e.key === "Escape") close()
     }
     window.addEventListener("keydown", onKey)
     const prevOverflow = document.body.style.overflow
@@ -40,7 +50,7 @@ export function ProjectModal({
       window.removeEventListener("keydown", onKey)
       document.body.style.overflow = prevOverflow
     }
-  }, [router, mode])
+  }, [close])
 
   const isPrivate = detail.repoStatus === "private"
   const { artifacts, verify } = detail
@@ -135,7 +145,9 @@ export function ProjectModal({
 
   return (
     <div
-      className="modal-backdrop grain fixed inset-0 z-50 overflow-hidden flex items-center justify-center p-3 sm:p-6"
+      className={`modal-backdrop grain fixed inset-0 z-50 overflow-hidden flex items-center justify-center p-3 sm:p-6 ${
+        closing ? "is-closing" : ""
+      }`}
       onClick={(e) => {
         if (e.target === e.currentTarget) close()
       }}
@@ -148,7 +160,9 @@ export function ProjectModal({
         role="dialog"
         aria-modal="true"
         aria-labelledby="proj-title"
-        className="modal-card relative w-[95vw] max-w-[1440px] max-h-[90vh] flex flex-col overflow-hidden rounded-xl bg-[#f4f1ec] text-[#1a1a1a] outline-none ring-1 ring-black/10 shadow-[0_24px_80px_-24px_rgba(0,0,0,0.45)]"
+        className={`modal-card relative w-[95vw] max-w-[1440px] max-h-[90vh] flex flex-col overflow-hidden rounded-xl bg-[#f4f1ec] text-[#1a1a1a] outline-none ring-1 ring-black/10 shadow-[0_24px_80px_-24px_rgba(0,0,0,0.45)] ${
+          closing ? "is-closing" : ""
+        }`}
       >
         {/* Top-right control — always a text link (no cross):
             internal navigation → "Back to home"; a shared/direct link → "Visit my Portfolio!". */}
@@ -162,7 +176,14 @@ export function ProjectModal({
               <span aria-hidden>←</span> Back to home
             </button>
           ) : (
-            <Link href="/" className="accent-link mono text-[13px] inline-flex items-center gap-1.5">
+            <Link
+              href="/"
+              onClick={(e) => {
+                e.preventDefault()
+                close()
+              }}
+              className="accent-link mono text-[13px] inline-flex items-center gap-1.5"
+            >
               Visit my Portfolio! <span aria-hidden>→</span>
             </Link>
           )}
@@ -179,21 +200,31 @@ export function ProjectModal({
               <div className="md:min-w-0">
               <h1
                 id="proj-title"
-                className="display font-light tracking-tight leading-[1.1] text-[26px] xs:text-[clamp(28px,3.2vw,40px)] lg:text-[clamp(30px,2.5vw,40px)]"
+                className="modal-reveal display font-light tracking-tight leading-[1.1] text-[26px] xs:text-[clamp(28px,3.2vw,40px)] lg:text-[clamp(30px,2.5vw,40px)]"
+                style={{ animationDelay: "0.04s" }}
               >
                 {detail.title ?? detail.name}
                 <span className="accent">.</span>
               </h1>
-              <p className="display accent text-[clamp(16px,1.7vw,21px)] leading-snug mt-2.5">
+              <p
+                className="modal-reveal display accent text-[clamp(16px,1.7vw,21px)] leading-snug mt-2.5"
+                style={{ animationDelay: "0.1s" }}
+              >
                 {detail.type}
                 {detail.place && ` @ ${detail.place}`}
               </p>
-              <p className="display font-light text-[15px] xs:text-[17px] lg:text-[18px] mt-5 leading-relaxed muted max-w-[54ch]">
+              <p
+                className="modal-reveal display font-light text-[15px] xs:text-[17px] lg:text-[18px] mt-5 leading-relaxed muted max-w-[54ch]"
+                style={{ animationDelay: "0.16s" }}
+              >
                 {detail.tagline}
               </p>
 
               {detail.repoNote && (
-                <p className={`mono text-[12px] leading-relaxed mt-4 max-w-[60ch] ${isPrivate ? "ink" : "muted"}`}>
+                <p
+                  className={`modal-reveal mono text-[12px] leading-relaxed mt-4 max-w-[60ch] ${isPrivate ? "ink" : "muted"}`}
+                  style={{ animationDelay: "0.2s" }}
+                >
                   {detail.repoNote}
                 </p>
               )}
@@ -201,7 +232,10 @@ export function ProjectModal({
 
               {/* Links + Stack — two columns on the site's rhythm; stacked into
                   the narrow 20% column at iPad-portrait (md) widths. */}
-              <div className="mt-7 md:mt-0 lg:mt-7 grid grid-cols-2 md:grid-cols-1 lg:grid-cols-2 gap-6 xs:gap-8 md:gap-5 max-w-[460px] md:max-w-none">
+              <div
+                className="modal-reveal mt-7 md:mt-0 lg:mt-7 grid grid-cols-2 md:grid-cols-1 lg:grid-cols-2 gap-6 xs:gap-8 md:gap-5 max-w-[460px] md:max-w-none"
+                style={{ animationDelay: "0.24s" }}
+              >
                 {heroLinks.length > 0 && (
                   <div>
                     <p className="mono small-caps faint mb-2 xs:mb-3">Links</p>
@@ -239,7 +273,10 @@ export function ProjectModal({
               </div>
             </header>
 
-            <div className="mt-10 lg:mt-0 lg:pt-1 md:max-w-[600px] md:mx-auto lg:max-w-none lg:mx-0">
+            <div
+              className="modal-reveal mt-10 lg:mt-0 lg:pt-1 md:max-w-[600px] md:mx-auto lg:max-w-none lg:mx-0"
+              style={{ animationDelay: "0.3s" }}
+            >
               <Carousel slides={slides} />
             </div>
           </div>
@@ -372,17 +409,38 @@ const TOKENS = `
     animation: modal-fade 220ms ease both;
   }
   .modal-card { animation: modal-rise 300ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+  /* Exit: backdrop fades and card sinks before the route changes. */
+  .modal-backdrop.is-closing { animation: modal-fade-out 240ms ease both; }
+  .modal-card.is-closing { animation: modal-sink 240ms cubic-bezier(0.4, 0, 1, 1) both; }
+
   @keyframes modal-fade { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes modal-fade-out { from { opacity: 1; } to { opacity: 0; } }
   @keyframes modal-rise {
     from { opacity: 0; transform: translateY(12px) scale(0.985); }
     to   { opacity: 1; transform: translateY(0) scale(1); }
   }
+  @keyframes modal-sink {
+    from { opacity: 1; transform: translateY(0) scale(1); }
+    to   { opacity: 0; transform: translateY(10px) scale(0.99); }
+  }
+
+  /* Staggered reveal of the hero content on open (per-element delay set inline). */
+  .modal-reveal { animation: modal-content-in 520ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+  @keyframes modal-content-in {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  /* While closing, let the content fade out with the card rather than re-animate. */
+  .modal-card.is-closing .modal-reveal { animation: none; }
+
   .grain::before {
     content: ""; position: fixed; inset: 0; pointer-events: none;
     background-image: radial-gradient(rgba(26,26,26,0.05) 1px, transparent 1px);
     background-size: 3px 3px; mix-blend-mode: multiply; z-index: 1;
   }
   @media (prefers-reduced-motion: reduce) {
-    .modal-backdrop, .modal-card { animation: none; }
+    .modal-backdrop, .modal-card, .modal-reveal,
+    .modal-backdrop.is-closing, .modal-card.is-closing { animation: none; }
   }
 `
