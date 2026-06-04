@@ -32,3 +32,11 @@ next-env.d.ts
 
 # Editor workspace files
 *.code-workspace
+.env*.local
+
+# Project media is stored in Vercel Blob, not the repo
+/public/projects/
+
+# macOS
+.DS_Store
+*.bak

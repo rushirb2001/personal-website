@@ -1,8 +1,10 @@
 "use client"
 
 import Image from "next/image"
+import Link from "next/link"
 import { useEffect, useRef, useState, type ReactNode } from "react"
 import { TocNav } from "./TocNav"
+import { hasProjectDetail } from "./projects/projects-data"
 
 const WORK = [
   {
@@ -34,9 +36,10 @@ const WORK = [
 const PROJECTS = [
   {
     name: "MACE-PINN",
+    slug: "mace-pinn",
     type: "Master's thesis",
     year: "2025",
-    desc: "Parallel-subnetwork PINN with random Fourier feature embeddings for coupled PDE systems. 40–60% lower L2 error than single-network baselines on Gray-Scott and Ginzburg-Landau.",
+    desc: "Parallel-subnetwork physics-informed neural network with random Fourier feature embeddings for stiff, coupled PDE systems. 40 to 60 percent lower relative L2 error than single-network baselines on Gray-Scott and Ginzburg-Landau.",
     stack: ["JAX", "Flax", "NumPy"],
     links: [
       { label: "github", href: "https://github.com/rushirb2001/thesis-mace-pinn" },
@@ -44,27 +47,57 @@ const PROJECTS = [
     ],
   },
   {
-    name: "MedQuery",
-    type: "LLM benchmark",
-    year: "2025",
-    desc: "10K-query classification benchmark across four difficulty levels and nine categories — comparing local quantised models (MLX, llama.cpp) against frontier APIs honestly.",
-    stack: ["LangGraph", "LangChain", "FAISS", "OpenAI"],
-    links: [{ label: "github", href: "https://github.com/rushirb2001" }],
+    name: "Samhita",
+    slug: "samhita",
+    type: "Data pipeline",
+    year: "2026",
+    desc: "Pipeline that turns surgical-textbook PDFs into structured knowledge: 220 chapters into a 71,621-node graph and 52,871 BioLORD embeddings, with immutable content-hashed versioned exports to Cloudflare R2.",
+    stack: ["Python", "Pydantic", "Adobe PDF API", "Claude", "BioLORD"],
+    links: [],
   },
   {
     name: "HybridFlow",
-    type: "Retrieval system",
-    year: "2025",
-    desc: "Hybrid Qdrant + Neo4j + SQLite retrieval across surgical textbooks with sub-12 ms P50 multi-hop reasoning through ten tool functions.",
-    stack: ["Qdrant", "Neo4j", "SQLite", "FastAPI"],
-    links: [{ label: "github", href: "https://github.com/rushirb2001" }],
+    slug: "hybridflow",
+    type: "Retrieval backend",
+    year: "2026",
+    desc: "Hybrid retrieval backend over surgical textbooks: about 53K medical embeddings in Qdrant plus a 93K-node Neo4j knowledge graph, behind a streaming FastAPI service with a Claude planning-and-generation pipeline.",
+    stack: ["Python", "FastAPI", "Qdrant", "Neo4j", "Claude"],
+    links: [],
   },
   {
-    name: "Yelp recs & sentiment",
-    type: "Coursework, prod-quality",
-    year: "2024",
-    desc: "Spark ALS recommender plus a sentiment classifier behind FastAPI microservices serving 5M+ interactions at sub-100 ms p95, with Redis caching and MLflow tracking.",
-    stack: ["PySpark", "FastAPI", "MLflow", "Docker", "Redis"],
+    name: "SushrutaLGS BFF",
+    slug: "sushrutalgs-bff",
+    type: "API gateway",
+    year: "2026",
+    desc: "Cloudflare Worker backend-for-frontend gating the SushrutaLGS web and iOS clients: Supabase JWT verification, atomic plan-based daily quotas, and SSE pass-through to the AI backend. Live in production at about 14 ms edge overhead.",
+    stack: ["TypeScript", "Hono", "Cloudflare Workers", "Supabase"],
+    links: [],
+  },
+  {
+    name: "SushrutaLGS iOS",
+    slug: "sushrutalgs-ios",
+    type: "iOS app",
+    year: "2026",
+    desc: "Native SwiftUI app (Swift 6, iOS 26) for an AI surgical-exam study assistant: SSE streaming chat with cross-device handoff over Supabase Realtime, three auth flows, and a CI security gate. About 33K lines across 80 views.",
+    stack: ["Swift 6", "SwiftUI", "supabase-swift", "Xcode Cloud"],
+    links: [],
+  },
+  {
+    name: "SushrutaLGS Web",
+    slug: "sushrutalgs-web",
+    type: "Web app",
+    year: "2026",
+    desc: "Next.js 16 web app for the AI surgical-exam study assistant: streaming chat with tree-structured branching conversations, inline textbook citations, figures, and tables. About 27K lines and 23 hardened Supabase migrations.",
+    stack: ["Next.js 16", "React 19", "TypeScript", "Supabase", "Vercel"],
+    links: [],
+  },
+  {
+    name: "Yelp ML Platform",
+    slug: "yelp-ml-platform",
+    type: "ML platform",
+    year: "2025",
+    desc: "End-to-end ML platform on the full 7M-review Yelp dataset: a Spark ALS recommender and a TF-IDF sentiment classifier served through one FastAPI service, with an exported NumPy inference path at p99 0.11 ms. MLflow tracking, Dockerized.",
+    stack: ["PySpark", "FastAPI", "MLflow", "Docker", "NumPy"],
     links: [{ label: "github", href: "https://github.com/rushirb2001/yelp-ml-platform" }],
   },
 ]
@@ -241,10 +274,15 @@ export default function BetaPage() {
         }
       `}</style>
 
-      <div className="grain relative z-0 pb-16">
+      <div
+        className={`grain relative z-0 pb-16 flex flex-col ${
+          openSection === null ? "min-h-[100svh]" : ""
+        }`}
+      >
         <TocNav active={openSection} onSelect={toggleSection} onHome={goHome} />
 
-        {/* Hero */}
+        {/* Hero — centered in the leftover space above the section list while closed */}
+        <div className={openSection === null ? "flex-1 flex flex-col justify-center" : ""}>
         <section className="hero-anim max-w-[1100px] mx-auto px-6 lg:px-12 pt-6 xs:pt-8 lg:pt-12 pb-8 xs:pb-10 lg:pb-14">
           <div className="grid grid-cols-1 xs:grid-cols-[1fr_clamp(140px,28vw,280px)] lg:grid-cols-[1fr_280px] gap-8 xs:gap-6 lg:gap-16 items-start">
             <div>
@@ -297,7 +335,9 @@ export default function BetaPage() {
             </div>
           </div>
         </section>
+        </div>
 
+        <div>
         <Section
           id="experience"
           title="Experience"
@@ -349,7 +389,8 @@ export default function BetaPage() {
             {PROJECTS.map((p, i) => (
               <li
                 key={p.name}
-                className={`grid grid-cols-1 xs:grid-cols-[clamp(80px,14vw,140px)_1fr_clamp(140px,22vw,240px)] lg:grid-cols-[140px_1fr_240px] gap-3 xs:gap-6 lg:gap-12 py-5 xs:py-8 lg:py-10 first:pt-2 xs:first:pt-4 lg:first:pt-6 ${
+                id={`project-${p.slug}`}
+                className={`scroll-mt-20 grid grid-cols-1 xs:grid-cols-[clamp(80px,14vw,140px)_1fr_clamp(140px,22vw,240px)] lg:grid-cols-[140px_1fr_240px] gap-3 xs:gap-6 lg:gap-12 py-5 xs:py-8 lg:py-10 first:pt-2 xs:first:pt-4 lg:first:pt-6 ${
                   i !== PROJECTS.length - 1 ? "border-b rule" : ""
                 }`}
               >
@@ -376,6 +417,17 @@ export default function BetaPage() {
                   <div>
                     <p className="mono small-caps faint mb-2 xs:mb-3">Links</p>
                     <ul className="flex flex-col gap-2 mono text-[11px] xs:text-[13px]">
+                      {hasProjectDetail(p.slug) && (
+                        <li>
+                          <Link
+                            href={`/projects/${p.slug}`}
+                            className="accent-link inline-flex items-center gap-1.5"
+                          >
+                            case study
+                            <span aria-hidden>→</span>
+                          </Link>
+                        </li>
+                      )}
                       {p.links.map((l) => (
                         <li key={l.label}>
                           <a
@@ -467,9 +519,9 @@ export default function BetaPage() {
           <div className="grid grid-cols-1 xs:grid-cols-[1fr_1fr] gap-6 xs:gap-8 lg:gap-20 items-start pt-3 xs:pt-4 lg:pt-6">
             <div>
               <h3 className="display text-[44px] xs:text-[clamp(40px,7vw,72px)] lg:text-7xl font-light leading-[0.95] tracking-tight">
-                Looking for
+                Hey! I'm looking
                 <br />
-                a role<span className="accent">.</span>
+                for a role<span className="accent">.</span>
               </h3>
               <p className="display font-light text-lg xs:text-[clamp(17px,1.6vw,24px)] lg:text-2xl mt-6 xs:mt-8 muted max-w-[36ch] leading-snug">
                 Email&rsquo;s the fastest way to reach me. Especially open to
@@ -499,13 +551,14 @@ export default function BetaPage() {
             </div>
           </div>
         </Section>
+        </div>
 
       </div>
       <footer
         className="fixed bottom-0 left-0 right-0 z-40 border-t rule"
         style={{ backgroundColor: "#f4f1ec" }}
       >
-        <div className="max-w-[1100px] mx-auto px-6 lg:px-12 py-3 mono text-[10px] muted">
+        <div className="max-w-[1100px] mx-auto px-6 lg:px-12 h-14 flex items-center mono text-[10px] muted">
           <span className="faint">© </span>Rushir Bhavsar, 2026
         </div>
       </footer>

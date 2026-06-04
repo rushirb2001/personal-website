@@ -4,6 +4,8 @@
   color-scheme: light;
   --background: hsl(0 0% 97%);
   --foreground: hsl(0 0% 12%);
+  --accent: #1f3a5f;
+  --accent-dark: #16314f;
 }
 
 @theme inline {
@@ -50,6 +52,35 @@
 
 html {
   scroll-behavior: smooth;
+}
+
+/* Accent (dark-blue) scrollbars, site-wide.
+   WebKit (Chrome/Safari/Edge) + Firefox. Styling ::-webkit-scrollbar makes
+   Chrome render a classic styled bar instead of the auto-hiding overlay, so
+   the accent shows on macOS too. */
+html {
+  scrollbar-color: var(--accent) transparent; /* Firefox: thumb track */
+  scrollbar-width: thin;
+}
+::-webkit-scrollbar {
+  width: 11px;
+  height: 11px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background-color: var(--accent);
+  border-radius: 999px;
+  border: 3px solid transparent; /* inset the thumb via */
+  background-clip: padding-box; /* a transparent padding ring */
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--accent-dark);
+  border-width: 2px;
+}
+::-webkit-scrollbar-corner {
+  background: transparent;
 }
 
 html,
