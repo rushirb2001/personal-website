@@ -64,8 +64,6 @@ export function ProjectModal({
   const { artifacts, verify } = detail
   const showTodos = process.env.NODE_ENV !== "production"
 
-  const demo = artifacts.demoVideo
-  const demoReal = !!demo?.embedUrl
   const diagram = artifacts.diagram
 
   const mail = (to: string, subject: string) =>
@@ -82,9 +80,8 @@ export function ProjectModal({
     ...(verify.contactEmail ? [{ label: "Email", href: mail(verify.contactEmail, `${detail.name} — question`) }] : []),
   ]
 
-  // Build the artifact carousel: architecture diagram first, then a recorded
-  // walkthrough, result clips, screenshots, and finally a "coming soon" slate
-  // when no walkthrough exists yet. Dev-only placeholders fill empty slots.
+  // Build the artifact carousel: architecture diagram first, then result clips
+  // and screenshots. Dev-only placeholders fill empty slots.
   const videoSlide = (key: string, src: string, caption?: string): Slide => ({
     key,
     caption,
@@ -110,26 +107,9 @@ export function ProjectModal({
   } else if (showTodos && diagram) {
     slides.push({ key: "arch-todo", caption: "Architecture diagram (dev placeholder).", node: <PlaceholderSlide todo={diagram.todo} /> })
   }
-  // 2. Recorded walkthrough video
-  if (demoReal) {
-    slides.push({
-      key: "demo",
-      caption: "Recorded walkthrough.",
-      node: (
-        <iframe
-          src={demo!.embedUrl}
-          title={`${detail.name} walkthrough`}
-          className="w-full h-full"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
-          allowFullScreen
-          loading="lazy"
-        />
-      ),
-    })
-  }
-  // 3. Result clips
+  // 2. Result clips
   artifacts.clips?.forEach((c, k) => slides.push(videoSlide(`clip-${k}`, c.src, c.caption)))
-  // 4. Screenshots
+  // 3. Screenshots
   if (artifacts.screenshots?.items?.length) {
     artifacts.screenshots.items.forEach((s, k) =>
       slides.push({
@@ -143,12 +123,6 @@ export function ProjectModal({
     )
   } else if (showTodos && artifacts.screenshots?.todo) {
     slides.push({ key: "shot-todo", caption: "Screenshots (dev placeholder).", node: <PlaceholderSlide todo={artifacts.screenshots.todo} /> })
-  }
-  // 5. Walkthrough video, placed last: when none is recorded yet, a professional
-  //    "coming soon" slate shown in production too, so the slot reads as
-  //    intentional when a recruiter follows a link from the résumé.
-  if (!demoReal && demo) {
-    slides.push({ key: "demo-soon", caption: "Walkthrough video.", node: <ComingSoonSlide /> })
   }
 
   return (
@@ -370,24 +344,6 @@ function PlaceholderSlide({ todo, icon = "+" }: { todo?: string; icon?: string }
       </div>
       <p className="mono small-caps accent mb-1">Drop asset here</p>
       {todo && <p className="mono text-[11px] faint max-w-[34ch] leading-relaxed mx-auto">{todo}</p>}
-    </div>
-  )
-}
-
-// Public-facing "coming soon" slate for a not-yet-recorded walkthrough video.
-// Unlike PlaceholderSlide (dev-only), this is shown in production so the slot
-// reads as professional and intentional.
-function ComingSoonSlide() {
-  return (
-    <div className="text-center px-8">
-      <div className="accent text-[30px] leading-none mb-4" aria-hidden>
-        ▶
-      </div>
-      <p className="display text-[19px] xs:text-[21px] ink mb-2">Walkthrough video</p>
-      <p className="mono small-caps accent mb-3">Coming soon</p>
-      <p className="mono text-[11px] faint max-w-[36ch] leading-relaxed mx-auto">
-        A recorded walkthrough is on the way. Stay tuned.
-      </p>
     </div>
   )
 }

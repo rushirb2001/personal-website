@@ -28,7 +28,6 @@ export type CaseSection = {
   table?: ResultsTable
 }
 
-export type DemoVideo = { embedUrl?: string; todo?: string }
 export type LiveDemo = { url?: string; todo?: string }
 export type Screenshots = { items?: Screenshot[]; todo?: string }
 export type Diagram = "builtin" | { todo: string }
@@ -60,7 +59,6 @@ export type ProjectDetail = {
     diagram?: Diagram
     /** Local, muted, autoplay-loop result clips (mp4). Strong, real proof. */
     clips?: Clip[]
-    demoVideo?: DemoVideo
     liveUrl?: LiveDemo
     screenshots?: Screenshots
   }
@@ -143,7 +141,6 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
         },
       ],
       // Dev-only placeholders; swap in real URLs to render them live.
-      demoVideo: { todo: "Unlisted Loom / YouTube walkthrough — paste the embed URL" },
       liveUrl: { todo: "Hosted interactive solver demo — paste the URL" },
     },
     verify: {
@@ -188,7 +185,6 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
     links: [{ label: "live product", href: "https://sushrutalgs.ai" }],
     artifacts: {
       diagram: "builtin",
-      demoVideo: { todo: "Loom walkthrough of a chapter run" },
     },
     verify: { requestAccessEmail: "bhavsarrushir@gmail.com" },
   },
@@ -229,7 +225,6 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
     links: [{ label: "live product", href: "https://sushrutalgs.ai" }],
     artifacts: {
       diagram: "builtin",
-      demoVideo: { todo: "Loom of a streaming query" },
     },
     verify: { requestAccessEmail: "bhavsarrushir@gmail.com" },
   },
@@ -269,7 +264,6 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
     links: [{ label: "live product", href: "https://sushrutalgs.ai" }],
     artifacts: {
       diagram: "builtin",
-      demoVideo: { todo: "Loom of a request lifecycle" },
     },
     verify: { requestAccessEmail: "bhavsarrushir@gmail.com" },
   },
@@ -317,7 +311,6 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
           { src: "https://v9fl0vq2qbxv8yrh.public.blob.vercel-storage.com/projects/sushrutalgs-ios/ios-new-chat-1PAX7DWp61oYbYG5DbBmphcVVLBc1u.webp", caption: "New chat and the textbook picker." },
         ],
       },
-      demoVideo: { todo: "Screen recording of the app" },
     },
     verify: { requestAccessEmail: "bhavsarrushir@gmail.com" },
   },
@@ -358,7 +351,6 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
     artifacts: {
       diagram: "builtin",
       screenshots: { todo: "Screenshots of the chat and citations" },
-      demoVideo: { todo: "Screen recording of the live app" },
     },
     verify: { requestAccessEmail: "bhavsarrushir@gmail.com" },
   },
@@ -397,7 +389,6 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
     links: [{ label: "github", href: "https://github.com/rushirb2001/yelp-ml-platform" }],
     artifacts: {
       diagram: "builtin",
-      demoVideo: { todo: "Loom of the API and benchmarks" },
     },
     verify: {},
   },
@@ -422,7 +413,6 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
 //   artifacts: {
 //     diagram: { todo: "System / data-flow diagram" },
 //     clips: [{ src: "/projects/<slug>/clip.mp4", caption: "..." }],
-//     demoVideo: { embedUrl: "https://www.loom.com/embed/XXXX" },
 //     liveUrl: { url: "https://demo.example.com" },
 //     screenshots: { items: [{ src: "/projects/<slug>/shot-1.png", caption: "..." }] },
 //   },
