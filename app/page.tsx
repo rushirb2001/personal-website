@@ -106,18 +106,21 @@ const EDUCATION = [
   {
     degree: "MS, Data Science",
     school: "Arizona State University",
-    detail: "HPC concentration",
+    focus: "High Performance Computing and Decision Analytics",
     year: "2025",
     coursework: ["Statistical ML", "Distributed Systems", "GPU Computing", "Deep Learning Theory", "Numerical Methods", "Optimization"],
     highlights: [
-      { text: "Thesis on physics-informed neural networks for coupled PDE systems" },
+      {
+        text: "Thesis: Multi-Architecture Coupled Ensemble Physics-Informed Neural Networks",
+        href: "https://keep.lib.asu.edu/items/201211",
+      },
       { text: "GPA 3.71" },
     ],
   },
   {
-    degree: "BTech, Computer Science & Engineering",
-    school: "Nirma University, Ahmedabad",
-    detail: "",
+    degree: "B.Tech, Computer Science",
+    school: "Nirma University",
+    focus: "Robotics, Computer Vision and Automation",
     year: "2023",
     coursework: ["Algorithms", "Operating Systems", "Computer Networks", "Databases", "Compilers", "Linear Algebra"],
     highlights: [
@@ -479,10 +482,10 @@ export default function BetaPage() {
                 <div>
                   <h3 className="display text-base xs:text-[26px] lg:text-3xl font-light tracking-tight leading-tight">
                     {e.degree}
+                    <span className="muted"> @{e.school}</span>
                   </h3>
-                  <p className="mono small-caps muted mt-2">
-                    {e.school}
-                    {e.detail && <span className="faint"> · {e.detail}</span>}
+                  <p className="display accent font-light tracking-tight text-[14px] xs:text-[16px] lg:text-lg mt-1.5 xs:mt-2">
+                    {e.focus}
                   </p>
                   <div className="mt-3 xs:mt-6 space-y-4 max-w-[58ch]">
                     <div>
