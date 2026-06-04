@@ -272,6 +272,17 @@ export default function BetaPage() {
           mix-blend-mode: multiply;
           z-index: 1;
         }
+
+        /* Short, wide viewports (iPad landscape, short laptop windows) can't fit
+           the full-size hero + section list in one screen, so it overflows under
+           the browser toolbar. Compact the hero so the closed landing fits.
+           The media query keys off the layout viewport height (≈820 on iPad
+           landscape), while the layout itself fits within 100svh. */
+        @media (min-width: 768px) and (max-height: 900px) {
+          .hero-section { padding-top: 0.75rem; padding-bottom: 0.75rem; }
+          .hero-section h1 { font-size: clamp(56px, 8.5vw, 92px); }
+          .hero-section .hero-photo { max-width: 200px; }
+        }
       `}</style>
 
       <div
@@ -283,7 +294,7 @@ export default function BetaPage() {
 
         {/* Hero — centered in the leftover space above the section list while closed */}
         <div className={openSection === null ? "flex-1 flex flex-col justify-center" : ""}>
-        <section className="hero-anim max-w-[1100px] mx-auto px-6 lg:px-12 pt-6 xs:pt-8 lg:pt-12 pb-8 xs:pb-10 lg:pb-14">
+        <section className="hero-anim hero-section max-w-[1100px] mx-auto px-6 lg:px-12 pt-6 xs:pt-8 lg:pt-12 pb-8 xs:pb-10 lg:pb-14">
           <div className="grid grid-cols-1 xs:grid-cols-[1fr_clamp(140px,28vw,280px)] lg:grid-cols-[1fr_280px] gap-8 xs:gap-6 lg:gap-16 items-start">
             <div>
               <h1 className="display font-light leading-[0.92] tracking-tight text-[52px] xs:text-[clamp(56px,11vw,120px)] lg:text-[120px]">
@@ -313,7 +324,7 @@ export default function BetaPage() {
             </div>
 
             <div className="hidden xs:block xs:pt-3 lg:pt-4">
-              <div className="relative xs:w-full mx-auto xs:mx-0 max-w-[280px] aspect-[3/4] overflow-hidden grayscale">
+              <div className="hero-photo relative xs:w-full mx-auto xs:mx-0 max-w-[280px] aspect-[3/4] overflow-hidden grayscale">
                 <Image
                   src="/images/design-mode/new_personal_photo(1).png"
                   alt="Rushir Bhavsar"
