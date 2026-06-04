@@ -8,7 +8,7 @@ export type Slide = {
   caption?: string
 }
 
-const AUTO_MS = 2500
+const AUTO_MS = 5500
 
 /** Restrained, hand-rolled carousel. Prev/next live in the caption row at the
     extremes; dots sit beside them.
