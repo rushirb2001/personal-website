@@ -44,11 +44,19 @@ export function ProjectModal({
       if (e.key === "Escape") close()
     }
     window.addEventListener("keydown", onKey)
-    const prevOverflow = document.body.style.overflow
-    document.body.style.overflow = "hidden"
+    // Lock page scroll. Reserve the now-hidden scrollbar's width as padding so
+    // the page behind the modal doesn't shift when the scrollbar unmounts
+    // (and shift back on close).
+    const body = document.body
+    const scrollbarW = window.innerWidth - document.documentElement.clientWidth
+    const prevOverflow = body.style.overflow
+    const prevPaddingRight = body.style.paddingRight
+    body.style.overflow = "hidden"
+    if (scrollbarW > 0) body.style.paddingRight = `${scrollbarW}px`
     return () => {
       window.removeEventListener("keydown", onKey)
-      document.body.style.overflow = prevOverflow
+      body.style.overflow = prevOverflow
+      body.style.paddingRight = prevPaddingRight
     }
   }, [close])
 
