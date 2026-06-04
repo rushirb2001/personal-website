@@ -170,12 +170,16 @@ export function ProjectModal({
 
         {/* Scrollable content — card stays fixed, content scrolls inside */}
         <div className="grow overflow-y-auto px-6 sm:px-12 lg:px-16 py-12 sm:py-16 lg:py-20">
-          {/* Hero: heading + description + links on the left, artifacts on the right */}
-          <div className="grid gap-8 lg:gap-12 items-center lg:grid-cols-[1fr_minmax(360px,48%)]">
-            <header className="pt-2 sm:pt-4 lg:pt-8 pl-2 sm:pl-4 lg:pl-8 pr-6 lg:pr-10">
+          {/* Hero: heading + description + links + the artifact carousel.
+              lg: carousel sits to the right of the whole header.
+              md (iPad portrait): text and Links/Stack split 80:20 above a
+              slightly reduced carousel. base (phone): everything stacks. */}
+          <div className="lg:grid lg:gap-12 lg:items-center lg:grid-cols-[1fr_minmax(360px,48%)]">
+            <header className="pt-2 sm:pt-4 lg:pt-8 pl-2 sm:pl-4 lg:pl-8 pr-6 lg:pr-10 md:grid md:grid-cols-[4fr_1fr] md:gap-x-8 md:items-start lg:block">
+              <div className="md:min-w-0">
               <h1
                 id="proj-title"
-                className="display font-light tracking-tight leading-[1.1] text-[26px] xs:text-[clamp(28px,3.2vw,40px)] lg:text-[clamp(30px,2.5vw,40px)] max-w-[18ch]"
+                className="display font-light tracking-tight leading-[1.1] text-[26px] xs:text-[clamp(28px,3.2vw,40px)] lg:text-[clamp(30px,2.5vw,40px)]"
               >
                 {detail.title ?? detail.name}
                 <span className="accent">.</span>
@@ -193,9 +197,11 @@ export function ProjectModal({
                   {detail.repoNote}
                 </p>
               )}
+              </div>
 
-              {/* Links + Stack as two columns, matching the site's section rows */}
-              <div className="mt-7 grid grid-cols-2 gap-6 xs:gap-8 max-w-[460px]">
+              {/* Links + Stack — two columns on the site's rhythm; stacked into
+                  the narrow 20% column at iPad-portrait (md) widths. */}
+              <div className="mt-7 md:mt-0 lg:mt-7 grid grid-cols-2 md:grid-cols-1 lg:grid-cols-2 gap-6 xs:gap-8 md:gap-5 max-w-[460px] md:max-w-none">
                 {heroLinks.length > 0 && (
                   <div>
                     <p className="mono small-caps faint mb-2 xs:mb-3">Links</p>
@@ -233,7 +239,7 @@ export function ProjectModal({
               </div>
             </header>
 
-            <div className="lg:pt-1">
+            <div className="mt-10 lg:mt-0 lg:pt-1 md:max-w-[600px] md:mx-auto lg:max-w-none lg:mx-0">
               <Carousel slides={slides} />
             </div>
           </div>
