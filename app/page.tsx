@@ -36,67 +36,73 @@ const WORK = [
 const PROJECTS = [
   {
     name: "MACE-PINN",
+    platform: "",
     slug: "mace-pinn",
     type: "Master's thesis",
     year: "2025",
-    desc: "Parallel-subnetwork physics-informed neural network with random Fourier feature embeddings for stiff, coupled PDE systems. 40 to 60 percent lower relative L2 error than single-network baselines on Gray-Scott and Ginzburg-Landau.",
+    desc: "Master's thesis neural network that accurately solves the stiff, tightly coupled physics equations that standard single-network models struggle to capture.",
     stack: ["JAX", "Flax", "NumPy"],
     links: [
-      { label: "github", href: "https://github.com/rushirb2001/thesis-mace-pinn" },
       { label: "paper", href: "https://keep.lib.asu.edu/items/201211" },
     ],
   },
   {
     name: "Samhita",
+    platform: "sushrutalgs.ai",
     slug: "samhita",
     type: "Data pipeline",
     year: "2026",
-    desc: "Pipeline that turns surgical-textbook PDFs into structured knowledge: 220 chapters into a 71,621-node graph and 52,871 BioLORD embeddings, with immutable content-hashed versioned exports to Cloudflare R2.",
-    stack: ["Python", "Pydantic", "Adobe PDF API", "Claude", "BioLORD"],
+    desc: "Data ingestion module for the sushrutalgs.ai platform that turns surgical-textbook PDFs into a structured, searchable knowledge base for the rest of the platform to draw on.",
+    stack: ["Python", "BioLORD", "Cloudflare R2"],
     links: [],
   },
   {
     name: "HybridFlow",
+    platform: "sushrutalgs.ai",
     slug: "hybridflow",
     type: "Retrieval backend",
     year: "2026",
-    desc: "Hybrid retrieval backend over surgical textbooks: about 53K medical embeddings in Qdrant plus a 93K-node Neo4j knowledge graph, behind a streaming FastAPI service with a Claude planning-and-generation pipeline.",
-    stack: ["Python", "FastAPI", "Qdrant", "Neo4j", "Claude"],
+    desc: "Retrieval module for the sushrutalgs.ai platform that pulls the most relevant medical knowledge and generates grounded, streaming answers to each question.",
+    stack: ["Python", "FastAPI", "Qdrant", "Neo4j"],
     links: [],
   },
   {
-    name: "SushrutaLGS BFF",
+    name: "backend-for-frontend",
+    platform: "sushrutalgs.ai",
     slug: "sushrutalgs-bff",
     type: "API gateway",
     year: "2026",
-    desc: "Cloudflare Worker backend-for-frontend gating the SushrutaLGS web and iOS clients: Supabase JWT verification, atomic plan-based daily quotas, and SSE pass-through to the AI backend. Live in production at about 14 ms edge overhead.",
+    desc: "Gateway module for the sushrutalgs.ai platform that connects the apps to the AI backend, signing users in, enforcing their plan limits, and streaming answers back. Live in production.",
     stack: ["TypeScript", "Hono", "Cloudflare Workers", "Supabase"],
     links: [],
   },
   {
-    name: "SushrutaLGS iOS",
+    name: "ios-app-client",
+    platform: "sushrutalgs.ai",
     slug: "sushrutalgs-ios",
     type: "iOS app",
     year: "2026",
-    desc: "Native SwiftUI app (Swift 6, iOS 26) for an AI surgical-exam study assistant: SSE streaming chat with cross-device handoff over Supabase Realtime, three auth flows, and a CI security gate. About 33K lines across 80 views.",
+    desc: "Native iPhone app for the sushrutalgs.ai platform where users study with the AI assistant, with answers that stream in live and sessions that carry across their devices.",
     stack: ["Swift 6", "SwiftUI", "supabase-swift", "Xcode Cloud"],
     links: [],
   },
   {
-    name: "SushrutaLGS Web",
+    name: "website-client",
+    platform: "sushrutalgs.ai",
     slug: "sushrutalgs-web",
     type: "Web app",
     year: "2026",
-    desc: "Next.js 16 web app for the AI surgical-exam study assistant: streaming chat with tree-structured branching conversations, inline textbook citations, figures, and tables. About 27K lines and 23 hardened Supabase migrations.",
+    desc: "Web app for the sushrutalgs.ai platform where users study with the AI assistant, branching conversations into follow-ups with every answer backed by textbook citations, figures, and tables.",
     stack: ["Next.js 16", "React 19", "TypeScript", "Supabase", "Vercel"],
     links: [],
   },
   {
     name: "Yelp ML Platform",
+    platform: "",
     slug: "yelp-ml-platform",
     type: "ML platform",
     year: "2025",
-    desc: "End-to-end ML platform on the full 7M-review Yelp dataset: a Spark ALS recommender and a TF-IDF sentiment classifier served through one FastAPI service, with an exported NumPy inference path at p99 0.11 ms. MLflow tracking, Dockerized.",
+    desc: "End-to-end ML system on the full Yelp dataset that recommends businesses to users and reads the sentiment of their reviews, served from one fast API.",
     stack: ["PySpark", "FastAPI", "MLflow", "Docker", "NumPy"],
     links: [{ label: "github", href: "https://github.com/rushirb2001/yelp-ml-platform" }],
   },
@@ -404,7 +410,7 @@ export default function BetaPage() {
               <li
                 key={p.name}
                 id={`project-${p.slug}`}
-                className={`scroll-mt-20 grid grid-cols-1 xs:grid-cols-[clamp(80px,14vw,140px)_1fr_clamp(140px,22vw,240px)] lg:grid-cols-[140px_1fr_240px] gap-3 xs:gap-6 lg:gap-12 py-5 xs:py-8 lg:py-10 first:pt-2 xs:first:pt-4 lg:first:pt-6 ${
+                className={`scroll-mt-20 grid grid-cols-1 xs:grid-cols-[clamp(80px,14vw,140px)_1fr_clamp(140px,22vw,240px)] lg:grid-cols-[140px_1fr_240px] gap-3 xs:gap-6 lg:gap-12 py-4 xs:py-6 lg:py-8 first:pt-2 xs:first:pt-3 lg:first:pt-4 ${
                   i !== PROJECTS.length - 1 ? "border-b rule" : ""
                 }`}
               >
@@ -414,12 +420,13 @@ export default function BetaPage() {
                 <div>
                   <h3 className="display text-base xs:text-[26px] lg:text-3xl font-light tracking-tight leading-tight">
                     {p.name}
+                    {p.platform && <span className="muted"> @{p.platform}</span>}
                   </h3>
                   <p className="mt-2 xs:mt-5 leading-relaxed text-[12px] xs:text-[15px] max-w-[58ch] mono">{p.desc}</p>
                 </div>
                 <div className="xs:pt-2 lg:pt-[10px] space-y-6">
                   <div>
-                    <p className="mono small-caps faint mb-2 xs:mb-3">Stack</p>
+                    <p className="mono small-caps faint mb-1 xs:mb-1.5">Stack</p>
                     <ul className="flex flex-wrap gap-x-3 gap-y-1.5 mono text-[11px] xs:text-[13px]">
                       {p.stack.map((s) => (
                         <li key={s} className="muted">
@@ -429,7 +436,7 @@ export default function BetaPage() {
                     </ul>
                   </div>
                   <div>
-                    <p className="mono small-caps faint mb-2 xs:mb-3">Links</p>
+                    <p className="mono small-caps faint mb-1 xs:mb-1.5">Links</p>
                     <ul className="flex flex-col gap-2 mono text-[11px] xs:text-[13px]">
                       {hasProjectDetail(p.slug) && (
                         <li>
