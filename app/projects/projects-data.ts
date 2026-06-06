@@ -181,7 +181,7 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
         body: "Built in Python with Pydantic, PyMuPDF, and the Adobe PDF Services and Anthropic Claude APIs. Exports are immutable and content-hashed, published to Cloudflare R2 with manifest drift detection, and gated by a CI workflow with mocked tests.",
       },
     ],
-    stack: ["Python", "Pydantic", "Adobe PDF Services", "Anthropic Claude", "BioLORD", "Cloudflare R2"],
+    stack: ["Python", "Pydantic", "BioLORD", "Cloudflare R2"],
     links: [{ label: "live product", href: "https://sushrutalgs.ai" }],
     artifacts: {
       diagram: "builtin",
@@ -221,7 +221,7 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
         body: "Python and FastAPI with server-sent-events streaming, Qdrant and Neo4j for storage, and the Anthropic Claude API for planning and generation. Prompt caching cuts the planning call by thousands of tokens at an 80 percent hit rate, holding cost near 0.05 to 0.06 dollars per answered query. Served behind a Cloudflare Worker gateway with two-factor service auth.",
       },
     ],
-    stack: ["Python", "FastAPI", "Qdrant", "Neo4j", "Anthropic Claude", "Docker", "Cloudflare"],
+    stack: ["Python", "FastAPI", "Qdrant", "Neo4j", "Docker", "Cloudflare"],
     links: [{ label: "live product", href: "https://sushrutalgs.ai" }],
     artifacts: {
       diagram: "builtin",
