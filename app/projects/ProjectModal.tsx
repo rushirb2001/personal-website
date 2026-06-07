@@ -288,7 +288,7 @@ export function ProjectModal({
                 style={{ animationDelay: "0.1s" }}
               >
                 {detail.type}
-                {detail.place && ` @ ${detail.place}`}
+                {detail.place && ` @${detail.place}`}
               </p>
               <p
                 className="modal-reveal display font-light text-[15px] xs:text-[17px] lg:text-[18px] mt-5 leading-relaxed muted max-w-[54ch]"
@@ -302,7 +302,7 @@ export function ProjectModal({
                   className={`modal-reveal mono text-[12px] leading-relaxed mt-4 max-w-[60ch] ${isPrivate ? "ink" : "muted"}`}
                   style={{ animationDelay: "0.2s" }}
                 >
-                  {detail.repoNote}
+                  {linkifyPlatform(detail.repoNote)}
                 </p>
               )}
               </div>
@@ -463,6 +463,28 @@ export function ProjectModal({
         )}
       </div>
     </div>
+  )
+}
+
+// Linkify a bare "sushrutalgs.ai" mention in prose to the platform welcome page.
+// Only the repo note carries the link; titles and other prose stay plain text.
+function linkifyPlatform(text: string): React.ReactNode {
+  const token = "sushrutalgs.ai"
+  const idx = text.indexOf(token)
+  if (idx === -1) return text
+  return (
+    <>
+      {text.slice(0, idx)}
+      <a
+        href="https://sushrutalgs.ai/welcome"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="accent-link"
+      >
+        {token}
+      </a>
+      {text.slice(idx + token.length)}
+    </>
   )
 }
 

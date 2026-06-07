@@ -148,21 +148,21 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
     },
   },
 
-  // ── SushrutaLGS data layer ──────────────────────────────────────────────
+  // ── sushrutalgs.ai data layer ──────────────────────────────────────────────
   samhita: {
     slug: "samhita",
     name: "Samhita",
     tagline:
       "Built a Python pipeline that turns full-length surgical-textbook PDFs into clean, structured, machine-readable data, processing 220 chapters into a searchable knowledge base of sections, figures, and tables enriched with AI-generated descriptions. It produces a versioned, hash-verified export that the search platform loads into its graph and vector databases.",
     type: "Data pipeline",
-    place: "SushrutaLGS",
+    place: "sushrutalgs.ai",
     repoStatus: "private",
     repoNote:
-      "Source is private; SushrutaLGS is a live product. Happy to walk through the code or grant read access on request.",
+      "Source is private; sushrutalgs.ai is a live product. Happy to walk through the code or grant read access on request.",
     sections: [
       {
         label: "Overview",
-        body: "SushrutaLGS answers surgical-exam questions with citations traced back to standard textbooks. Samhita is the data layer that makes that possible: it converts three full surgical textbooks from raw PDF into clean, structured, machine-readable knowledge that the retrieval backend can load.",
+        body: "sushrutalgs.ai answers surgical-exam questions with citations traced back to standard textbooks. Samhita is the data layer that makes that possible: it converts three full surgical textbooks from raw PDF into clean, structured, machine-readable knowledge that the retrieval backend can load.",
       },
       {
         label: "Approach",
@@ -195,14 +195,14 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
     tagline:
       "Built a search-and-answer backend that lets clinicians and medical students ask questions of major surgical textbooks and get cited, structured answers. It combines semantic vector search, a knowledge graph of how the books are organized, and a streaming service that uses Claude to plan and write each answer.",
     type: "Retrieval backend",
-    place: "SushrutaLGS",
+    place: "sushrutalgs.ai",
     repoStatus: "private",
     repoNote:
-      "Source is private; SushrutaLGS is a live product. Happy to walk through the code or grant read access on request.",
+      "Source is private; sushrutalgs.ai is a live product. Happy to walk through the code or grant read access on request.",
     sections: [
       {
         label: "Overview",
-        body: "HybridFlow is the retrieval and answer engine behind SushrutaLGS. A user asks a question; the system finds the right passages across three surgical textbooks and streams back a cited, structured answer. It is built for the hard case where a single search method is not enough.",
+        body: "HybridFlow is the retrieval and answer engine behind sushrutalgs.ai. A user asks a question; the system finds the right passages across three surgical textbooks and streams back a cited, structured answer. It is built for the hard case where a single search method is not enough.",
       },
       {
         label: "Approach",
@@ -231,17 +231,18 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
 
   "sushrutalgs-bff": {
     slug: "sushrutalgs-bff",
-    name: "SushrutaLGS BFF",
+    name: "BFF",
     tagline:
-      "Built a Cloudflare Worker gateway that sits between the SushrutaLGS web and iOS apps and the AI backend, handling user authentication, per-user daily usage limits, and secure request forwarding so both apps talk to one trusted entry point. It runs live in staging and production and adds only about 14 milliseconds of overhead at the edge.",
+      "Built a Cloudflare Worker gateway that sits between the sushrutalgs.ai web and iOS apps and the AI backend, handling user authentication, per-user daily usage limits, and secure request forwarding so both apps talk to one trusted entry point. It runs live in staging and production and adds only about 14 milliseconds of overhead at the edge.",
     type: "Backend-for-frontend",
+    place: "sushrutalgs.ai",
     repoStatus: "private",
     repoNote:
-      "Source is private; SushrutaLGS is a live product. Happy to walk through the code or grant read access on request.",
+      "Source is private; sushrutalgs.ai is a live product. Happy to walk through the code or grant read access on request.",
     sections: [
       {
         label: "Overview",
-        body: "The BFF is the single trusted entry point for SushrutaLGS. Both the web and iOS apps call it instead of holding backend secrets or duplicating auth and billing logic. It verifies who the user is, enforces their daily usage limit, and forwards the request to the AI backend.",
+        body: "The BFF is the single trusted entry point for sushrutalgs.ai. Both the web and iOS apps call it instead of holding backend secrets or duplicating auth and billing logic. It verifies who the user is, enforces their daily usage limit, and forwards the request to the AI backend.",
       },
       {
         label: "Approach",
@@ -270,17 +271,18 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
 
   "sushrutalgs-ios": {
     slug: "sushrutalgs-ios",
-    name: "SushrutaLGS iOS",
+    name: "iOS",
     tagline:
-      "Built the native iOS app for SushrutaLGS, an AI study companion that answers surgical-exam questions with streaming responses backed by citations, figures, and tables from standard textbooks. It ships three sign-in options, conversation history that syncs across a user's devices, and an iPhone and iPad interface.",
+      "Built the native iOS app for sushrutalgs.ai, an AI study companion that answers surgical-exam questions with streaming responses backed by citations, figures, and tables from standard textbooks. It ships three sign-in options, conversation history that syncs across a user's devices, and an iPhone and iPad interface.",
     type: "iOS app",
+    place: "sushrutalgs.ai",
     repoStatus: "private",
     repoNote:
-      "Source is private; SushrutaLGS is a live product. Happy to walk through the code or grant read access on request.",
+      "Source is private; sushrutalgs.ai is a live product. Happy to walk through the code or grant read access on request.",
     sections: [
       {
         label: "Overview",
-        body: "The iOS app is the native client for SushrutaLGS. It gives surgery residents a fast, polished way to study on iPhone and iPad: ask a question, watch the answer stream in with citations, figures, and tables, and pick up the same conversation on another device.",
+        body: "The iOS app is the native client for sushrutalgs.ai. It gives surgery residents a fast, polished way to study on iPhone and iPad: ask a question, watch the answer stream in with citations, figures, and tables, and pick up the same conversation on another device.",
       },
       {
         label: "Approach",
@@ -296,7 +298,7 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
       },
       {
         label: "Engineering",
-        body: "Swift 6 and SwiftUI with Swift Package Manager, supabase-swift for auth, Realtime, and database access, GoogleSignIn and Sign in with Apple for identity, and Xcode Cloud for CI. It is a leaf client: all model inference goes through the SushrutaLGS BFF, so it holds no backend secrets.",
+        body: "Swift 6 and SwiftUI with Swift Package Manager, supabase-swift for auth, Realtime, and database access, GoogleSignIn and Sign in with Apple for identity, and Xcode Cloud for CI. It is a leaf client: all model inference goes through the sushrutalgs.ai BFF, so it holds no backend secrets.",
       },
     ],
     stack: ["Swift 6", "SwiftUI", "supabase-swift", "Google Sign-In", "Sign in with Apple", "Xcode Cloud"],
@@ -317,17 +319,18 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
 
   "sushrutalgs-web": {
     slug: "sushrutalgs-web",
-    name: "SushrutaLGS Web",
+    name: "Web",
     tagline:
-      "Built the web application for SushrutaLGS, an AI study assistant for advanced surgical exam prep that answers questions with citations traced back to standard textbooks. It delivers a streaming chat interface with branching conversations, inline textbook figures and tables, and the marketing, sign-up, and onboarding flows.",
+      "Built the web application for sushrutalgs.ai, an AI study assistant for advanced surgical exam prep that answers questions with citations traced back to standard textbooks. It delivers a streaming chat interface with branching conversations, inline textbook figures and tables, and the marketing, sign-up, and onboarding flows.",
     type: "Web app",
+    place: "sushrutalgs.ai",
     repoStatus: "private",
     repoNote:
-      "Source is private; SushrutaLGS is a live product. Happy to walk through the code or grant read access on request.",
+      "Source is private; sushrutalgs.ai is a live product. Happy to walk through the code or grant read access on request.",
     sections: [
       {
         label: "Overview",
-        body: "The web app is the primary SushrutaLGS client and marketing site. It delivers the streaming chat experience, the figure and table citations, and the sign-up and onboarding flows that bring a user into the product.",
+        body: "The web app is the primary sushrutalgs.ai client and marketing site. It delivers the streaming chat experience, the figure and table citations, and the sign-up and onboarding flows that bring a user into the product.",
       },
       {
         label: "Approach",
@@ -343,7 +346,7 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
       },
       {
         label: "Engineering",
-        body: "Next.js 16 and React 19 with Tailwind CSS v4, Supabase for auth and Postgres, Cloudflare R2 for assets, and Resend for email, deployed on Vercel. Model inference is delegated to the SushrutaLGS BFF, so the web client never holds the backend key.",
+        body: "Next.js 16 and React 19 with Tailwind CSS v4, Supabase for auth and Postgres, Cloudflare R2 for assets, and Resend for email, deployed on Vercel. Model inference is delegated to the sushrutalgs.ai BFF, so the web client never holds the backend key.",
       },
     ],
     stack: ["Next.js 16", "React 19", "TypeScript", "Tailwind CSS v4", "Supabase", "Cloudflare R2", "Vercel"],
