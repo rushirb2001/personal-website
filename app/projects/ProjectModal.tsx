@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react"
 import type { ProjectDetail, ProjectLink } from "./projects-data"
 import { ArchitectureDiagram } from "./ArchitectureDiagram"
 import { Carousel, type Slide } from "./Carousel"
@@ -22,6 +22,84 @@ export function ProjectModal({
   const cardRef = useRef<HTMLDivElement>(null)
   const [closing, setClosing] = useState(false)
   const closingRef = useRef(false)
+  // Enlarged view of the architecture diagram, shown over the card. Only the
+  // diagram is zoomable — result clips and screenshots are not.
+  const [zoomed, setZoomed] = useState(false)
+  // Geometry-tracking zoom: capture the clicked thumbnail's on-screen rect, then
+  // a FLIP transition grows the full-size diagram out of that exact box (and
+  // shrinks it back into it on close).
+  const sourceRectRef = useRef<DOMRect | null>(null)
+  const zoomStageRef = useRef<HTMLDivElement>(null)
+  const zoomBusyRef = useRef(false)
+
+  const prefersReduced = () =>
+    typeof window !== "undefined" &&
+    window.matchMedia?.("(prefers-reduced-motion: reduce)").matches
+
+  // Translate+scale that maps the full-size stage back onto the source rect,
+  // anchored at the stage's top-left (transform-origin: 0 0).
+  const flipFromSource = (stage: HTMLElement): string | null => {
+    const src = sourceRectRef.current
+    if (!src) return null
+    const svg = stage.querySelector("svg") ?? stage
+    const tgt = svg.getBoundingClientRect()
+    if (!tgt.width || !tgt.height) return null
+    const sx = src.width / tgt.width
+    const sy = src.height / tgt.height
+    const dx = src.left - tgt.left
+    const dy = src.top - tgt.top
+    return `translate(${dx}px, ${dy}px) scale(${sx}, ${sy})`
+  }
+
+  const openZoom = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
+    const svg = e.currentTarget.querySelector("svg")
+    sourceRectRef.current = (svg ?? e.currentTarget).getBoundingClientRect()
+    setZoomed(true)
+  }, [])
+
+  const closeZoom = useCallback(() => {
+    const stage = zoomStageRef.current
+    if (!stage || zoomBusyRef.current || prefersReduced()) {
+      setZoomed(false)
+      return
+    }
+    const from = flipFromSource(stage)
+    if (!from) {
+      setZoomed(false)
+      return
+    }
+    zoomBusyRef.current = true
+    stage.style.transformOrigin = "0 0"
+    const anim = stage.animate(
+      [
+        { transform: "none", opacity: 1 },
+        { transform: from, opacity: 0.5 },
+      ],
+      { duration: 240, easing: "cubic-bezier(0.4, 0, 1, 1)", fill: "forwards" },
+    )
+    anim.onfinish = () => {
+      zoomBusyRef.current = false
+      setZoomed(false)
+    }
+  }, [])
+
+  // Grow the stage out of the captured thumbnail rect when the zoom opens.
+  useLayoutEffect(() => {
+    if (!zoomed) return
+    const stage = zoomStageRef.current
+    if (!stage || prefersReduced()) return
+    const from = flipFromSource(stage)
+    if (!from) return
+    stage.style.transformOrigin = "0 0"
+    const anim = stage.animate(
+      [
+        { transform: from, opacity: 0.5 },
+        { transform: "none", opacity: 1 },
+      ],
+      { duration: 320, easing: "cubic-bezier(0.22, 1, 0.36, 1)" },
+    )
+    return () => anim.cancel()
+  }, [zoomed])
 
   // "overlay": opened over the still-mounted home page via an intercepting
   // route — closing pops the overlay and reveals home exactly as it was.
@@ -38,12 +116,19 @@ export function ProjectModal({
     }, EXIT_MS)
   }, [mode, router])
 
+  // Esc backs out of the zoom first (with its shrink animation), then the modal.
   useEffect(() => {
-    cardRef.current?.focus()
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") close()
+      if (e.key !== "Escape") return
+      if (zoomed) closeZoom()
+      else close()
     }
     window.addEventListener("keydown", onKey)
+    return () => window.removeEventListener("keydown", onKey)
+  }, [zoomed, close, closeZoom])
+
+  useEffect(() => {
+    cardRef.current?.focus()
     // Lock page scroll. Reserve the now-hidden scrollbar's width as padding so
     // the page behind the modal doesn't shift when the scrollbar unmounts
     // (and shift back on close).
@@ -54,11 +139,10 @@ export function ProjectModal({
     body.style.overflow = "hidden"
     if (scrollbarW > 0) body.style.paddingRight = `${scrollbarW}px`
     return () => {
-      window.removeEventListener("keydown", onKey)
       body.style.overflow = prevOverflow
       body.style.paddingRight = prevPaddingRight
     }
-  }, [close])
+  }, [])
 
   const isPrivate = detail.repoStatus === "private"
   const { artifacts, verify } = detail
@@ -97,11 +181,22 @@ export function ProjectModal({
   if (diagram === "builtin") {
     slides.push({
       key: "arch",
-      caption: "System architecture.",
+      caption: "System architecture. Tap to enlarge.",
       node: (
-        <div className="w-full h-full grid place-items-center px-2 sm:px-4 py-2">
+        <button
+          type="button"
+          onClick={openZoom}
+          aria-label="Enlarge architecture diagram"
+          className="group relative w-full h-full grid place-items-center px-2 sm:px-4 py-2 cursor-zoom-in bg-transparent border-0"
+        >
           <ArchitectureDiagram slug={detail.slug} />
-        </div>
+          <span
+            aria-hidden
+            className="absolute bottom-2 right-2 mono small-caps faint opacity-0 group-hover:opacity-100 transition-opacity"
+          >
+            ⤢ zoom
+          </span>
+        </button>
       ),
     })
   } else if (showTodos && diagram) {
@@ -331,6 +426,41 @@ export function ProjectModal({
             </div>
           )}
         </div>
+
+        {/* Enlarged architecture diagram — the full-size diagram grows out of the
+            clicked thumbnail's exact rect (FLIP) and shrinks back into it on
+            close. Click anywhere / × / Esc to close. */}
+        {zoomed && diagram === "builtin" && (
+          <div
+            className="modal-zoom absolute inset-0 z-30 bg-[#f4f1ec] flex flex-col cursor-zoom-out"
+            role="dialog"
+            aria-modal="true"
+            aria-label={`${detail.name} — architecture diagram, enlarged`}
+            onClick={closeZoom}
+          >
+            <div className="absolute top-5 right-5 sm:top-7 sm:right-8 z-10">
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  closeZoom()
+                }}
+                className="accent-link mono text-[13px] inline-flex items-center gap-1.5 bg-transparent border-0 p-0 cursor-pointer"
+              >
+                Close <span aria-hidden>×</span>
+              </button>
+            </div>
+            <div className="grow overflow-auto grid place-items-center p-6 sm:p-12 lg:p-16">
+              <div
+                ref={zoomStageRef}
+                className="w-full max-w-[1200px]"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <ArchitectureDiagram slug={detail.slug} />
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )
@@ -373,6 +503,7 @@ const TOKENS = `
     animation: modal-fade 220ms ease both;
   }
   .modal-card { animation: modal-rise 300ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+  .modal-zoom { animation: modal-fade 180ms ease both; }
 
   /* Exit: backdrop fades and card sinks before the route changes. */
   .modal-backdrop.is-closing { animation: modal-fade-out 240ms ease both; }
@@ -404,7 +535,7 @@ const TOKENS = `
     background-size: 3px 3px; mix-blend-mode: multiply; z-index: 1;
   }
   @media (prefers-reduced-motion: reduce) {
-    .modal-backdrop, .modal-card, .modal-reveal,
+    .modal-backdrop, .modal-card, .modal-reveal, .modal-zoom,
     .modal-backdrop.is-closing, .modal-card.is-closing { animation: none; }
   }
 `
