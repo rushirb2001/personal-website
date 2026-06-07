@@ -315,7 +315,7 @@ function SushrutalgsBffDiagram() {
   return (
     <Frame
       vb="0 0 1060 440"
-      label="SushrutaLGS BFF: the web (Next.js) and iOS (SwiftUI) clients call one Cloudflare Worker gateway. The request flows through a five-stage pipeline inside the Worker — CORS / origin check, Supabase JWT verify, a plan-based atomic daily quota debit via a Supabase RPC, a user_context body transform, and forward to the hybrid-flow FastAPI backend with two-factor upstream auth. Verify and quota make auxiliary calls down to Supabase; the backend's SSE stream is piped back to the clients byte-for-byte. The 33 KiB gzipped Worker adds ~14 ms p50 at the edge with zero errors through 200 concurrent."
+      label="sushrutalgs.ai BFF: the web (Next.js) and iOS (SwiftUI) clients call one Cloudflare Worker gateway. The request flows through a five-stage pipeline inside the Worker — CORS / origin check, Supabase JWT verify, a plan-based atomic daily quota debit via a Supabase RPC, a user_context body transform, and forward to the hybrid-flow FastAPI backend with two-factor upstream auth. Verify and quota make auxiliary calls down to Supabase; the backend's SSE stream is piped back to the clients byte-for-byte. The 33 KiB gzipped Worker adds ~14 ms p50 at the edge with zero errors through 200 concurrent."
     >
       {/* Clients — both auth shapes accepted (cookie / Bearer) */}
       <Node x={30} y={164} w={150} h={56} title="Web" sub="Next.js · cookie" />
@@ -374,7 +374,7 @@ function SushrutalgsWebDiagram() {
   return (
     <Frame
       vb="0 0 1010 432"
-      label="SushrutaLGS web app: a Next.js client owns the chat experience — a chat-service that parses an 8-frame SSE stream, a conversation-store holding a forkable chat tree, and a BFF client. It calls the Cloudflare-Worker BFF (verify JWT, debit quota) which forwards to the HybridFlow FastAPI backend; the answer streams back over SSE. Supabase provides email-OTP auth and Postgres conversation storage, and auth-gated proxy routes serve figures and tables from two Cloudflare R2 buckets."
+      label="sushrutalgs.ai web app: a Next.js client owns the chat experience — a chat-service that parses an 8-frame SSE stream, a conversation-store holding a forkable chat tree, and a BFF client. It calls the Cloudflare-Worker BFF (verify JWT, debit quota) which forwards to the HybridFlow FastAPI backend; the answer streams back over SSE. Supabase provides email-OTP auth and Postgres conversation storage, and auth-gated proxy routes serve figures and tables from two Cloudflare R2 buckets."
     >
       {/* Browser → the app */}
       <Node x={24} y={176} w={116} h={60} title="Browser" sub="web client" />
@@ -415,7 +415,7 @@ function SushrutalgsIosDiagram() {
   return (
     <Frame
       vb="0 0 1060 432"
-      label="SushrutaLGS iOS app: an iPhone/iPad SwiftUI client built Model-View with no ViewModels. Inside the app, @Observable services drive a typed Router, a tree-forking ChatTree ported 1:1 from web, a BFFClient that streams chat over SSE, and on-device caches (Keychain + JSON disk caches) for an offline-tolerant cold start. The app calls the Cloudflare-Worker BFF which forwards to the HybridFlow AI backend; the SSE response streams back as thinking/metadata/text/error/done frames. Supabase provides auth (email OTP, Google, Apple) and a Realtime channel that hands off a live stream to the user's other devices."
+      label="sushrutalgs.ai iOS app: an iPhone/iPad SwiftUI client built Model-View with no ViewModels. Inside the app, @Observable services drive a typed Router, a tree-forking ChatTree ported 1:1 from web, a BFFClient that streams chat over SSE, and on-device caches (Keychain + JSON disk caches) for an offline-tolerant cold start. The app calls the Cloudflare-Worker BFF which forwards to the HybridFlow AI backend; the SSE response streams back as thinking/metadata/text/error/done frames. Supabase provides auth (email OTP, Google, Apple) and a Realtime channel that hands off a live stream to the user's other devices."
     >
       {/* Device — two stacked cards: iPhone + iPad share one SwiftUI shell */}
       <rect x={34} y={172} width={120} height={62} rx={7} fill="#f4f1ec" stroke={cardStroke} strokeWidth={1.2} />
