@@ -21,7 +21,7 @@ export default function Error({
         </p>
         <h1 className="text-lg font-medium mb-2">Something broke.</h1>
         <p className="text-sm text-foreground/70 mb-6">
-          Sorry about that. Try refreshing — if it keeps happening, email me at{" "}
+          Sorry about that. Try refreshing. If it keeps happening, email me at{" "}
           <a
             href="mailto:bhavsarrushir@gmail.com"
             className="underline underline-offset-4 decoration-foreground/30 hover:decoration-foreground"

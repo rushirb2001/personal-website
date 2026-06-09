@@ -82,7 +82,7 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
     place: "Arizona State University",
     repoStatus: "public",
     highlights: [
-      "Parallel U/V subnetworks — 40–60% lower relative L2 than single-network PINNs.",
+      "Parallel U/V subnetworks: 40–60% lower relative L2 than single-network PINNs.",
       "64-dim random Fourier embeddings capture sharp spot, stripe, and self-replication patterns.",
       "Gradient-norm adaptive loss weighting for stable IC / residual / data convergence.",
       "2.3–3.5% relative L2 on Gray-Scott and Ginzburg-Landau, trained on one NVIDIA H100.",
@@ -141,7 +141,7 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
         },
       ],
       // Dev-only placeholders; swap in real URLs to render them live.
-      liveUrl: { todo: "Hosted interactive solver demo — paste the URL" },
+      liveUrl: { todo: "Hosted interactive solver demo. Paste the URL" },
     },
     verify: {
       walkthrough: { todo: "cal.com / Calendly link for a 15-min walkthrough" },
@@ -403,13 +403,13 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
 // "<slug>": {
 //   slug: "<slug>",
 //   name: "Project Name",
-//   tagline: "One specific sentence — what it is and why it's impressive.",
+//   tagline: "One specific sentence: what it is and why it's impressive.",
 //   type: "Personal project",   // or "Master's thesis", "Open-source", "Internship", ...
-//   place: "Org / school",      // optional — omit entirely for personal projects
+//   place: "Org / school",      // optional, omit entirely for personal projects
 //   repoStatus: "private",
-//   repoNote: "Source is private because <reason> — happy to grant read access or walk through it.",
+//   repoNote: "Source is private because <reason>. Happy to grant read access or walk through it.",
 //   highlights: [
-//     "One concise line each — the main points (real numbers, not big paragraphs).",
+//     "One concise line each: the main points (real numbers, not big paragraphs).",
 //   ],
 //   stack: ["..."],
 //   links: [],  // no public repo when private; add a paper / blog / public sibling if any

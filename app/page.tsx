@@ -132,11 +132,11 @@ const EDUCATION = [
     highlights: [
       { text: "Graduated with distinction" },
       {
-        text: "Classification of potentially hazardous asteroids using supervised quantum machine learning — IEEE Access, 2023",
+        text: "Classification of potentially hazardous asteroids using supervised quantum machine learning · IEEE Access, 2023",
         href: "https://ieeexplore.ieee.org/iel7/6287639/6514899/10188662.pdf",
       },
       {
-        text: "MetaHate: AI-based hate speech detection for secured online gaming in metaverse using blockchain — Security and Privacy, 2024",
+        text: "MetaHate: AI-based hate speech detection for secured online gaming in metaverse using blockchain · Security and Privacy, 2024",
         href: "https://onlinelibrary.wiley.com/doi/abs/10.1002/spy2.343",
       },
     ],
@@ -325,6 +325,17 @@ export default function BetaPage() {
           .hero-section .hero-photo { max-width: 200px; }
         }
 
+        /* Portrait or square viewports at tablet/desktop widths (iPad portrait,
+           narrow desktop windows) leave a wide, short hero floating in empty
+           space. Spend that room on a much larger photo and a display size
+           sized to the narrower text column. */
+        @media (min-width: 768px) and (max-aspect-ratio: 1/1) {
+          .hero-grid { grid-template-columns: 1fr clamp(300px, 32vw, 400px); }
+          .hero-section .hero-photo { max-width: 400px; }
+          .hero-section h1 { font-size: clamp(64px, 7.5vw, 96px); }
+          .hero-section .hero-desc { font-size: clamp(17px, 1.6vw, 21px); }
+        }
+
         @media (prefers-reduced-motion: reduce) {
           .hero-anim > div > * { animation: none; }
           .section-collapsible,
@@ -348,47 +359,66 @@ export default function BetaPage() {
             pre-computes scroll targets from the measured leftover. */}
         <div ref={heroWrapRef} className="flex-1 flex flex-col justify-center">
         <section ref={heroSectionRef} className="hero-anim hero-section max-w-[1100px] mx-auto px-6 lg:px-12 pt-6 xs:pt-8 lg:pt-12 pb-8 xs:pb-10 lg:pb-14">
-          <div className="grid grid-cols-1 xs:grid-cols-[1fr_clamp(140px,28vw,280px)] lg:grid-cols-[1fr_280px] gap-8 xs:gap-6 lg:gap-16 items-start">
+          <div className="hero-grid grid grid-cols-1 xs:grid-cols-[1fr_clamp(140px,28vw,280px)] lg:grid-cols-[1fr_280px] gap-8 xs:gap-6 lg:gap-16 items-start">
             <div>
-              <h1 className="display font-light leading-[0.92] tracking-tight text-[52px] xs:text-[clamp(56px,11vw,120px)] lg:text-[120px]">
+              <h1 className="display font-light leading-[0.92] tracking-tight text-[clamp(44px,12.5vw,52px)] xs:text-[clamp(56px,11vw,120px)] lg:text-[120px]">
                 Hi! I&rsquo;m Rushir
                 <br />
                 Bhavsar<span className="accent">.</span>
               </h1>
-              <div className="display font-light text-base xs:text-[clamp(15px,1.8vw,20px)] lg:text-xl mt-6 xs:mt-7 lg:mt-8 leading-[1.5] max-w-[40ch]">
-                <span className="xs:hidden">
-                  Physics-informed neural nets at ASU. Previously Cadence.
-                </span>
-                <span className="hidden xs:inline">
-                  Currently at ASU, researching physics-informed neural networks
-                  for plasma simulation. Previously at Cadence on protein property
-                  prediction at million-sequence scale.
-                </span>
+
+              {/* Phone composition is vertical: the photo gets its own block
+                  under the name, with the role/location labels as a caption
+                  column beside it, then the full description below. */}
+              <div className="xs:hidden mt-7 grid grid-cols-[clamp(150px,55%,200px)_1fr] gap-5 items-end">
+                <div className="hero-photo relative w-full aspect-[3/4] overflow-hidden grayscale">
+                  <Image
+                    src="/images/design-mode/new_personal_photo(1).png"
+                    alt="Rushir Bhavsar"
+                    fill
+                    sizes="60vw"
+                    className="object-cover object-[60%_30%]"
+                    priority
+                  />
+                  <div className="absolute inset-0 ring-1 ring-inset ring-black/10" />
+                </div>
+                <div className="mono text-[12px] muted leading-[1.7] pb-1">
+                  <p>
+                    <span className="accent">+</span> ML systems
+                  </p>
+                  <p>
+                    <span className="accent">+</span> ML infra
+                  </p>
+                  <p className="mt-2">
+                    <span className="accent">+</span> Tempe, AZ
+                  </p>
+                </div>
+              </div>
+
+              <div className="hero-desc display font-light text-[16px] xs:text-[clamp(16px,1.8vw,20px)] lg:text-xl mt-7 lg:mt-8 leading-[1.5] max-w-[44ch]">
+                Currently at ASU, researching physics-informed neural networks
+                for plasma simulation. Previously at Cadence on protein property
+                prediction at million-sequence scale.
                 <span className="block mt-3 xs:mt-4 muted">
-                  <span className="xs:hidden">
-                    Open to ML systems / infrastructure roles.
-                  </span>
-                  <span className="hidden xs:inline">
-                    Looking for roles in ML systems and ML infrastructure —
-                    orchestration, GPU pipelines, and evaluation harnesses.
-                  </span>
+                  Looking for roles in ML systems and ML infrastructure:
+                  orchestration, GPU pipelines, and evaluation harnesses.
                 </span>
               </div>
             </div>
 
             <div className="hidden xs:block xs:pt-3 lg:pt-4">
-              <div className="hero-photo relative xs:w-full mx-auto xs:mx-0 max-w-[280px] aspect-[3/4] overflow-hidden grayscale">
+              <div className="hero-photo relative w-full max-w-[280px] aspect-[3/4] overflow-hidden grayscale">
                 <Image
                   src="/images/design-mode/new_personal_photo(1).png"
                   alt="Rushir Bhavsar"
                   fill
-                  sizes="(max-width: 1024px) 28vw, 280px"
+                  sizes="(max-width: 1024px) 28vw, 400px"
                   className="object-cover object-[60%_30%]"
                   priority
                 />
                 <div className="absolute inset-0 ring-1 ring-inset ring-black/10" />
               </div>
-              <div className="mt-6 xs:mt-5 mono text-[12px] xs:text-[13px] muted leading-[1.7]">
+              <div className="mt-5 mono text-[13px] muted leading-[1.7]">
                 <p>
                   <span className="accent">+</span> ML systems / infra
                 </p>
@@ -417,19 +447,19 @@ export default function BetaPage() {
                   i !== WORK.length - 1 ? "border-b rule" : ""
                 }`}
               >
-                <div className="mono text-[11px] xs:text-[13px] leading-none flex xs:flex-col items-start gap-3 xs:gap-2 xs:pt-2 lg:pt-[10px]">
+                <div className="mono text-[12px] xs:text-[13px] leading-none flex xs:flex-col items-start gap-3 xs:gap-2 xs:pt-2 lg:pt-[10px]">
                   <span className={w.current ? "accent" : "ink"}>{w.period}</span>
                 </div>
                 <div>
-                  <h3 className="display text-base xs:text-[26px] lg:text-3xl font-light tracking-tight leading-tight">
+                  <h3 className="display text-[21px] xs:text-[26px] lg:text-3xl font-light tracking-tight leading-tight">
                     {w.role}
                     <span className="muted"> @{w.company}</span>
                   </h3>
-                  <p className="mt-2 xs:mt-5 leading-relaxed text-[12px] xs:text-[15px] max-w-[58ch] mono">{w.desc}</p>
+                  <p className="mt-2 xs:mt-5 leading-relaxed text-[14px] xs:text-[15px] max-w-[58ch] mono">{w.desc}</p>
                 </div>
                 <div className="xs:pt-2 lg:pt-[10px]">
                   <p className="mono small-caps faint mb-2 xs:mb-3">Stack</p>
-                  <ul className="flex flex-wrap gap-x-3 gap-y-1.5 mono text-[11px] xs:text-[13px]">
+                  <ul className="flex flex-wrap gap-x-3 gap-y-1.5 mono text-[12px] xs:text-[13px]">
                     {w.stack.map((s) => (
                       <li key={s} className="muted">
                         {s}
@@ -458,20 +488,20 @@ export default function BetaPage() {
                   i !== PROJECTS.length - 1 ? "border-b rule" : ""
                 }`}
               >
-                <div className="mono text-[11px] xs:text-[13px] leading-none ink xs:pt-2 lg:pt-[10px]">
+                <div className="mono text-[12px] xs:text-[13px] leading-none ink xs:pt-2 lg:pt-[10px]">
                   {p.type}
                 </div>
                 <div>
-                  <h3 className="display text-base xs:text-[26px] lg:text-3xl font-light tracking-tight leading-tight">
+                  <h3 className="display text-[21px] xs:text-[26px] lg:text-3xl font-light tracking-tight leading-tight">
                     {p.name}
                     {p.platform && <span className="muted"> @{p.platform}</span>}
                   </h3>
-                  <p className="mt-2 xs:mt-5 leading-relaxed text-[12px] xs:text-[15px] max-w-[58ch] mono">{p.desc}</p>
+                  <p className="mt-2 xs:mt-5 leading-relaxed text-[14px] xs:text-[15px] max-w-[58ch] mono">{p.desc}</p>
                 </div>
                 <div className="xs:pt-2 lg:pt-[10px] space-y-6">
                   <div>
                     <p className="mono small-caps faint mb-1 xs:mb-1.5">Stack</p>
-                    <ul className="flex flex-wrap gap-x-3 gap-y-1.5 mono text-[11px] xs:text-[13px]">
+                    <ul className="flex flex-wrap gap-x-3 gap-y-1.5 mono text-[12px] xs:text-[13px]">
                       {p.stack.map((s) => (
                         <li key={s} className="muted">
                           {s}
@@ -481,7 +511,7 @@ export default function BetaPage() {
                   </div>
                   <div>
                     <p className="mono small-caps faint mb-1 xs:mb-1.5">Links</p>
-                    <ul className="flex flex-col gap-2 mono text-[11px] xs:text-[13px]">
+                    <ul className="flex flex-col gap-2 mono text-[12px] xs:text-[13px]">
                       {hasProjectDetail(p.slug) && (
                         <li>
                           <Link
@@ -529,19 +559,19 @@ export default function BetaPage() {
                   i !== EDUCATION.length - 1 ? "border-b rule" : ""
                 }`}
               >
-                <div className="mono text-[11px] xs:text-[13px] leading-none ink xs:pt-2 lg:pt-[10px]">{e.year}</div>
+                <div className="mono text-[12px] xs:text-[13px] leading-none ink xs:pt-2 lg:pt-[10px]">{e.year}</div>
                 <div>
-                  <h3 className="display text-base xs:text-[26px] lg:text-3xl font-light tracking-tight leading-tight">
+                  <h3 className="display text-[21px] xs:text-[26px] lg:text-3xl font-light tracking-tight leading-tight">
                     {e.degree}
                     <span className="muted"> @{e.school}</span>
                   </h3>
-                  <p className="display accent font-light tracking-tight text-[14px] xs:text-[16px] lg:text-lg mt-1.5 xs:mt-2">
+                  <p className="display accent font-light tracking-tight text-[16px] lg:text-lg mt-1.5 xs:mt-2">
                     {e.focus}
                   </p>
                   <div className="mt-3 xs:mt-6 space-y-4 max-w-[58ch]">
                     <div>
                       <p className="mono small-caps faint mb-2">Coursework</p>
-                      <p className="mono text-[11px] xs:text-[13px] muted leading-relaxed">
+                      <p className="mono text-[12px] xs:text-[13px] muted leading-relaxed">
                         {e.coursework.join("  ·  ")}
                       </p>
                     </div>
@@ -549,7 +579,7 @@ export default function BetaPage() {
                 </div>
                 <div className="xs:pt-2 lg:pt-[10px]">
                   <p className="mono small-caps faint mb-2 xs:mb-3">Highlights</p>
-                  <ul className="space-y-2 mono text-[11px] xs:text-[13px]">
+                  <ul className="space-y-2 mono text-[12px] xs:text-[13px]">
                     {e.highlights.map((h) => (
                       <li key={h.text} className="muted leading-relaxed pl-4 relative">
                         <span className="absolute left-0 top-[0.55em] w-2 h-px accent-line" aria-hidden />
@@ -588,7 +618,7 @@ export default function BetaPage() {
                 <br />
                 for a role<span className="accent">.</span>
               </h3>
-              <p className="display font-light text-lg xs:text-[clamp(17px,1.6vw,24px)] lg:text-2xl mt-6 xs:mt-8 muted max-w-[36ch] leading-snug">
+              <p className="display font-light text-[16px] xs:text-[clamp(17px,1.6vw,24px)] lg:text-2xl mt-6 xs:mt-8 muted max-w-[36ch] leading-snug">
                 Email&rsquo;s the fastest way to reach me. Especially open to
                 ML systems and infrastructure roles.
               </p>
@@ -605,7 +635,7 @@ export default function BetaPage() {
                       href={l.href}
                       target={l.href.startsWith("http") || l.href.endsWith(".pdf") ? "_blank" : undefined}
                       rel="noopener noreferrer"
-                      className="accent-link mono text-[13px] xs:text-[14px] inline-flex items-center gap-1.5 xs:gap-2 min-w-0 truncate"
+                      className="accent-link mono text-[14px] inline-flex items-center gap-1.5 xs:gap-2 min-w-0 truncate"
                     >
                       <span className="truncate">{l.value}</span>
                       <span aria-hidden className="faint shrink-0">↗</span>
@@ -693,13 +723,13 @@ function SectionHead({
       style={{ backgroundColor: "#f4f1ec" }}
     >
       <div className="grid grid-cols-[auto_1fr_auto] xs:grid-cols-[clamp(80px,14vw,140px)_1fr_clamp(140px,22vw,240px)] lg:grid-cols-[140px_1fr_240px] gap-3 xs:gap-6 lg:gap-12 items-baseline">
-        <span className="display accent text-xl xs:text-[26px] lg:text-3xl font-light leading-none">+</span>
-        <h2 className="display text-xl xs:text-[26px] lg:text-3xl font-light tracking-tight leading-none">
+        <span className="display accent text-[26px] lg:text-3xl font-light leading-none">+</span>
+        <h2 className="display text-[26px] lg:text-3xl font-light tracking-tight leading-none">
           {title}
           <span className="accent">.</span>
         </h2>
         {count != null ? (
-          <span className="mono text-[11px] xs:text-[13px] faint text-right tracking-[0.18em]">
+          <span className="mono text-[12px] xs:text-[13px] faint text-right tracking-[0.18em]">
             {String(count).padStart(2, "0")}
           </span>
         ) : (
