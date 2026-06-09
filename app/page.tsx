@@ -152,6 +152,10 @@ const LINKS = [
 
 export default function BetaPage() {
   const [openSection, setOpenSection] = useState<string | null>(null)
+  // True when the open section should GROW in (upward section switch, where
+  // the scroll has already landed) instead of snapping its height open (fresh
+  // open, where the scroll still needs the room to exist).
+  const [softOpen, setSoftOpen] = useState(false)
   const programmaticScrollRef = useRef(false)
   const lockTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const heroWrapRef = useRef<HTMLDivElement>(null)
@@ -180,11 +184,86 @@ export default function BetaPage() {
     typeof window !== "undefined" &&
     window.matchMedia?.("(prefers-reduced-motion: reduce)").matches
 
+  const pendingCloseRef = useRef<(() => void) | null>(null)
+
+  // Closing mirrors opening, sequenced: glide back to the top FIRST while the
+  // page still has its expanded height (collapsing while scrolled lets the
+  // document shrink faster than the smooth scroll, so the browser clamp-jumps
+  // the position). Only on arrival collapse the section, below the fold, while
+  // the hero glides back to center.
+  const closeToTop = () => {
+    pendingCloseRef.current?.()
+    if (prefersReduced() || window.scrollY < 40) {
+      lockScroll()
+      setOpenSection(null)
+      window.scrollTo({ top: 0, behavior: "auto" })
+      return
+    }
+    lockScroll(1600)
+    window.scrollTo({ top: 0, behavior: "smooth" })
+    let done = false
+    const finish = () => {
+      if (done) return
+      done = true
+      window.removeEventListener("scrollend", finish)
+      pendingCloseRef.current = null
+      setOpenSection(null)
+    }
+    pendingCloseRef.current = () => {
+      done = true
+      window.removeEventListener("scrollend", finish)
+      pendingCloseRef.current = null
+    }
+    window.addEventListener("scrollend", finish, { once: true })
+    setTimeout(finish, 900) // fallback where scrollend is unsupported
+  }
+
   const toggleSection = (id: string) => {
-    const isOpening = openSection !== id
-    const switching = openSection !== null && openSection !== id
+    if (openSection === id) {
+      closeToTop()
+      return
+    }
+    pendingCloseRef.current?.()
+    const switching = openSection !== null
     const reduced = prefersReduced()
-    lockScroll(isOpening ? 1400 : 1000)
+
+    // Switching to a section ABOVE the open one: expanding it right away
+    // would grow the page above the viewport and shove the visible content
+    // down a full frame. Reverse the order instead: glide up to the target's
+    // header first (its position is stable while the old section stays open),
+    // and swap the sections on arrival — the old one then collapses below the
+    // viewport while the new one expands downward under its header, same as
+    // the downward direction.
+    const el = document.getElementById(id)
+    const openEl = switching ? document.getElementById(openSection!) : null
+    if (!reduced && el && openEl && el.offsetTop < openEl.offsetTop) {
+      const targetTop = Math.max(0, el.offsetTop - 56)
+      lockScroll(1800)
+      let done = false
+      const finish = () => {
+        if (done) return
+        done = true
+        window.removeEventListener("scrollend", finish)
+        pendingCloseRef.current = null
+        setSoftOpen(true)
+        setOpenSection(id)
+      }
+      pendingCloseRef.current = () => {
+        done = true
+        window.removeEventListener("scrollend", finish)
+        pendingCloseRef.current = null
+      }
+      if (Math.abs(window.scrollY - targetTop) < 2) {
+        finish()
+        return
+      }
+      window.scrollTo({ top: targetTop, behavior: "smooth" })
+      window.addEventListener("scrollend", finish, { once: true })
+      setTimeout(finish, 1000) // fallback where scrollend is unsupported
+      return
+    }
+
+    lockScroll(1400)
 
     // Opening from the closed landing: the hero gives up its centering space
     // over 350ms, so a live offsetTop read mid-transition would overshoot.
@@ -192,7 +271,7 @@ export default function BetaPage() {
     // section head lands once the leftover space is gone, then scroll to that
     // fixed target concurrently with the collapse.
     let target: number | null = null
-    if (isOpening && !switching && !reduced) {
+    if (!switching && !reduced) {
       const el = document.getElementById(id)
       const wrap = heroWrapRef.current
       const hero = heroSectionRef.current
@@ -202,38 +281,28 @@ export default function BetaPage() {
       }
     }
 
-    setOpenSection(isOpening ? id : null)
-    if (isOpening) {
-      const scrollToSection = () => {
-        if (target !== null) {
-          window.scrollTo({ top: target, behavior: "smooth" })
-          return
-        }
-        const el = document.getElementById(id)
-        if (el) {
-          window.scrollTo({ top: el.offsetTop - 56, behavior: reduced ? "auto" : "smooth" })
-        }
+    setSoftOpen(false)
+    setOpenSection(id)
+    const scrollToSection = () => {
+      if (target !== null) {
+        window.scrollTo({ top: target, behavior: "smooth" })
+        return
       }
-      if (switching && !reduced) {
-        // Wait for the previous section's height transition (350ms) to finish
-        // so the target's offsetTop is stable before we commit a smooth scroll.
-        setTimeout(scrollToSection, 380)
-      } else {
-        requestAnimationFrame(() => requestAnimationFrame(scrollToSection))
+      const el = document.getElementById(id)
+      if (el) {
+        window.scrollTo({ top: el.offsetTop - 56, behavior: reduced ? "auto" : "smooth" })
       }
+    }
+    if (switching && !reduced) {
+      // Wait for the previous section's height transition (350ms) to finish
+      // so the target's offsetTop is stable before we commit a smooth scroll.
+      setTimeout(scrollToSection, 380)
     } else {
-      // Closing mirrors opening: the section collapses (animated min-height +
-      // grid rows) while the page glides back to the top and the hero
-      // re-centers.
-      window.scrollTo({ top: 0, behavior: reduced ? "auto" : "smooth" })
+      requestAnimationFrame(() => requestAnimationFrame(scrollToSection))
     }
   }
 
-  const goHome = () => {
-    lockScroll()
-    setOpenSection(null)
-    window.scrollTo({ top: 0, behavior: prefersReduced() ? "auto" : "smooth" })
-  }
+  const goHome = () => closeToTop()
 
   return (
     <main className="min-h-screen bg-[#f4f1ec] text-[#1a1a1a]">
@@ -367,6 +436,13 @@ export default function BetaPage() {
           .hero-section .hero-photo { max-width: 220px; }
         }
 
+        /* Soft open (upward section switch): the freshly opened section grows
+           in slowly instead of snapping its height open. */
+        @media (prefers-reduced-motion: no-preference) {
+          section[data-soft] { transition: min-height 500ms cubic-bezier(0.22, 1, 0.36, 1); }
+          section[data-soft] .section-collapsible { transition-duration: 500ms; }
+        }
+
         /* Short phone viewports: shrink the photo column so the hero doesn't
            crowd the section list. */
         @media (max-width: 639px) and (max-height: 720px) {
@@ -465,6 +541,7 @@ export default function BetaPage() {
           title="Experience"
           count={WORK.length}
           open={openSection === "experience"}
+          soft={softOpen}
           onToggle={() => toggleSection("experience")}
         >
           <ol className="mt-2 lg:mt-3">
@@ -505,6 +582,7 @@ export default function BetaPage() {
           title="Selected Projects"
           count={PROJECTS.length}
           open={openSection === "projects"}
+          soft={softOpen}
           onToggle={() => toggleSection("projects")}
         >
           <ol className="mt-2 lg:mt-3">
@@ -577,6 +655,7 @@ export default function BetaPage() {
           title="Education"
           count={EDUCATION.length}
           open={openSection === "education"}
+          soft={softOpen}
           onToggle={() => toggleSection("education")}
         >
           <ol className="mt-2 lg:mt-3">
@@ -637,6 +716,7 @@ export default function BetaPage() {
           id="contact"
           title="Contact"
           open={openSection === "contact"}
+          soft={softOpen}
           onToggle={() => toggleSection("contact")}
         >
           <div className="grid grid-cols-1 xs:grid-cols-[1fr_1fr] gap-6 xs:gap-8 lg:gap-20 items-start pt-3 xs:pt-4 lg:pt-6">
@@ -694,6 +774,7 @@ function Section({
   title,
   count,
   open,
+  soft = false,
   onToggle,
   children,
 }: {
@@ -701,12 +782,14 @@ function Section({
   title: string
   count?: number
   open: boolean
+  soft?: boolean
   onToggle: () => void
   children: ReactNode
 }) {
   return (
     <section
       id={id}
+      data-soft={open && soft ? "" : undefined}
       // Asymmetric on purpose: min-height SNAPS on open (the smooth scroll to
       // the section head needs that scroll room to already exist, or the
       // browser clamps it and lands short) but ANIMATES on close so the page
@@ -716,7 +799,7 @@ function Section({
       className={`scroll-mt-14 max-w-[1100px] mx-auto px-6 lg:px-12 motion-safe:transition-[min-height] motion-safe:duration-[350ms] motion-safe:ease-[cubic-bezier(0.22,1,0.36,1)] ${
         open ? "min-h-[calc(100vh-3.5rem)]" : "min-h-0"
       }`}
-      style={open ? { transitionProperty: "none" } : undefined}
+      style={open && !soft ? { transitionProperty: "none" } : undefined}
     >
       <SectionHead id={id} title={title} count={count} open={open} onToggle={onToggle} />
       <div
