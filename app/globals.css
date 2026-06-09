@@ -50,8 +50,10 @@
   background: linear-gradient(180deg, hsl(0 0% 96%) 0%, hsl(0 0% 88%) 100%);
 }
 
-html {
-  scroll-behavior: smooth;
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
 /* Accent (dark-blue) scrollbars, site-wide.
