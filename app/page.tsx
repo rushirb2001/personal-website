@@ -174,19 +174,24 @@ export default function BetaPage() {
     }, ms)
   }
 
+  const prefersReduced = () =>
+    typeof window !== "undefined" &&
+    window.matchMedia?.("(prefers-reduced-motion: reduce)").matches
+
   const toggleSection = (id: string) => {
     const isOpening = openSection !== id
     const switching = openSection !== null && openSection !== id
+    const reduced = prefersReduced()
     lockScroll(switching ? 1400 : 1000)
     setOpenSection(isOpening ? id : null)
     if (isOpening) {
       const scrollToSection = () => {
         const el = document.getElementById(id)
         if (el) {
-          window.scrollTo({ top: el.offsetTop - 56, behavior: "smooth" })
+          window.scrollTo({ top: el.offsetTop - 56, behavior: reduced ? "auto" : "smooth" })
         }
       }
-      if (switching) {
+      if (switching && !reduced) {
         // Wait for the previous section's height transition (350ms) to finish
         // so the target's offsetTop is stable before we commit a smooth scroll.
         setTimeout(scrollToSection, 380)
@@ -199,7 +204,7 @@ export default function BetaPage() {
   const goHome = () => {
     lockScroll()
     setOpenSection(null)
-    window.scrollTo({ top: 0, behavior: "smooth" })
+    window.scrollTo({ top: 0, behavior: prefersReduced() ? "auto" : "smooth" })
   }
 
   return (
@@ -235,19 +240,23 @@ export default function BetaPage() {
           font-size: 10px;
         }
 
-        /* Section open/close — height auto via interpolate-size */
+        /* Section open/close — animated grid row, so height-to-auto tweens in
+           every engine (interpolate-size is still Chromium-only and the old
+           height transition snapped open on Safari/Firefox). */
         .section-collapsible {
-          interpolate-size: allow-keywords;
-          height: 0;
+          display: grid;
+          grid-template-rows: 0fr;
           overflow: hidden;
-          transition: height 350ms cubic-bezier(0.22, 1, 0.36, 1);
+          transition: grid-template-rows 350ms cubic-bezier(0.22, 1, 0.36, 1);
         }
         .section-collapsible[data-open="true"] {
-          height: auto;
+          grid-template-rows: 1fr;
         }
 
         /* Section content reveal — fade-up after expansion */
         .section-content {
+          min-height: 0;
+          overflow: hidden;
           opacity: 0;
           transform: translateY(8px);
           transition:
@@ -291,6 +300,14 @@ export default function BetaPage() {
           .hero-section { padding-top: 0.75rem; padding-bottom: 0.75rem; }
           .hero-section h1 { font-size: clamp(56px, 8.5vw, 92px); }
           .hero-section .hero-photo { max-width: 200px; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .hero-anim > div > * { animation: none; }
+          .section-collapsible,
+          .section-content,
+          .accent-link,
+          .accent-link::after { transition: none; }
         }
       `}</style>
 
@@ -605,8 +622,8 @@ function Section({
   return (
     <section
       id={id}
-      className={`scroll-mt-14 max-w-[1100px] mx-auto px-6 lg:px-12 transition-[min-height] duration-[350ms] ease-out ${
-        open ? "min-h-[calc(100vh-3.5rem)]" : ""
+      className={`scroll-mt-14 max-w-[1100px] mx-auto px-6 lg:px-12 motion-safe:transition-[min-height] motion-safe:duration-[350ms] motion-safe:ease-[cubic-bezier(0.22,1,0.36,1)] ${
+        open ? "min-h-[calc(100vh-3.5rem)]" : "min-h-0"
       }`}
     >
       <SectionHead id={id} title={title} count={count} open={open} onToggle={onToggle} />

@@ -25,6 +25,9 @@ export function ProjectModal({
   // Enlarged view of the architecture diagram, shown over the card. Only the
   // diagram is zoomable — result clips and screenshots are not.
   const [zoomed, setZoomed] = useState(false)
+  // Plays the overlay's fade-out while the FLIP shrink runs, so dismissing the
+  // zoom doesn't end in a hard cut back to the card.
+  const [zoomClosing, setZoomClosing] = useState(false)
   // Geometry-tracking zoom: capture the clicked thumbnail's on-screen rect, then
   // a FLIP transition grows the full-size diagram out of that exact box (and
   // shrinks it back into it on close).
@@ -69,17 +72,16 @@ export function ProjectModal({
       return
     }
     zoomBusyRef.current = true
+    setZoomClosing(true)
     stage.style.transformOrigin = "0 0"
     const anim = stage.animate(
-      [
-        { transform: "none", opacity: 1 },
-        { transform: from, opacity: 0.5 },
-      ],
-      { duration: 240, easing: "cubic-bezier(0.4, 0, 1, 1)", fill: "forwards" },
+      [{ transform: "none" }, { transform: from }],
+      { duration: 240, easing: "cubic-bezier(0.4, 0, 0.2, 1)", fill: "forwards" },
     )
     anim.onfinish = () => {
       zoomBusyRef.current = false
       setZoomed(false)
+      setZoomClosing(false)
     }
   }, [])
 
@@ -92,10 +94,7 @@ export function ProjectModal({
     if (!from) return
     stage.style.transformOrigin = "0 0"
     const anim = stage.animate(
-      [
-        { transform: from, opacity: 0.5 },
-        { transform: "none", opacity: 1 },
-      ],
+      [{ transform: from }, { transform: "none" }],
       { duration: 320, easing: "cubic-bezier(0.22, 1, 0.36, 1)" },
     )
     return () => anim.cancel()
@@ -113,7 +112,7 @@ export function ProjectModal({
     window.setTimeout(() => {
       if (mode === "overlay") router.back()
       else router.push("/")
-    }, EXIT_MS)
+    }, prefersReduced() ? 0 : EXIT_MS)
   }, [mode, router])
 
   // Esc backs out of the zoom first (with its shrink animation), then the modal.
@@ -432,7 +431,9 @@ export function ProjectModal({
             close. Click anywhere / × / Esc to close. */}
         {zoomed && diagram === "builtin" && (
           <div
-            className="modal-zoom absolute inset-0 z-30 bg-[#f4f1ec] flex flex-col cursor-zoom-out"
+            className={`modal-zoom absolute inset-0 z-30 bg-[#f4f1ec] flex flex-col cursor-zoom-out ${
+              zoomClosing ? "is-closing" : ""
+            }`}
             role="dialog"
             aria-modal="true"
             aria-label={`${detail.name} — architecture diagram, enlarged`}
@@ -530,6 +531,9 @@ const TOKENS = `
   /* Exit: backdrop fades and card sinks before the route changes. */
   .modal-backdrop.is-closing { animation: modal-fade-out 240ms ease both; }
   .modal-card.is-closing { animation: modal-sink 240ms cubic-bezier(0.4, 0, 1, 1) both; }
+  /* Zoom dismiss: the overlay fades while the diagram shrinks back into its
+     thumbnail, instead of cutting away when the shrink finishes. */
+  .modal-zoom.is-closing { animation: modal-fade-out 240ms ease both; }
 
   @keyframes modal-fade { from { opacity: 0; } to { opacity: 1; } }
   @keyframes modal-fade-out { from { opacity: 1; } to { opacity: 0; } }
@@ -548,8 +552,9 @@ const TOKENS = `
     from { opacity: 0; transform: translateY(8px); }
     to   { opacity: 1; transform: translateY(0); }
   }
-  /* While closing, let the content fade out with the card rather than re-animate. */
-  .modal-card.is-closing .modal-reveal { animation: none; }
+  /* While closing, freeze the reveal where it is so a mid-stagger close
+     doesn't snap half-faded content to full opacity before the card sinks. */
+  .modal-card.is-closing .modal-reveal { animation-play-state: paused; }
 
   .grain::before {
     content: ""; position: fixed; inset: 0; pointer-events: none;
@@ -558,6 +563,7 @@ const TOKENS = `
   }
   @media (prefers-reduced-motion: reduce) {
     .modal-backdrop, .modal-card, .modal-reveal, .modal-zoom,
-    .modal-backdrop.is-closing, .modal-card.is-closing { animation: none; }
+    .modal-backdrop.is-closing, .modal-card.is-closing,
+    .modal-zoom.is-closing { animation: none; }
   }
 `

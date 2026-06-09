@@ -44,7 +44,7 @@ export function TocNav({ active, onSelect, onHome }: Props) {
     <nav
       aria-label="Page sections"
       aria-hidden={!visible}
-      className={`sticky top-0 z-50 transition-[transform,box-shadow] duration-300 ${
+      className={`sticky top-0 z-50 transition-[transform,box-shadow] duration-300 motion-reduce:transition-none ${
         visible ? "translate-y-0" : "-translate-y-full"
       }`}
       style={{
@@ -61,7 +61,7 @@ export function TocNav({ active, onSelect, onHome }: Props) {
         >
           <span
             aria-hidden
-            className={`inline-block text-lg leading-none transition-transform duration-500 ease-out ${
+            className={`inline-block text-lg leading-none transition-transform duration-500 ease-out motion-reduce:transition-none ${
               elevated ? "rotate-180" : "rotate-0"
             }`}
           >
@@ -87,11 +87,16 @@ export function TocNav({ active, onSelect, onHome }: Props) {
                     backgroundColor: isActive ? "rgba(31,58,95,0.10)" : "transparent",
                   }}
                 >
-                  {isActive && (
-                    <span aria-hidden className="accent font-medium leading-none">
-                      +
-                    </span>
-                  )}
+                  {/* Always in the layout so activating a tab never shifts its
+                      neighbors — only the opacity animates. */}
+                  <span
+                    aria-hidden
+                    className={`accent font-medium leading-none transition-opacity duration-200 ${
+                      isActive ? "opacity-100" : "opacity-0"
+                    }`}
+                  >
+                    +
+                  </span>
                   <span className="hidden sm:inline">{s.label}</span>
                   <span className="sm:hidden">{s.short}</span>
                 </a>
