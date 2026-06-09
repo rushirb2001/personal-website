@@ -157,10 +157,10 @@ export function ProjectModal({
     ...detail.links,
     ...(artifacts.liveUrl?.url ? [{ label: "Live demo", href: artifacts.liveUrl.url }] : []),
     ...(isPrivate && verify.requestAccessEmail
-      ? [{ label: "Request repo access", href: mail(verify.requestAccessEmail, `${detail.name} — repo access request`) }]
+      ? [{ label: "Request repo access", href: mail(verify.requestAccessEmail, `${detail.name}: repo access request`) }]
       : []),
     ...(verify.walkthrough?.url ? [{ label: "Book a walkthrough", href: verify.walkthrough.url }] : []),
-    ...(verify.contactEmail ? [{ label: "Email", href: mail(verify.contactEmail, `${detail.name} — question`) }] : []),
+    ...(verify.contactEmail ? [{ label: "Email", href: mail(verify.contactEmail, `${detail.name}: question`) }] : []),
   ]
 
   // Build the artifact carousel: architecture diagram first, then result clips
@@ -436,7 +436,7 @@ export function ProjectModal({
             }`}
             role="dialog"
             aria-modal="true"
-            aria-label={`${detail.name} — architecture diagram, enlarged`}
+            aria-label={`${detail.name}: architecture diagram, enlarged`}
             onClick={closeZoom}
           >
             <div className="absolute top-5 right-5 sm:top-7 sm:right-8 z-10">

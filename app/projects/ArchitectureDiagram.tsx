@@ -15,7 +15,7 @@ function MacePinnDiagram() {
       viewBox="0 0 860 612"
       className="w-full h-auto"
       role="img"
-      aria-label="MACE-PINN architecture: (x, y, t) inputs enter one jointly-trained block — a 64-dim random Fourier embedding feeds two coupled subnetworks (u-subnet and v-subnet) that learn iteratively and emit the predicted fields û and v̂. Those outputs feed a gradient-norm adaptively weighted physics-informed loss ℒ(û, v̂), whose adaptive weights feed back into the block."
+      aria-label="MACE-PINN architecture: (x, y, t) inputs enter one jointly-trained block, where a 64-dim random Fourier embedding feeds two coupled subnetworks (u-subnet and v-subnet) that learn iteratively and emit the predicted fields û and v̂. Those outputs feed a gradient-norm adaptively weighted physics-informed loss ℒ(û, v̂), whose adaptive weights feed back into the block."
       fill="none"
     >
       <defs>
@@ -203,7 +203,7 @@ function SamhitaDiagram() {
   return (
     <Frame
       vb="0 0 1140 400"
-      label="Samhita data backbone: any textbook PDFs with metadata are ingested in parallel into a hybrid (parallel + sequential) extraction pipeline — parse, recover, structure, clean, enhance, annotate — smarter than static parsing. It builds a taxonomy-structured knowledge graph and dense embeddings, bundled into an immutable SHA-256 content-hashed versioned export that publishes primarily to Cloudflare R2 and feeds live retrieval and client apps."
+      label="Samhita data backbone: any textbook PDFs with metadata are ingested in parallel into a hybrid (parallel + sequential) extraction pipeline (parse, recover, structure, clean, enhance, annotate), smarter than static parsing. It builds a taxonomy-structured knowledge graph and dense embeddings, bundled into an immutable SHA-256 content-hashed versioned export that publishes primarily to Cloudflare R2 and feeds live retrieval and client apps."
     >
       {/* Parallel, textbook-agnostic ingest — stacked cards = any book, fed in parallel */}
       <rect x={42} y={170} width={142} height={66} rx={7} fill="#f4f1ec" stroke={cardStroke} strokeWidth={1.2} />
@@ -273,7 +273,7 @@ function HybridFlowDiagram() {
   return (
     <Frame
       vb="0 0 1150 420"
-      label="HybridFlow retrieval backend: an agent calls the HybridFlowAPI (15 agentic tools, LangChain/MCP). Its query engine runs hybrid retrieval across three stores — a Qdrant vector index, a Neo4j knowledge graph, and a SQLite metadata store — expanding vector hits through the graph, then assembles structured context (hierarchy, figures, tables, cross-references) returned to the agent. A loader transactionally ingests Samhita exports with content-hash change detection."
+      label="HybridFlow retrieval backend: an agent calls the HybridFlowAPI (15 agentic tools, LangChain/MCP). Its query engine runs hybrid retrieval across three stores (a Qdrant vector index, a Neo4j knowledge graph, and a SQLite metadata store), expanding vector hits through the graph, then assembles structured context (hierarchy, figures, tables, cross-references) returned to the agent. A loader transactionally ingests Samhita exports with content-hash change detection."
     >
       {/* Ingest lane — Samhita export written into the stores */}
       <Node x={372} y={28} w={148} h={50} title="Samhita export" sub="v2 JSON" />
@@ -315,7 +315,7 @@ function SushrutalgsBffDiagram() {
   return (
     <Frame
       vb="0 0 1060 440"
-      label="sushrutalgs.ai BFF: the web (Next.js) and iOS (SwiftUI) clients call one Cloudflare Worker gateway. The request flows through a five-stage pipeline inside the Worker — CORS / origin check, Supabase JWT verify, a plan-based atomic daily quota debit via a Supabase RPC, a user_context body transform, and forward to the hybrid-flow FastAPI backend with two-factor upstream auth. Verify and quota make auxiliary calls down to Supabase; the backend's SSE stream is piped back to the clients byte-for-byte. The 33 KiB gzipped Worker adds ~14 ms p50 at the edge with zero errors through 200 concurrent."
+      label="sushrutalgs.ai BFF: the web (Next.js) and iOS (SwiftUI) clients call one Cloudflare Worker gateway. The request flows through a five-stage pipeline inside the Worker: CORS / origin check, Supabase JWT verify, a plan-based atomic daily quota debit via a Supabase RPC, a user_context body transform, and forward to the hybrid-flow FastAPI backend with two-factor upstream auth. Verify and quota make auxiliary calls down to Supabase; the backend's SSE stream is piped back to the clients byte-for-byte. The 33 KiB gzipped Worker adds ~14 ms p50 at the edge with zero errors through 200 concurrent."
     >
       {/* Clients — both auth shapes accepted (cookie / Bearer) */}
       <Node x={30} y={164} w={150} h={56} title="Web" sub="Next.js · cookie" />
@@ -374,7 +374,7 @@ function SushrutalgsWebDiagram() {
   return (
     <Frame
       vb="0 0 1010 432"
-      label="sushrutalgs.ai web app: a Next.js client owns the chat experience — a chat-service that parses an 8-frame SSE stream, a conversation-store holding a forkable chat tree, and a BFF client. It calls the Cloudflare-Worker BFF (verify JWT, debit quota) which forwards to the HybridFlow FastAPI backend; the answer streams back over SSE. Supabase provides email-OTP auth and Postgres conversation storage, and auth-gated proxy routes serve figures and tables from two Cloudflare R2 buckets."
+      label="sushrutalgs.ai web app: a Next.js client owns the chat experience: a chat-service that parses an 8-frame SSE stream, a conversation-store holding a forkable chat tree, and a BFF client. It calls the Cloudflare-Worker BFF (verify JWT, debit quota) which forwards to the HybridFlow FastAPI backend; the answer streams back over SSE. Supabase provides email-OTP auth and Postgres conversation storage, and auth-gated proxy routes serve figures and tables from two Cloudflare R2 buckets."
     >
       {/* Browser → the app */}
       <Node x={24} y={176} w={116} h={60} title="Browser" sub="web client" />
@@ -468,7 +468,7 @@ function YelpDiagram() {
   return (
     <Frame
       vb="0 0 1150 430"
-      label="Yelp ML platform: the 6.99M-review Yelp Open Dataset (5.3 GB JSON) is read by a single-pass Spark ETL into snappy Parquet at ~462K rows/sec, then 5-core filtered to 4.39M interactions over 287K users and 148K items. Two models train off that table — a bias-augmented ALS recommender (RMSE 1.17, Recall@10 5.5%, 6.2x a popularity baseline) and a TF-IDF + Logistic Regression sentiment classifier (86.3% accuracy, macro-F1 0.70). MLflow tracks both runs. The sentiment model is exported to a pure-numpy artifact with 100% prediction parity and served by FastAPI at p99 0.11 ms / 34K predictions per second, versus ~290 ms for the in-process Spark path."
+      label="Yelp ML platform: the 6.99M-review Yelp Open Dataset (5.3 GB JSON) is read by a single-pass Spark ETL into snappy Parquet at ~462K rows/sec, then 5-core filtered to 4.39M interactions over 287K users and 148K items. Two models train off that table: a bias-augmented ALS recommender (RMSE 1.17, Recall@10 5.5%, 6.2x a popularity baseline) and a TF-IDF + Logistic Regression sentiment classifier (86.3% accuracy, macro-F1 0.70). MLflow tracks both runs. The sentiment model is exported to a pure-numpy artifact with 100% prediction parity and served by FastAPI at p99 0.11 ms / 34K predictions per second, versus ~290 ms for the in-process Spark path."
     >
       {/* Raw dataset — stacked cards = the Yelp JSON dumps */}
       <rect x={40} y={186} width={150} height={64} rx={7} fill="#f4f1ec" stroke={cardStroke} strokeWidth={1.2} />
