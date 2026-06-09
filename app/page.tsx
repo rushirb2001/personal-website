@@ -221,6 +221,11 @@ export default function BetaPage() {
       } else {
         requestAnimationFrame(() => requestAnimationFrame(scrollToSection))
       }
+    } else {
+      // Closing mirrors opening: the section collapses (animated min-height +
+      // grid rows) while the page glides back to the top and the hero
+      // re-centers.
+      window.scrollTo({ top: 0, behavior: reduced ? "auto" : "smooth" })
     }
   }
 
@@ -702,12 +707,16 @@ function Section({
   return (
     <section
       id={id}
-      // min-height must SNAP on open (no transition): the smooth scroll to the
-      // section head needs the document to already have that scroll room, or
-      // the browser clamps the scroll and lands short.
-      className={`scroll-mt-14 max-w-[1100px] mx-auto px-6 lg:px-12 ${
-        open ? "min-h-[calc(100vh-3.5rem)]" : ""
+      // Asymmetric on purpose: min-height SNAPS on open (the smooth scroll to
+      // the section head needs that scroll room to already exist, or the
+      // browser clamps it and lands short) but ANIMATES on close so the page
+      // glides back up instead of jumping when the height vanishes. The inline
+      // transition-none applies only in the open state, i.e. to the opening
+      // edge; the closing edge reads the class transition.
+      className={`scroll-mt-14 max-w-[1100px] mx-auto px-6 lg:px-12 motion-safe:transition-[min-height] motion-safe:duration-[350ms] motion-safe:ease-[cubic-bezier(0.22,1,0.36,1)] ${
+        open ? "min-h-[calc(100vh-3.5rem)]" : "min-h-0"
       }`}
+      style={open ? { transitionProperty: "none" } : undefined}
     >
       <SectionHead id={id} title={title} count={count} open={open} onToggle={onToggle} />
       <div
