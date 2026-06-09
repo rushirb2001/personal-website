@@ -302,6 +302,39 @@ export default function BetaPage() {
         }
         .hero-anim > div > *:nth-child(1) { animation-delay: 100ms; }
         .hero-anim > div > *:nth-child(2) { animation-delay: 280ms; }
+        .hero-anim > div > *:nth-child(3),
+        .hero-anim > div > *:nth-child(4) { animation-delay: 200ms; }
+
+        /* Hero layout — one set of elements recomposed by grid areas. Phones:
+           photo anchors the left column, name + short copy stack beside it.
+           sm+: name + description own the left column, photo sits right, with
+           photo column / gap / display size riding the same viewport scale so
+           squeezed widths render as a scaled-down desktop. */
+        .hero-grid {
+          display: grid;
+          grid-template-columns: clamp(150px, 48%, 220px) minmax(0, 1fr);
+          grid-template-rows: auto 1fr;
+          grid-template-areas:
+            "photo name"
+            "photo copy";
+          column-gap: 1.25rem;
+          row-gap: 0.875rem;
+        }
+        .hero-name { grid-area: name; }
+        .hero-photo-block { grid-area: photo; }
+        .hero-copy { grid-area: copy; }
+        .hero-desc { grid-area: desc; }
+        @media (min-width: 640px) {
+          .hero-grid {
+            grid-template-columns: minmax(0, 1fr) clamp(150px, 24vw, 280px);
+            grid-template-rows: auto auto;
+            grid-template-areas:
+              "name photo"
+              "desc photo";
+            column-gap: clamp(24px, 5.4vw, 64px);
+            row-gap: 0;
+          }
+        }
 
         .grain::before {
           content: "";
@@ -319,21 +352,20 @@ export default function BetaPage() {
            the browser toolbar. Compact the hero so the closed landing fits.
            The media query keys off the layout viewport height (≈820 on iPad
            landscape), while the layout itself fits within 100svh. */
+        /* Short, wide viewports: compact the hero proportionally so the closed
+           landing still fits. Photo column and display shrink on the same
+           curve as the default scale, just lower caps. */
         @media (min-width: 768px) and (max-height: 900px) {
           .hero-section { padding-top: 0.75rem; padding-bottom: 0.75rem; }
-          .hero-section h1 { font-size: clamp(56px, 8.5vw, 92px); }
-          .hero-section .hero-photo { max-width: 200px; }
+          .hero-section h1 { font-size: clamp(52px, 8.5vw, 92px); }
+          .hero-grid { grid-template-columns: 1fr clamp(150px, 20vw, 220px); }
+          .hero-section .hero-photo { max-width: 220px; }
         }
 
-        /* Portrait or square viewports at tablet/desktop widths (iPad portrait,
-           narrow desktop windows) leave a wide, short hero floating in empty
-           space. Spend that room on a much larger photo and a display size
-           sized to the narrower text column. */
-        @media (min-width: 768px) and (max-aspect-ratio: 1/1) {
-          .hero-grid { grid-template-columns: 1fr clamp(300px, 32vw, 400px); }
-          .hero-section .hero-photo { max-width: 400px; }
-          .hero-section h1 { font-size: clamp(64px, 7.5vw, 96px); }
-          .hero-section .hero-desc { font-size: clamp(17px, 1.6vw, 21px); }
+        /* Short phone viewports: shrink the photo column so the hero doesn't
+           crowd the section list. */
+        @media (max-width: 639px) and (max-height: 720px) {
+          .hero-grid { grid-template-columns: clamp(120px, 40%, 170px) minmax(0, 1fr); }
         }
 
         @media (prefers-reduced-motion: reduce) {
@@ -359,69 +391,33 @@ export default function BetaPage() {
             pre-computes scroll targets from the measured leftover. */}
         <div ref={heroWrapRef} className="flex-1 flex flex-col justify-center">
         <section ref={heroSectionRef} className="hero-anim hero-section max-w-[1100px] mx-auto px-6 lg:px-12 pt-6 xs:pt-8 lg:pt-12 pb-8 xs:pb-10 lg:pb-14">
-          <div className="hero-grid grid grid-cols-1 sm:grid-cols-[1fr_clamp(150px,28vw,280px)] lg:grid-cols-[1fr_280px] gap-8 sm:gap-6 lg:gap-16 items-start">
-            <div>
-              {/* Display size is fluid in every band; a fixed size only just
-                  fit at full desktop width and wrapped to three lines in
-                  squeezed windows. */}
-              <h1 className="display font-light leading-[0.92] tracking-tight text-[clamp(44px,12.5vw,52px)] sm:text-[clamp(56px,10.5vw,118px)] lg:text-[clamp(96px,10vw,120px)]">
-                Hi! I&rsquo;m Rushir
-                <br />
-                Bhavsar<span className="accent">.</span>
-              </h1>
+          {/* One proportional system from sm up: photo column (24vw, cap 280),
+              gap (5.4vw, cap 64) and display size (10vw, cap 120) all ride the
+              same viewport scale and hit their caps together near the 1100px
+              container max, so any squeezed width renders as a scaled-down
+              desktop instead of a different composition. */}
+          {/* One photo, one name, one copy block — recomposed per breakpoint by
+              the .hero-grid grid-template-areas in the style block above. */}
+          <div className="hero-grid">
+            <h1 className="hero-name display font-light leading-[0.95] sm:leading-[0.92] tracking-tight text-[clamp(30px,9.6vw,46px)] sm:text-[clamp(52px,10vw,120px)]">
+              Hi! I&rsquo;m Rushir
+              <br />
+              Bhavsar<span className="accent">.</span>
+            </h1>
 
-              {/* Phone composition is vertical: the photo gets its own block
-                  under the name, with the role/location labels as a caption
-                  column beside it, then the full description below. */}
-              <div className="sm:hidden mt-7 grid grid-cols-[clamp(150px,55%,220px)_1fr] gap-5 items-end">
-                <div className="hero-photo relative w-full aspect-[3/4] overflow-hidden grayscale">
-                  <Image
-                    src="/images/design-mode/new_personal_photo(1).png"
-                    alt="Rushir Bhavsar"
-                    fill
-                    sizes="60vw"
-                    className="object-cover object-[60%_30%]"
-                    priority
-                  />
-                  <div className="absolute inset-0 ring-1 ring-inset ring-black/10" />
-                </div>
-                <div className="mono text-[12px] muted leading-[1.7] pb-1">
-                  <p>
-                    <span className="accent">+</span> ML systems
-                  </p>
-                  <p>
-                    <span className="accent">+</span> ML infra
-                  </p>
-                  <p className="mt-2">
-                    <span className="accent">+</span> Tempe, AZ
-                  </p>
-                </div>
-              </div>
-
-              <div className="hero-desc display font-light text-[16px] sm:text-[clamp(16px,1.8vw,20px)] lg:text-xl mt-7 lg:mt-8 leading-[1.5] max-w-[44ch]">
-                Currently at ASU, researching physics-informed neural networks
-                for plasma simulation. Previously at Cadence on protein property
-                prediction at million-sequence scale.
-                <span className="block mt-3 xs:mt-4 muted">
-                  Looking for roles in ML systems and ML infrastructure:
-                  orchestration, GPU pipelines, and evaluation harnesses.
-                </span>
-              </div>
-            </div>
-
-            <div className="hidden sm:block sm:pt-3 lg:pt-4">
+            <div className="hero-photo-block pt-1 sm:pt-3 lg:pt-4">
               <div className="hero-photo relative w-full max-w-[280px] aspect-[3/4] overflow-hidden grayscale">
                 <Image
                   src="/images/design-mode/new_personal_photo(1).png"
                   alt="Rushir Bhavsar"
                   fill
-                  sizes="(max-width: 1024px) 28vw, 400px"
+                  sizes="(max-width: 639px) 48vw, (max-width: 1167px) 24vw, 280px"
                   className="object-cover object-[60%_30%]"
                   priority
                 />
                 <div className="absolute inset-0 ring-1 ring-inset ring-black/10" />
               </div>
-              <div className="mt-5 mono text-[13px] muted leading-[1.7]">
+              <div className="hidden sm:block mt-5 mono text-[13px] muted leading-[1.7]">
                 <p>
                   <span className="accent">+</span> ML systems / infra
                 </p>
@@ -429,6 +425,30 @@ export default function BetaPage() {
                   <span className="accent">+</span> Tempe, Arizona
                 </p>
               </div>
+            </div>
+
+            <div className="hero-copy sm:hidden flex flex-col">
+              <div className="my-auto">
+                <p className="display font-light text-[16px] leading-[1.5]">
+                  Physics-informed neural nets at ASU. Previously Cadence.
+                </p>
+                <p className="display font-light text-[16px] leading-[1.5] muted mt-3">
+                  Open to ML systems / infrastructure roles.
+                </p>
+              </div>
+              <p className="mono text-[12px] muted pt-3">
+                <span className="accent">+</span> Tempe, AZ
+              </p>
+            </div>
+
+            <div className="hero-desc hidden sm:block display font-light text-[16px] sm:text-[clamp(16px,1.7vw,20px)] mt-7 lg:mt-8 leading-[1.5] max-w-[44ch]">
+              Currently at ASU, researching physics-informed neural networks
+              for plasma simulation. Previously at Cadence on protein property
+              prediction at million-sequence scale.
+              <span className="block mt-3 xs:mt-4 muted">
+                Looking for roles in ML systems and ML infrastructure:
+                orchestration, GPU pipelines, and evaluation harnesses.
+              </span>
             </div>
           </div>
         </section>
@@ -682,8 +702,11 @@ function Section({
   return (
     <section
       id={id}
-      className={`scroll-mt-14 max-w-[1100px] mx-auto px-6 lg:px-12 motion-safe:transition-[min-height] motion-safe:duration-[350ms] motion-safe:ease-[cubic-bezier(0.22,1,0.36,1)] ${
-        open ? "min-h-[calc(100vh-3.5rem)]" : "min-h-0"
+      // min-height must SNAP on open (no transition): the smooth scroll to the
+      // section head needs the document to already have that scroll room, or
+      // the browser clamps the scroll and lands short.
+      className={`scroll-mt-14 max-w-[1100px] mx-auto px-6 lg:px-12 ${
+        open ? "min-h-[calc(100vh-3.5rem)]" : ""
       }`}
     >
       <SectionHead id={id} title={title} count={count} open={open} onToggle={onToggle} />
@@ -726,8 +749,8 @@ function SectionHead({
       style={{ backgroundColor: "#f4f1ec" }}
     >
       <div className="grid grid-cols-[auto_1fr_auto] xs:grid-cols-[clamp(80px,14vw,140px)_1fr_clamp(140px,22vw,240px)] lg:grid-cols-[140px_1fr_240px] gap-3 xs:gap-6 lg:gap-12 items-baseline">
-        <span className="display accent text-[26px] lg:text-3xl font-light leading-none">+</span>
-        <h2 className="display text-[26px] lg:text-3xl font-light tracking-tight leading-none">
+        <span className="display accent text-[26px] xs:text-[clamp(20px,4.5vw,26px)] lg:text-3xl font-light leading-none">+</span>
+        <h2 className="display text-[26px] xs:text-[clamp(20px,4.5vw,26px)] lg:text-3xl font-light tracking-tight leading-none">
           {title}
           <span className="accent">.</span>
         </h2>
