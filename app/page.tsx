@@ -154,6 +154,8 @@ export default function BetaPage() {
   const [openSection, setOpenSection] = useState<string | null>(null)
   const programmaticScrollRef = useRef(false)
   const lockTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const heroWrapRef = useRef<HTMLDivElement>(null)
+  const heroSectionRef = useRef<HTMLElement>(null)
 
   useEffect(() => {
     const onScroll = () => {
@@ -182,10 +184,31 @@ export default function BetaPage() {
     const isOpening = openSection !== id
     const switching = openSection !== null && openSection !== id
     const reduced = prefersReduced()
-    lockScroll(switching ? 1400 : 1000)
+    lockScroll(isOpening ? 1400 : 1000)
+
+    // Opening from the closed landing: the hero gives up its centering space
+    // over 350ms, so a live offsetTop read mid-transition would overshoot.
+    // Measure the still-stable closed layout now and pre-compute where the
+    // section head lands once the leftover space is gone, then scroll to that
+    // fixed target concurrently with the collapse.
+    let target: number | null = null
+    if (isOpening && !switching && !reduced) {
+      const el = document.getElementById(id)
+      const wrap = heroWrapRef.current
+      const hero = heroSectionRef.current
+      if (el && wrap && hero) {
+        const leftover = Math.max(0, wrap.offsetHeight - hero.offsetHeight)
+        target = Math.max(0, el.offsetTop - leftover - 56)
+      }
+    }
+
     setOpenSection(isOpening ? id : null)
     if (isOpening) {
       const scrollToSection = () => {
+        if (target !== null) {
+          window.scrollTo({ top: target, behavior: "smooth" })
+          return
+        }
         const el = document.getElementById(id)
         if (el) {
           window.scrollTo({ top: el.offsetTop - 56, behavior: reduced ? "auto" : "smooth" })
@@ -312,15 +335,19 @@ export default function BetaPage() {
       `}</style>
 
       <div
-        className={`grain relative z-0 pb-16 flex flex-col ${
-          openSection === null ? "min-h-[100svh]" : ""
+        className={`grain relative z-0 pb-16 flex flex-col motion-safe:transition-[min-height] motion-safe:duration-[350ms] motion-safe:ease-[cubic-bezier(0.22,1,0.36,1)] ${
+          openSection === null ? "min-h-[100svh]" : "min-h-0"
         }`}
       >
         <TocNav active={openSection} onSelect={toggleSection} onHome={goHome} />
 
-        {/* Hero — centered in the leftover space above the section list while closed */}
-        <div className={openSection === null ? "flex-1 flex flex-col justify-center" : ""}>
-        <section className="hero-anim hero-section max-w-[1100px] mx-auto px-6 lg:px-12 pt-6 xs:pt-8 lg:pt-12 pb-8 xs:pb-10 lg:pb-14">
+        {/* Hero — centered in the leftover space above the section list while
+            closed. The centering stays mounted; opening a section animates the
+            wrapper's min-height away, so the leftover space (and with it the
+            centering) glides to zero instead of snapping. toggleSection
+            pre-computes scroll targets from the measured leftover. */}
+        <div ref={heroWrapRef} className="flex-1 flex flex-col justify-center">
+        <section ref={heroSectionRef} className="hero-anim hero-section max-w-[1100px] mx-auto px-6 lg:px-12 pt-6 xs:pt-8 lg:pt-12 pb-8 xs:pb-10 lg:pb-14">
           <div className="grid grid-cols-1 xs:grid-cols-[1fr_clamp(140px,28vw,280px)] lg:grid-cols-[1fr_280px] gap-8 xs:gap-6 lg:gap-16 items-start">
             <div>
               <h1 className="display font-light leading-[0.92] tracking-tight text-[52px] xs:text-[clamp(56px,11vw,120px)] lg:text-[120px]">
