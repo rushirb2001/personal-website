@@ -359,9 +359,12 @@ export default function BetaPage() {
             pre-computes scroll targets from the measured leftover. */}
         <div ref={heroWrapRef} className="flex-1 flex flex-col justify-center">
         <section ref={heroSectionRef} className="hero-anim hero-section max-w-[1100px] mx-auto px-6 lg:px-12 pt-6 xs:pt-8 lg:pt-12 pb-8 xs:pb-10 lg:pb-14">
-          <div className="hero-grid grid grid-cols-1 xs:grid-cols-[1fr_clamp(140px,28vw,280px)] lg:grid-cols-[1fr_280px] gap-8 xs:gap-6 lg:gap-16 items-start">
+          <div className="hero-grid grid grid-cols-1 sm:grid-cols-[1fr_clamp(150px,28vw,280px)] lg:grid-cols-[1fr_280px] gap-8 sm:gap-6 lg:gap-16 items-start">
             <div>
-              <h1 className="display font-light leading-[0.92] tracking-tight text-[clamp(44px,12.5vw,52px)] xs:text-[clamp(56px,11vw,120px)] lg:text-[120px]">
+              {/* Display size is fluid in every band; a fixed size only just
+                  fit at full desktop width and wrapped to three lines in
+                  squeezed windows. */}
+              <h1 className="display font-light leading-[0.92] tracking-tight text-[clamp(44px,12.5vw,52px)] sm:text-[clamp(56px,10.5vw,118px)] lg:text-[clamp(96px,10vw,120px)]">
                 Hi! I&rsquo;m Rushir
                 <br />
                 Bhavsar<span className="accent">.</span>
@@ -370,7 +373,7 @@ export default function BetaPage() {
               {/* Phone composition is vertical: the photo gets its own block
                   under the name, with the role/location labels as a caption
                   column beside it, then the full description below. */}
-              <div className="xs:hidden mt-7 grid grid-cols-[clamp(150px,55%,200px)_1fr] gap-5 items-end">
+              <div className="sm:hidden mt-7 grid grid-cols-[clamp(150px,55%,220px)_1fr] gap-5 items-end">
                 <div className="hero-photo relative w-full aspect-[3/4] overflow-hidden grayscale">
                   <Image
                     src="/images/design-mode/new_personal_photo(1).png"
@@ -395,7 +398,7 @@ export default function BetaPage() {
                 </div>
               </div>
 
-              <div className="hero-desc display font-light text-[16px] xs:text-[clamp(16px,1.8vw,20px)] lg:text-xl mt-7 lg:mt-8 leading-[1.5] max-w-[44ch]">
+              <div className="hero-desc display font-light text-[16px] sm:text-[clamp(16px,1.8vw,20px)] lg:text-xl mt-7 lg:mt-8 leading-[1.5] max-w-[44ch]">
                 Currently at ASU, researching physics-informed neural networks
                 for plasma simulation. Previously at Cadence on protein property
                 prediction at million-sequence scale.
@@ -406,7 +409,7 @@ export default function BetaPage() {
               </div>
             </div>
 
-            <div className="hidden xs:block xs:pt-3 lg:pt-4">
+            <div className="hidden sm:block sm:pt-3 lg:pt-4">
               <div className="hero-photo relative w-full max-w-[280px] aspect-[3/4] overflow-hidden grayscale">
                 <Image
                   src="/images/design-mode/new_personal_photo(1).png"
