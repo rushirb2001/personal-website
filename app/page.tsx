@@ -147,7 +147,6 @@ const EDUCATION = [
     year: "2023",
     coursework: ["Algorithms", "Operating Systems", "Computer Networks", "Databases", "Compilers", "Linear Algebra"],
     highlights: [
-      { text: "Graduated with distinction" },
       {
         text: "Classification of potentially hazardous asteroids using supervised quantum machine learning · IEEE Access, 2023",
         textShort: "Hazardous-asteroid classification with quantum ML · IEEE Access, 2023",
