@@ -479,7 +479,7 @@ export default function BetaPage() {
       `}</style>
 
       <div
-        className={`grain relative z-0 pb-16 flex flex-col motion-safe:transition-[min-height] motion-safe:duration-[350ms] motion-safe:ease-[cubic-bezier(0.22,1,0.36,1)] ${
+        className={`grain relative z-0 flex flex-col motion-safe:transition-[min-height] motion-safe:duration-[350ms] motion-safe:ease-[cubic-bezier(0.22,1,0.36,1)] ${
           openSection === null ? "min-h-[100svh]" : "min-h-0"
         }`}
       >
@@ -814,15 +814,28 @@ export default function BetaPage() {
         </Section>
         </div>
 
+        {/* In-flow footer: sits at the bottom of the closed landing (the hero's
+            flex-1 absorbs the leftover) and after the open section's content,
+            instead of permanently overlaying the viewport bottom. */}
+        {/* Sticky at the viewport bottom: always visible like the old fixed
+            bar, but it still occupies flow space at the document end so it
+            never hides content. z-50 lifts it above the .grain dot overlay
+            (z-1) and the sticky section heads (z-30) so everything scrolls
+            below it. */}
+        <footer className="sticky bottom-0 z-50 mt-10 xs:mt-14">
+          <div className="border-t rule" style={{ backgroundColor: "#f4f1ec" }}>
+            <div className="max-w-[1100px] mx-auto px-6 lg:px-12 py-5 xs:py-6 mono text-[11px] flex items-center justify-between gap-4">
+              <p className="muted whitespace-nowrap">
+                <span className="faint">© 2026 </span>Rushir Bhavsar
+              </p>
+              <p className="small-caps faint whitespace-nowrap">
+                <span className="accent">+</span> <span className="xs:hidden">Tempe, AZ</span>
+                <span className="hidden xs:inline">Tempe, Arizona</span>
+              </p>
+            </div>
+          </div>
+        </footer>
       </div>
-      <footer
-        className="fixed bottom-0 left-0 right-0 z-40 border-t rule"
-        style={{ backgroundColor: "#f4f1ec" }}
-      >
-        <div className="max-w-[1100px] mx-auto px-6 lg:px-12 h-14 flex items-center mono text-[10px] muted">
-          <span className="faint">© </span>Rushir Bhavsar, 2026
-        </div>
-      </footer>
     </main>
   )
 }
