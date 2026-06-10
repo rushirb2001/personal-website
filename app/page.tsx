@@ -44,6 +44,7 @@ const PROJECTS = [
     name: "MACE-PINN",
     platform: "",
     slug: "mace-pinn",
+    descShort: "Thesis neural network that solves stiff, coupled physics equations single-network models struggle with.",
     type: "Master's thesis",
     year: "2025",
     desc: "Master's thesis neural network that accurately solves the stiff, tightly coupled physics equations that standard single-network models struggle to capture.",
@@ -56,6 +57,7 @@ const PROJECTS = [
     name: "Samhita",
     platform: "sushrutalgs.ai",
     slug: "samhita",
+    descShort: "Turns surgical-textbook PDFs into a structured, searchable knowledge base for the platform.",
     type: "Data pipeline",
     year: "2026",
     desc: "Data ingestion module for the sushrutalgs.ai platform that turns surgical-textbook PDFs into a structured, searchable knowledge base for the rest of the platform to draw on.",
@@ -66,6 +68,7 @@ const PROJECTS = [
     name: "HybridFlow",
     platform: "sushrutalgs.ai",
     slug: "hybridflow",
+    descShort: "Retrieves the most relevant medical knowledge and streams grounded answers to each question.",
     type: "Retrieval backend",
     year: "2026",
     desc: "Retrieval module for the sushrutalgs.ai platform that pulls the most relevant medical knowledge and generates grounded, streaming answers to each question.",
@@ -76,6 +79,7 @@ const PROJECTS = [
     name: "backend-for-frontend",
     platform: "sushrutalgs.ai",
     slug: "sushrutalgs-bff",
+    descShort: "Gateway connecting the apps to the AI backend: sign-in, plan limits, streaming. Live in production.",
     type: "API gateway",
     year: "2026",
     desc: "Gateway module for the sushrutalgs.ai platform that connects the apps to the AI backend, signing users in, enforcing their plan limits, and streaming answers back. Live in production.",
@@ -86,6 +90,7 @@ const PROJECTS = [
     name: "ios-app-client",
     platform: "sushrutalgs.ai",
     slug: "sushrutalgs-ios",
+    descShort: "Native iPhone app for studying with the AI assistant, with live streaming answers across devices.",
     type: "iOS app",
     year: "2026",
     desc: "Native iPhone app for the sushrutalgs.ai platform where users study with the AI assistant, with answers that stream in live and sessions that carry across their devices.",
@@ -96,6 +101,7 @@ const PROJECTS = [
     name: "website-client",
     platform: "sushrutalgs.ai",
     slug: "sushrutalgs-web",
+    descShort: "Web app for studying with the AI assistant, every answer backed by textbook citations.",
     type: "Web app",
     year: "2026",
     desc: "Web app for the sushrutalgs.ai platform where users study with the AI assistant, branching conversations into follow-ups with every answer backed by textbook citations, figures, and tables.",
@@ -106,6 +112,7 @@ const PROJECTS = [
     name: "Yelp ML Platform",
     platform: "",
     slug: "yelp-ml-platform",
+    descShort: "End-to-end ML system on the Yelp dataset: recommendations and review sentiment from one API.",
     type: "ML platform",
     year: "2025",
     desc: "End-to-end ML system on the full Yelp dataset that recommends businesses to users and reads the sentiment of their reviews, served from one fast API.",
@@ -610,12 +617,13 @@ export default function BetaPage() {
                     {p.name}
                     {p.platform && <span className="muted"> @{p.platform}</span>}
                   </h3>
-                  <p className="mt-2 xs:mt-5 leading-relaxed text-[14px] xs:text-[15px] max-w-[58ch] mono">{p.desc}</p>
+                  <p className="xs:hidden mt-2 leading-relaxed text-[14px] max-w-[58ch] mono">{p.descShort}</p>
+                  <p className="hidden xs:block xs:mt-5 leading-relaxed xs:text-[15px] max-w-[58ch] mono">{p.desc}</p>
                 </div>
-                <div className="xs:pt-2 lg:pt-[10px] space-y-6">
+                <div className="grid grid-cols-2 gap-4 xs:block xs:space-y-6 xs:pt-2 lg:pt-[10px]">
                   <div>
                     <p className="mono small-caps faint mb-1 xs:mb-1.5">Stack</p>
-                    <ul className="flex flex-wrap gap-x-3 gap-y-1.5 mono text-[12px] xs:text-[13px]">
+                    <ul className="flex flex-col gap-y-1 leading-[1.35] xs:flex-row xs:flex-wrap xs:gap-x-3 xs:gap-y-1.5 mono text-[12px] xs:text-[13px]">
                       {p.stack.map((s) => (
                         <li key={s} className="muted">
                           {s}
