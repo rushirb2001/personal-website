@@ -616,6 +616,16 @@ export default function BetaPage() {
                   <h3 className="display text-[21px] xs:text-[26px] lg:text-3xl font-light tracking-tight leading-tight">
                     {p.name}
                     {p.platform && <span className="muted"> @{p.platform}</span>}
+                    {p.links.some((l) => l.label === "paper") && (
+                      <a
+                        href={p.links.find((l) => l.label === "paper")!.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="xs:hidden accent-link mono text-[12px] accent align-middle ml-2 whitespace-nowrap"
+                      >
+                        paper <span aria-hidden>↗</span>
+                      </a>
+                    )}
                   </h3>
                   <p className="xs:hidden mt-2 leading-relaxed text-[14px] max-w-[58ch] mono">{p.descShort}</p>
                   <p className="hidden xs:block xs:mt-5 leading-relaxed xs:text-[15px] max-w-[58ch] mono">{p.desc}</p>
@@ -647,7 +657,7 @@ export default function BetaPage() {
                         </li>
                       )}
                       {p.links.map((l) => (
-                        <li key={l.label}>
+                        <li key={l.label} className={l.label === "paper" ? "hidden xs:block" : undefined}>
                           <a
                             href={l.href}
                             target="_blank"
