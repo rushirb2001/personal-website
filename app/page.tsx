@@ -126,6 +126,7 @@ const EDUCATION = [
     degree: "MS, Data Science",
     school: "Arizona State University",
     schoolShort: "ASU",
+    gpa: "3.71",
     focus: "High Performance Computing and Decision Analytics",
     year: "2025",
     coursework: ["Statistical ML", "Distributed Systems", "GPU Computing", "Deep Learning Theory", "Numerical Methods", "Optimization"],
@@ -724,6 +725,7 @@ export default function BetaPage() {
                   </h3>
                   <p className="display accent font-light tracking-tight text-[16px] lg:text-lg mt-1.5 xs:mt-2">
                     {e.focus}
+                    {"gpa" in e && <span className="xs:hidden"> · GPA {e.gpa}</span>}
                   </p>
                   <div className="mt-3 xs:mt-6 space-y-4 max-w-[58ch]">
                     <div>
@@ -741,7 +743,10 @@ export default function BetaPage() {
                   <p className="mono small-caps faint mb-2 xs:mb-3">Highlights</p>
                   <ul className="space-y-2 mono text-[12px] xs:text-[13px]">
                     {e.highlights.map((h) => (
-                      <li key={h.text} className="muted leading-relaxed pl-4 relative">
+                      <li
+                        key={h.text}
+                        className={`muted leading-relaxed pl-4 relative ${h.text.startsWith("GPA") ? "hidden xs:block" : ""}`}
+                      >
                         <span className="absolute left-0 top-[0.55em] w-2 h-px accent-line" aria-hidden />
                         {"href" in h ? (
                           <a
