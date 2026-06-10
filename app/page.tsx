@@ -387,16 +387,18 @@ export default function BetaPage() {
         .hero-grid {
           display: grid;
           grid-template-columns: clamp(150px, 48%, 220px) minmax(0, 1fr);
-          grid-template-rows: auto 1fr;
+          grid-template-rows: auto 1fr auto;
           grid-template-areas:
             "photo name"
-            "photo copy";
+            "photo copy"
+            "open  open";
           column-gap: 1.25rem;
           row-gap: 0.875rem;
         }
         .hero-name { grid-area: name; }
         .hero-photo-block { grid-area: photo; }
         .hero-copy { grid-area: copy; }
+        .hero-open { grid-area: open; }
         .hero-desc { grid-area: desc; }
         @media (min-width: 640px) {
           .hero-grid {
@@ -513,14 +515,12 @@ export default function BetaPage() {
                 <p className="display font-light text-[16px] leading-[1.5]">
                   Physics-informed neural nets at ASU. Previously Cadence.
                 </p>
-                <p className="display font-light text-[16px] leading-[1.5] muted mt-3">
-                  Open to ML systems / infrastructure roles.
-                </p>
               </div>
-              <p className="mono text-[12px] muted pt-3">
-                <span className="accent">+</span> Tempe, AZ
-              </p>
             </div>
+
+            <p className="hero-open sm:hidden display font-light text-[16px] leading-[1.5] muted mt-1">
+              Open to ML systems / infrastructure roles.
+            </p>
 
             <div className="hero-desc hidden sm:block display font-light text-[16px] sm:text-[clamp(16px,1.7vw,20px)] mt-7 lg:mt-8 leading-[1.5] max-w-[44ch]">
               Currently at ASU, researching physics-informed neural networks
@@ -841,8 +841,8 @@ function SectionHead({
       style={{ backgroundColor: "#f4f1ec" }}
     >
       <div className="grid grid-cols-[auto_1fr_auto] xs:grid-cols-[clamp(80px,14vw,140px)_1fr_clamp(140px,22vw,240px)] lg:grid-cols-[140px_1fr_240px] gap-3 xs:gap-6 lg:gap-12 items-baseline">
-        <span className="display accent text-[26px] xs:text-[clamp(20px,4.5vw,26px)] lg:text-3xl font-light leading-none">+</span>
-        <h2 className="display text-[26px] xs:text-[clamp(20px,4.5vw,26px)] lg:text-3xl font-light tracking-tight leading-none">
+        <span className="display accent text-[22px] xs:text-[clamp(20px,4.5vw,26px)] lg:text-3xl font-light leading-none">+</span>
+        <h2 className="display text-[22px] xs:text-[clamp(20px,4.5vw,26px)] lg:text-3xl font-light tracking-tight leading-none">
           {title}
           <span className="accent">.</span>
         </h2>
