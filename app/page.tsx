@@ -621,9 +621,9 @@ export default function BetaPage() {
                           href="https://sushrutalgs.ai/welcome"
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="xs:hidden accent-link muted"
+                          className="xs:hidden accent-link mono text-[12px] accent align-middle ml-2 whitespace-nowrap"
                         >
-                          {" "}@{p.platform}
+                          @{p.platform} <span aria-hidden>↗</span>
                         </a>
                         <span className="muted hidden xs:inline"> @{p.platform}</span>
                       </>
