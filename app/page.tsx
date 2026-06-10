@@ -12,6 +12,7 @@ const WORK = [
     role: "ML Researcher",
     period: "Nov 2025 – Present",
     desc: "Developing a modular PyTorch Lightning + JAX framework to benchmark neural surrogate models against traditional plasma solvers for semiconductor etch-chamber simulations.",
+    descShort: "Benchmarking neural surrogate models against traditional plasma solvers for etch-chamber simulations.",
     stack: ["PyTorch Lightning", "JAX", "Hydra", "WandB"],
     current: true,
   },
@@ -20,6 +21,7 @@ const WORK = [
     role: "ML Engineer Intern",
     period: "Jul 2025 – Oct 2025",
     desc: "Engineered an ESM2 + contrastive-learning pipeline batched through cuDF and PyTorch Lightning; replaced a GPR stall with cuML/RAFT (batch-scaling 150→50K+ @7.2ms/seq).",
+    descShort: "Built an ESM2 + contrastive-learning pipeline; scaled protein property prediction from 150 to 50K+ sequences.",
     stack: ["ESM2", "cuDF", "cuML", "RAFT", "OmegaConf"],
     current: false,
   },
@@ -28,6 +30,7 @@ const WORK = [
     role: "GenAI Engineering Intern",
     period: "Jun 2024 – Sep 2024",
     desc: "Deployed a fine-tuned Mistral-7B-Q8 on Kubernetes behind FastAPI with a six-agent LangChain orchestration. Sub-200 ms p95 for 10K users; 88% on 10K human-evaluated queries.",
+    descShort: "Deployed a fine-tuned Mistral-7B on Kubernetes with six-agent LangChain orchestration, sub-200 ms p95 for 10K users.",
     stack: ["Mistral-7B", "Kubernetes", "FastAPI", "LangChain", "LangGraph"],
     current: false,
   },
@@ -560,7 +563,8 @@ export default function BetaPage() {
                     {w.role}
                     <span className="muted"> @{w.company}</span>
                   </h3>
-                  <p className="mt-2 xs:mt-5 leading-relaxed text-[14px] xs:text-[15px] max-w-[58ch] mono">{w.desc}</p>
+                  <p className="xs:hidden mt-2 leading-relaxed text-[14px] max-w-[58ch] mono">{w.descShort}</p>
+                  <p className="hidden xs:block xs:mt-5 leading-relaxed xs:text-[15px] max-w-[58ch] mono">{w.desc}</p>
                 </div>
                 <div className="xs:pt-2 lg:pt-[10px]">
                   <p className="mono small-caps faint mb-2 xs:mb-3">Stack</p>
