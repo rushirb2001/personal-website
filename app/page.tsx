@@ -9,6 +9,7 @@ import { hasProjectDetail } from "./projects/projects-data"
 const WORK = [
   {
     company: "Arizona State University",
+    companyShort: "ASU",
     role: "ML Researcher",
     period: "Nov 2025 – Present",
     desc: "Developing a modular PyTorch Lightning + JAX framework to benchmark neural surrogate models against traditional plasma solvers for semiconductor etch-chamber simulations.",
@@ -18,6 +19,7 @@ const WORK = [
   },
   {
     company: "OpenEye, Cadence Design Systems",
+    companyShort: "Cadence",
     role: "ML Engineer Intern",
     period: "Jul 2025 – Oct 2025",
     desc: "Engineered an ESM2 + contrastive-learning pipeline batched through cuDF and PyTorch Lightning; replaced a GPR stall with cuML/RAFT (batch-scaling 150→50K+ @7.2ms/seq).",
@@ -27,6 +29,7 @@ const WORK = [
   },
   {
     company: "Talin Labs",
+    companyShort: "Talin Labs",
     role: "GenAI Engineering Intern",
     period: "Jun 2024 – Sep 2024",
     desc: "Deployed a fine-tuned Mistral-7B-Q8 on Kubernetes behind FastAPI with a six-agent LangChain orchestration. Sub-200 ms p95 for 10K users; 88% on 10K human-evaluated queries.",
@@ -561,7 +564,8 @@ export default function BetaPage() {
                 <div>
                   <h3 className="display text-[21px] xs:text-[26px] lg:text-3xl font-light tracking-tight leading-tight">
                     {w.role}
-                    <span className="muted"> @{w.company}</span>
+                    <span className="muted xs:hidden"> @{w.companyShort}</span>
+                    <span className="muted hidden xs:inline"> @{w.company}</span>
                   </h3>
                   <p className="xs:hidden mt-2 leading-relaxed text-[14px] max-w-[58ch] mono">{w.descShort}</p>
                   <p className="hidden xs:block xs:mt-5 leading-relaxed xs:text-[15px] max-w-[58ch] mono">{w.desc}</p>
