@@ -519,7 +519,7 @@ export default function BetaPage() {
             </div>
 
             <p className="hero-open sm:hidden display font-light text-[16px] leading-[1.5] muted mt-1">
-              Open to ML systems / infrastructure roles.
+              <span className="accent">+</span> Open to ML systems / infrastructure roles.
             </p>
 
             <div className="hero-desc hidden sm:block display font-light text-[16px] sm:text-[clamp(16px,1.7vw,20px)] mt-7 lg:mt-8 leading-[1.5] max-w-[44ch]">
