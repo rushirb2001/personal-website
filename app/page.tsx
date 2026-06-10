@@ -125,12 +125,14 @@ const EDUCATION = [
   {
     degree: "MS, Data Science",
     school: "Arizona State University",
+    schoolShort: "ASU",
     focus: "High Performance Computing and Decision Analytics",
     year: "2025",
     coursework: ["Statistical ML", "Distributed Systems", "GPU Computing", "Deep Learning Theory", "Numerical Methods", "Optimization"],
     highlights: [
       {
         text: "Thesis: Multi-Architecture Coupled Ensemble Physics-Informed Neural Networks",
+        textShort: "Thesis: Coupled Ensemble Physics-Informed Neural Networks",
         href: "https://keep.lib.asu.edu/items/201211",
       },
       { text: "GPA 3.71" },
@@ -139,6 +141,7 @@ const EDUCATION = [
   {
     degree: "B.Tech, Computer Science",
     school: "Nirma University",
+    schoolShort: "Nirma",
     focus: "Robotics, Computer Vision and Automation",
     year: "2023",
     coursework: ["Algorithms", "Operating Systems", "Computer Networks", "Databases", "Compilers", "Linear Algebra"],
@@ -146,10 +149,12 @@ const EDUCATION = [
       { text: "Graduated with distinction" },
       {
         text: "Classification of potentially hazardous asteroids using supervised quantum machine learning · IEEE Access, 2023",
+        textShort: "Hazardous-asteroid classification with quantum ML · IEEE Access, 2023",
         href: "https://ieeexplore.ieee.org/iel7/6287639/6514899/10188662.pdf",
       },
       {
         text: "MetaHate: AI-based hate speech detection for secured online gaming in metaverse using blockchain · Security and Privacy, 2024",
+        textShort: "MetaHate: hate-speech detection for metaverse gaming · Security and Privacy, 2024",
         href: "https://onlinelibrary.wiley.com/doi/abs/10.1002/spy2.343",
       },
     ],
@@ -714,7 +719,8 @@ export default function BetaPage() {
                 <div>
                   <h3 className="display text-[21px] xs:text-[26px] lg:text-3xl font-light tracking-tight leading-tight">
                     {e.degree}
-                    <span className="muted"> @{e.school}</span>
+                    <span className="muted xs:hidden"> @{e.schoolShort}</span>
+                    <span className="muted hidden xs:inline"> @{e.school}</span>
                   </h3>
                   <p className="display accent font-light tracking-tight text-[16px] lg:text-lg mt-1.5 xs:mt-2">
                     {e.focus}
@@ -722,7 +728,10 @@ export default function BetaPage() {
                   <div className="mt-3 xs:mt-6 space-y-4 max-w-[58ch]">
                     <div>
                       <p className="mono small-caps faint mb-2">Coursework</p>
-                      <p className="mono text-[12px] xs:text-[13px] muted leading-relaxed">
+                      <p className="xs:hidden mono text-[12px] muted leading-relaxed">
+                        {e.coursework.join(", ")}
+                      </p>
+                      <p className="hidden xs:block mono xs:text-[13px] muted leading-relaxed">
                         {e.coursework.join("  ·  ")}
                       </p>
                     </div>
@@ -741,7 +750,8 @@ export default function BetaPage() {
                             rel="noopener noreferrer"
                             className="accent-link inline"
                           >
-                            {h.text}
+                            <span className="xs:hidden">{"textShort" in h ? h.textShort : h.text}</span>
+                            <span className="hidden xs:inline">{h.text}</span>
                             <span aria-hidden className="faint"> ↗</span>
                           </a>
                         ) : (
