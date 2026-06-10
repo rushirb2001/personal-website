@@ -615,7 +615,21 @@ export default function BetaPage() {
                 <div>
                   <h3 className="display text-[21px] xs:text-[26px] lg:text-3xl font-light tracking-tight leading-tight">
                     {p.name}
-                    {p.platform && <span className="muted"> @{p.platform}</span>}
+                    {p.platform === "sushrutalgs.ai" ? (
+                      <>
+                        <a
+                          href="https://sushrutalgs.ai/welcome"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="xs:hidden accent-link muted"
+                        >
+                          {" "}@{p.platform}
+                        </a>
+                        <span className="muted hidden xs:inline"> @{p.platform}</span>
+                      </>
+                    ) : (
+                      p.platform && <span className="muted"> @{p.platform}</span>
+                    )}
                     {p.links
                       .filter((l) => l.label === "paper" || l.label === "github")
                       .map((l) => (
