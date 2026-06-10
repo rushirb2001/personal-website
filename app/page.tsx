@@ -623,7 +623,8 @@ export default function BetaPage() {
                 <div className="grid grid-cols-2 gap-4 xs:block xs:space-y-6 xs:pt-2 lg:pt-[10px]">
                   <div>
                     <p className="mono small-caps faint mb-1 xs:mb-1.5">Stack</p>
-                    <ul className="flex flex-col gap-y-1 leading-[1.35] xs:flex-row xs:flex-wrap xs:gap-x-3 xs:gap-y-1.5 mono text-[12px] xs:text-[13px]">
+                    <p className="xs:hidden mono text-[12px] muted leading-relaxed">{p.stack.join(", ")}</p>
+                    <ul className="hidden xs:flex xs:flex-wrap xs:gap-x-3 xs:gap-y-1.5 mono xs:text-[13px]">
                       {p.stack.map((s) => (
                         <li key={s} className="muted">
                           {s}
