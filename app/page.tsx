@@ -729,7 +729,7 @@ export default function BetaPage() {
                     <div>
                       <p className="mono small-caps faint mb-2">Coursework</p>
                       <p className="xs:hidden mono text-[12px] muted leading-relaxed">
-                        {e.coursework.join(", ")}
+                        {e.coursework.slice(0, 3).join(", ")}
                       </p>
                       <p className="hidden xs:block mono xs:text-[13px] muted leading-relaxed">
                         {e.coursework.join("  ·  ")}
