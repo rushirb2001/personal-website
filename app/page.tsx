@@ -507,7 +507,7 @@ export default function BetaPage() {
             </h1>
 
             <div className="hero-photo-block pt-1 sm:pt-3 lg:pt-4">
-              <div className="hero-photo relative w-full max-w-[280px] aspect-[3/4] overflow-hidden grayscale">
+              <div className="hero-photo relative w-full max-w-[280px] aspect-[3/4] overflow-hidden grayscale rounded-2xl">
                 <Image
                   src="/images/design-mode/new_personal_photo(1).png"
                   alt="Rushir Bhavsar"
@@ -516,11 +516,11 @@ export default function BetaPage() {
                   className="object-cover object-[60%_30%]"
                   priority
                 />
-                <div className="absolute inset-0 ring-1 ring-inset ring-black/10" />
+                <div className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-black/10" />
               </div>
               <div className="hidden sm:block mt-5 mono text-[13px] muted leading-[1.7]">
                 <p>
-                  <span className="accent">+</span> ML systems / infra
+                  <span className="accent">+</span> Product &amp; RAG
                 </p>
                 <p>
                   <span className="accent">+</span> Tempe, Arizona
@@ -531,22 +531,40 @@ export default function BetaPage() {
             <div className="hero-copy sm:hidden flex flex-col">
               <div className="my-auto">
                 <p className="display font-light text-[16px] leading-[1.5]">
-                  Physics-informed neural nets at ASU. Previously Cadence.
+                  Building{" "}
+                  <a
+                    href="https://sushrutalgs.ai/welcome"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="accent-link accent"
+                  >
+                    sushrutalgs.ai
+                  </a>
+                  , medical AI for India. Previously ASU and Cadence.
                 </p>
               </div>
             </div>
 
             <p className="hero-open sm:hidden display font-light text-[16px] leading-[1.5] muted mt-1">
-              <span className="accent">+</span> Open to ML systems / infrastructure roles.
+              <span className="accent">+</span> Open to Product Management &amp; RAG roles.
             </p>
 
             <div className="hero-desc hidden sm:block display font-light text-[16px] sm:text-[clamp(16px,1.7vw,20px)] mt-7 lg:mt-8 leading-[1.5] max-w-[44ch]">
-              Currently at ASU, researching physics-informed neural networks
-              for plasma simulation. Previously at Cadence on protein property
-              prediction at million-sequence scale.
+              Currently building{" "}
+              <a
+                href="https://sushrutalgs.ai/welcome"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="accent-link accent"
+              >
+                sushrutalgs.ai
+              </a>{" "}
+              for India, pushing the frontier on the next big medical AI for
+              students, residents, and surgical practitioners. Previously at
+              ASU and Cadence.
               <span className="block mt-3 xs:mt-4 muted">
-                Looking for roles in ML systems and ML infrastructure:
-                orchestration, GPU pipelines, and evaluation harnesses.
+                Looking for roles in Product Management and RAG Systems:
+                retrieval pipelines, agentic workflows, and 0&rarr;1 product.
               </span>
             </div>
           </div>
@@ -786,7 +804,7 @@ export default function BetaPage() {
               </h3>
               <p className="display font-light text-[16px] xs:text-[clamp(17px,1.6vw,24px)] lg:text-2xl mt-6 xs:mt-8 muted max-w-[36ch] leading-snug">
                 Email&rsquo;s the fastest way to reach me. Especially open to
-                ML systems and infrastructure roles.
+                Product Management and RAG roles.
               </p>
             </div>
             <div className="xs:pt-3 lg:pt-6">

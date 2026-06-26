@@ -10,9 +10,9 @@ export const viewport: Viewport = {
 }
 
 export const metadata: Metadata = {
-  title: "Rushir Bhavsar · ML Engineer",
+  title: "Rushir Bhavsar · Product & RAG",
   description:
-    "ML engineer working at the intersection of research and production systems. Distributed pipelines, custom CUDA, physics-informed models.",
+    "Building sushrutalgs.ai — medical AI for India. Previously ASU and Cadence. Open to Product Management and RAG roles.",
 }
 
 export default function RootLayout({
