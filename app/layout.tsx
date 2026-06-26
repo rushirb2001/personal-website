@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next"
+import ReactDOM from "react-dom"
 import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import "./globals.css"
@@ -21,16 +22,23 @@ export default function RootLayout({
   children: React.ReactNode
   modal: React.ReactNode
 }) {
+  // Self-hosted fonts (see @font-face in globals.css). Preload only the
+  // above-the-fold latin roman files so first paint isn't render-blocked.
+  // ReactDOM.preload dedupes correctly; a manual <link> in <head> gets
+  // double-emitted by React 19's resource hoisting.
+  ReactDOM.preload("/fonts/google-sans-latin.woff2", {
+    as: "font",
+    type: "font/woff2",
+    crossOrigin: "anonymous",
+  })
+  ReactDOM.preload("/fonts/google-sans-code-latin.woff2", {
+    as: "font",
+    type: "font/woff2",
+    crossOrigin: "anonymous",
+  })
+
   return (
     <html lang="en">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&family=Google+Sans+Code:ital,wght,MONO@0,300..800,1;1,300..800,1&display=swap"
-        />
-      </head>
       <body>
         {children}
         {modal}
