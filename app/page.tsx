@@ -520,7 +520,7 @@ export default function BetaPage() {
               </div>
               <div className="hidden sm:block mt-5 mono text-[13px] muted leading-[1.7]">
                 <p>
-                  <span className="accent">+</span> Product &amp; RAG
+                  <span className="accent">+</span> Product, AI, RAG, DevOps
                 </p>
                 <p>
                   <span className="accent">+</span> Tempe, Arizona
@@ -540,13 +540,13 @@ export default function BetaPage() {
                   >
                     sushrutalgs.ai
                   </a>
-                  , medical AI for India. Previously ASU and Cadence.
+                  , medical AI for India.
                 </p>
               </div>
             </div>
 
             <p className="hero-open sm:hidden display font-light text-[16px] leading-[1.5] muted mt-1">
-              <span className="accent">+</span> Open to Product Management &amp; RAG roles.
+              <span className="accent">+</span> Open to Product Manager, AI Engineer &amp; Forward-Deployed Engineer roles.
             </p>
 
             <div className="hero-desc hidden sm:block display font-light text-[16px] sm:text-[clamp(16px,1.7vw,20px)] mt-7 lg:mt-8 leading-[1.5] max-w-[44ch]">
@@ -563,8 +563,8 @@ export default function BetaPage() {
               students, residents, and surgical practitioners. Previously at
               ASU and Cadence.
               <span className="block mt-3 xs:mt-4 muted">
-                Looking for roles in Product Management and RAG Systems:
-                retrieval pipelines, agentic workflows, and 0&rarr;1 product.
+                Looking for Product Manager, AI Engineer, and
+                Forward-Deployed Engineer roles.
               </span>
             </div>
           </div>
@@ -795,39 +795,36 @@ export default function BetaPage() {
           soft={softOpen}
           onToggle={() => toggleSection("contact")}
         >
-          <div className="grid grid-cols-1 xs:grid-cols-[1fr_1fr] gap-6 xs:gap-8 lg:gap-20 items-start pt-3 xs:pt-4 lg:pt-6">
+          <div className="grid grid-cols-1 xs:grid-cols-[1fr_1fr] gap-8 xs:gap-8 lg:gap-20 items-center pt-3 xs:pt-4 lg:pt-6">
             <div>
-              <h3 className="display text-[44px] xs:text-[clamp(40px,7vw,72px)] lg:text-7xl font-light leading-[0.95] tracking-tight">
+              <h3 className="display text-[40px] xs:text-[clamp(36px,6vw,60px)] lg:text-6xl font-light leading-[1.0] tracking-tight">
                 Hey! I'm looking
                 <br />
                 for a role<span className="accent">.</span>
               </h3>
               <p className="display font-light text-[16px] xs:text-[clamp(17px,1.6vw,24px)] lg:text-2xl mt-6 xs:mt-8 muted max-w-[36ch] leading-snug">
-                Email&rsquo;s the fastest way to reach me. Especially open to
-                Product Management and RAG roles.
+                Open to Product Manager, AI Engineer, and Forward-Deployed Engineer roles.
               </p>
             </div>
-            <div className="xs:pt-3 lg:pt-6">
-              <ul className="border-t rule">
-                {LINKS.map((l) => (
-                  <li
-                    key={l.label}
-                    className="border-b rule py-4 xs:py-5 flex items-center justify-between gap-4 xs:gap-6"
+            <ul className="space-y-2.5 xs:space-y-3 lg:space-y-4">
+              {LINKS.map((l) => (
+                <li
+                  key={l.label}
+                  className="display text-[21px] xs:text-[26px] lg:text-3xl font-light tracking-tight leading-tight"
+                >
+                  <span className="muted">{l.label.toLowerCase()} </span>
+                  <a
+                    href={l.href}
+                    target={l.href.startsWith("http") || l.href.endsWith(".pdf") ? "_blank" : undefined}
+                    rel="noopener noreferrer"
+                    className="accent-link accent"
                   >
-                    <span className="mono small-caps faint shrink-0">{l.label}</span>
-                    <a
-                      href={l.href}
-                      target={l.href.startsWith("http") || l.href.endsWith(".pdf") ? "_blank" : undefined}
-                      rel="noopener noreferrer"
-                      className="accent-link mono text-[14px] inline-flex items-center gap-1.5 xs:gap-2 min-w-0 truncate"
-                    >
-                      <span className="truncate">{l.value}</span>
-                      <span aria-hidden className="faint shrink-0">↗</span>
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
+                    @{l.value}
+                    <span aria-hidden className="ml-1 text-[0.66em] align-middle">↗</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
           </div>
         </Section>
         </div>
