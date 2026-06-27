@@ -229,6 +229,33 @@ export function ProjectModal({
       }}
     >
       <style>{TOKENS}</style>
+      <style>{`
+        /* Hero reflow:
+           - below 1024 (phone + compact): single-column mobile stack, so long
+             titles and body copy get full width instead of being cramped beside
+             the image.
+           - widescreen (≥1024): original — text stacked left, image spanning right. */
+        .proj-hero {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 2rem 3rem;
+          grid-template-areas: "head" "body" "meta" "media";
+        }
+        .ph-head { grid-area: head; }
+        .ph-body { grid-area: body; }
+        .ph-meta { grid-area: meta; }
+        .ph-media { grid-area: media; }
+        @media (min-width: 1024px) {
+          .proj-hero {
+            grid-template-columns: 1fr minmax(360px, 48%);
+            align-items: center;
+            grid-template-areas:
+              "head  media"
+              "body  media"
+              "meta  media";
+          }
+        }
+      `}</style>
 
       <div
         ref={cardRef}
@@ -271,9 +298,8 @@ export function ProjectModal({
               lg: carousel sits to the right of the whole header.
               md (iPad portrait): text and Links/Stack split 80:20 above a
               slightly reduced carousel. base (phone): everything stacks. */}
-          <div className="lg:grid lg:gap-12 lg:items-center lg:grid-cols-[1fr_minmax(360px,48%)]">
-            <header className="pt-2 sm:pt-4 lg:pt-8 pl-2 sm:pl-4 lg:pl-8 pr-6 lg:pr-10 md:grid md:grid-cols-[4fr_1fr] md:gap-x-8 md:items-start lg:block">
-              <div className="md:min-w-0">
+          <div className="proj-hero pt-2 sm:pt-4 lg:pt-8 pl-2 sm:pl-4 lg:pl-8 pr-6 lg:pr-10">
+            <header className="ph-head">
               <h1
                 id="proj-title"
                 className="modal-reveal display font-light tracking-tight leading-[1.1] text-[26px] xs:text-[clamp(28px,3.2vw,40px)] lg:text-[clamp(30px,2.5vw,40px)]"
@@ -289,8 +315,11 @@ export function ProjectModal({
                 {detail.type}
                 {detail.place && ` @${detail.place}`}
               </p>
+            </header>
+
+            <div className="ph-body">
               <p
-                className="modal-reveal display font-light text-[15px] xs:text-[17px] lg:text-[18px] mt-5 leading-relaxed muted max-w-[54ch]"
+                className="modal-reveal display font-light text-[15px] xs:text-[17px] lg:text-[18px] leading-relaxed muted"
                 style={{ animationDelay: "0.16s" }}
               >
                 {detail.tagline}
@@ -298,59 +327,57 @@ export function ProjectModal({
 
               {detail.repoNote && (
                 <p
-                  className={`modal-reveal mono text-[12px] leading-relaxed mt-4 max-w-[60ch] ${isPrivate ? "ink" : "muted"}`}
+                  className={`modal-reveal mono text-[12px] leading-relaxed mt-4 ${isPrivate ? "ink" : "muted"}`}
                   style={{ animationDelay: "0.2s" }}
                 >
                   {linkifyPlatform(detail.repoNote)}
                 </p>
               )}
-              </div>
+            </div>
 
-              {/* Links + Stack — two columns on the site's rhythm; stacked into
-                  the narrow 20% column at iPad-portrait (md) widths. */}
-              <div
-                className="modal-reveal mt-7 md:mt-0 lg:mt-7 grid grid-cols-2 md:grid-cols-1 lg:grid-cols-2 gap-6 xs:gap-8 md:gap-5 max-w-[460px] md:max-w-none"
-                style={{ animationDelay: "0.24s" }}
-              >
-                {heroLinks.length > 0 && (
-                  <div>
-                    <p className="mono small-caps faint mb-2 xs:mb-3">Links</p>
-                    <ul className="flex flex-col gap-2 mono text-[11px] xs:text-[13px]">
-                      {heroLinks.map((l) => {
-                        const external = l.href.startsWith("http")
-                        return (
-                          <li key={l.href}>
-                            <a
-                              href={l.href}
-                              {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-                              className="accent-link inline-flex items-center gap-1.5"
-                            >
-                              {l.label}
-                              <span aria-hidden className="faint">{external ? "↗" : "→"}</span>
-                            </a>
-                          </li>
-                        )
-                      })}
-                    </ul>
-                  </div>
-                )}
-                {detail.stack.length > 0 && (
-                  <div>
-                    <p className="mono small-caps faint mb-2 xs:mb-3">Stack</p>
-                    <ul className="flex flex-wrap gap-x-3 gap-y-1.5 mono text-[11px] xs:text-[13px]">
-                      {detail.stack.map((s) => (
-                        <li key={s} className="muted">
-                          {s}
+            {/* Links + Stack — two columns on the site's rhythm. */}
+            <div
+              className="ph-meta modal-reveal grid grid-cols-2 gap-6 xs:gap-8"
+              style={{ animationDelay: "0.24s" }}
+            >
+              {heroLinks.length > 0 && (
+                <div>
+                  <p className="mono small-caps faint mb-2 xs:mb-3">Links</p>
+                  <ul className="flex flex-wrap gap-x-4 gap-y-2 mono text-[11px] xs:text-[13px]">
+                    {heroLinks.map((l) => {
+                      const external = l.href.startsWith("http")
+                      return (
+                        <li key={l.href}>
+                          <a
+                            href={l.href}
+                            {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                            className="accent-link inline-flex items-center gap-1.5"
+                          >
+                            {l.label}
+                            <span aria-hidden className="faint">{external ? "↗" : "→"}</span>
+                          </a>
                         </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              </div>
-            </header>
+                      )
+                    })}
+                  </ul>
+                </div>
+              )}
+              {detail.stack.length > 0 && (
+                <div>
+                  <p className="mono small-caps faint mb-2 xs:mb-3">Stack</p>
+                  <ul className="flex flex-wrap gap-x-3 gap-y-1.5 mono text-[11px] xs:text-[13px]">
+                    {detail.stack.map((s) => (
+                      <li key={s} className="muted">
+                        {s}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
 
             <div
-              className="modal-reveal mt-10 lg:mt-0 lg:pt-1 md:max-w-[600px] md:mx-auto lg:max-w-none lg:mx-0"
+              className="ph-media modal-reveal"
               style={{ animationDelay: "0.3s" }}
             >
               <Carousel slides={slides} />
