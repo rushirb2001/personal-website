@@ -795,36 +795,39 @@ export default function BetaPage() {
           soft={softOpen}
           onToggle={() => toggleSection("contact")}
         >
-          <div className="grid grid-cols-1 xs:grid-cols-[1fr_1fr] gap-8 xs:gap-8 lg:gap-20 items-center pt-3 xs:pt-4 lg:pt-6">
+          {/* Three-column row matching the Experience / Projects / Education
+              rhythm: status meta · heading + copy · Links. */}
+          <div className="grid grid-cols-1 xs:grid-cols-[clamp(80px,14vw,140px)_1fr_clamp(140px,22vw,240px)] lg:grid-cols-[140px_1fr_240px] gap-3 xs:gap-6 lg:gap-12 py-5 xs:py-8 lg:py-10 pt-3 xs:pt-4 lg:pt-6">
+            <div className="mono text-[12px] xs:text-[13px] leading-none flex xs:flex-col items-start gap-3 xs:gap-2 xs:pt-2 lg:pt-[10px]">
+              <span className="accent">Open to work</span>
+              <span className="muted">Tempe, AZ</span>
+            </div>
             <div>
-              <h3 className="display text-[40px] xs:text-[clamp(36px,6vw,60px)] lg:text-6xl font-light leading-[1.0] tracking-tight">
-                Hey! I'm looking
-                <br />
-                for a role<span className="accent">.</span>
+              <h3 className="display text-[21px] xs:text-[26px] lg:text-3xl font-light tracking-tight leading-tight">
+                Hey! I'm looking for a role<span className="accent">.</span>
               </h3>
-              <p className="display font-light text-[16px] xs:text-[clamp(17px,1.6vw,24px)] lg:text-2xl mt-6 xs:mt-8 muted max-w-[36ch] leading-snug">
+              <p className="mt-2 xs:mt-5 leading-relaxed text-[14px] xs:text-[15px] max-w-[58ch] mono">
                 Open to Product Manager, AI Engineer, and Forward-Deployed Engineer roles.
               </p>
             </div>
-            <ul className="space-y-2.5 xs:space-y-3 lg:space-y-4">
-              {LINKS.map((l) => (
-                <li
-                  key={l.label}
-                  className="display text-[21px] xs:text-[clamp(15px,2.6vw,26px)] lg:text-3xl font-light tracking-tight leading-tight"
-                >
-                  <span className="muted">{l.label.toLowerCase()} </span>
-                  <a
-                    href={l.href}
-                    target={l.href.startsWith("http") || l.href.endsWith(".pdf") ? "_blank" : undefined}
-                    rel="noopener noreferrer"
-                    className="accent-link accent"
-                  >
-                    @{l.value}
-                    <span aria-hidden className="ml-1 text-[0.66em] align-middle">↗</span>
-                  </a>
-                </li>
-              ))}
-            </ul>
+            <div className="xs:pt-2 lg:pt-[10px]">
+              <p className="mono small-caps faint mb-2 xs:mb-3">Links</p>
+              <ul className="flex flex-col gap-2 mono text-[12px] xs:text-[13px]">
+                {LINKS.map((l) => (
+                  <li key={l.label}>
+                    <a
+                      href={l.href}
+                      target={l.href.startsWith("http") || l.href.endsWith(".pdf") ? "_blank" : undefined}
+                      rel="noopener noreferrer"
+                      className="accent-link inline-flex items-center gap-1.5"
+                    >
+                      {l.label.toLowerCase()}
+                      <span aria-hidden className="faint">↗</span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </Section>
         </div>
