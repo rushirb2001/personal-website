@@ -17,12 +17,18 @@ const AUTO_MS = 5500
     pauses on hover and stops for good once the viewer navigates manually, and
     respects prefers-reduced-motion.
 
-    All slides stay mounted and stacked, so videos are already decoded and the
-    switch is a true opacity crossfade — no remount, no reload, no flash. */
+    Slides mount lazily: only the ones that have been shown render their media,
+    so a direct visit paints the first slide (an inline-SVG diagram) without
+    pulling every video/screenshot into the critical path. Heavy artifacts load
+    when the viewer (or auto-advance) first reaches them, then stay mounted so
+    revisits are an instant opacity crossfade — no reload, no flash. */
 export function Carousel({ slides }: { slides: Slide[] }) {
   const [i, setI] = useState(0)
   const [paused, setPaused] = useState(false) // viewer took manual control
   const [hover, setHover] = useState(false)
+  // Slides whose media has been mounted. Starts with the first slide only, so
+  // the initial render (and SSR HTML) carries just one artifact.
+  const [seen, setSeen] = useState<Set<number>>(() => new Set([0]))
 
   const len = slides.length
   const multi = len > 1
@@ -35,9 +41,15 @@ export function Carousel({ slides }: { slides: Slide[] }) {
     return () => clearInterval(t)
   }, [multi, paused, hover, len])
 
+  const idx = Math.min(i, len - 1)
+
+  // Remember each slide once it becomes active so its media stays mounted.
+  useEffect(() => {
+    setSeen((prev) => (prev.has(idx) ? prev : new Set(prev).add(idx)))
+  }, [idx])
+
   if (len === 0) return null
 
-  const idx = Math.min(i, len - 1)
   const cur = slides[idx]
   const go = (n: number) => {
     setPaused(true)
@@ -72,7 +84,7 @@ export function Carousel({ slides }: { slides: Slide[] }) {
             className="absolute inset-0 flex items-center justify-center transition-opacity duration-500 ease-out"
             style={{ opacity: k === idx ? 1 : 0, pointerEvents: k === idx ? "auto" : "none" }}
           >
-            {s.node}
+            {k === idx || seen.has(k) ? s.node : null}
           </div>
         ))}
       </div>
