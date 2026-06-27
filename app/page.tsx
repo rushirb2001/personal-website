@@ -810,7 +810,7 @@ export default function BetaPage() {
               {LINKS.map((l) => (
                 <li
                   key={l.label}
-                  className="display text-[21px] xs:text-[26px] lg:text-3xl font-light tracking-tight leading-tight"
+                  className="display text-[21px] xs:text-[clamp(15px,2.6vw,26px)] lg:text-3xl font-light tracking-tight leading-tight"
                 >
                   <span className="muted">{l.label.toLowerCase()} </span>
                   <a
