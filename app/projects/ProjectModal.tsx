@@ -267,38 +267,50 @@ export function ProjectModal({
           closing ? "is-closing" : ""
         }`}
       >
-        {/* Top-right control — always a text link (no cross):
-            internal navigation → "Back to home"; a shared/direct link → "Visit my Portfolio!". */}
-        <div className="absolute top-5 right-5 sm:top-7 sm:right-8 z-20">
-          {mode === "overlay" ? (
-            <button
-              type="button"
-              onClick={close}
-              className="accent-link mono text-[13px] inline-flex items-center gap-1.5 bg-transparent border-0 p-0 cursor-pointer"
-            >
-              <span aria-hidden>←</span> Back to home
-            </button>
-          ) : (
-            <Link
-              href="/"
-              onClick={(e) => {
-                e.preventDefault()
-                close()
-              }}
-              className="accent-link mono text-[13px] inline-flex items-center gap-1.5"
-            >
-              Visit my Portfolio! <span aria-hidden>→</span>
-            </Link>
-          )}
+        {/* Top header: a blur-and-fade gradient so scrolling content dissolves
+            under it, with the nav control on the right. The header itself is
+            click-through (pointer-events-none) except the control.
+            Control: internal navigation → "Back to home"; a shared/direct
+            link → "Visit my Portfolio!". */}
+        <div className="pointer-events-none absolute left-0 right-[11px] top-0 z-20 h-20 sm:h-24">
+          <EdgeBlur dir="to bottom" />
+          <div className="pointer-events-auto absolute top-4 right-5 sm:top-6 sm:right-8">
+            {mode === "overlay" ? (
+              <button
+                type="button"
+                onClick={close}
+                className="accent-link mono text-[13px] inline-flex items-center gap-1.5 bg-transparent border-0 p-0 cursor-pointer"
+              >
+                <span aria-hidden>←</span> Back to home
+              </button>
+            ) : (
+              <Link
+                href="/"
+                onClick={(e) => {
+                  e.preventDefault()
+                  close()
+                }}
+                className="accent-link mono text-[13px] inline-flex items-center gap-1.5"
+              >
+                Visit my Portfolio! <span aria-hidden>→</span>
+              </Link>
+            )}
+          </div>
+        </div>
+
+        {/* Mirror of the top header for the bottom edge — same progressive blur,
+            flipped. Both edges stop short of the scrollbar so it stays sharp. */}
+        <div className="pointer-events-none absolute left-0 right-[11px] bottom-0 z-20 h-20 sm:h-24">
+          <EdgeBlur dir="to top" />
         </div>
 
         {/* Scrollable content — card stays fixed, content scrolls inside */}
-        <div className="grow overflow-y-auto px-6 sm:px-12 lg:px-16 py-12 sm:py-16 lg:py-20">
+        <div className="grow overflow-y-auto px-4 sm:px-8 lg:px-10 xl:px-16 py-12 sm:py-16 lg:py-20">
           {/* Hero: heading + description + links + the artifact carousel.
               lg: carousel sits to the right of the whole header.
               md (iPad portrait): text and Links/Stack split 80:20 above a
               slightly reduced carousel. base (phone): everything stacks. */}
-          <div className="proj-hero pt-2 sm:pt-4 lg:pt-8 pl-2 sm:pl-4 lg:pl-8 pr-6 lg:pr-10">
+          <div className="proj-hero pt-2 sm:pt-4 lg:pt-8 pl-1 sm:pl-3 lg:pl-6 pr-1 sm:pr-3 lg:pr-6">
             <header className="ph-head">
               <h1
                 id="proj-title"
@@ -387,7 +399,7 @@ export function ProjectModal({
           {/* Case-study detail — faint divider, then the deeper content */}
           {detail.sections && detail.sections.length > 0 && (
             <div className="mt-12 lg:mt-14 border-t rule pt-10 lg:pt-12">
-              <div className="pl-2 sm:pl-4 lg:pl-8 pr-6 lg:pr-10 space-y-10 lg:space-y-12">
+              <div className="pl-1 sm:pl-3 lg:pl-6 pr-1 sm:pr-3 lg:pr-6 space-y-10 lg:space-y-12">
               {detail.sections.map((s) => (
                 <section
                   key={s.label}
@@ -512,6 +524,40 @@ function linkifyPlatform(text: string): React.ReactNode {
         {token}
       </a>
       {text.slice(idx + token.length)}
+    </>
+  )
+}
+
+// True progressive blur for a scroll edge: stacked layers of increasing blur
+// radius, each masked to a band so the *amount* of blur ramps from strong at the
+// edge to none inward (not just a fading opacity). `dir` points away from the
+// edge ("to bottom" = strong at top, "to top" = strong at bottom).
+const EDGE_FADE_LAYERS = [
+  { blur: 0.5, mid: 65, end: 100 },
+  { blur: 1, mid: 50, end: 80 },
+  { blur: 2, mid: 35, end: 60 },
+  { blur: 4, mid: 20, end: 42 },
+  { blur: 8, mid: 8, end: 28 },
+]
+
+function EdgeBlur({ dir }: { dir: "to bottom" | "to top" }) {
+  return (
+    <>
+      {EDGE_FADE_LAYERS.map(({ blur, mid, end }, k) => {
+        const mask = `linear-gradient(${dir}, rgba(0,0,0,1) 0%, rgba(0,0,0,1) ${mid}%, rgba(0,0,0,0) ${end}%)`
+        return (
+          <div
+            key={k}
+            className="absolute inset-0"
+            style={{
+              backdropFilter: `blur(${blur}px)`,
+              WebkitBackdropFilter: `blur(${blur}px)`,
+              WebkitMaskImage: mask,
+              maskImage: mask,
+            }}
+          />
+        )
+      })}
     </>
   )
 }
