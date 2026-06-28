@@ -809,11 +809,17 @@ export default function BetaPage() {
               <p className="mt-2 xs:mt-5 leading-relaxed text-[14px] xs:text-[15px] max-w-[58ch] mono">
                 Open to Product Manager, AI Engineer, and Forward-Deployed Engineer roles.
               </p>
+              <p className="mt-3 xs:mt-4 leading-relaxed text-[14px] xs:text-[15px] mono">
+                Please reach out to{" "}
+                <a href="mailto:bhavsarrushir@gmail.com" className="accent-link accent">
+                  @bhavsarrushir@gmail.com
+                </a>
+              </p>
             </div>
             <div className="xs:pt-2 lg:pt-[10px]">
               <p className="mono small-caps faint mb-2 xs:mb-3">Links</p>
               <ul className="flex flex-col gap-2 mono text-[12px] xs:text-[13px]">
-                {LINKS.map((l) => (
+                {LINKS.filter((l) => l.label !== "Email").map((l) => (
                   <li key={l.label}>
                     <a
                       href={l.href}
