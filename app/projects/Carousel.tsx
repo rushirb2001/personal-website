@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 
 export type Slide = {
   key: string
@@ -22,10 +22,11 @@ const AUTO_MS = 5500
     pulling every video/screenshot into the critical path. Heavy artifacts load
     when the viewer (or auto-advance) first reaches them, then stay mounted so
     revisits are an instant opacity crossfade — no reload, no flash. */
-export function Carousel({ slides }: { slides: Slide[] }) {
+export function Carousel({ slides, frozen = false }: { slides: Slide[]; frozen?: boolean }) {
   const [i, setI] = useState(0)
   const [paused, setPaused] = useState(false) // viewer took manual control
   const [hover, setHover] = useState(false)
+  const stripRef = useRef<HTMLDivElement>(null)
   // Slides whose media has been mounted. Starts with the first slide only, so
   // the initial render (and SSR HTML) carries just one artifact.
   const [seen, setSeen] = useState<Set<number>>(() => new Set([0]))
@@ -33,20 +34,42 @@ export function Carousel({ slides }: { slides: Slide[] }) {
   const len = slides.length
   const multi = len > 1
 
-  // Slow auto-advance while idle.
+  // Slow auto-advance while idle. `frozen` holds the current slide in place
+  // while something outside (the diagram zoom) is visually anchored to it.
   useEffect(() => {
-    if (!multi || paused || hover) return
+    if (!multi || paused || hover || frozen) return
     if (typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return
     const t = setInterval(() => setI((j) => (j + 1) % len), AUTO_MS)
     return () => clearInterval(t)
-  }, [multi, paused, hover, len])
+  }, [multi, paused, hover, frozen, len])
 
   const idx = Math.min(i, len - 1)
 
-  // Remember each slide once it becomes active so its media stays mounted.
+  // Remember each slide once it becomes active so its media stays mounted,
+  // and warm the next slide during the dwell so the upcoming crossfade lands
+  // on loaded pixels instead of an empty pane. Still lazy: only visited
+  // slides plus one lookahead ever mount.
   useEffect(() => {
-    setSeen((prev) => (prev.has(idx) ? prev : new Set(prev).add(idx)))
-  }, [idx])
+    setSeen((prev) => {
+      const ahead = (idx + 1) % len
+      if (prev.has(idx) && prev.has(ahead)) return prev
+      const next = new Set(prev)
+      next.add(idx)
+      next.add(ahead)
+      return next
+    })
+  }, [idx, len])
+
+  // Only the active slide's video plays; hidden ones would otherwise keep
+  // decoding and looping at opacity 0 forever (autoplay also starts videos
+  // that mount as the hidden lookahead).
+  useEffect(() => {
+    stripRef.current?.querySelectorAll("video").forEach((v) => {
+      const slide = v.closest<HTMLElement>("[data-active]")
+      if (slide?.dataset.active === "true") v.play().catch(() => {})
+      else v.pause()
+    })
+  }, [idx, seen])
 
   if (len === 0) return null
 
@@ -76,11 +99,12 @@ export function Carousel({ slides }: { slides: Slide[] }) {
       className="outline-none"
       aria-roledescription="carousel"
     >
-      <div className="relative w-full aspect-[4/3] rounded-lg ring-1 ring-black/10 bg-[#faf8f4] overflow-hidden">
+      <div ref={stripRef} className="relative w-full aspect-[4/3] rounded-lg ring-1 ring-black/10 bg-[#faf8f4] overflow-hidden">
         {slides.map((s, k) => (
           <div
             key={s.key}
             aria-hidden={k !== idx}
+            data-active={k === idx}
             className="absolute inset-0 flex items-center justify-center transition-opacity duration-500 ease-out"
             style={{ opacity: k === idx ? 1 : 0, pointerEvents: k === idx ? "auto" : "none" }}
           >
@@ -95,19 +119,27 @@ export function Carousel({ slides }: { slides: Slide[] }) {
             ‹
           </button>
         )}
-        <p className="mono text-[11px] xs:text-[12px] muted leading-relaxed flex-1 min-w-0">{cur.caption}</p>
+        {/* min-height reserves two caption lines so slides with shorter
+            captions don't reflow everything below the carousel mid-crossfade. */}
+        <p className="mono text-[11px] xs:text-[12px] muted leading-relaxed flex-1 min-w-0 min-h-[3.25em]">{cur.caption}</p>
         {multi && (
-          <div className="flex items-center gap-1.5 shrink-0">
+          <div className="flex items-center gap-0.5 shrink-0">
             {slides.map((s, k) => (
+              // 16px hit area around a 6px visual dot — bare 6px buttons are
+              // untappable on touch screens.
               <button
                 key={s.key}
                 type="button"
                 onClick={() => jumpTo(k)}
                 aria-label={`Show artifact ${k + 1} of ${len}`}
                 aria-current={k === idx ? "true" : undefined}
-                className="w-1.5 h-1.5 rounded-full transition-colors"
-                style={{ backgroundColor: k === idx ? "#1f3a5f" : "rgba(26,26,26,0.22)" }}
-              />
+                className="w-4 h-4 grid place-items-center"
+              >
+                <span
+                  className="w-1.5 h-1.5 rounded-full transition-colors"
+                  style={{ backgroundColor: k === idx ? "#1f3a5f" : "rgba(26,26,26,0.22)" }}
+                />
+              </button>
             ))}
           </div>
         )}
