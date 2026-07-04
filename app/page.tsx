@@ -424,6 +424,16 @@ export default function BetaPage() {
            scroll position mid-choreography. */
         html { overflow-anchor: none; }
 
+        /* The last section head's bottom rule would run parallel to the
+           footer's top rule with only blank slack between them — reading as
+           an empty duplicate footer row. Rules belong BETWEEN items; the
+           footer's own rule closes the list. The border returns while the
+           section is open, where it separates the sticky head from content
+           scrolling beneath it. */
+        main section:last-of-type > button[aria-expanded="false"] {
+          border-bottom-color: transparent;
+        }
+
         /* Section open/close — animated grid row, so height-to-auto tweens in
            every engine (interpolate-size is still Chromium-only and the old
            height transition snapped open on Safari/Firefox). */
