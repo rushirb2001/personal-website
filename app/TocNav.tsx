@@ -44,7 +44,10 @@ export function TocNav({ active, onSelect, onHome }: Props) {
     <nav
       aria-label="Page sections"
       aria-hidden={!visible}
-      className={`sticky top-0 z-50 transition-[transform,box-shadow] duration-300 motion-reduce:transition-none ${
+      // Tailwind v4 translate utilities set the standalone `translate`
+      // property (not `transform`), so it must be named in the transition
+      // list or the show/hide snaps instead of sliding.
+      className={`sticky top-0 z-50 transition-[translate,box-shadow] duration-300 motion-reduce:transition-none ${
         visible ? "translate-y-0" : "-translate-y-full"
       }`}
       style={{
