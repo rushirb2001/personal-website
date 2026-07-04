@@ -468,20 +468,34 @@ export default function BetaPage() {
         .hero-anim > div > *:nth-child(5) { animation-delay: 200ms; }
 
         /* Hero layout — one set of elements recomposed by grid areas. Phones:
-           photo anchors the left column, name + short copy stack beside it.
+           Notion-page read — the photo runs full-bleed as a cover banner, an
+           icon tile overlaps its bottom edge, then the title, tagline, and
+           roles flow beneath like page content.
            sm+: name + description own the left column, photo sits right, with
            photo column / gap / display size riding the same viewport scale so
            squeezed widths render as a scaled-down desktop. */
         .hero-grid {
           display: grid;
-          grid-template-columns: clamp(150px, 48%, 220px) minmax(0, 1fr);
-          grid-template-rows: auto 1fr auto;
+          grid-template-columns: minmax(0, 1fr);
+          grid-template-rows: auto auto auto auto;
           grid-template-areas:
-            "photo name"
-            "photo copy"
-            "open  open";
-          column-gap: 1.25rem;
-          row-gap: 0.875rem;
+            "photo"
+            "name"
+            "desc"
+            "open";
+          row-gap: 1rem;
+        }
+        @media (max-width: 639px) {
+          /* Cover banner: escape the section's px-6 gutters, go wide-aspect,
+             square the corners. The crop keeps the face clear of the top
+             edge; the title's padding clears the icon tile that overlaps the
+             cover's bottom edge. */
+          .hero-section { padding-top: 0; }
+          .hero-photo-block { margin-inline: -1.5rem; padding-top: 0; }
+          .hero-photo { max-width: none; aspect-ratio: 2/1; border-radius: 0; }
+          .hero-photo > div { border-radius: 0; }
+          .hero-photo img { object-position: 60% 20%; }
+          .hero-name { padding-top: 1.75rem; }
         }
         .hero-name { grid-area: name; }
         .hero-photo-block { grid-area: photo; }
@@ -544,10 +558,21 @@ export default function BetaPage() {
           section[data-soft] .section-collapsible { transition-duration: 500ms; }
         }
 
-        /* Short phone viewports: shrink the photo column so the hero doesn't
-           crowd the section list. */
+        /* Short phone viewports: the full-width name banner costs a row the
+           viewport doesn't have, so fall back to the denser side-by-side
+           composition (photo left, name + copy beside) and shrink the photo
+           column so the closed landing still fits in one screen. */
         @media (max-width: 639px) and (max-height: 720px) {
-          .hero-grid { grid-template-columns: clamp(120px, 40%, 170px) minmax(0, 1fr); }
+          .hero-grid {
+            grid-template-columns: clamp(120px, 40%, 170px) minmax(0, 1fr);
+            grid-template-rows: auto 1fr auto;
+            grid-template-areas:
+              "photo name"
+              "photo copy"
+              "open  open";
+            row-gap: 0.875rem;
+          }
+          .hero-section h1 { font-size: clamp(28px, 9.6vw, 40px); }
         }
 
         @media (prefers-reduced-motion: reduce) {
@@ -571,7 +596,9 @@ export default function BetaPage() {
             wrapper's min-height away, so the leftover space (and with it the
             centering) glides to zero instead of snapping. toggleSection
             pre-computes scroll targets from the measured leftover. */}
-        <div ref={heroWrapRef} className="flex-1 flex flex-col justify-center">
+        {/* Phones flow the Notion-style hero from the very top (the -mt swallows
+            the hidden sticky nav's flow slot); sm+ keeps the centered hero. */}
+        <div ref={heroWrapRef} className="sm:flex-1 flex flex-col sm:justify-center -mt-14 sm:mt-0">
         <section ref={heroSectionRef} className="hero-anim hero-section max-w-[1100px] mx-auto px-6 lg:px-12 pt-6 xs:pt-8 lg:pt-12 pb-8 xs:pb-10 lg:pb-14">
           {/* One proportional system from sm up: photo column (24vw, cap 280),
               gap (5.4vw, cap 64) and display size (10vw, cap 120) all ride the
@@ -581,7 +608,7 @@ export default function BetaPage() {
           {/* One photo, one name, one copy block — recomposed per breakpoint by
               the .hero-grid grid-template-areas in the style block above. */}
           <div className="hero-grid">
-            <h1 className="hero-name display font-light leading-[0.95] sm:leading-[0.92] tracking-tight text-[clamp(30px,9.6vw,46px)] sm:text-[clamp(52px,10vw,120px)]">
+            <h1 className="hero-name display font-light leading-[0.95] sm:leading-[0.92] tracking-tight text-[clamp(34px,11vw,48px)] sm:text-[clamp(52px,10vw,120px)]">
               Hi! I&rsquo;m Rushir
               <br />
               Bhavsar<span className="accent">.</span>
@@ -593,11 +620,22 @@ export default function BetaPage() {
                   src="/images/design-mode/new_personal_photo(1).png"
                   alt="Rushir Bhavsar"
                   fill
-                  sizes="(max-width: 639px) 48vw, (max-width: 1167px) 24vw, 280px"
+                  sizes="(max-width: 639px) 100vw, (max-width: 1167px) 24vw, 280px"
                   className="object-cover object-[60%_30%]"
                   priority
                 />
                 <div className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-black/10" />
+              </div>
+              {/* Notion-style icon tile overlapping the cover's bottom edge
+                  (phone composition only). */}
+              <div className="sm:hidden relative" aria-hidden>
+                <div className="absolute left-6 -top-7 w-14 h-14 rounded-2xl bg-[#f4f1ec] ring-1 ring-black/10 shadow-[0_2px_12px_-4px_rgba(0,0,0,0.2)] grid place-items-center">
+                  {/* The site icon (app/icon.svg), rendered inline so it uses
+                      the real display font. */}
+                  <span className="display ink text-[26px] font-light tracking-tight leading-none">
+                    rb<span className="accent">.</span>
+                  </span>
+                </div>
               </div>
               {/* Negative word-spacing: mono spaces are full character cells,
                   so the comma gaps between keywords read double-wide. */}
@@ -611,41 +649,27 @@ export default function BetaPage() {
               </div>
             </div>
 
-            <div className="hero-copy sm:hidden flex flex-col">
-              <div className="my-auto">
-                <p className="display font-light text-[16px] leading-[1.5]">
-                  Building{" "}
-                  <a
-                    href="https://sushrutalgs.ai/welcome"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="accent-link accent"
-                  >
-                    sushrutalgs.ai <span aria-hidden className="mono text-[0.85em] align-middle">↗</span>
-                  </a>
-                  , medical AI for India.
-                </p>
-              </div>
-            </div>
-
             <p className="hero-open sm:hidden display font-light text-[16px] leading-[1.5] muted mt-1">
               <span className="accent">+</span> Open to Product Manager, AI Engineer &amp; Forward-Deployed Engineer roles.
             </p>
 
-            <div className="hero-desc hidden sm:block display font-light text-[16px] sm:text-[clamp(16px,1.7vw,20px)] mt-7 lg:mt-8 leading-[1.5] max-w-[44ch]">
+            {/* Full description on every breakpoint (the phone's Notion-style
+                page body); the roles sentence is sm+ only — phones carry it
+                in the hero-open line instead. */}
+            <div className="hero-desc display font-light text-[16px] sm:text-[clamp(16px,1.7vw,20px)] mt-0 sm:mt-7 lg:mt-8 leading-[1.5] max-w-[44ch]">
               Currently building{" "}
               <a
                 href="https://sushrutalgs.ai/welcome"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="accent-link accent"
+                className="accent-link accent whitespace-nowrap"
               >
                 sushrutalgs.ai <span aria-hidden className="mono text-[0.85em] align-middle">↗</span>
               </a>{" "}
               for India, pushing the frontier on the next big medical AI for
               students, residents, and surgical practitioners. Previously at
               ASU and Cadence.
-              <span className="block mt-3 xs:mt-4 muted">
+              <span className="hidden sm:block mt-4 muted">
                 Looking for Product Manager, AI Engineer, and
                 Forward-Deployed Engineer roles.
               </span>
@@ -654,7 +678,9 @@ export default function BetaPage() {
         </section>
         </div>
 
-        <div>
+        {/* mb-auto: on phones the hero isn't stretch-centered, so the leftover
+            space collects here, pushing the footer to the viewport bottom. */}
+        <div className="mb-auto sm:mb-0">
         <Section
           id="experience"
           title="Experience"
