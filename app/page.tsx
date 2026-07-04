@@ -39,9 +39,10 @@ const WORK = [
   },
 ]
 
-// Ranked for the targeted roles (Product Manager, AI Engineer,
-// Forward-Deployed Engineer): shipped product surfaces first (PM/FDE),
-// then the AI core (AI Eng), then production infra, then research depth.
+// Ranked as a repeating product → AI → forward-deployment cycle so each
+// targeted role (PM, AI Engineer, FDE) sees its signal in the first three
+// rows: shipped client, the AI engine behind it, the production spine —
+// then the cycle repeats, closing on research depth.
 const PROJECTS = [
   {
     name: "website-client",
@@ -52,17 +53,6 @@ const PROJECTS = [
     year: "2026",
     desc: "Web app for the sushrutalgs.ai platform where users study with the AI assistant, branching conversations into follow-ups with every answer backed by textbook citations, figures, and tables.",
     stack: ["Next.js 16", "React 19", "TypeScript", "Supabase", "Vercel"],
-    links: [],
-  },
-  {
-    name: "ios-app-client",
-    platform: "sushrutalgs.ai",
-    slug: "sushrutalgs-ios",
-    descShort: "Native iPhone app for studying with the AI assistant, with live streaming answers across devices.",
-    type: "iOS app",
-    year: "2026",
-    desc: "Native iPhone app for the sushrutalgs.ai platform where users study with the AI assistant, with answers that stream in live and sessions that carry across their devices.",
-    stack: ["Swift 6", "SwiftUI", "supabase-swift", "Xcode Cloud"],
     links: [],
   },
   {
@@ -77,17 +67,6 @@ const PROJECTS = [
     links: [],
   },
   {
-    name: "Samhita",
-    platform: "sushrutalgs.ai",
-    slug: "samhita",
-    descShort: "Turns surgical-textbook PDFs into a structured, searchable knowledge base for the platform.",
-    type: "Data pipeline",
-    year: "2026",
-    desc: "Data ingestion module for the sushrutalgs.ai platform that turns surgical-textbook PDFs into a structured, searchable knowledge base for the rest of the platform to draw on.",
-    stack: ["Python", "BioLORD", "Cloudflare R2"],
-    links: [],
-  },
-  {
     name: "backend-for-frontend",
     platform: "sushrutalgs.ai",
     slug: "sushrutalgs-bff",
@@ -96,6 +75,28 @@ const PROJECTS = [
     year: "2026",
     desc: "Gateway module for the sushrutalgs.ai platform that connects the apps to the AI backend, signing users in, enforcing their plan limits, and streaming answers back. Live in production.",
     stack: ["TypeScript", "Hono", "Cloudflare Workers", "Supabase"],
+    links: [],
+  },
+  {
+    name: "ios-app-client",
+    platform: "sushrutalgs.ai",
+    slug: "sushrutalgs-ios",
+    descShort: "Native iPhone app for studying with the AI assistant, with live streaming answers across devices.",
+    type: "iOS app",
+    year: "2026",
+    desc: "Native iPhone app for the sushrutalgs.ai platform where users study with the AI assistant, with answers that stream in live and sessions that carry across their devices.",
+    stack: ["Swift 6", "SwiftUI", "supabase-swift", "Xcode Cloud"],
+    links: [],
+  },
+  {
+    name: "Samhita",
+    platform: "sushrutalgs.ai",
+    slug: "samhita",
+    descShort: "Turns surgical-textbook PDFs into a structured, searchable knowledge base for the platform.",
+    type: "Data pipeline",
+    year: "2026",
+    desc: "Data ingestion module for the sushrutalgs.ai platform that turns surgical-textbook PDFs into a structured, searchable knowledge base for the rest of the platform to draw on.",
+    stack: ["Python", "BioLORD", "Cloudflare R2"],
     links: [],
   },
   {
