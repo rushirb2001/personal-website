@@ -520,17 +520,21 @@ export default function BetaPage() {
            landing still fits. Photo column and display shrink on the same
            curve as the default scale, just lower caps. */
         @media (min-width: 768px) and (max-height: 960px) {
-          .hero-section { padding-top: 0.75rem; padding-bottom: 0.75rem; }
+          .hero-section { padding-top: 0.5rem; padding-bottom: 0.5rem; }
           .hero-section h1 { font-size: clamp(52px, 10vw, 92px); }
           /* Wider photo column (same 24vw slope as the base layout, higher
              cap, so the 768px boundary stays continuous); the 1fr text column
              gives up the difference. Top padding zeroed so the photo's top
              edge sits flush with the top of its column. The 34vh term bounds
-             the 3/4-aspect photo on short windows, where the photo column is
-             what makes the closed landing overflow the viewport. */
-          .hero-grid { grid-template-columns: 1fr clamp(150px, min(24vw, 34vh), 260px); }
-          .hero-section .hero-photo { max-width: min(260px, 34vh); }
+             the 3/4-aspect photo on short windows. Below ~236px the LEFT
+             column pins the hero height, so the tighter paddings here (hero,
+             caption, footer) are what let the closed landing fit short-wide
+             viewports — don't reclaim them without re-measuring the overflow. */
+          .hero-grid { grid-template-columns: 1fr clamp(150px, min(24vw, 34vh), 240px); }
+          .hero-section .hero-photo { max-width: min(240px, 34vh); }
           .hero-section .hero-photo-block { padding-top: 0; }
+          .hero-section .hero-photo-block .mono { margin-top: 1rem; }
+          main footer { margin-top: 1.5rem; }
         }
 
         /* Soft open (upward section switch): the freshly opened section grows
