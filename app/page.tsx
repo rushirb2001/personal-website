@@ -590,7 +590,7 @@ export default function BetaPage() {
               </div>
               <div className="hidden sm:block mt-5 mono text-[13px] muted leading-[1.7]">
                 <p>
-                  <span className="accent">+</span> Product, AI, RAG, DevOps
+                  <span className="accent">+</span> Product, AI, DevOps
                 </p>
                 <p>
                   <span className="accent">+</span> Tempe, Arizona
