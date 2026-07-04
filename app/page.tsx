@@ -598,9 +598,17 @@ export default function BetaPage() {
       `}</style>
 
       <div
+        // Asymmetric like the sections, in reverse: min-height ANIMATES away
+        // on open (the centering glide) but SNAPS back to 100svh on close.
+        // If it animated on close too, the collapsing content outruns the
+        // growing min-height and the document dips below the viewport for a
+        // few frames — the footer visibly rides up and drops back. Snapping
+        // keeps the page >= viewport for the whole collapse, so the footer
+        // never leaves the bottom edge.
         className={`grain relative z-0 flex flex-col motion-safe:transition-[min-height] motion-safe:duration-[350ms] motion-safe:ease-[cubic-bezier(0.22,1,0.36,1)] ${
           openSection === null ? "min-h-[100svh]" : "min-h-0"
         }`}
+        style={openSection === null ? { transitionProperty: "none" } : undefined}
       >
         <TocNav active={openSection} onSelect={toggleSection} onHome={goHome} />
 
