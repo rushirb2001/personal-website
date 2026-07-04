@@ -495,7 +495,7 @@ export default function BetaPage() {
           .hero-photo { max-width: none; aspect-ratio: 2/1; border-radius: 0; }
           .hero-photo > div { border-radius: 0; }
           .hero-photo img { object-position: 60% 45%; }
-          .hero-name { padding-top: 1.75rem; }
+          .hero-name { padding-top: 0.5rem; }
         }
         .hero-name { grid-area: name; }
         .hero-photo-block { grid-area: photo; }
@@ -567,9 +567,10 @@ export default function BetaPage() {
         @media (max-width: 639px) and (max-height: 720px) {
           .hero-photo { aspect-ratio: 5/2; }
           /* Single-line name: hide the composed line break and size the type
-             so the full name (~24ch) fits one line at any phone width,
-             buying back a whole row of vertical space. */
-          .hero-section h1 { font-size: clamp(24px, 7.2vw, 34px); }
+             to the LARGEST size that still fits the full name (~24ch) on one
+             line at any phone width — hierarchy over the 16px body needs
+             every pixel this line can give. */
+          .hero-section h1 { font-size: clamp(26px, 7.4vw, 36px); }
           .hero-section h1 br { display: none; }
         }
 
@@ -627,7 +628,9 @@ export default function BetaPage() {
               {/* Notion-style icon tile overlapping the cover's bottom edge
                   (phone composition only). */}
               <div className="sm:hidden relative" aria-hidden>
-                <div className="absolute left-6 -top-7 w-14 h-14 rounded-2xl bg-[#f4f1ec] ring-1 ring-black/10 shadow-[0_2px_12px_-4px_rgba(0,0,0,0.2)] grid place-items-center">
+                {/* Mostly on the cover (12px protrusion) so the title can sit
+                    snug below without colliding with the tile. */}
+                <div className="absolute left-6 -top-11 w-14 h-14 rounded-2xl bg-[#f4f1ec] ring-1 ring-black/10 shadow-[0_2px_12px_-4px_rgba(0,0,0,0.2)] grid place-items-center">
                   {/* The site icon (app/icon.svg), rendered inline so it uses
                       the real display font. */}
                   <span className="display ink text-[26px] font-light tracking-tight leading-none">
@@ -647,8 +650,11 @@ export default function BetaPage() {
               </div>
             </div>
 
-            <p className="hero-open sm:hidden display font-light text-[16px] leading-[1.5] muted mt-1">
-              <span className="accent">+</span> Open to Product Manager, AI Engineer &amp; Forward-Deployed Engineer roles.
+            {/* Two-column hanging layout: the + keeps its own column so
+                wrapped lines align with the text, not under the marker. */}
+            <p className="hero-open sm:hidden display font-light text-[16px] leading-[1.5] muted mt-1 flex items-center gap-2">
+              <span className="accent shrink-0">+</span>
+              <span>Open to Product Manager, AI Engineer &amp; Forward-Deployed Engineer roles.</span>
             </p>
 
             {/* Full description on every breakpoint (the phone's Notion-style
