@@ -647,9 +647,10 @@ export default function BetaPage() {
             </div>
 
             {/* Two-column hanging layout: the + keeps its own column so
-                wrapped lines align with the text, not under the marker. */}
-            <p className="hero-open sm:hidden display font-light text-[16px] leading-[1.5] muted mt-1 flex items-center gap-2">
-              <span className="accent shrink-0">+</span>
+                wrapped lines align with the text, not under the marker. The
+                marker is a small square tile matching the rb. cover tile. */}
+            <p className="hero-open sm:hidden display font-light text-[16px] leading-[1.5] muted mt-1 flex items-center gap-3">
+              <span className="accent shrink-0 w-9 h-9 rounded-xl bg-[#f4f1ec] ring-1 ring-black/10 shadow-[0_2px_12px_-4px_rgba(0,0,0,0.2)] grid place-items-center text-[20px] leading-none">+</span>
               <span>Open to Product Manager, AI Engineer &amp; Forward-Deployed Engineer roles.</span>
             </p>
 
