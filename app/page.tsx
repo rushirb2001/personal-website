@@ -845,7 +845,7 @@ export default function BetaPage() {
                         {" "}
                         <Link
                           href={`/projects/${p.slug}`}
-                          className="accent-link accent whitespace-nowrap"
+                          className="accent-link accent mono text-[12px] whitespace-nowrap"
                         >
                           case study <span aria-hidden>↗</span>
                         </Link>
