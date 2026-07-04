@@ -845,7 +845,10 @@ export default function BetaPage() {
                         {" "}
                         <Link
                           href={`/projects/${p.slug}`}
-                          className="accent-link accent mono text-[12px] whitespace-nowrap"
+                          // Match the title links exactly: they inherit font-light
+                          // plus tracking-tight COMPUTED AT THE H3'S 21px (-0.525px),
+                          // so an em-based tracking here would come out looser.
+                          className="accent-link accent mono text-[12px] font-light tracking-[-0.525px] whitespace-nowrap"
                         >
                           case study <span aria-hidden>↗</span>
                         </Link>
