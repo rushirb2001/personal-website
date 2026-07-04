@@ -225,7 +225,12 @@ export function ProjectModal({
         closing ? "is-closing" : ""
       }`}
       onClick={(e) => {
-        if (e.target === e.currentTarget) close()
+        // Mirror the Esc hierarchy: a backdrop click steps back out of the
+        // zoom first; only a second click dismisses the modal itself.
+        if (e.target === e.currentTarget) {
+          if (zoomed) closeZoom()
+          else close()
+        }
       }}
     >
       <style>{TOKENS}</style>
@@ -255,6 +260,12 @@ export function ProjectModal({
               "meta  media";
           }
         }
+        /* md tier (iPad portrait): cap the stacked carousel so it doesn't
+           span the full ~900px card width and then collapse to half that
+           when crossing into the 1024 two-column layout. */
+        @media (min-width: 768px) and (max-width: 1023px) {
+          .ph-media { max-width: min(70%, 640px); margin-inline: auto; }
+        }
       `}</style>
 
       <div
@@ -263,7 +274,7 @@ export function ProjectModal({
         role="dialog"
         aria-modal="true"
         aria-labelledby="proj-title"
-        className={`modal-card relative w-[95vw] max-w-[1440px] max-h-[90vh] flex flex-col overflow-hidden rounded-xl bg-[#f4f1ec] text-[#1a1a1a] outline-none ring-1 ring-black/10 shadow-[0_24px_80px_-24px_rgba(0,0,0,0.45)] ${
+        className={`modal-card relative w-[95vw] max-w-[1440px] max-h-[90svh] flex flex-col overflow-hidden rounded-xl bg-[#f4f1ec] text-[#1a1a1a] outline-none ring-1 ring-black/10 shadow-[0_24px_80px_-24px_rgba(0,0,0,0.45)] ${
           closing ? "is-closing" : ""
         }`}
       >
@@ -305,7 +316,7 @@ export function ProjectModal({
         </div>
 
         {/* Scrollable content — card stays fixed, content scrolls inside */}
-        <div className="grow overflow-y-auto px-4 sm:px-8 lg:px-10 xl:px-16 py-12 sm:py-16 lg:py-20">
+        <div className="grow overflow-y-auto overscroll-contain px-4 sm:px-8 lg:px-10 xl:px-16 py-12 sm:py-16 lg:py-20">
           {/* Hero: heading + description + links + the artifact carousel.
               lg: carousel sits to the right of the whole header.
               md (iPad portrait): text and Links/Stack split 80:20 above a
@@ -392,7 +403,10 @@ export function ProjectModal({
               className="ph-media modal-reveal"
               style={{ animationDelay: "0.3s" }}
             >
-              <Carousel slides={slides} />
+              {/* Frozen while the diagram zoom is up: the zoom-close FLIP
+                  shrinks back into the diagram slide's rect, so the carousel
+                  must not auto-advance out from under it. */}
+              <Carousel slides={slides} frozen={zoomed || zoomClosing} />
             </div>
           </div>
 
@@ -490,10 +504,12 @@ export function ProjectModal({
                 Close <span aria-hidden>×</span>
               </button>
             </div>
-            <div className="grow overflow-auto grid place-items-center p-6 sm:p-12 lg:p-16">
+            {/* flex + m-auto (not grid centering) so the phone-size min-width
+                overflow stays reachable by panning on both sides. */}
+            <div className="grow overflow-auto overscroll-contain flex p-3 sm:p-12 lg:p-16">
               <div
                 ref={zoomStageRef}
-                className="w-full max-w-[1200px]"
+                className="w-full max-w-[1200px] min-w-[640px] sm:min-w-0 m-auto"
                 onClick={(e) => e.stopPropagation()}
               >
                 <ArchitectureDiagram slug={detail.slug} />
@@ -591,8 +607,10 @@ const TOKENS = `
     background-color: #1f3a5f; transform-origin: left; transform: scaleX(0.35);
     transition: transform 250ms ease;
   }
-  .accent-link:hover { color: #1f3a5f; }
-  .accent-link:hover::after { transform: scaleX(1); }
+  @media (hover: hover) {
+    .accent-link:hover { color: #1f3a5f; }
+    .accent-link:hover::after { transform: scaleX(1); }
+  }
 
   .modal-backdrop {
     background-color: rgba(20,18,14,0.34);
@@ -638,5 +656,6 @@ const TOKENS = `
     .modal-backdrop, .modal-card, .modal-reveal, .modal-zoom,
     .modal-backdrop.is-closing, .modal-card.is-closing,
     .modal-zoom.is-closing { animation: none; }
+    .accent-link, .accent-link::after { transition: none; }
   }
 `
