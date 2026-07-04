@@ -850,7 +850,7 @@ export default function BetaPage() {
                           // so an em-based tracking here would come out looser.
                           className="accent-link accent mono text-[12px] font-light tracking-[-0.525px] whitespace-nowrap"
                         >
-                          case study <span aria-hidden>↗</span>
+                          §case study <span aria-hidden>↗</span>
                         </Link>
                       </>
                     )}
