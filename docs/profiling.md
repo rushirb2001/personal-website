@@ -325,12 +325,12 @@ Plus §2 Lighthouse if the change touched layout, media, fonts, or anything rend
 make the next regression invisible, so updating this table is part of shipping a perf-relevant
 change.
 
-Measured 2026-07-04, warm edge cache, home US connection:
+Measured 2026-07-04 (post Notion-mobile-hero deploy), warm edge cache, home US connection:
 
 | Metric                        | `/`            | `/projects/mace-pinn` |
 | ----------------------------- | -------------- | --------------------- |
-| TTFB (curl, runs 2–3)         | 107–115ms      | 121ms                 |
-| Document size                 | 53.6KB         | 39.1KB                |
+| TTFB (curl, runs 2–3)         | 107–216ms      | 121ms                 |
+| Document size                 | 55.8KB         | 39.1KB                |
 | `x-vercel-cache`              | HIT            | HIT                   |
 | Route type                    | ○ Static       | ● SSG                 |
 | Redirects                     | 0              | 0                     |
