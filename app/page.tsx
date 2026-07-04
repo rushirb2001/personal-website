@@ -558,21 +558,15 @@ export default function BetaPage() {
           section[data-soft] .section-collapsible { transition-duration: 500ms; }
         }
 
-        /* Short phone viewports: the full-width name banner costs a row the
-           viewport doesn't have, so fall back to the denser side-by-side
-           composition (photo left, name + copy beside) and shrink the photo
-           column so the closed landing still fits in one screen. */
+        /* Short phone viewports — REAL phones land here: browser toolbars
+           shrink the layout viewport to ~660-720px even on tall devices, so
+           this tier is the common case on hardware, not an edge case. Keep
+           the Notion-page single column (a second grid template here would
+           fight the base areas and shatter the layout) and just shallow the
+           cover and title so less of the page body needs scrolling. */
         @media (max-width: 639px) and (max-height: 720px) {
-          .hero-grid {
-            grid-template-columns: clamp(120px, 40%, 170px) minmax(0, 1fr);
-            grid-template-rows: auto 1fr auto;
-            grid-template-areas:
-              "photo name"
-              "photo copy"
-              "open  open";
-            row-gap: 0.875rem;
-          }
-          .hero-section h1 { font-size: clamp(28px, 9.6vw, 40px); }
+          .hero-photo { aspect-ratio: 5/2; }
+          .hero-section h1 { font-size: clamp(30px, 9.6vw, 42px); }
         }
 
         @media (prefers-reduced-motion: reduce) {
