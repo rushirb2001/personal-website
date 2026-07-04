@@ -804,16 +804,6 @@ export default function BetaPage() {
               >
                 <div className="mono text-[12px] xs:text-[13px] leading-none ink xs:pt-2 lg:pt-[10px]">
                   {p.type}
-                  {/* Phones: the case-study invitation rides the topic line;
-                      external links stay beside the title below. */}
-                  {hasProjectDetail(p.slug) && (
-                    <Link
-                      href={`/projects/${p.slug}`}
-                      className="xs:hidden accent-link accent ml-2 whitespace-nowrap"
-                    >
-                      read the case study <span aria-hidden>→</span>
-                    </Link>
-                  )}
                 </div>
                 <div>
                   <h3 className="display text-[21px] xs:text-[26px] lg:text-3xl font-light tracking-tight leading-tight">
@@ -847,7 +837,21 @@ export default function BetaPage() {
                         </a>
                       ))}
                   </h3>
-                  <p className="xs:hidden mt-2 leading-relaxed text-[14px] max-w-[58ch] mono">{p.descShort}</p>
+                  <p className="xs:hidden mt-2 leading-relaxed text-[14px] max-w-[58ch] mono">
+                    {p.descShort}
+                    {/* Phones: the case-study link closes the blurb. */}
+                    {hasProjectDetail(p.slug) && (
+                      <>
+                        {" "}
+                        <Link
+                          href={`/projects/${p.slug}`}
+                          className="accent-link accent whitespace-nowrap"
+                        >
+                          case study <span aria-hidden>↗</span>
+                        </Link>
+                      </>
+                    )}
+                  </p>
                   <p className="hidden xs:block xs:mt-5 leading-relaxed xs:text-[15px] max-w-[58ch] mono">{p.desc}</p>
                 </div>
                 <div className="xs:space-y-6 xs:pt-2 lg:pt-[10px]">
