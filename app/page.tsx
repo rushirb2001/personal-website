@@ -180,9 +180,17 @@ export default function BetaPage() {
   const heroSectionRef = useRef<HTMLElement>(null)
 
   useEffect(() => {
+    let prevY = window.scrollY
     const onScroll = () => {
+      const y = window.scrollY
+      const goingUp = y < prevY
+      prevY = y
       if (programmaticScrollRef.current) return
-      if (window.scrollY < 40) {
+      // Direction-gated: only an upward glide past the section head closes
+      // the accordion. Without the gate, parking at the top while a scroll
+      // lock is active and then scrolling DOWN to read would collapse the
+      // section underfoot on the first scroll event.
+      if (goingUp && y < 40) {
         setOpenSection((prev) => (prev === null ? prev : null))
       }
     }
@@ -236,7 +244,16 @@ export default function BetaPage() {
       pendingCloseRef.current = null
     }
     window.addEventListener("scrollend", finish, { once: true })
-    setTimeout(finish, 900) // fallback where scrollend is unsupported
+    // Safari has no scrollend: watch for arrival each frame so the collapse
+    // fires the moment the glide lands. The timeout is a last resort only —
+    // a short fixed timer would cut long glides early and clamp-jump.
+    const settle = () => {
+      if (done) return
+      if (window.scrollY < 2) return finish()
+      requestAnimationFrame(settle)
+    }
+    requestAnimationFrame(settle)
+    setTimeout(finish, 2000)
   }
 
   const toggleSection = (id: string) => {
@@ -280,10 +297,24 @@ export default function BetaPage() {
       }
       window.scrollTo({ top: targetTop, behavior: "smooth" })
       window.addEventListener("scrollend", finish, { once: true })
-      setTimeout(finish, 1000) // fallback where scrollend is unsupported
+      // Arrival watcher for browsers without scrollend (Safari), so short
+      // glides don't dead-stall on a fixed timer; long timeout as last resort.
+      const settle = () => {
+        if (done) return
+        if (Math.abs(window.scrollY - targetTop) < 2) return finish()
+        requestAnimationFrame(settle)
+      }
+      requestAnimationFrame(settle)
+      setTimeout(finish, 2000)
       return
     }
 
+    // A previous glide may still be in flight (rapid tab clicks); freeze it
+    // so the choreography below starts from a stationary viewport instead of
+    // letting the old scroll keep travelling the wrong way during the wait.
+    if (programmaticScrollRef.current) {
+      window.scrollTo({ top: window.scrollY, behavior: "instant" })
+    }
     lockScroll(1400)
 
     // Opening from the closed landing: the hero gives up its centering space
@@ -302,6 +333,24 @@ export default function BetaPage() {
       }
     }
 
+    // Switching below while scrolled deeper than the old section's collapse
+    // will leave room for: the browser would clamp-yank the viewport frame by
+    // frame during the 380ms wait, then glide — two disjoint motions. Project
+    // the post-collapse layout (stable arithmetic, same idiom as the fresh-
+    // open pre-compute) and, only when that clamp is inevitable, launch the
+    // glide immediately so the descent reads as one intentional motion.
+    let immediateTarget: number | null = null
+    if (switching && !reduced && el && openEl) {
+      const headH = openEl.querySelector("button")?.offsetHeight ?? 57
+      const collapsing = Math.max(0, openEl.offsetHeight - headH)
+      const opening = Math.max(0, window.innerHeight - 56 - headH)
+      const projectedMax =
+        document.documentElement.scrollHeight - collapsing + opening - window.innerHeight
+      if (window.scrollY > projectedMax) {
+        immediateTarget = Math.max(0, el.offsetTop - collapsing - 56)
+      }
+    }
+
     setSoftOpen(false)
     setOpenSection(id)
     const scrollToSection = () => {
@@ -315,9 +364,16 @@ export default function BetaPage() {
       }
     }
     if (switching && !reduced) {
-      // Wait for the previous section's height transition (350ms) to finish
-      // so the target's offsetTop is stable before we commit a smooth scroll.
-      setTimeout(scrollToSection, 380)
+      if (immediateTarget !== null) {
+        const top = immediateTarget
+        requestAnimationFrame(() =>
+          requestAnimationFrame(() => window.scrollTo({ top, behavior: "smooth" })),
+        )
+      } else {
+        // Wait for the previous section's height transition (350ms) to finish
+        // so the target's offsetTop is stable before we commit a smooth scroll.
+        setTimeout(scrollToSection, 380)
+      }
     } else {
       requestAnimationFrame(() => requestAnimationFrame(scrollToSection))
     }
@@ -350,8 +406,11 @@ export default function BetaPage() {
           transform: scaleX(0.35);
           transition: transform 250ms ease;
         }
-        .accent-link:hover { color: #1f3a5f; }
-        .accent-link:hover::after { transform: scaleX(1); }
+        /* Hover-gated so touch devices don't latch the hover state on tap. */
+        @media (hover: hover) {
+          .accent-link:hover { color: #1f3a5f; }
+          .accent-link:hover::after { transform: scaleX(1); }
+        }
         .small-caps {
           text-transform: uppercase;
           letter-spacing: 0.18em;
@@ -462,8 +521,8 @@ export default function BetaPage() {
            curve as the default scale, just lower caps. */
         @media (min-width: 768px) and (max-height: 960px) {
           .hero-section { padding-top: 0.75rem; padding-bottom: 0.75rem; }
-          .hero-section h1 { font-size: clamp(52px, 8.5vw, 92px); }
-          .hero-grid { grid-template-columns: 1fr clamp(150px, 20vw, 220px); }
+          .hero-section h1 { font-size: clamp(52px, 10vw, 92px); }
+          .hero-grid { grid-template-columns: 1fr clamp(150px, 24vw, 220px); }
           .hero-section .hero-photo { max-width: 220px; }
         }
 
