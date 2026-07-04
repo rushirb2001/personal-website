@@ -486,16 +486,36 @@ export default function BetaPage() {
           row-gap: 1rem;
         }
         @media (max-width: 639px) {
-          /* Cover banner: escape the section's px-6 gutters, go wide-aspect,
-             square the corners. The crop keeps the face clear of the top
-             edge; the title's padding clears the icon tile that overlaps the
-             cover's bottom edge. */
-          .hero-section { padding-top: 0; }
+          /* Cover banner: escape the section's px-6 gutters, square the
+             corners; the crop keeps the face clear of the edges.
+
+             Fit-the-viewport system: every vertical below rides svh with
+             TODAY'S design as the clamp cap, so tall phones render unchanged
+             while short viewports compress proportionally until the closed
+             landing needs no scroll at all. Tuned against real sizes
+             (360x640 .. 430x932) — re-measure overflow if touching any
+             coefficient. */
+          .hero-section { padding-top: 0; padding-bottom: clamp(12px, 3.4svh, 32px); }
+          .hero-grid { row-gap: clamp(8px, 2.2svh, 16px); }
           .hero-photo-block { margin-inline: -1.5rem; padding-top: 0; }
-          .hero-photo { max-width: none; aspect-ratio: 2/1; border-radius: 0; }
+          .hero-photo { max-width: none; height: clamp(110px, 23.5svh, 200px); border-radius: 0; }
           .hero-photo > div { border-radius: 0; }
           .hero-photo img { object-position: 60% 45%; }
-          .hero-name { padding-top: 0.5rem; }
+          .hero-name { padding-top: clamp(4px, 1svh, 8px); font-size: clamp(26px, min(11vw, 5.5svh), 48px); }
+          .hero-desc, .hero-open { font-size: clamp(12.5px, 2.1svh, 16px); }
+          .hero-open > span:first-child {
+            width: clamp(28px, 5.2svh, 36px);
+            height: clamp(28px, 5.2svh, 36px);
+            font-size: clamp(15px, 2.9svh, 20px);
+          }
+          /* Section heads ride the same curve (all clamps hit their caps
+             together near 850svh) so the hero/heads hierarchy keeps the same
+             ratio at every height instead of the heads looming over a
+             compressed hero. */
+          main section > button { padding-block: clamp(8px, 1.6svh, 12px); }
+          main section > button .display { font-size: clamp(16px, 2.75svh, 22px); }
+          main section > button .mono { font-size: clamp(10px, 1.5svh, 12px); }
+          main footer { margin-top: clamp(12px, 4.5svh, 40px); }
         }
         .hero-name { grid-area: name; }
         .hero-photo-block { grid-area: photo; }
@@ -556,18 +576,6 @@ export default function BetaPage() {
         @media (prefers-reduced-motion: no-preference) {
           section[data-soft] { transition: min-height 500ms cubic-bezier(0.22, 1, 0.36, 1); }
           section[data-soft] .section-collapsible { transition-duration: 500ms; }
-        }
-
-        /* Short phone viewports — REAL phones land here: browser toolbars
-           shrink the layout viewport to ~660-720px even on tall devices, so
-           this tier is the common case on hardware, not an edge case. Keep
-           the Notion-page single column (a second grid template here would
-           fight the base areas and shatter the layout) and just shallow the
-           cover and title so less of the page body needs scrolling. */
-        @media (max-width: 639px) and (max-height: 720px) {
-          /* Shallow cover only — the title keeps the full-size two-line
-             banner treatment; the compacted body copy pays for the height. */
-          .hero-photo { aspect-ratio: 5/2; }
         }
 
         @media (prefers-reduced-motion: reduce) {
