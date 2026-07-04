@@ -263,6 +263,18 @@ export function ProjectModal({
         @media (min-width: 768px) and (max-width: 1023px) {
           .ph-media { max-width: min(70%, 640px); margin-inline: auto; }
         }
+        /* Phones: type rides svh (caps near 850svh = today's tall-phone
+           design) so short viewports fit more of the case study per screen,
+           mirroring the landing page's proportional system. Selectors pair
+           each override with the Tailwind size utility it compresses. */
+        @media (max-width: 639px) {
+          .modal-card .text-\\[26px\\] { font-size: clamp(21px, 3.1svh, 26px); }
+          .modal-card .text-\\[15px\\] { font-size: clamp(12.5px, 1.8svh, 15px); }
+          .modal-card .text-\\[14px\\] { font-size: clamp(12px, 1.7svh, 14px); }
+          .modal-card .text-\\[13px\\] { font-size: clamp(11px, 1.6svh, 13px); }
+          .modal-card .text-\\[12px\\] { font-size: clamp(10.5px, 1.5svh, 12px); }
+          .modal-card .text-\\[11px\\] { font-size: clamp(10px, 1.4svh, 11px); }
+        }
       `}</style>
 
       <div
