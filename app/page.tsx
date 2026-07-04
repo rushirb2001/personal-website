@@ -34,7 +34,7 @@ const WORK = [
     period: "Jun 2024 – Sep 2024",
     desc: "Deployed a fine-tuned Mistral-7B-Q8 on Kubernetes behind FastAPI with a six-agent LangChain orchestration. Sub-200 ms p95 for 10K users; 88% on 10K human-evaluated queries.",
     descShort: "Deployed a fine-tuned Mistral-7B on Kubernetes with six-agent LangChain orchestration, 200ms@P95.",
-    stack: ["Mistral-7B", "Kubernetes", "FastAPI", "LangChain", "LangGraph"],
+    stack: ["Kubernetes", "FastAPI", "LangChain", "LangGraph"],
     current: false,
   },
 ]
