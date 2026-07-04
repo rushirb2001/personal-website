@@ -27,8 +27,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# Claude Code agent state
-.claude/
+# Claude Code agent state (but version project skills with the repo)
+.claude/*
+!.claude/skills/
 
 # Editor workspace files
 *.code-workspace

@@ -1,0 +1,23 @@
+{
+  "skill_name": "page-profiling",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Add a new 'Talks' section to the landing page accordion with the same three-column layout as Education, and give it the same open/close animation as the other sections.",
+      "expected_output": "Baseline captured before the change (TTFB/doc size for /), the section built without breaking route staticness or choreography invariants, transitions verified via getComputedStyle, scroll sampler run on the new section's open/close at 375/768/1280px, tsc clean.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "My Vercel dashboard shows LCP at 4.8s for /projects/samhita — can you fix the images on that page?",
+      "expected_output": "Gap-arithmetic triage runs FIRST (TTFB vs FCP-TTFB vs LCP-FCP), field window cross-checked against deploy dates, production curl + Lighthouse measured before any image is touched; images only optimized if the LCP-FCP gap actually dominates.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Swap the hero photo for the new headshot I dropped in public/images/ and make it fade in on load.",
+      "expected_output": "Image audited for weight and routed through next/image with priority + honest sizes, fade-in gated behind prefers-reduced-motion with the transition property verified, Lighthouse before/after comparison confirming LCP element and timing, baselines updated if shifted.",
+      "files": []
+    }
+  ]
+}
