@@ -174,6 +174,11 @@ export default function BetaPage() {
   // the scroll has already landed) instead of snapping its height open (fresh
   // open, where the scroll still needs the room to exist).
   const [softOpen, setSoftOpen] = useState(false)
+  // True while a close-to-home collapse plays: sections get the soft 500ms
+  // close (mirror of softOpen) instead of the brisk 350ms that the section-
+  // switch choreography's 380ms scroll timing depends on.
+  const [homeClosing, setHomeClosing] = useState(false)
+  const homeCloseTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const programmaticScrollRef = useRef(false)
   const lockTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const heroWrapRef = useRef<HTMLDivElement>(null)
@@ -212,6 +217,12 @@ export default function BetaPage() {
 
   const pendingCloseRef = useRef<(() => void) | null>(null)
 
+  const softClose = () => {
+    setHomeClosing(true)
+    if (homeCloseTimerRef.current) clearTimeout(homeCloseTimerRef.current)
+    homeCloseTimerRef.current = setTimeout(() => setHomeClosing(false), 700)
+  }
+
   // Closing mirrors opening, sequenced: glide back to the top FIRST while the
   // page still has its expanded height (collapsing while scrolled lets the
   // document shrink faster than the smooth scroll, so the browser clamp-jumps
@@ -221,6 +232,7 @@ export default function BetaPage() {
     pendingCloseRef.current?.()
     if (prefersReduced() || window.scrollY < 40) {
       lockScroll()
+      softClose()
       setOpenSection(null)
       // "instant", not "auto": with html { scroll-behavior: smooth } an
       // "auto" scroll resolves to smooth, animating for the very users who
@@ -236,6 +248,7 @@ export default function BetaPage() {
       done = true
       window.removeEventListener("scrollend", finish)
       pendingCloseRef.current = null
+      softClose()
       setOpenSection(null)
     }
     pendingCloseRef.current = () => {
@@ -262,6 +275,10 @@ export default function BetaPage() {
       return
     }
     pendingCloseRef.current?.()
+    // A lingering soft-close flag would slow the switch collapse past the
+    // 380ms scroll timing; switches always use the standard durations.
+    if (homeCloseTimerRef.current) clearTimeout(homeCloseTimerRef.current)
+    setHomeClosing(false)
     const switching = openSection !== null
     const reduced = prefersReduced()
 
@@ -594,6 +611,15 @@ export default function BetaPage() {
           section[data-soft] .section-collapsible { transition-duration: 500ms; }
         }
 
+        /* Soft close (returning home): the collapse eases over 500ms — the
+           mirror of the soft open — instead of the brisk 350ms that section
+           SWITCHES must keep (their 380ms scroll timing depends on it). */
+        @media (prefers-reduced-motion: no-preference) {
+          [data-home-close] section,
+          [data-home-close] .section-collapsible,
+          [data-home-close] .section-content { transition-duration: 500ms; }
+        }
+
         @media (prefers-reduced-motion: reduce) {
           .hero-anim > div > * { animation: none; }
           .section-collapsible,
@@ -615,6 +641,7 @@ export default function BetaPage() {
           openSection === null ? "min-h-[100svh]" : "min-h-0"
         }`}
         style={openSection === null ? { transitionProperty: "none" } : undefined}
+        data-home-close={homeClosing ? "" : undefined}
       >
         <TocNav active={openSection} onSelect={toggleSection} onHome={goHome} />
 
