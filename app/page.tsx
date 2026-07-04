@@ -553,10 +553,10 @@ export default function BetaPage() {
              = today's tall-phone design), so short viewports fit more rows
              per screen with the hierarchy ratios intact. Selectors pair each
              override with the Tailwind size utility it compresses. */
-          main .section-content .text-\\[21px\\] { font-size: clamp(17px, 2.6svh, 21px); }
-          main .section-content .text-\\[16px\\] { font-size: clamp(13px, 2svh, 16px); }
-          main .section-content .text-\\[14px\\] { font-size: clamp(12px, 1.8svh, 14px); }
-          main .section-content .text-\\[12px\\] { font-size: clamp(10.5px, 1.5svh, 12px); }
+          main .section-content .text-\\[21px\\] { font-size: clamp(17px, 2.6svh, 19px); }
+          main .section-content .text-\\[16px\\] { font-size: clamp(13px, 2svh, 14px); }
+          main .section-content .text-\\[14px\\] { font-size: clamp(12px, 1.8svh, 13px); }
+          main .section-content .text-\\[12px\\] { font-size: clamp(10.5px, 1.5svh, 11px); }
         }
         .hero-name { grid-area: name; }
         .hero-photo-block { grid-area: photo; }
