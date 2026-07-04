@@ -650,7 +650,9 @@ export default function BetaPage() {
                 wrapped lines align with the text, not under the marker. The
                 marker is a small square tile matching the rb. cover tile. */}
             <p className="hero-open sm:hidden display font-light text-[16px] leading-[1.5] muted mt-1 flex items-center gap-3">
-              <span className="accent shrink-0 w-9 h-9 rounded-xl bg-[#f4f1ec] ring-1 ring-black/10 shadow-[0_2px_12px_-4px_rgba(0,0,0,0.2)] grid place-items-center text-[20px] leading-none">+</span>
+              {/* pb-[2px]: the + glyph's ink sits ~1px below its line box's
+                  center (measured), so bias the box to optically center it. */}
+              <span className="accent shrink-0 w-9 h-9 pb-[2px] rounded-xl bg-[#f4f1ec] ring-1 ring-black/10 shadow-[0_2px_12px_-4px_rgba(0,0,0,0.2)] grid place-items-center text-[20px] leading-none">+</span>
               <span>Open to Product Manager, AI Engineer &amp; Forward-Deployed Engineer roles.</span>
             </p>
 
@@ -658,7 +660,7 @@ export default function BetaPage() {
                 page body); the roles sentence is sm+ only — phones carry it
                 in the hero-open line instead. */}
             <div className="hero-desc display font-light text-[16px] sm:text-[clamp(16px,1.7vw,20px)] mt-0 sm:mt-7 lg:mt-8 leading-[1.5] max-w-[44ch]">
-              Building{" "}
+              Currently building{" "}
               <a
                 href="https://sushrutalgs.ai/welcome"
                 target="_blank"
@@ -667,8 +669,8 @@ export default function BetaPage() {
               >
                 sushrutalgs.ai <span aria-hidden className="mono text-[0.85em] align-middle">↗</span>
               </a>
-              , medical AI for India&rsquo;s students, residents, and
-              surgeons. Previously at ASU and Cadence.
+              , a medical AI platform for India&rsquo;s students, residents,
+              and surgeons. Previously at ASU and Cadence.
               <span className="hidden sm:block mt-4 muted">
                 Looking for Product Manager, AI Engineer, and
                 Forward-Deployed Engineer roles.
