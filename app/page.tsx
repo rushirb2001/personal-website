@@ -565,13 +565,9 @@ export default function BetaPage() {
            fight the base areas and shatter the layout) and just shallow the
            cover and title so less of the page body needs scrolling. */
         @media (max-width: 639px) and (max-height: 720px) {
+          /* Shallow cover only — the title keeps the full-size two-line
+             banner treatment; the compacted body copy pays for the height. */
           .hero-photo { aspect-ratio: 5/2; }
-          /* Single-line name: hide the composed line break and size the type
-             to the LARGEST size that still fits the full name (~24ch) on one
-             line at any phone width — hierarchy over the 16px body needs
-             every pixel this line can give. */
-          .hero-section h1 { font-size: clamp(26px, 7.4vw, 36px); }
-          .hero-section h1 br { display: none; }
         }
 
         @media (prefers-reduced-motion: reduce) {
