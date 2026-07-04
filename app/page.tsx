@@ -836,11 +836,22 @@ export default function BetaPage() {
                           {l.label} <span aria-hidden>↗</span>
                         </a>
                       ))}
+                    {/* On phones the case-study link joins the other inline
+                        title links so the Links column can disappear and the
+                        Stack can span the full row. */}
+                    {hasProjectDetail(p.slug) && (
+                      <Link
+                        href={`/projects/${p.slug}`}
+                        className="xs:hidden accent-link mono text-[12px] accent align-middle ml-2 whitespace-nowrap"
+                      >
+                        case study <span aria-hidden>→</span>
+                      </Link>
+                    )}
                   </h3>
                   <p className="xs:hidden mt-2 leading-relaxed text-[14px] max-w-[58ch] mono">{p.descShort}</p>
                   <p className="hidden xs:block xs:mt-5 leading-relaxed xs:text-[15px] max-w-[58ch] mono">{p.desc}</p>
                 </div>
-                <div className="grid grid-cols-2 gap-4 xs:block xs:space-y-6 xs:pt-2 lg:pt-[10px]">
+                <div className="xs:space-y-6 xs:pt-2 lg:pt-[10px]">
                   <div>
                     <p className="mono small-caps faint mb-1 xs:mb-1.5">Stack</p>
                     <p className="xs:hidden mono text-[12px] muted leading-relaxed">{p.stack.join(", ")}</p>
@@ -852,7 +863,8 @@ export default function BetaPage() {
                       ))}
                     </ul>
                   </div>
-                  <div>
+                  {/* Links live inline next to the title on phones. */}
+                  <div className="hidden xs:block">
                     <p className="mono small-caps faint mb-1 xs:mb-1.5">Links</p>
                     <ul className="flex flex-col gap-2 mono text-[12px] xs:text-[13px]">
                       {hasProjectDetail(p.slug) && (
