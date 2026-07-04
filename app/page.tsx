@@ -494,7 +494,7 @@ export default function BetaPage() {
           .hero-photo-block { margin-inline: -1.5rem; padding-top: 0; }
           .hero-photo { max-width: none; aspect-ratio: 2/1; border-radius: 0; }
           .hero-photo > div { border-radius: 0; }
-          .hero-photo img { object-position: 60% 20%; }
+          .hero-photo img { object-position: 60% 45%; }
           .hero-name { padding-top: 1.75rem; }
         }
         .hero-name { grid-area: name; }
