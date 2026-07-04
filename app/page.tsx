@@ -522,8 +522,15 @@ export default function BetaPage() {
         @media (min-width: 768px) and (max-height: 960px) {
           .hero-section { padding-top: 0.75rem; padding-bottom: 0.75rem; }
           .hero-section h1 { font-size: clamp(52px, 10vw, 92px); }
-          .hero-grid { grid-template-columns: 1fr clamp(150px, 24vw, 220px); }
-          .hero-section .hero-photo { max-width: 220px; }
+          /* Wider photo column (same 24vw slope as the base layout, higher
+             cap, so the 768px boundary stays continuous); the 1fr text column
+             gives up the difference. Top padding zeroed so the photo's top
+             edge sits flush with the top of its column. The 34vh term bounds
+             the 3/4-aspect photo on short windows, where the photo column is
+             what makes the closed landing overflow the viewport. */
+          .hero-grid { grid-template-columns: 1fr clamp(150px, min(24vw, 34vh), 260px); }
+          .hero-section .hero-photo { max-width: min(260px, 34vh); }
+          .hero-section .hero-photo-block { padding-top: 0; }
         }
 
         /* Soft open (upward section switch): the freshly opened section grows
