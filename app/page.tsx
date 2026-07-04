@@ -566,7 +566,11 @@ export default function BetaPage() {
            cover and title so less of the page body needs scrolling. */
         @media (max-width: 639px) and (max-height: 720px) {
           .hero-photo { aspect-ratio: 5/2; }
-          .hero-section h1 { font-size: clamp(30px, 9.6vw, 42px); }
+          /* Single-line name: hide the composed line break and size the type
+             so the full name (~24ch) fits one line at any phone width,
+             buying back a whole row of vertical space. */
+          .hero-section h1 { font-size: clamp(24px, 7.2vw, 34px); }
+          .hero-section h1 br { display: none; }
         }
 
         @media (prefers-reduced-motion: reduce) {
@@ -603,7 +607,7 @@ export default function BetaPage() {
               the .hero-grid grid-template-areas in the style block above. */}
           <div className="hero-grid">
             <h1 className="hero-name display font-light leading-[0.95] sm:leading-[0.92] tracking-tight text-[clamp(34px,11vw,48px)] sm:text-[clamp(52px,10vw,120px)]">
-              Hi! I&rsquo;m Rushir
+              Hi! I&rsquo;m Rushir{" "}
               <br />
               Bhavsar<span className="accent">.</span>
             </h1>
