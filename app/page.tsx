@@ -608,7 +608,7 @@ export default function BetaPage() {
                     rel="noopener noreferrer"
                     className="accent-link accent"
                   >
-                    sushrutalgs.ai <span aria-hidden>↗</span>
+                    sushrutalgs.ai <span aria-hidden className="mono text-[12px] align-middle">↗</span>
                   </a>
                   , medical AI for India.
                 </p>
@@ -627,7 +627,7 @@ export default function BetaPage() {
                 rel="noopener noreferrer"
                 className="accent-link accent"
               >
-                sushrutalgs.ai <span aria-hidden>↗</span>
+                sushrutalgs.ai <span aria-hidden className="mono text-[12px] align-middle">↗</span>
               </a>{" "}
               for India, pushing the frontier on the next big medical AI for
               students, residents, and surgical practitioners. Previously at
