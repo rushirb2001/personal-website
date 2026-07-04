@@ -588,7 +588,9 @@ export default function BetaPage() {
                 />
                 <div className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-black/10" />
               </div>
-              <div className="hidden sm:block mt-5 mono text-[13px] muted leading-[1.7]">
+              {/* Negative word-spacing: mono spaces are full character cells,
+                  so the comma gaps between keywords read double-wide. */}
+              <div className="hidden sm:block mt-5 mono text-[13px] muted leading-[1.7] [word-spacing:-0.5ch]">
                 <p>
                   <span className="accent">+</span> Product, AI, DevOps
                 </p>
