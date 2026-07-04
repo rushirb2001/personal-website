@@ -421,8 +421,14 @@ export default function BetaPage() {
            targets, scroll-then-flip sequencing). Browser scroll anchoring
            fights that: when a section's min-height snaps open while the
            viewport is scrolled, Chrome/Firefox re-anchor and teleport the
-           scroll position mid-choreography. */
-        html { overflow-anchor: none; }
+           scroll position mid-choreography.
+           scrollbar-gutter keeps the scrollbar's lane reserved while the
+           accordion flips the page between fitting the viewport and
+           overflowing it — without it the centered layout (footer most
+           visibly) shifts ~5px on every open/close. Declared here, not in
+           globals.css, because the Tailwind/Lightning pipeline strips it
+           there. */
+        html { overflow-anchor: none; scrollbar-gutter: stable; }
 
         /* The last section head's bottom rule would run parallel to the
            footer's top rule with only blank slack between them — reading as

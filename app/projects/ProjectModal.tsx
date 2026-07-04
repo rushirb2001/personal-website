@@ -128,18 +128,15 @@ export function ProjectModal({
 
   useEffect(() => {
     cardRef.current?.focus()
-    // Lock page scroll. Reserve the now-hidden scrollbar's width as padding so
-    // the page behind the modal doesn't shift when the scrollbar unmounts
-    // (and shift back on close).
+    // Lock page scroll. No scrollbar-width padding compensation here: the
+    // global `scrollbar-gutter: stable` keeps the gutter reserved while the
+    // scrollbar is hidden, so adding padding would double-compensate and
+    // shift the page right.
     const body = document.body
-    const scrollbarW = window.innerWidth - document.documentElement.clientWidth
     const prevOverflow = body.style.overflow
-    const prevPaddingRight = body.style.paddingRight
     body.style.overflow = "hidden"
-    if (scrollbarW > 0) body.style.paddingRight = `${scrollbarW}px`
     return () => {
       body.style.overflow = prevOverflow
-      body.style.paddingRight = prevPaddingRight
     }
   }, [])
 
@@ -591,6 +588,12 @@ function PlaceholderSlide({ todo, icon = "+" }: { todo?: string; icon?: string }
 }
 
 const TOKENS = `
+  /* Keep the page scrollbar's lane reserved while the modal locks scroll —
+     pairs with the scroll-lock effect above, which deliberately adds no
+     padding compensation. (Lives here because the CSS pipeline strips
+     scrollbar-gutter from globals.css.) */
+  html { scrollbar-gutter: stable; }
+
   .ink { color: #1a1a1a; }
   .muted { color: rgba(26,26,26,0.62); }
   .faint { color: rgba(26,26,26,0.42); }

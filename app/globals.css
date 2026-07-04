@@ -99,6 +99,10 @@
 html {
   scrollbar-color: var(--accent) transparent; /* Firefox: thumb track */
   scrollbar-width: thin;
+  /* NOTE: `scrollbar-gutter: stable` is intentionally NOT declared here —
+     the Tailwind/Lightning CSS pipeline strips it from this file. It lives
+     in the inline <style> blocks (app/page.tsx and ProjectModal's TOKENS),
+     which ship verbatim. */
 }
 ::-webkit-scrollbar {
   width: 11px;
