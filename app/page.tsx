@@ -44,7 +44,7 @@ const PROJECTS = [
     name: "MACE-PINN",
     platform: "",
     slug: "mace-pinn",
-    descShort: "Thesis neural network that solves stiff, coupled physics equations single-network models struggle with.",
+    descShort: "Thesis oscillating neural network solver for stiff coupled physics equations.",
     type: "Master's thesis",
     year: "2025",
     desc: "Master's thesis neural network that accurately solves the stiff, tightly coupled physics equations that standard single-network models struggle to capture.",
