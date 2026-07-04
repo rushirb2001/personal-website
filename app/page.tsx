@@ -659,8 +659,8 @@ export default function BetaPage() {
                 className="accent-link accent whitespace-nowrap"
               >
                 sushrutalgs.ai <span aria-hidden className="mono text-[0.85em] align-middle">↗</span>
-              </a>{" "}
-              &mdash; medical AI for India&rsquo;s students, residents, and
+              </a>
+              , medical AI for India&rsquo;s students, residents, and
               surgeons. Previously at ASU and Cadence.
               <span className="hidden sm:block mt-4 muted">
                 Looking for Product Manager, AI Engineer, and
