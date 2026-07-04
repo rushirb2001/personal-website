@@ -79,7 +79,7 @@ const PROJECTS = [
     name: "backend-for-frontend",
     platform: "sushrutalgs.ai",
     slug: "sushrutalgs-bff",
-    descShort: "Gateway connecting the apps to the AI backend: sign-in, plan limits, streaming. Live in production.",
+    descShort: "Gateway connecting the apps to the AI backend: sign-in, plan limits, streaming.",
     type: "API gateway",
     year: "2026",
     desc: "Gateway module for the sushrutalgs.ai platform that connects the apps to the AI backend, signing users in, enforcing their plan limits, and streaming answers back. Live in production.",
