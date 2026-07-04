@@ -214,7 +214,10 @@ export default function BetaPage() {
     if (prefersReduced() || window.scrollY < 40) {
       lockScroll()
       setOpenSection(null)
-      window.scrollTo({ top: 0, behavior: "auto" })
+      // "instant", not "auto": with html { scroll-behavior: smooth } an
+      // "auto" scroll resolves to smooth, animating for the very users who
+      // asked for no motion.
+      window.scrollTo({ top: 0, behavior: "instant" })
       return
     }
     lockScroll(1600)
@@ -308,7 +311,7 @@ export default function BetaPage() {
       }
       const el = document.getElementById(id)
       if (el) {
-        window.scrollTo({ top: el.offsetTop - 56, behavior: reduced ? "auto" : "smooth" })
+        window.scrollTo({ top: el.offsetTop - 56, behavior: reduced ? "instant" : "smooth" })
       }
     }
     if (switching && !reduced) {
@@ -355,6 +358,13 @@ export default function BetaPage() {
           font-size: 10px;
         }
 
+        /* All scrolling on this page is choreographed manually (pre-computed
+           targets, scroll-then-flip sequencing). Browser scroll anchoring
+           fights that: when a section's min-height snaps open while the
+           viewport is scrolled, Chrome/Firefox re-anchor and teleport the
+           scroll position mid-choreography. */
+        html { overflow-anchor: none; }
+
         /* Section open/close — animated grid row, so height-to-auto tweens in
            every engine (interpolate-size is still Chromium-only and the old
            height transition snapped open on Safari/Firefox). */
@@ -395,7 +405,8 @@ export default function BetaPage() {
         .hero-anim > div > *:nth-child(1) { animation-delay: 100ms; }
         .hero-anim > div > *:nth-child(2) { animation-delay: 280ms; }
         .hero-anim > div > *:nth-child(3),
-        .hero-anim > div > *:nth-child(4) { animation-delay: 200ms; }
+        .hero-anim > div > *:nth-child(4),
+        .hero-anim > div > *:nth-child(5) { animation-delay: 200ms; }
 
         /* Hero layout — one set of elements recomposed by grid areas. Phones:
            photo anchors the left column, name + short copy stack beside it.
@@ -449,7 +460,7 @@ export default function BetaPage() {
         /* Short, wide viewports: compact the hero proportionally so the closed
            landing still fits. Photo column and display shrink on the same
            curve as the default scale, just lower caps. */
-        @media (min-width: 768px) and (max-height: 900px) {
+        @media (min-width: 768px) and (max-height: 960px) {
           .hero-section { padding-top: 0.75rem; padding-bottom: 0.75rem; }
           .hero-section h1 { font-size: clamp(52px, 8.5vw, 92px); }
           .hero-grid { grid-template-columns: 1fr clamp(150px, 20vw, 220px); }
