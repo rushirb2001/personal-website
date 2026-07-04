@@ -651,7 +651,7 @@ export default function BetaPage() {
                 page body); the roles sentence is sm+ only — phones carry it
                 in the hero-open line instead. */}
             <div className="hero-desc display font-light text-[16px] sm:text-[clamp(16px,1.7vw,20px)] mt-0 sm:mt-7 lg:mt-8 leading-[1.5] max-w-[44ch]">
-              Currently building{" "}
+              Building{" "}
               <a
                 href="https://sushrutalgs.ai/welcome"
                 target="_blank"
@@ -660,9 +660,8 @@ export default function BetaPage() {
               >
                 sushrutalgs.ai <span aria-hidden className="mono text-[0.85em] align-middle">↗</span>
               </a>{" "}
-              for India, pushing the frontier on the next big medical AI for
-              students, residents, and surgical practitioners. Previously at
-              ASU and Cadence.
+              &mdash; medical AI for India&rsquo;s students, residents, and
+              surgeons. Previously at ASU and Cadence.
               <span className="hidden sm:block mt-4 muted">
                 Looking for Product Manager, AI Engineer, and
                 Forward-Deployed Engineer roles.
