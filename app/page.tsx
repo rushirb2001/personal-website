@@ -1052,6 +1052,15 @@ export default function BetaPage() {
               <p className="muted whitespace-nowrap">
                 <span className="faint">© 2026 </span>Rushir Bhavsar
               </p>
+              {/* Discreet storefront link — kept separate from the hire-me
+                  story, hidden on the narrowest phones so the footer row
+                  never overflows. */}
+              <Link
+                href="/playbook"
+                className="accent-link small-caps faint whitespace-nowrap hidden xs:inline-flex items-center gap-1"
+              >
+                The Playbook <span aria-hidden>↗</span>
+              </Link>
               <p className="small-caps faint whitespace-nowrap">
                 <span className="accent">+</span> <span className="xs:hidden">Tempe, AZ</span>
                 <span className="hidden xs:inline">Tempe, Arizona</span>

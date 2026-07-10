@@ -1,0 +1,496 @@
+import type { Metadata } from "next"
+import Image from "next/image"
+import Link from "next/link"
+import Script from "next/script"
+import type { ReactNode } from "react"
+
+// --- Gumroad product links -------------------------------------------------
+// Buy buttons are Gumroad overlay anchors: gumroad.js (loaded lazily below)
+// upgrades any <a data-gumroad-overlay> into an on-page checkout modal.
+// TODO(rushir): replace these placeholder permalinks with the real product
+// URLs once the Lite/Core products are published on Gumroad. Format:
+//   https://<your-subdomain>.gumroad.com/l/<permalink>
+const GUMROAD_CORE = "https://rushirb.gumroad.com/l/playbook?wanted=true" // $15 Core, REPLACE WITH YOURS
+const GUMROAD_LITE = "https://rushirb.gumroad.com/l/playbook-lite?wanted=true" // Free Lite, REPLACE WITH YOURS
+
+const INSIDE = [
+  {
+    label: "Projects",
+    name: "16 production-grade projects",
+    body: "RAG + eval harnesses, FDE agents with approval gates, MLOps pipelines, streaming data, system-design builds, GitOps infra. Each with what to build, why it matters to hiring, a free stack, a week-by-week plan, the interview questions it prepares you for, and the resume bullets it produces.",
+    meta: ["RAG", "Agents", "MLOps", "Infra"],
+  },
+  {
+    label: "Track",
+    name: "Pick-your-track guide",
+    body: "Target role → your exact 2-3 projects. Don't build all 16; build the right few, deep.",
+    meta: ["FDE", "AI-ML", "Data"],
+  },
+  {
+    label: "Stack",
+    name: "The $0 stack",
+    body: "Groq/Gemini free tiers, Colab/Kaggle GPU, Oracle always-free ARM, Supabase. No GPU bills, no course fees.",
+    meta: ["Groq", "Colab", "Oracle", "Supabase"],
+  },
+  {
+    label: "System",
+    name: "The operating system most guides skip",
+    body: "A git-history + commit-discipline ladder, a DevOps/networking depth map, and a LinkedIn playbook that reads as engineering, not marketing.",
+    meta: ["git", "DevOps", "LinkedIn"],
+  },
+  {
+    label: "Companion",
+    name: "The companion",
+    tag: "Core",
+    body: "Clone-ready repo skeletons (README, design-doc, CI, CLAUDE.md), a 6-month progress tracker, a Resume Bullet Bank, and a buyers' Discord for feedback and accountability.",
+    meta: ["Skeletons", "Tracker", "Discord"],
+  },
+]
+
+const SAMPLES = [
+  {
+    src: "/playbook/sample-1-pick-your-track.png",
+    alt: "Sample page: the Pick-your-track guide mapping target roles to their 2-3 projects.",
+    caption: "Pick your track",
+  },
+  {
+    src: "/playbook/sample-2-project-rag-eval.png",
+    alt: "Sample page: a RAG + eval-harness project with a free stack and a week-by-week plan.",
+    caption: "A project, in full",
+  },
+  {
+    src: "/playbook/sample-3-linkedin-playbook.png",
+    alt: "Sample page: the LinkedIn playbook that reads as engineering, not marketing.",
+    caption: "The LinkedIn playbook",
+  },
+]
+
+const PRICING_ROWS = [
+  { label: "3 projects + git section", lite: true, core: true, cohort: true },
+  { label: "All 16 projects + interview prep + resume bank", lite: false, core: true, cohort: true },
+  { label: "Repo skeletons + progress tracker", lite: false, core: true, cohort: true },
+  { label: "Buyers' Discord + lifetime updates", lite: false, core: true, cohort: true },
+  { label: "Live cohort + office hours", lite: false, core: false, cohort: true },
+]
+
+const FAQ = [
+  {
+    q: "Do I need money or a GPU?",
+    a: "No. Every project runs on free tiers. That's the whole point.",
+  },
+  {
+    q: "Solo, or do I need a partner?",
+    a: "Solo-first: the plans are written for one person. A Partner Bonus covers the two-person review workflow if you find one.",
+  },
+  {
+    q: "Is this just a list of ideas?",
+    a: "No, it's a 6-month system: week-by-week plans, the git/LinkedIn operating manual, repo skeletons, and a tracker.",
+  },
+  {
+    q: "I'm not in the US / not a student.",
+    a: "It still works, and the playbook is about what to build and how to show it, which is universal.",
+  },
+  {
+    q: "Will it go stale?",
+    a: "Lifetime updates. The stack and projects evolve with the market.",
+  },
+]
+
+export function generateMetadata(): Metadata {
+  const title = "The AI-Engineer Portfolio Playbook · Rushir Bhavsar"
+  const description =
+    "Go from a blank GitHub to a hireable AI-engineering portfolio in six months, on $0 of compute. 16 production-grade projects chosen by target role, each with a week-by-week plan, the interview questions it prepares you for, and the resume bullets it produces."
+  return {
+    title,
+    description,
+    openGraph: { title, description, type: "website" },
+    twitter: { card: "summary", title, description },
+  }
+}
+
+export default function PlaybookPage() {
+  return (
+    <main className="paper grain min-h-[100svh]">
+      {/* gumroad.js upgrades the overlay anchors into an on-page checkout
+          modal. lazyOnload keeps it entirely off the render-blocking path so
+          it never touches FCP/LCP. */}
+      <Script src="https://gumroad.com/js/gumroad.js" strategy="lazyOnload" />
+
+      <PlaybookStyle />
+
+      <div className="max-w-[1100px] mx-auto px-6 lg:px-12">
+        {/* Top bar: a discreet way back to the portfolio, kept separate from
+            the sales story. */}
+        <nav className="flex items-center justify-between py-5 xs:py-6">
+          <Link href="/" className="accent-link mono text-[13px] inline-flex items-center gap-1.5">
+            <span aria-hidden>←</span> Rushir Bhavsar
+          </Link>
+          <span className="mono small-caps faint">The Playbook</span>
+        </nav>
+
+        {/* ---- Hero ---------------------------------------------------- */}
+        <section className="pt-10 xs:pt-16 lg:pt-20 pb-14 xs:pb-20">
+          <p className="mono small-caps accent mb-6">The AI-Engineer Portfolio Playbook</p>
+          <h1 className="display font-light tracking-tight leading-[1.08] text-[30px] xs:text-[clamp(34px,5vw,52px)] max-w-[17ch]">
+            Go from a blank GitHub to a hireable AI-engineering portfolio in six months
+            <span className="accent">.</span>
+          </h1>
+          <div className="display font-light text-[16px] sm:text-[clamp(16px,1.7vw,20px)] mt-7 lg:mt-8 leading-[1.5] max-w-[66ch] muted">
+            You came to the US to become an AI engineer. You can code. But your GitHub is
+            thin, and you don&rsquo;t know <em className="ink not-italic">which</em> projects
+            actually get you an FDE, AI-ML, or data role. This is the system I used, 16
+            production-grade projects on free tiers, a git and LinkedIn playbook, and the
+            exact resume bullets each one produces.
+          </div>
+          <div className="mt-9 xs:mt-10">
+            <CTAs />
+            <p className="mono text-[11px] faint mt-4">
+              Instant access · lifetime updates · 7-day money-back guarantee
+            </p>
+          </div>
+        </section>
+
+        {/* ---- The problem -------------------------------------------- */}
+        <Head title="The problem" />
+        <Row label="The gap">
+          <p className="display font-light text-[16px] xs:text-[18px] leading-relaxed ink max-w-[76ch]">
+            Most students ship five shallow demos and wonder why nobody replies. Every
+            company building with AI asks the same interview question:{" "}
+            <em className="muted">how did you know it worked?</em> And a demo has no
+            answer. Meanwhile the advice online is a pile of &ldquo;10 project ideas&rdquo;
+            with no depth, no numbers, no plan, and no idea which project maps to which role.
+          </p>
+          <p className="display font-light text-[16px] xs:text-[18px] leading-relaxed muted max-w-[76ch] mt-5">
+            One deep project with real numbers beats five demos. This playbook gives you{" "}
+            <span className="ink">2-3 of them, chosen for your target role</span>, built week
+            by week, for free, plus the git history, the writeups, and the LinkedIn presence
+            that make recruiters reach out instead of the other way around.
+          </p>
+        </Row>
+
+        {/* ---- What's inside ------------------------------------------ */}
+        <Head title="What's inside" count={INSIDE.length} />
+        <ol>
+          {INSIDE.map((item, i) => (
+            <li
+              key={item.name}
+              className={`grid grid-cols-1 xs:grid-cols-[clamp(80px,14vw,140px)_1fr_clamp(140px,22vw,240px)] lg:grid-cols-[140px_1fr_240px] gap-3 xs:gap-6 lg:gap-12 py-5 xs:py-7 lg:py-8 first:pt-4 xs:first:pt-6 ${
+                i !== INSIDE.length - 1 ? "border-b rule" : ""
+              }`}
+            >
+              <div className="mono text-[12px] xs:text-[13px] leading-none ink xs:pt-2 lg:pt-[10px]">
+                {item.label}
+              </div>
+              <div>
+                <h3 className="display text-[20px] xs:text-[24px] lg:text-[27px] font-light tracking-tight leading-tight">
+                  {item.name}
+                  {item.tag ? (
+                    <span className="mono small-caps accent align-middle ml-2">[{item.tag}]</span>
+                  ) : null}
+                </h3>
+                <p className="mono text-[13px] xs:text-[14px] leading-relaxed muted mt-3 max-w-[74ch]">
+                  {item.body}
+                </p>
+              </div>
+              <div className="xs:pt-2 lg:pt-[10px]">
+                <p className="mono small-caps faint mb-2 xs:mb-3">Covers</p>
+                <ul className="flex flex-wrap gap-x-3 gap-y-1.5 mono text-[12px] xs:text-[13px]">
+                  {item.meta.map((m) => (
+                    <li key={m} className="muted">
+                      {m}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </li>
+          ))}
+        </ol>
+
+        {/* ---- A look inside (samples) -------------------------------- */}
+        <Head title="A look inside" />
+        <Row label="Sample pages">
+          <div className="grid grid-cols-1 xs:grid-cols-3 gap-4 lg:gap-6">
+            {SAMPLES.map((s) => (
+              <figure key={s.src} className="m-0">
+                <div className="rounded-lg overflow-hidden ring-1 ring-black/10 bg-white shadow-[0_2px_16px_-6px_rgba(0,0,0,0.25)]">
+                  <Image
+                    src={s.src}
+                    alt={s.alt}
+                    width={1275}
+                    height={1650}
+                    sizes="(max-width: 475px) 88vw, 300px"
+                    className="w-full h-auto block"
+                  />
+                </div>
+                <figcaption className="mono small-caps faint mt-3 text-center">
+                  {s.caption}
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+        </Row>
+
+        {/* ---- Why trust this ----------------------------------------- */}
+        <Head title="Why trust this" />
+        <Row label="Proof">
+          <p className="display font-light text-[16px] xs:text-[18px] leading-relaxed ink max-w-[76ch]">
+            The portfolio you&rsquo;re reading this on was built exactly the way the guide
+            teaches: role-targeted projects, case studies that make even private work
+            credible, real metrics. I ship in public:{" "}
+            <Link href="/" className="accent-link accent">
+              the projects on this site
+            </Link>
+            , and open-source tools like{" "}
+            <a
+              href="https://github.com/rushirb2001"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="accent-link accent"
+            >
+              cohors <span aria-hidden className="mono text-[0.85em] align-middle">↗</span>
+            </a>
+            . The proof is the site you&rsquo;re standing on. No hustle, no exaggerated
+            numbers, and the guide even tells you to use numbers you can defend for ten minutes,
+            because a commenter&rsquo;s one hard question undoes months of credibility.
+          </p>
+        </Row>
+
+        {/* ---- Pricing ------------------------------------------------ */}
+        <Head title="Pricing" />
+        <Row label="Plans">
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse mono text-[12px] xs:text-[13px] min-w-[460px]">
+              <thead>
+                <tr className="border-b rule">
+                  <th className="small-caps faint font-normal text-left py-3 pr-6"></th>
+                  <th className="font-normal text-left py-3 px-4">
+                    <span className="display ink text-[15px] font-light">Lite</span>{" "}
+                    <span className="small-caps faint">Free</span>
+                  </th>
+                  <th className="font-normal text-left py-3 px-4">
+                    <span className="display ink text-[15px] font-light">Core</span>{" "}
+                    <span className="small-caps accent">$15</span>
+                  </th>
+                  <th className="font-normal text-left py-3 pl-4">
+                    <span className="display muted text-[15px] font-light">Cohort</span>{" "}
+                    <span className="small-caps faint">soon</span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {PRICING_ROWS.map((r, ri) => (
+                  <tr key={r.label} className={ri < PRICING_ROWS.length - 1 ? "border-b rule" : ""}>
+                    <td className="py-3 pr-6 ink">{r.label}</td>
+                    <Mark on={r.lite} />
+                    <Mark on={r.core} accent />
+                    <Mark on={r.cohort} />
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p className="mono text-[11px] faint mt-4">
+            Launch price $9-12 for the first 50 buyers, then $15.
+          </p>
+          <div className="mt-7">
+            <CTAs coreLabel="Get Core · $15" liteLabel="Start with 3 free projects →" />
+          </div>
+        </Row>
+
+        {/* ---- FAQ ---------------------------------------------------- */}
+        <Head title="FAQ" count={FAQ.length} />
+        <dl>
+          {FAQ.map((f, i) => (
+            <div
+              key={f.q}
+              className={`grid grid-cols-1 xs:grid-cols-[clamp(80px,14vw,140px)_1fr] lg:grid-cols-[140px_1fr] gap-2 xs:gap-6 lg:gap-12 py-5 xs:py-6 first:pt-4 xs:first:pt-6 ${
+                i !== FAQ.length - 1 ? "border-b rule" : ""
+              }`}
+            >
+              <dt className="mono small-caps faint xs:pt-1">Q</dt>
+              <div>
+                <p className="display text-[16px] xs:text-[18px] font-light tracking-tight ink">
+                  {f.q}
+                </p>
+                <dd className="mono text-[13px] xs:text-[14px] leading-relaxed muted mt-2 max-w-[74ch] m-0">
+                  {f.a}
+                </dd>
+              </div>
+            </div>
+          ))}
+        </dl>
+
+        {/* ---- Guarantee ---------------------------------------------- */}
+        <Head title="Guarantee" />
+        <Row label="7 days">
+          <p className="display font-light text-[16px] xs:text-[18px] leading-relaxed ink max-w-[68ch]">
+            7-day, no-questions-asked refund. If it doesn&rsquo;t give you a clear plan
+            you&rsquo;re excited to start, email me and I&rsquo;ll refund you.
+          </p>
+        </Row>
+
+        {/* ---- Final CTA ---------------------------------------------- */}
+        <section className="py-16 xs:py-24 text-center">
+          <h2 className="display font-light tracking-tight leading-[1.12] text-[24px] xs:text-[clamp(28px,4vw,40px)] max-w-[24ch] mx-auto">
+            Stop shipping demos nobody reads. Build 2-3 things that get you hired
+            <span className="accent">.</span>
+          </h2>
+          <div className="mt-9 flex justify-center">
+            <CTAs center />
+          </div>
+        </section>
+
+        <footer className="border-t rule py-6 xs:py-8 mono text-[11px] flex items-center justify-between gap-4">
+          <Link href="/" className="accent-link muted">
+            <span className="faint">© 2026 </span>Rushir Bhavsar
+          </Link>
+          <span className="small-caps faint">Tempe, Arizona</span>
+        </footer>
+      </div>
+    </main>
+  )
+}
+
+// --- helpers ---------------------------------------------------------------
+
+// Section header in the landing page's vocabulary: a "+" marker, the title
+// with its trailing accent period, and an optional zero-padded count on the
+// right, aligned to the same 3-column grid the rows below use. Non-sticky
+// (this page doesn't collapse), full-bleed rule via negative margin.
+function Head({ title, count }: { title: string; count?: number }) {
+  return (
+    <div
+      className="mt-14 xs:mt-20 -mx-6 lg:-mx-12 px-6 lg:px-12 py-3 border-b rule"
+      style={{ backgroundColor: "#f4f1ec" }}
+    >
+      <div className="grid grid-cols-[auto_1fr_auto] xs:grid-cols-[clamp(80px,14vw,140px)_1fr_clamp(140px,22vw,240px)] lg:grid-cols-[140px_1fr_240px] gap-3 xs:gap-6 lg:gap-12 items-baseline">
+        <span className="display accent text-[22px] xs:text-[clamp(20px,4.5vw,26px)] lg:text-3xl font-light leading-none">
+          +
+        </span>
+        <h2 className="display text-[22px] xs:text-[clamp(20px,4.5vw,26px)] lg:text-3xl font-light tracking-tight leading-none">
+          {title}
+          <span className="accent">.</span>
+        </h2>
+        {count != null ? (
+          <span className="mono text-[12px] xs:text-[13px] faint text-right tracking-[0.18em]">
+            {String(count).padStart(2, "0")}
+          </span>
+        ) : (
+          <span aria-hidden />
+        )}
+      </div>
+    </div>
+  )
+}
+
+// A single label-left / content-right block on the section grid (right column
+// left open for the prose to breathe), mirroring the project case-study rows.
+function Row({ label, children }: { label: string; children: ReactNode }) {
+  return (
+    <div className="grid grid-cols-1 xs:grid-cols-[clamp(80px,14vw,140px)_1fr] lg:grid-cols-[140px_1fr] gap-2 xs:gap-6 lg:gap-12 pt-6 xs:pt-8">
+      <p className="mono small-caps faint xs:pt-1">{label}</p>
+      <div>{children}</div>
+    </div>
+  )
+}
+
+// Pricing check / dash cell, matching the site's table treatment.
+function Mark({ on, accent }: { on: boolean; accent?: boolean }) {
+  return (
+    <td className="py-3 px-4">
+      {on ? (
+        <span className={accent ? "accent" : "ink"} aria-label="included">
+          ✓
+        </span>
+      ) : (
+        <span className="faint" aria-label="not included">
+          ·
+        </span>
+      )}
+    </td>
+  )
+}
+
+// Buy buttons. The primary is a filled accent block, the one deliberate
+// departure from the site's text-link vocabulary, because a storefront needs
+// an unmistakable buy action. The secondary stays a site-standard accent-link.
+function CTAs({
+  coreLabel = "Get the playbook · $15",
+  liteLabel = "Read 3 projects free →",
+  center,
+}: {
+  coreLabel?: string
+  liteLabel?: string
+  center?: boolean
+}) {
+  return (
+    <div
+      className={`flex flex-col xs:flex-row items-stretch xs:items-center gap-4 xs:gap-6 ${
+        center ? "xs:justify-center" : ""
+      }`}
+    >
+      <a href={GUMROAD_CORE} data-gumroad-overlay className="cta-buy display">
+        {coreLabel}
+      </a>
+      <a
+        href={GUMROAD_LITE}
+        data-gumroad-overlay
+        className="accent-link mono text-[13px] inline-flex items-center justify-center gap-1.5"
+      >
+        {liteLabel}
+      </a>
+    </div>
+  )
+}
+
+// Editorial design tokens, injected inline per this repo's convention (see the
+// <style> block in app/page.tsx and TOKENS in ProjectModal.tsx).
+function PlaybookStyle() {
+  return (
+    <style>{`
+      html { scrollbar-gutter: stable; }
+      .paper { background-color: #f4f1ec; color: #1a1a1a; }
+      .ink { color: #1a1a1a; }
+      .muted { color: rgba(26,26,26,0.62); }
+      .faint { color: rgba(26,26,26,0.42); }
+      .rule { border-color: rgba(26,26,26,0.12); }
+      .accent { color: #1f3a5f; }
+      .display { font-family: "Google Sans", ui-sans-serif, system-ui, sans-serif; font-optical-sizing: auto; }
+      .mono { font-family: "Google Sans Code", ui-monospace, "SFMono-Regular", "Menlo", monospace; font-variation-settings: "MONO" 1; }
+      .small-caps { text-transform: uppercase; letter-spacing: 0.18em; font-size: 10px; }
+
+      .accent-link { position: relative; transition: color 200ms ease; }
+      .accent-link::after {
+        content: ""; position: absolute; left: 0; right: 0; bottom: -2px; height: 1px;
+        background-color: #1f3a5f; transform-origin: left; transform: scaleX(0.35);
+        transition: transform 250ms ease;
+      }
+      @media (hover: hover) {
+        .accent-link:hover { color: #1f3a5f; }
+        .accent-link:hover::after { transform: scaleX(1); }
+      }
+
+      /* The one filled control on the site. Colour is static; only the hover
+         shade transitions, and it is (hover: hover)-gated so touch never
+         latches it. */
+      .cta-buy {
+        display: inline-flex; align-items: center; justify-content: center;
+        text-align: center; padding: 13px 22px; border-radius: 6px;
+        font-size: 15px; letter-spacing: -0.01em; line-height: 1;
+        background-color: #1f3a5f; color: #f4f1ec;
+        transition: background-color 200ms ease;
+      }
+      @media (hover: hover) { .cta-buy:hover { background-color: #16314f; } }
+
+      .grain::before {
+        content: ""; position: fixed; inset: 0; pointer-events: none;
+        background-image: radial-gradient(rgba(26,26,26,0.05) 1px, transparent 1px);
+        background-size: 3px 3px; mix-blend-mode: multiply; z-index: 1;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .accent-link, .accent-link::after, .cta-buy { transition: none; }
+      }
+    `}</style>
+  )
+}
