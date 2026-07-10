@@ -131,7 +131,7 @@ export default function PlaybookPage() {
         {/* ---- Hero ---------------------------------------------------- */}
         <section className="pt-10 xs:pt-16 lg:pt-20 pb-14 xs:pb-20">
           <p className="mono small-caps accent mb-6">The AI-Engineer Portfolio Playbook</p>
-          <h1 className="display font-light tracking-tight leading-[1.08] text-[30px] xs:text-[clamp(34px,5vw,52px)] max-w-[17ch]">
+          <h1 className="display font-light tracking-tight leading-[1.08] text-[30px] xs:text-[clamp(34px,5vw,52px)] max-w-[38ch]">
             Go from a blank GitHub to a hireable AI-engineering portfolio in six months
             <span className="accent">.</span>
           </h1>
