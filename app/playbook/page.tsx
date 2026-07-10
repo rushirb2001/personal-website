@@ -49,17 +49,17 @@ const INSIDE = [
 
 const SAMPLES = [
   {
-    src: "/playbook/sample-1-pick-your-track.png",
+    src: "/playbook/sample-1-pick-your-track.7fec722e.png",
     alt: "Sample page: the Pick-your-track guide mapping target roles to their 2-3 projects.",
     caption: "Pick your track",
   },
   {
-    src: "/playbook/sample-2-project-rag-eval.png",
+    src: "/playbook/sample-2-project-rag-eval.9963c084.png",
     alt: "Sample page: a RAG + eval-harness project with a free stack and a week-by-week plan.",
     caption: "A project, in full",
   },
   {
-    src: "/playbook/sample-3-linkedin-playbook.png",
+    src: "/playbook/sample-3-linkedin-playbook.9c65c3f8.png",
     alt: "Sample page: the LinkedIn playbook that reads as engineering, not marketing.",
     caption: "The LinkedIn playbook",
   },
