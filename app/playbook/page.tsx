@@ -149,9 +149,13 @@ export default function PlaybookPage() {
           </div>
           <div className="mt-9 xs:mt-10">
             <CTAs />
-            <p className="mono text-[11px] faint mt-4">
-              Instant access · lifetime updates · 7-day money-back guarantee
-            </p>
+            <div className="mt-5 flex flex-wrap items-center gap-x-3 gap-y-1.5 mono small-caps faint">
+              <span>Instant access</span>
+              <span aria-hidden className="accent">·</span>
+              <span>Lifetime updates</span>
+              <span aria-hidden className="accent">·</span>
+              <span>7-day money-back guarantee</span>
+            </div>
           </div>
         </section>
 
