@@ -3,38 +3,28 @@
 import { useEffect, useRef, useState } from "react"
 import { GUMROAD_CORE, GUMROAD_LITE } from "./links"
 
-// Fixed header bar that impersonates the in-flow section headers: same grid,
-// same type scale, same rule, so when a section's header scrolls under it the
-// takeover is invisible and the page reads as "the header anchored". Only the
-// title text changes as sections pass; the Buy CTAs stay put on the right.
-// Scrollspy: the section straddling the bar's own bottom edge is current; no
-// section there (hero, final CTA, footer) hides the bar, revealing the normal
-// document. No enter/exit animation on purpose: an instant toggle at the exact
-// takeover moment is what makes it seamless.
+// Fixed Buy-CTA overlay. The section headers themselves anchor and hand off
+// natively (sticky within contiguous sections, so the next header physically
+// pushes the pinned one out, scroll-synchronized by the browser). This overlay
+// only keeps the two Buy buttons floating at the top-right over whichever
+// header is pinned; it appears when the reader is inside the sections and
+// hides in the hero and at the final CTA (no section straddling the band).
 export function PlaybookBar() {
-  const [title, setTitle] = useState<string | null>(null)
-  const barRef = useRef<HTMLDivElement>(null)
-  // Keep the last real title so React never renders an empty heading mid-toggle.
-  const lastTitleRef = useRef<string>("")
-  if (title) lastTitleRef.current = title
+  const [active, setActive] = useState(false)
+  const stripRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const sections = Array.from(document.querySelectorAll<HTMLElement>("[data-pb-title]"))
     if (!sections.length || typeof IntersectionObserver === "undefined") return
 
     const compute = () => {
-      // Takeover line = the bar's own bottom edge: the moment an in-flow header
-      // slides under the bar, its section owns the title.
-      const bandY = barRef.current?.offsetHeight ?? 56
-      let current: HTMLElement | null = null
-      for (const s of sections) {
+      // A section straddling the pinned header's row means a header is pinned.
+      const bandY = stripRef.current?.offsetHeight ?? 56
+      const current = sections.some((s) => {
         const r = s.getBoundingClientRect()
-        if (r.top <= bandY && r.bottom > bandY) {
-          current = s
-          break
-        }
-      }
-      setTitle(current ? (current.dataset.pbTitle ?? null) : null)
+        return r.top <= bandY && r.bottom > bandY
+      })
+      setActive(current)
     }
 
     // IO fires at section-boundary crossings; geometry is read only then.
@@ -46,7 +36,7 @@ export function PlaybookBar() {
     compute()
 
     // scrollend where it exists (Chrome/Firefox, once per gesture); an
-    // rAF-coalesced scroll fallback where it doesn't (Safari), so the title
+    // rAF-coalesced scroll fallback where it doesn't (Safari), so the state
     // can never go stale between IO boundary events.
     let raf = 0
     const onScroll = () => {
@@ -73,58 +63,34 @@ export function PlaybookBar() {
     }
   }, [])
 
-  const shown = title !== null
-  const text = title ?? lastTitleRef.current
-
   return (
     <div
-      ref={barRef}
+      ref={stripRef}
       className="pb-bar fixed top-0 left-0 right-0 z-40"
-      data-shown={shown || undefined}
-      inert={!shown}
+      data-shown={active || undefined}
+      inert={!active}
     >
+      {/* Same container as the page so the buttons align with the header grid;
+          the wrapper is click-through, only the buttons take pointer events. */}
       <div className="max-w-[1100px] mx-auto px-6 lg:px-12">
-        {/* Pixel-identical footprint to the in-flow Head (same -mx bleed, py-3,
-            rule, grid, type scale) so the takeover is invisible. */}
-        <div
-          className="-mx-6 lg:-mx-12 px-6 lg:px-12 py-3 border-b rule"
-          style={{ backgroundColor: "#f4f1ec" }}
-        >
-          <div className="relative grid grid-cols-[auto_1fr] xs:grid-cols-[clamp(80px,14vw,140px)_1fr] lg:grid-cols-[140px_1fr] gap-3 xs:gap-6 lg:gap-12 items-baseline">
-            <span
-              aria-hidden
-              className="display accent text-[22px] xs:text-[clamp(20px,4.5vw,26px)] lg:text-3xl font-light leading-none"
-            >
-              +
-            </span>
-            {/* Not a heading element: the real h2 lives in the document. */}
-            <span
-              key={text}
-              className="pb-bar-title display ink text-[22px] xs:text-[clamp(20px,4.5vw,26px)] lg:text-3xl font-light tracking-tight leading-none truncate pr-40 sm:pr-72"
-            >
-              {text}
-              <span className="accent">.</span>
-            </span>
-            <span className="pb-bar-cta">
-              <a
-                href={GUMROAD_CORE}
-                data-gumroad-overlay
-                aria-haspopup="dialog"
-                className="sh-cta sh-cta-solid"
-              >
-                Get the playbook · $15
-              </a>
-              {/* Hidden below 640px via the .pb-bar rule in PlaybookStyle. */}
-              <a
-                href={GUMROAD_LITE}
-                data-gumroad-overlay
-                aria-haspopup="dialog"
-                className="sh-cta sh-cta-ghost"
-              >
-                Read 3 free →
-              </a>
-            </span>
-          </div>
+        <div className="flex items-center justify-end gap-2.5 py-3">
+          <a
+            href={GUMROAD_CORE}
+            data-gumroad-overlay
+            aria-haspopup="dialog"
+            className="sh-cta sh-cta-solid"
+          >
+            Get the playbook · $15
+          </a>
+          {/* Hidden below 640px via the .pb-bar rule in PlaybookStyle. */}
+          <a
+            href={GUMROAD_LITE}
+            data-gumroad-overlay
+            aria-haspopup="dialog"
+            className="sh-cta sh-cta-ghost"
+          >
+            Read 3 free →
+          </a>
         </div>
       </div>
     </div>

@@ -122,8 +122,8 @@ export default function PlaybookPage() {
 
       <PlaybookStyle />
 
-      {/* Fixed top bar: appears when scrolled into the sections, re-titles
-          itself per section, and keeps the Buy CTAs one click away. */}
+      {/* Fixed Buy-CTA overlay: rides at the top-right over whichever section
+          header is pinned; the headers themselves anchor and push natively. */}
       <PlaybookBar />
 
       <div className="max-w-[1100px] mx-auto px-6 lg:px-12">
@@ -142,7 +142,7 @@ export default function PlaybookPage() {
         </nav>
 
         {/* ---- Hero ---------------------------------------------------- */}
-        <section className="pt-4 xs:pt-8 lg:pt-10">
+        <section className="pt-4 xs:pt-8 lg:pt-10 pb-4 xs:pb-6">
           <h1 className="display font-light tracking-tight leading-[1.08] text-[30px] xs:text-[clamp(34px,5vw,52px)] max-w-[38ch]">
             Zero to Hired: from a blank{" "}
             <span className="gh-pill"><GhMark />GitHub</span> to an{" "}
@@ -166,7 +166,7 @@ export default function PlaybookPage() {
         {/* Section wrappers carry data-pb-title for the PlaybookBar scrollspy;
             the in-flow Head stays visible in the document like any heading. */}
         {/* ---- The problem -------------------------------------------- */}
-        <section data-pb-title="The problem" className="pt-4 xs:pt-6">
+        <section data-pb-title="The problem">
         <Head title="The problem" />
         <Row label="The gap">
           <p className="display font-light text-[16px] xs:text-[18px] leading-relaxed ink max-w-[76ch]">
@@ -184,10 +184,14 @@ export default function PlaybookPage() {
           </p>
         </Row>
 
+        {/* In-content spacer (not padding): sticky headers are constrained
+            to the content box, so padding would end the pin early and open a
+            gap in the push handoff. */}
+        <div aria-hidden className="h-14 xs:h-20" />
         </section>
 
         {/* ---- What's inside ------------------------------------------ */}
-        <section data-pb-title="What's inside" className="pt-14 xs:pt-20">
+        <section data-pb-title="What's inside">
         <Head title="What's inside" />
         <ol>
           {INSIDE.map((item, i) => (
@@ -227,10 +231,14 @@ export default function PlaybookPage() {
           ))}
         </ol>
 
+        {/* In-content spacer (not padding): sticky headers are constrained
+            to the content box, so padding would end the pin early and open a
+            gap in the push handoff. */}
+        <div aria-hidden className="h-14 xs:h-20" />
         </section>
 
         {/* ---- A look inside (samples) -------------------------------- */}
-        <section data-pb-title="A look inside" className="pt-14 xs:pt-20">
+        <section data-pb-title="A look inside">
         <Head title="A look inside" />
         <Row label="Sample pages">
           <div className="grid grid-cols-1 xs:grid-cols-3 gap-4 lg:gap-6">
@@ -254,10 +262,14 @@ export default function PlaybookPage() {
           </div>
         </Row>
 
+        {/* In-content spacer (not padding): sticky headers are constrained
+            to the content box, so padding would end the pin early and open a
+            gap in the push handoff. */}
+        <div aria-hidden className="h-14 xs:h-20" />
         </section>
 
         {/* ---- Why trust this ----------------------------------------- */}
-        <section data-pb-title="Why trust this" className="pt-14 xs:pt-20">
+        <section data-pb-title="Why trust this">
         <Head title="Why trust this" />
         <Row label="Proof">
           <p className="display font-light text-[16px] xs:text-[18px] leading-relaxed ink max-w-[76ch]">
@@ -284,10 +296,14 @@ export default function PlaybookPage() {
           </p>
         </Row>
 
+        {/* In-content spacer (not padding): sticky headers are constrained
+            to the content box, so padding would end the pin early and open a
+            gap in the push handoff. */}
+        <div aria-hidden className="h-14 xs:h-20" />
         </section>
 
         {/* ---- Pricing ------------------------------------------------ */}
-        <section data-pb-title="Pricing" className="pt-14 xs:pt-20">
+        <section data-pb-title="Pricing">
         <Head title="Pricing" />
         <Row label="Plans">
           <div className="overflow-x-auto pb-scroll" tabIndex={0} role="region" aria-label="Pricing comparison">
@@ -347,10 +363,14 @@ export default function PlaybookPage() {
           </div>
         </Row>
 
+        {/* In-content spacer (not padding): sticky headers are constrained
+            to the content box, so padding would end the pin early and open a
+            gap in the push handoff. */}
+        <div aria-hidden className="h-14 xs:h-20" />
         </section>
 
         {/* ---- FAQ ---------------------------------------------------- */}
-        <section data-pb-title="FAQ" className="pt-14 xs:pt-20">
+        <section data-pb-title="FAQ">
         <Head title="FAQ" />
         {/* Plain headings + paragraphs: dl semantics with decorative dt text
             read as "Q, Q, Q" in screen readers; h3s match the tier list. */}
@@ -377,10 +397,14 @@ export default function PlaybookPage() {
           ))}
         </div>
 
+        {/* In-content spacer (not padding): sticky headers are constrained
+            to the content box, so padding would end the pin early and open a
+            gap in the push handoff. */}
+        <div aria-hidden className="h-14 xs:h-20" />
         </section>
 
         {/* ---- Guarantee ---------------------------------------------- */}
-        <section data-pb-title="Guarantee" className="pt-14 xs:pt-20">
+        <section data-pb-title="Guarantee">
         <Head title="Guarantee" />
         <Row label="7 days">
           <p className="display font-light text-[16px] xs:text-[18px] leading-relaxed ink max-w-[68ch]">
@@ -395,6 +419,10 @@ export default function PlaybookPage() {
             and I&rsquo;ll refund you. Or request it straight from your Gumroad receipt.
           </p>
         </Row>
+        {/* In-content spacer (not padding): sticky headers are constrained
+            to the content box, so padding would end the pin early and open a
+            gap in the push handoff. */}
+        <div aria-hidden className="h-6 xs:h-8" />
         </section>
 
         {/* ---- Final CTA ---------------------------------------------- */}
@@ -421,14 +449,18 @@ export default function PlaybookPage() {
 
 // --- helpers ---------------------------------------------------------------
 
-// In-flow section header in the landing page's vocabulary: a "+" marker and
-// the title with its trailing accent period, aligned to the section grid.
-// Always visible, the PlaybookBar floats above these as you scroll. The
-// inter-section spacing lives on the <section> wrappers (padding, not margin)
-// so the section boxes stay contiguous for the scrollspy band.
+// Section header in the landing page's vocabulary: a "+" marker and the title
+// with its trailing accent period, aligned to the section grid. Sticky within
+// its own section: it anchors at the top while its content scrolls, and the
+// NEXT section's header physically pushes it out, scroll-synchronized by the
+// browser (sections carry their spacing as padding-BOTTOM, so each header sits
+// at its section's very top edge and the push hands off with zero gap).
 function Head({ title }: { title: string }) {
   return (
-    <div className="-mx-6 lg:-mx-12 px-6 lg:px-12 py-3 border-b rule">
+    <div
+      className="sticky top-0 z-30 -mx-6 lg:-mx-12 px-6 lg:px-12 py-3 border-b rule"
+      style={{ backgroundColor: "#f4f1ec" }}
+    >
       <div className="grid grid-cols-[auto_1fr] xs:grid-cols-[clamp(80px,14vw,140px)_1fr] lg:grid-cols-[140px_1fr] gap-3 xs:gap-6 lg:gap-12 items-baseline">
         <span
           aria-hidden
@@ -663,17 +695,19 @@ function PlaybookStyle() {
       /* Visible focus for the keyboard-scrollable pricing region. */
       .pb-scroll:focus-visible { outline: 2px solid #1f3a5f; outline-offset: 2px; }
 
-      /* The anchored header bar. It impersonates the in-flow section headers,
-         so it toggles instantly (no slide/fade): the swap happens exactly when
-         an in-flow header passes under it, which is what makes the takeover
-         read as "the header anchored". Only the title text changes. */
-      .pb-bar { visibility: hidden; }
-      .pb-bar[data-shown] { visibility: visible; }
-      .pb-bar-cta {
-        position: absolute; top: 50%; right: 0;
-        transform: translateY(-50%);
-        display: flex; align-items: center; gap: 10px;
+      /* The Buy-CTA overlay. The section headers anchor and push natively
+         (sticky), so this strip carries only the buttons: click-through
+         everywhere except the buttons themselves, faded in/out as the reader
+         enters and leaves the sections. */
+      .pb-bar {
+        visibility: hidden; opacity: 0; pointer-events: none;
+        transition: opacity 200ms ease, visibility 0s linear 200ms;
       }
+      .pb-bar[data-shown] {
+        visibility: visible; opacity: 1;
+        transition: opacity 200ms ease;
+      }
+      .pb-bar .sh-cta { pointer-events: auto; }
       /* Phones: one clear buy action; the secondary joins at 640px+. (Declared
          here, not with Tailwind's hidden utility, this style block loads after
          the compiled sheet, so .sh-cta's display would win the cascade.) */
@@ -699,8 +733,7 @@ function PlaybookStyle() {
         .accent-link, .accent-link::after, .cta-buy, .cta-ghost { transition: none; }
         .shimmer-ch { animation: none; transform: none; }
         .sh-cta { transition: none; }
-        .pb-bar { transition: none; }
-        .pb-bar-title { animation: none; }
+        .pb-bar, .pb-bar[data-shown] { transition: none; }
       }
     `}</style>
   )
