@@ -736,8 +736,8 @@ function PlaybookStyle() {
 
       /* Page-map rail: tick lines fixed in the left margin. Long line =
          section, short line = subsection. Lines fill with the accent once
-         scrolled past; the current one stretches. Hovering the rail (or
-         focusing a line) reveals the names. Desktop + hover devices only. */
+         scrolled past; the current one stretches. No labels or hover chrome,
+         just the ticks. Desktop + hover devices only. */
       .pb-rail {
         position: fixed; left: 18px; top: 50%; transform: translateY(-50%);
         z-index: 35; display: none;
@@ -758,40 +758,6 @@ function PlaybookStyle() {
       .pb-rail-item.is-passed .pb-rail-line { background-color: rgba(31,58,95,0.55); }
       .pb-rail-item.is-current .pb-rail-line { background-color: #1f3a5f; width: 28px; }
       .pb-rail-item.is-current.is-sub .pb-rail-line { width: 18px; }
-      /* Hovering the rail grows every tick for emphasis while the labels
-         slide in; widths return when the pointer leaves. */
-      .pb-rail:hover .pb-rail-item .pb-rail-line { width: 32px; }
-      .pb-rail:hover .pb-rail-item.is-sub .pb-rail-line { width: 20px; }
-      .pb-rail:hover .pb-rail-item.is-current .pb-rail-line { width: 40px; }
-      .pb-rail:hover .pb-rail-item.is-current.is-sub .pb-rail-line { width: 26px; }
-      /* Blur veil behind the whole rail while hovered: the project modal's
-         progressive edge-blur, run horizontally. The layers carry the
-         backdrop-filter + masks inline (see PlaybookRail); this rule only
-         sizes and reveals the stack. */
-      .pb-rail-veil {
-        position: absolute; top: -40px; bottom: -40px; left: -18px; width: 420px;
-        pointer-events: none; opacity: 0; transition: opacity 220ms ease;
-      }
-      .pb-rail-veil > span { position: absolute; inset: 0; }
-      .pb-rail:hover .pb-rail-veil,
-      .pb-rail:focus-within .pb-rail-veil { opacity: 1; }
-      /* Labels: the site's display face in natural case, plain text over the
-         veil. Fixed lefts (sections at 50px, subs indented to 58px) keep the
-         hierarchy reading correctly and clear the grown ticks. Absolutely
-         positioned so hidden labels neither stretch the buttons over the page
-         content nor add height to the tick pitch. */
-      .pb-rail-label {
-        position: absolute; left: 50px; top: 50%;
-        opacity: 0; transform: translateY(-50%) translateX(-6px); pointer-events: none;
-        transition: opacity 180ms ease, transform 240ms cubic-bezier(0.22,1,0.36,1);
-        font-size: 13px; line-height: 1.2; color: rgba(26,26,26,0.78); white-space: nowrap;
-      }
-      .pb-rail-item.is-sub .pb-rail-label { left: 58px; font-size: 12px; }
-      .pb-rail:hover .pb-rail-label,
-      .pb-rail-item:focus-visible .pb-rail-label {
-        opacity: 1; transform: translateY(-50%) translateX(0);
-      }
-      .pb-rail-item.is-current .pb-rail-label { color: #1f3a5f; }
       .pb-rail-item:focus-visible { outline: 2px solid #1f3a5f; outline-offset: 2px; }
 
       @media (prefers-reduced-motion: reduce) {
@@ -799,7 +765,7 @@ function PlaybookStyle() {
         .shimmer-ch { animation: none; transform: none; }
         .sh-cta { transition: none; }
         .pb-bar, .pb-bar[data-shown] { transition: none; }
-        .pb-rail-line, .pb-rail-label, .pb-rail-veil { transition: none; }
+        .pb-rail-line { transition: none; }
       }
     `}</style>
   )
