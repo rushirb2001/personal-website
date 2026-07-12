@@ -125,22 +125,27 @@ export default function PlaybookPage() {
           <Link href="/" className="accent-link mono text-[13px] inline-flex items-center gap-1.5">
             <span aria-hidden>←</span> Rushir Bhavsar
           </Link>
-          <span className="mono small-caps faint">The Playbook</span>
+          {/* Full product title lives in the header now; short form on the
+              narrowest phones so it never collides with the back-link. */}
+          <span className="mono small-caps accent text-right">
+            <span className="xs:hidden">The Playbook</span>
+            <span className="hidden xs:inline">The AI-Engineer Portfolio Playbook</span>
+          </span>
         </nav>
 
         {/* ---- Hero ---------------------------------------------------- */}
-        <section className="pt-10 xs:pt-16 lg:pt-20 pb-14 xs:pb-20">
-          <p className="mono small-caps accent mb-6">The AI-Engineer Portfolio Playbook</p>
+        <section className="pt-4 xs:pt-8 lg:pt-10">
           <h1 className="display font-light tracking-tight leading-[1.08] text-[30px] xs:text-[clamp(34px,5vw,52px)] max-w-[38ch]">
-            Go from a blank GitHub to a hireable AI-engineering portfolio in six months
-            <span className="accent">.</span>
+            Go from a blank{" "}
+            <span className="gh-pill"><GhMark />GitHub</span> to a hireable{" "}
+            <span className="nobreak">AI-engineering</span> portfolio in{" "}
+            <Shimmer text="six months" /><span className="accent">.</span>
           </h1>
-          <div className="display font-light text-[16px] sm:text-[clamp(16px,1.7vw,20px)] mt-7 lg:mt-8 leading-[1.5] max-w-[66ch] muted">
-            You came to the US to become an AI engineer. You can code. But your GitHub is
-            thin, and you don&rsquo;t know <em className="ink not-italic">which</em> projects
-            actually get you an FDE, AI-ML, or data role. This is the system I used, 16
-            production-grade projects on free tiers, a git and LinkedIn playbook, and the
-            exact resume bullets each one produces.
+          <div className="display font-light text-[16px] sm:text-[clamp(16px,1.7vw,20px)] mt-6 lg:mt-7 leading-[1.5] max-w-[66ch] muted">
+            You can code, but your GitHub is thin, and you don&rsquo;t know{" "}
+            <em className="ink not-italic">which</em> projects get you an FDE, AI-ML, or data
+            role. This is the system I used: 16 production-grade projects on free tiers, a git
+            and LinkedIn playbook, and the resume bullets each one produces.
           </div>
           <div className="mt-9 xs:mt-10">
             <CTAs />
@@ -443,6 +448,39 @@ function CTAs({
   )
 }
 
+// GitHub mark rendered inline in the hero headline; colored purple via .gh-mark.
+function GhMark() {
+  return (
+    <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden className="gh-mark">
+      <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" />
+    </svg>
+  )
+}
+
+// Closing words rendered one letter per span so a size pulse can swipe
+// left to right across them. The wrapper carries the accessible label; the
+// per-letter spans are decorative.
+function Shimmer({ text }: { text: string }) {
+  return (
+    <span className="shimmer" aria-label={text}>
+      {[...text].map((ch, i) =>
+        ch === " " ? (
+          " "
+        ) : (
+          <span
+            key={i}
+            aria-hidden
+            className="shimmer-ch"
+            style={{ animationDelay: `${(i * 0.11).toFixed(2)}s` }}
+          >
+            {ch}
+          </span>
+        ),
+      )}
+    </span>
+  )
+}
+
 // Editorial design tokens, injected inline per this repo's convention (see the
 // <style> block in app/page.tsx and TOKENS in ProjectModal.tsx).
 function PlaybookStyle() {
@@ -482,6 +520,40 @@ function PlaybookStyle() {
       }
       @media (hover: hover) { .cta-buy:hover { background-color: #16314f; } }
 
+      /* GitHub set as a tight deep-purple pill: white mark + white wordmark. */
+      /* Compact pill. Uniform padding + the icon as the tallest element makes
+         the left cap sit concentric around the icon; the equal right padding
+         mirrors that roundness on the other end. */
+      .gh-pill {
+        display: inline-flex; align-items: center; gap: 0.32em;
+        padding: 0.16em; border-radius: 999px;
+        background: #2e1065; color: #fff;
+        font-size: 0.64em; line-height: 1; letter-spacing: 0;
+        vertical-align: middle; position: relative; top: -0.09em;
+      }
+      .gh-mark {
+        display: inline-block; width: 1.18em; height: 1.18em;
+        color: #fff; flex: none;
+      }
+      /* Keep the compound adjective whole so the second line starts cleanly. */
+      .nobreak { white-space: nowrap; }
+
+      /* Blue closing words. Each letter pulses in size on a staggered delay so
+         the bump swipes left to right across "six months" (a "shimmer" done as
+         a scale wave, not a colour sweep). transform: scale avoids the per-frame
+         reflow that animating font-size would cause. */
+      .shimmer { color: #1f3a5f; }
+      .shimmer-ch {
+        display: inline-block; transform-origin: center bottom;
+        animation: shimmer 3.6s ease-in-out infinite; will-change: transform;
+      }
+      @keyframes shimmer {
+        0% { transform: scale(1); }
+        7% { transform: scale(1.24); }
+        16% { transform: scale(1); }
+        100% { transform: scale(1); }
+      }
+
       .grain::before {
         content: ""; position: fixed; inset: 0; pointer-events: none;
         background-image: radial-gradient(rgba(26,26,26,0.05) 1px, transparent 1px);
@@ -490,6 +562,7 @@ function PlaybookStyle() {
 
       @media (prefers-reduced-motion: reduce) {
         .accent-link, .accent-link::after, .cta-buy { transition: none; }
+        .shimmer-ch { animation: none; transform: none; }
       }
     `}</style>
   )
