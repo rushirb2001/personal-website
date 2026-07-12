@@ -3,6 +3,7 @@ import Image from "next/image"
 import Link from "next/link"
 import Script from "next/script"
 import type { ReactNode } from "react"
+import { StickyHead } from "./StickyHead"
 
 // --- Gumroad product links -------------------------------------------------
 // Buy buttons are Gumroad overlay anchors: gumroad.js (loaded lazily below)
@@ -155,7 +156,11 @@ export default function PlaybookPage() {
         </section>
 
         {/* ---- The problem -------------------------------------------- */}
-        <Head title="The problem" tight />
+        {/* Each section wraps its header + content so the sticky header anchors
+            only while that section is in view, then releases at its boundary
+            (the landing page's per-section anchoring, without the collapse). */}
+        <section>
+        <StickyHead title="The problem" tight />
         <Row label="The gap">
           <p className="display font-light text-[16px] xs:text-[18px] leading-relaxed ink max-w-[76ch]">
             Most students ship five shallow demos and wonder why nobody replies. Every
@@ -172,8 +177,11 @@ export default function PlaybookPage() {
           </p>
         </Row>
 
+        </section>
+
         {/* ---- What's inside ------------------------------------------ */}
-        <Head title="What's inside" count={INSIDE.length} />
+        <section>
+        <StickyHead title="What's inside" count={INSIDE.length} />
         <ol>
           {INSIDE.map((item, i) => (
             <li
@@ -210,8 +218,11 @@ export default function PlaybookPage() {
           ))}
         </ol>
 
+        </section>
+
         {/* ---- A look inside (samples) -------------------------------- */}
-        <Head title="A look inside" />
+        <section>
+        <StickyHead title="A look inside" />
         <Row label="Sample pages">
           <div className="grid grid-cols-1 xs:grid-cols-3 gap-4 lg:gap-6">
             {SAMPLES.map((s) => (
@@ -234,8 +245,11 @@ export default function PlaybookPage() {
           </div>
         </Row>
 
+        </section>
+
         {/* ---- Why trust this ----------------------------------------- */}
-        <Head title="Why trust this" />
+        <section>
+        <StickyHead title="Why trust this" />
         <Row label="Proof">
           <p className="display font-light text-[16px] xs:text-[18px] leading-relaxed ink max-w-[76ch]">
             The portfolio you&rsquo;re reading this on was built exactly the way the guide
@@ -259,8 +273,11 @@ export default function PlaybookPage() {
           </p>
         </Row>
 
+        </section>
+
         {/* ---- Pricing ------------------------------------------------ */}
-        <Head title="Pricing" />
+        <section>
+        <StickyHead title="Pricing" />
         <Row label="Plans">
           <div className="overflow-x-auto">
             <table className="w-full border-collapse mono text-[12px] xs:text-[13px] min-w-[460px]">
@@ -308,8 +325,11 @@ export default function PlaybookPage() {
           </div>
         </Row>
 
+        </section>
+
         {/* ---- FAQ ---------------------------------------------------- */}
-        <Head title="FAQ" count={FAQ.length} />
+        <section>
+        <StickyHead title="FAQ" count={FAQ.length} />
         <dl>
           {FAQ.map((f, i) => (
             <div
@@ -331,14 +351,18 @@ export default function PlaybookPage() {
           ))}
         </dl>
 
+        </section>
+
         {/* ---- Guarantee ---------------------------------------------- */}
-        <Head title="Guarantee" />
+        <section>
+        <StickyHead title="Guarantee" />
         <Row label="7 days">
           <p className="display font-light text-[16px] xs:text-[18px] leading-relaxed ink max-w-[68ch]">
             7-day, no-questions-asked refund. If it doesn&rsquo;t give you a clear plan
             you&rsquo;re excited to start, email me and I&rsquo;ll refund you.
           </p>
         </Row>
+        </section>
 
         {/* ---- Final CTA ---------------------------------------------- */}
         <section className="py-16 xs:py-24 text-center">
@@ -363,36 +387,6 @@ export default function PlaybookPage() {
 }
 
 // --- helpers ---------------------------------------------------------------
-
-// Section header in the landing page's vocabulary: a "+" marker, the title
-// with its trailing accent period, and an optional zero-padded count on the
-// right, aligned to the same 3-column grid the rows below use. Non-sticky
-// (this page doesn't collapse), full-bleed rule via negative margin.
-function Head({ title, count, tight }: { title: string; count?: number; tight?: boolean }) {
-  return (
-    <div
-      className={`${tight ? "mt-4 xs:mt-6" : "mt-14 xs:mt-20"} -mx-6 lg:-mx-12 px-6 lg:px-12 py-3 border-b rule`}
-      style={{ backgroundColor: "#f4f1ec" }}
-    >
-      <div className="grid grid-cols-[auto_1fr_auto] xs:grid-cols-[clamp(80px,14vw,140px)_1fr_clamp(140px,22vw,240px)] lg:grid-cols-[140px_1fr_240px] gap-3 xs:gap-6 lg:gap-12 items-baseline">
-        <span className="display accent text-[22px] xs:text-[clamp(20px,4.5vw,26px)] lg:text-3xl font-light leading-none">
-          +
-        </span>
-        <h2 className="display text-[22px] xs:text-[clamp(20px,4.5vw,26px)] lg:text-3xl font-light tracking-tight leading-none">
-          {title}
-          <span className="accent">.</span>
-        </h2>
-        {count != null ? (
-          <span className="mono text-[12px] xs:text-[13px] faint text-right tracking-[0.18em]">
-            {String(count).padStart(2, "0")}
-          </span>
-        ) : (
-          <span aria-hidden />
-        )}
-      </div>
-    </div>
-  )
-}
 
 // A single label-left / content-right block on the section grid (right column
 // left open for the prose to breathe), mirroring the project case-study rows.
@@ -573,9 +567,26 @@ function PlaybookStyle() {
         background-size: 3px 3px; mix-blend-mode: multiply; z-index: 1;
       }
 
+      /* Sticky section headers: the "+" marker glides from the left to the right
+         edge while the header is anchored (data-stuck), and slides back when it
+         releases. The marker is an absolute overlay so it can travel the full
+         header width; left: 0 -> 100% (with translateX(-100%) to keep it flush)
+         transitions smoothly. */
+      .stickhead-grid { position: relative; }
+      .stickhead-mark {
+        position: absolute; left: 0; top: 0;
+        transition: left 520ms cubic-bezier(0.22,1,0.36,1),
+                    transform 520ms cubic-bezier(0.22,1,0.36,1);
+      }
+      .stickhead[data-stuck] .stickhead-mark {
+        left: 100%;
+        transform: translateX(-100%);
+      }
+
       @media (prefers-reduced-motion: reduce) {
         .accent-link, .accent-link::after, .cta-buy, .cta-ghost { transition: none; }
         .shimmer-ch { animation: none; transform: none; }
+        .stickhead-mark { transition: none; }
       }
     `}</style>
   )
