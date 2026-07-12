@@ -6,12 +6,12 @@ import type { ReactNode } from "react"
 
 // --- Gumroad product links -------------------------------------------------
 // Buy buttons are Gumroad overlay anchors: gumroad.js (loaded lazily below)
-// upgrades any <a data-gumroad-overlay> into an on-page checkout modal.
-// TODO(rushir): replace these placeholder permalinks with the real product
-// URLs once the Lite/Core products are published on Gumroad. Format:
-//   https://<your-subdomain>.gumroad.com/l/<permalink>
-const GUMROAD_CORE = "https://rushirb.gumroad.com/l/playbook?wanted=true" // $15 Core, REPLACE WITH YOURS
-const GUMROAD_LITE = "https://rushirb.gumroad.com/l/playbook-lite?wanted=true" // Free Lite, REPLACE WITH YOURS
+// upgrades any <a data-gumroad-overlay> into an on-page modal. No `?wanted=true`
+// so the overlay opens the product page (cover + description) and the buyer
+// clicks through to checkout, instead of dropping straight into the payment form.
+// Permalinks (subdomain: rushirbhavsar):  Core → playbook  ·  Lite → playbook-lite
+const GUMROAD_CORE = "https://rushirbhavsar.gumroad.com/l/playbook" // $15 Core
+const GUMROAD_LITE = "https://rushirbhavsar.gumroad.com/l/playbook-lite" // Free Lite
 
 const INSIDE = [
   {
