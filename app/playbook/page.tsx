@@ -151,20 +151,20 @@ export default function PlaybookPage() {
         </section>
 
         {/* ---- The problem -------------------------------------------- */}
-        <Head title="The problem" />
+        <Head title="The problem" tight />
         <Row label="The gap">
           <p className="display font-light text-[16px] xs:text-[18px] leading-relaxed ink max-w-[76ch]">
             Most students ship five shallow demos and wonder why nobody replies. Every
-            company building with AI asks the same interview question:{" "}
-            <em className="muted">how did you know it worked?</em> And a demo has no
-            answer. Meanwhile the advice online is a pile of &ldquo;10 project ideas&rdquo;
-            with no depth, no numbers, no plan, and no idea which project maps to which role.
+            company building with AI asks the same question:{" "}
+            <em className="muted">how did you know it worked?</em> A demo has no answer. The
+            advice online is a pile of &ldquo;10 project ideas&rdquo; with no depth, no
+            numbers, no plan, no idea which maps to which role.
           </p>
-          <p className="display font-light text-[16px] xs:text-[18px] leading-relaxed muted max-w-[76ch] mt-5">
+          <p className="display font-light text-[16px] xs:text-[18px] leading-relaxed muted max-w-[76ch] mt-4">
             One deep project with real numbers beats five demos. This playbook gives you{" "}
-            <span className="ink">2-3 of them, chosen for your target role</span>, built week
-            by week, for free, plus the git history, the writeups, and the LinkedIn presence
-            that make recruiters reach out instead of the other way around.
+            <span className="ink">2-3, chosen for your target role</span> and built week by
+            week, for free, plus the git history, writeups, and LinkedIn presence that make
+            recruiters reach out first.
           </p>
         </Row>
 
@@ -357,10 +357,10 @@ export default function PlaybookPage() {
 // with its trailing accent period, and an optional zero-padded count on the
 // right, aligned to the same 3-column grid the rows below use. Non-sticky
 // (this page doesn't collapse), full-bleed rule via negative margin.
-function Head({ title, count }: { title: string; count?: number }) {
+function Head({ title, count, tight }: { title: string; count?: number; tight?: boolean }) {
   return (
     <div
-      className="mt-14 xs:mt-20 -mx-6 lg:-mx-12 px-6 lg:px-12 py-3 border-b rule"
+      className={`${tight ? "mt-4 xs:mt-6" : "mt-14 xs:mt-20"} -mx-6 lg:-mx-12 px-6 lg:px-12 py-3 border-b rule`}
       style={{ backgroundColor: "#f4f1ec" }}
     >
       <div className="grid grid-cols-[auto_1fr_auto] xs:grid-cols-[clamp(80px,14vw,140px)_1fr_clamp(140px,22vw,240px)] lg:grid-cols-[140px_1fr_240px] gap-3 xs:gap-6 lg:gap-12 items-baseline">
