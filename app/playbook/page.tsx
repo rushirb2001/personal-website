@@ -437,11 +437,7 @@ function CTAs({
       <a href={GUMROAD_CORE} data-gumroad-overlay className="cta-buy display">
         {coreLabel}
       </a>
-      <a
-        href={GUMROAD_LITE}
-        data-gumroad-overlay
-        className="accent-link mono text-[13px] inline-flex items-center justify-center gap-1.5"
-      >
+      <a href={GUMROAD_LITE} data-gumroad-overlay className="cta-ghost display">
         {liteLabel}
       </a>
     </div>
@@ -520,6 +516,17 @@ function PlaybookStyle() {
       }
       @media (hover: hover) { .cta-buy:hover { background-color: #16314f; } }
 
+      /* Secondary CTA: outline button, same footprint as .cta-buy (12px pad +
+         1px border == 13px). */
+      .cta-ghost {
+        display: inline-flex; align-items: center; justify-content: center;
+        text-align: center; padding: 12px 21px; border-radius: 6px;
+        font-size: 15px; letter-spacing: -0.01em; line-height: 1;
+        border: 1px solid #1f3a5f; color: #1f3a5f; background-color: transparent;
+        transition: background-color 200ms ease;
+      }
+      @media (hover: hover) { .cta-ghost:hover { background-color: rgba(31,58,95,0.06); } }
+
       /* GitHub set as a tight deep-purple pill: white mark + white wordmark. */
       /* Compact pill. Uniform padding + the icon as the tallest element makes
          the left cap sit concentric around the icon; the equal right padding
@@ -561,7 +568,7 @@ function PlaybookStyle() {
       }
 
       @media (prefers-reduced-motion: reduce) {
-        .accent-link, .accent-link::after, .cta-buy { transition: none; }
+        .accent-link, .accent-link::after, .cta-buy, .cta-ghost { transition: none; }
         .shimmer-ch { animation: none; transform: none; }
       }
     `}</style>
