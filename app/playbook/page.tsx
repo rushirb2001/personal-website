@@ -97,9 +97,9 @@ const FAQ = [
 ]
 
 export function generateMetadata(): Metadata {
-  const title = "The AI-Engineer Portfolio Playbook · Rushir Bhavsar"
+  const title = "Zero to Hired: The AI-Engineer Portfolio Playbook · Rushir Bhavsar"
   const description =
-    "Go from a blank GitHub to a hireable AI-engineering portfolio in six months, on $0 of compute. 16 production-grade projects chosen by target role, each with a week-by-week plan, the interview questions it prepares you for, and the resume bullets it produces."
+    "Zero to Hired is the AI-engineer portfolio playbook: go from a blank GitHub to a hireable portfolio in six months, on $0 of compute. 16 production-grade projects chosen by target role, each with a week-by-week plan, the interview questions it prepares you for, and the resume bullets it produces."
   return {
     title,
     description,
@@ -122,11 +122,12 @@ export default function PlaybookPage() {
         {/* Top bar: a discreet way back to the portfolio, kept separate from
             the sales story. */}
         <nav className="flex items-center justify-between py-5 xs:py-6">
-          {/* Product title on the left; short form on the narrowest phones so
-              it never collides with the back-link. */}
+          {/* Product name on the left; the descriptor tags along on wider
+              screens, short brand on phones so it never collides with the
+              back-link. */}
           <span className="mono small-caps accent">
-            <span className="xs:hidden">The Playbook</span>
-            <span className="hidden xs:inline">The AI-Engineer Portfolio Playbook</span>
+            <span className="sm:hidden">Zero to Hired</span>
+            <span className="hidden sm:inline">Zero to Hired · The AI-Engineer Portfolio Playbook</span>
           </span>
           <Link href="/" className="accent-link mono text-[13px] inline-flex items-center gap-1.5">
             <span aria-hidden>←</span> Rushir Bhavsar
@@ -136,16 +137,17 @@ export default function PlaybookPage() {
         {/* ---- Hero ---------------------------------------------------- */}
         <section className="pt-4 xs:pt-8 lg:pt-10">
           <h1 className="display font-light tracking-tight leading-[1.08] text-[30px] xs:text-[clamp(34px,5vw,52px)] max-w-[38ch]">
-            Go from a blank{" "}
-            <span className="gh-pill"><GhMark />GitHub</span> to a hireable{" "}
-            <span className="nobreak">AI-engineering</span> portfolio in{" "}
+            Zero to Hired: from a blank{" "}
+            <span className="gh-pill"><GhMark />GitHub</span> to an{" "}
+            <span className="nobreak">interview-ready</span> portfolio in{" "}
             <Shimmer text="six months" /><span className="accent">.</span>
           </h1>
           <div className="display font-light text-[16px] sm:text-[clamp(16px,1.7vw,20px)] mt-6 lg:mt-7 leading-[1.5] max-w-[66ch] muted">
-            You can code, but your GitHub is thin, and you don&rsquo;t know{" "}
-            <em className="ink not-italic">which</em> projects get you an FDE, AI-ML, or data
-            role. This is the system I used: 16 production-grade projects on free tiers, a git
-            and LinkedIn playbook, and the resume bullets each one produces.
+            <em>You can code</em>, but your GitHub is thin, and you don&rsquo;t know{" "}
+            <em className="ink">which</em> projects get you an FDE, AI-ML, or data role.{" "}
+            <strong className="ink font-bold">Zero to Hired</strong> is the system I used:{" "}
+            <strong className="ink font-bold">16 production-grade projects</strong> on free
+            tiers, a git and LinkedIn playbook, and the resume bullets each one produces.
           </div>
           <div className="mt-9 xs:mt-10">
             <CTAs />
@@ -163,7 +165,7 @@ export default function PlaybookPage() {
             numbers, no plan, no idea which maps to which role.
           </p>
           <p className="display font-light text-[16px] xs:text-[18px] leading-relaxed muted max-w-[76ch] mt-4">
-            One deep project with real numbers beats five demos. This playbook gives you{" "}
+            One deep project with real numbers beats five demos. Zero to Hired gives you{" "}
             <span className="ink">2-3, chosen for your target role</span> and built week by
             week, for free, plus the git history, writeups, and LinkedIn presence that make
             recruiters reach out first.
