@@ -3,7 +3,7 @@ import Image from "next/image"
 import Link from "next/link"
 import Script from "next/script"
 import type { ReactNode } from "react"
-import { StickyHead } from "./StickyHead"
+import { PlaybookBar } from "./PlaybookBar"
 import { GUMROAD_CORE, GUMROAD_LITE } from "./links"
 
 // gumroad.js (loaded lazily below) upgrades any <a data-gumroad-overlay> into an
@@ -62,7 +62,7 @@ const SAMPLES = [
 ]
 
 const PRICING_ROWS = [
-  { label: "3 projects + git section", lite: true, core: true, cohort: true },
+  { label: "3 projects + the git-history section", lite: true, core: true, cohort: true },
   { label: "All 16 projects + interview prep + resume bank", lite: false, core: true, cohort: true },
   { label: "Repo skeletons + progress tracker", lite: false, core: true, cohort: true },
   { label: "Buyers' Discord + lifetime updates", lite: false, core: true, cohort: true },
@@ -71,12 +71,16 @@ const PRICING_ROWS = [
 
 const FAQ = [
   {
+    q: "What exactly do I get, and how?",
+    a: "A 52-page PDF plus the companion zip: clone-ready repo skeletons, the 6-month tracker, and the Resume Bullet Bank. Gumroad delivers everything instantly after checkout, and updates land in your library free.",
+  },
+  {
     q: "Do I need money or a GPU?",
     a: "No. Every project runs on free tiers. That's the whole point.",
   },
   {
     q: "Solo, or do I need a partner?",
-    a: "Solo-first: the plans are written for one person. A Partner Bonus covers the two-person review workflow if you find one.",
+    a: "Solo-first: the plans are written for one person. A Partner Bonus appendix covers the two-person review workflow if you find one.",
   },
   {
     q: "Is this just a list of ideas?",
@@ -87,15 +91,19 @@ const FAQ = [
     a: "It still works, and the playbook is about what to build and how to show it, which is universal.",
   },
   {
+    q: "Is there a student discount?",
+    a: "The launch price is the discount, the Lite tier is free, and every project runs on a $0 stack. That is the student pricing.",
+  },
+  {
     q: "Will it go stale?",
-    a: "Lifetime updates. The stack and projects evolve with the market.",
+    a: "Lifetime updates on Core. The stack and projects evolve with the market.",
   },
 ]
 
 export function generateMetadata(): Metadata {
   const title = "Zero to Hired: The AI-Engineer Portfolio Playbook · Rushir Bhavsar"
   const description =
-    "Zero to Hired is the AI-engineer portfolio playbook: go from a blank GitHub to a hireable portfolio in six months, on $0 of compute. 16 production-grade projects chosen by target role, each with a week-by-week plan, the interview questions it prepares you for, and the resume bullets it produces."
+    "Zero to Hired is the AI-engineer portfolio playbook: go from a blank GitHub to an interview-ready portfolio in six months, on $0 of compute. 16 production-grade projects chosen by target role, each with a week-by-week plan, the interview questions it prepares you for, and the resume bullets it produces."
   return {
     title,
     description,
@@ -114,16 +122,19 @@ export default function PlaybookPage() {
 
       <PlaybookStyle />
 
+      {/* Fixed top bar: appears when scrolled into the sections, re-titles
+          itself per section, and keeps the Buy CTAs one click away. */}
+      <PlaybookBar />
+
       <div className="max-w-[1100px] mx-auto px-6 lg:px-12">
         {/* Top bar: a discreet way back to the portfolio, kept separate from
             the sales story. */}
         <nav className="flex items-center justify-between py-5 xs:py-6">
-          {/* Product name on the left; the descriptor tags along on wider
-              screens, short brand on phones so it never collides with the
-              back-link. */}
+          {/* Descriptor only: the H1 below owns the "Zero to Hired" brand, so
+              repeating it here would double the name in the first screenful. */}
           <span className="mono small-caps accent">
-            <span className="sm:hidden">Zero to Hired</span>
-            <span className="hidden sm:inline">Zero to Hired · The AI-Engineer Portfolio Playbook</span>
+            <span className="sm:hidden">The Playbook</span>
+            <span className="hidden sm:inline">The AI-Engineer Portfolio Playbook</span>
           </span>
           <Link href="/" className="accent-link mono text-[13px] inline-flex items-center gap-1.5">
             <span aria-hidden>←</span> Rushir Bhavsar
@@ -140,24 +151,23 @@ export default function PlaybookPage() {
           </h1>
           <div className="display font-light text-[16px] sm:text-[clamp(16px,1.7vw,20px)] mt-6 lg:mt-7 leading-[1.5] max-w-[66ch] muted">
             <em>You can code</em>, but your GitHub is thin, and you don&rsquo;t know{" "}
-            <em className="ink">which</em> projects get you an FDE, AI-ML, or data role.{" "}
-            <strong className="ink font-bold">Zero to Hired</strong> is the system I used:{" "}
+            <em className="ink">which</em> projects matter for FDE (forward-deployed
+            engineer), AI-ML, or data roles.{" "}
+            <strong className="ink font-bold">Zero to Hired</strong> is the system behind
+            the portfolio on this site:{" "}
             <strong className="ink font-bold">16 production-grade projects</strong> on free
             tiers, a git and LinkedIn playbook, and the resume bullets each one produces.
           </div>
           <div className="mt-9 xs:mt-10">
-            <CTAs />
+            <CTAs note />
           </div>
         </section>
 
+        {/* Section wrappers carry data-pb-title for the PlaybookBar scrollspy;
+            the in-flow Head stays visible in the document like any heading. */}
         {/* ---- The problem -------------------------------------------- */}
-        {/* One sticky context for all sections: each section header anchors at
-            the top and holds until the next section's header covers it, so the
-            heading updates in place with no gap — a single persistent bar. Only
-            the anchored header is shown; the others are invisible placeholders
-            (see .stickhead CSS). */}
-        <section>
-        <StickyHead title="The problem" tight />
+        <section data-pb-title="The problem" className="pt-4 xs:pt-6">
+        <Head title="The problem" />
         <Row label="The gap">
           <p className="display font-light text-[16px] xs:text-[18px] leading-relaxed ink max-w-[76ch]">
             Most students ship five shallow demos and wonder why nobody replies. Every
@@ -169,18 +179,21 @@ export default function PlaybookPage() {
           <p className="display font-light text-[16px] xs:text-[18px] leading-relaxed muted max-w-[76ch] mt-4">
             One deep project with real numbers beats five demos. Zero to Hired gives you{" "}
             <span className="ink">2-3, chosen for your target role</span> and built week by
-            week, for free, plus the git history, writeups, and LinkedIn presence that make
-            recruiters reach out first.
+            week, for free, plus the git history, writeups, and LinkedIn presence that let a
+            recruiter verify your work in two minutes.
           </p>
         </Row>
 
+        </section>
+
         {/* ---- What's inside ------------------------------------------ */}
-        <StickyHead title="What's inside" />
+        <section data-pb-title="What's inside" className="pt-14 xs:pt-20">
+        <Head title="What's inside" />
         <ol>
           {INSIDE.map((item, i) => (
             <li
               key={item.name}
-              className={`grid grid-cols-1 xs:grid-cols-[clamp(80px,14vw,140px)_1fr_clamp(140px,22vw,240px)] lg:grid-cols-[140px_1fr_240px] gap-3 xs:gap-6 lg:gap-12 py-5 xs:py-7 lg:py-8 first:pt-4 xs:first:pt-6 ${
+              className={`grid grid-cols-1 xs:grid-cols-[clamp(80px,14vw,140px)_1fr] sm:grid-cols-[clamp(80px,14vw,140px)_1fr_clamp(140px,22vw,240px)] lg:grid-cols-[140px_1fr_240px] gap-3 xs:gap-6 lg:gap-12 py-5 xs:py-7 lg:py-8 first:pt-4 xs:first:pt-6 ${
                 i !== INSIDE.length - 1 ? "border-b rule" : ""
               }`}
             >
@@ -198,7 +211,9 @@ export default function PlaybookPage() {
                   {item.body}
                 </p>
               </div>
-              <div className="xs:pt-2 lg:pt-[10px]">
+              {/* Third column from sm up; in the 475-639px band it drops under
+                  the body copy so the content column keeps readable width. */}
+              <div className="xs:col-start-2 sm:col-auto xs:pt-2 lg:pt-[10px]">
                 <p className="mono small-caps faint mb-2 xs:mb-3">Covers</p>
                 <ul className="flex flex-wrap gap-x-3 gap-y-1.5 mono text-[12px] xs:text-[13px]">
                   {item.meta.map((m) => (
@@ -212,8 +227,11 @@ export default function PlaybookPage() {
           ))}
         </ol>
 
+        </section>
+
         {/* ---- A look inside (samples) -------------------------------- */}
-        <StickyHead title="A look inside" />
+        <section data-pb-title="A look inside" className="pt-14 xs:pt-20">
+        <Head title="A look inside" />
         <Row label="Sample pages">
           <div className="grid grid-cols-1 xs:grid-cols-3 gap-4 lg:gap-6">
             {SAMPLES.map((s) => (
@@ -224,7 +242,7 @@ export default function PlaybookPage() {
                     alt={s.alt}
                     width={1275}
                     height={1650}
-                    sizes="(max-width: 475px) 88vw, 300px"
+                    sizes="(max-width: 474px) 88vw, (max-width: 1023px) 25vw, 260px"
                     className="w-full h-auto block"
                   />
                 </div>
@@ -236,48 +254,58 @@ export default function PlaybookPage() {
           </div>
         </Row>
 
+        </section>
+
         {/* ---- Why trust this ----------------------------------------- */}
-        <StickyHead title="Why trust this" />
+        <section data-pb-title="Why trust this" className="pt-14 xs:pt-20">
+        <Head title="Why trust this" />
         <Row label="Proof">
           <p className="display font-light text-[16px] xs:text-[18px] leading-relaxed ink max-w-[76ch]">
             The portfolio you&rsquo;re reading this on was built exactly the way the guide
             teaches: role-targeted projects, case studies that make even private work
-            credible, real metrics. I ship in public:{" "}
+            credible, and on every project a number you can challenge me on. I ship in
+            public:{" "}
             <Link href="/" className="accent-link accent">
               the projects on this site
             </Link>
             , and open-source tools like{" "}
             <a
-              href="https://github.com/rushirb2001"
+              href="https://github.com/rushirb2001/cohors"
               target="_blank"
               rel="noopener noreferrer"
               className="accent-link accent"
             >
               cohors <span aria-hidden className="mono text-[0.85em] align-middle">↗</span>
+              <span className="sr-only"> (opens in new tab)</span>
             </a>
-            . The proof is the site you&rsquo;re standing on. No hustle, no exaggerated
-            numbers, and the guide even tells you to use numbers you can defend for ten minutes,
-            because a commenter&rsquo;s one hard question undoes months of credibility.
+            . No hustle, no exaggerated numbers, and the guide even tells you to use numbers
+            you can defend for ten minutes, because a commenter&rsquo;s one hard question
+            undoes months of credibility.
           </p>
         </Row>
 
+        </section>
+
         {/* ---- Pricing ------------------------------------------------ */}
-        <StickyHead title="Pricing" />
+        <section data-pb-title="Pricing" className="pt-14 xs:pt-20">
+        <Head title="Pricing" />
         <Row label="Plans">
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto pb-scroll" tabIndex={0} role="region" aria-label="Pricing comparison">
             <table className="w-full border-collapse mono text-[12px] xs:text-[13px] min-w-[460px]">
               <thead>
                 <tr className="border-b rule">
-                  <th className="small-caps faint font-normal text-left py-3 pr-6"></th>
-                  <th className="font-normal text-left py-3 px-4">
+                  <td className="py-3 pr-6">
+                    <span className="sr-only">Feature</span>
+                  </td>
+                  <th scope="col" className="font-normal text-left py-3 px-4">
                     <span className="display ink text-[15px] font-light">Lite</span>{" "}
                     <span className="small-caps faint">Free</span>
                   </th>
-                  <th className="font-normal text-left py-3 px-4">
+                  <th scope="col" className="accent-col font-normal text-left py-3 px-4">
                     <span className="display ink text-[15px] font-light">Core</span>{" "}
                     <span className="small-caps accent">$15</span>
                   </th>
-                  <th className="font-normal text-left py-3 pl-4">
+                  <th scope="col" className="font-normal text-left py-3 pl-4">
                     <span className="display muted text-[15px] font-light">Cohort</span>{" "}
                     <span className="small-caps faint">soon</span>
                   </th>
@@ -286,7 +314,9 @@ export default function PlaybookPage() {
               <tbody>
                 {PRICING_ROWS.map((r, ri) => (
                   <tr key={r.label} className={ri < PRICING_ROWS.length - 1 ? "border-b rule" : ""}>
-                    <td className="py-3 pr-6 ink">{r.label}</td>
+                    <th scope="row" className="py-3 pr-6 ink font-normal text-left">
+                      {r.label}
+                    </th>
                     <Mark on={r.lite} />
                     <Mark on={r.core} accent />
                     <Mark on={r.cohort} />
@@ -296,23 +326,35 @@ export default function PlaybookPage() {
             </table>
           </div>
           <p className="mono text-[11px] faint mt-4">
-            Launch price $9-12 for the first 50 buyers, then $15.
+            Launch price $9-12 for the first 50 buyers, then $15. Core buyers get the cohort
+            at a discount when it opens, and everything in Core carries over.
           </p>
           <div className="mt-7">
-            <CTAs coreLabel="Get Core · $15" liteLabel="Start with 3 free projects →" />
+            <CTAs coreLabel="Get Core · $15" />
           </div>
+          {/* Separators ride with their preceding label so a wrapped line can
+              never start with a bare dot. */}
           <div className="mt-5 flex flex-wrap items-center gap-x-3 gap-y-1.5 mono small-caps faint">
-            <span>Instant access</span>
-            <span aria-hidden className="accent">·</span>
-            <span>Lifetime updates</span>
-            <span aria-hidden className="accent">·</span>
+            <span className="inline-flex items-center gap-x-3">
+              <span>Instant access</span>
+              <span aria-hidden className="accent">·</span>
+            </span>
+            <span className="inline-flex items-center gap-x-3">
+              <span>Lifetime updates (Core)</span>
+              <span aria-hidden className="accent">·</span>
+            </span>
             <span>7-day money-back guarantee</span>
           </div>
         </Row>
 
+        </section>
+
         {/* ---- FAQ ---------------------------------------------------- */}
-        <StickyHead title="FAQ" />
-        <dl>
+        <section data-pb-title="FAQ" className="pt-14 xs:pt-20">
+        <Head title="FAQ" />
+        {/* Plain headings + paragraphs: dl semantics with decorative dt text
+            read as "Q, Q, Q" in screen readers; h3s match the tier list. */}
+        <div>
           {FAQ.map((f, i) => (
             <div
               key={f.q}
@@ -320,25 +362,37 @@ export default function PlaybookPage() {
                 i !== FAQ.length - 1 ? "border-b rule" : ""
               }`}
             >
-              <dt className="mono small-caps faint xs:pt-1">Q</dt>
+              <span aria-hidden className="mono small-caps faint xs:pt-1">
+                Q
+              </span>
               <div>
-                <p className="display text-[16px] xs:text-[18px] font-light tracking-tight ink">
+                <h3 className="display text-[16px] xs:text-[18px] font-light tracking-tight ink">
                   {f.q}
-                </p>
-                <dd className="mono text-[13px] xs:text-[14px] leading-relaxed muted mt-2 max-w-[74ch] m-0">
+                </h3>
+                <p className="mono text-[13px] xs:text-[14px] leading-relaxed muted mt-2 max-w-[74ch]">
                   {f.a}
-                </dd>
+                </p>
               </div>
             </div>
           ))}
-        </dl>
+        </div>
+
+        </section>
 
         {/* ---- Guarantee ---------------------------------------------- */}
-        <StickyHead title="Guarantee" />
+        <section data-pb-title="Guarantee" className="pt-14 xs:pt-20">
+        <Head title="Guarantee" />
         <Row label="7 days">
           <p className="display font-light text-[16px] xs:text-[18px] leading-relaxed ink max-w-[68ch]">
             7-day, no-questions-asked refund. If it doesn&rsquo;t give you a clear plan
-            you&rsquo;re excited to start, email me and I&rsquo;ll refund you.
+            you&rsquo;re excited to start,{" "}
+            <a
+              href="mailto:bhavsarrushir@gmail.com?subject=Zero%20to%20Hired%20refund"
+              className="accent-link accent"
+            >
+              email me
+            </a>{" "}
+            and I&rsquo;ll refund you. Or request it straight from your Gumroad receipt.
           </p>
         </Row>
         </section>
@@ -346,11 +400,11 @@ export default function PlaybookPage() {
         {/* ---- Final CTA ---------------------------------------------- */}
         <section className="py-16 xs:py-24 text-center">
           <h2 className="display font-light tracking-tight leading-[1.12] text-[24px] xs:text-[clamp(28px,4vw,40px)] max-w-[24ch] mx-auto">
-            Stop shipping demos nobody reads. Build 2-3 things that get you hired
+            Stop shipping demos nobody reads. Build 2-3 projects that get you interviews
             <span className="accent">.</span>
           </h2>
           <div className="mt-9 flex justify-center">
-            <CTAs center />
+            <CTAs center note />
           </div>
         </section>
 
@@ -367,27 +421,58 @@ export default function PlaybookPage() {
 
 // --- helpers ---------------------------------------------------------------
 
+// In-flow section header in the landing page's vocabulary: a "+" marker and
+// the title with its trailing accent period, aligned to the section grid.
+// Always visible, the PlaybookBar floats above these as you scroll. The
+// inter-section spacing lives on the <section> wrappers (padding, not margin)
+// so the section boxes stay contiguous for the scrollspy band.
+function Head({ title }: { title: string }) {
+  return (
+    <div className="-mx-6 lg:-mx-12 px-6 lg:px-12 py-3 border-b rule">
+      <div className="grid grid-cols-[auto_1fr] xs:grid-cols-[clamp(80px,14vw,140px)_1fr] lg:grid-cols-[140px_1fr] gap-3 xs:gap-6 lg:gap-12 items-baseline">
+        <span
+          aria-hidden
+          className="display accent text-[22px] xs:text-[clamp(20px,4.5vw,26px)] lg:text-3xl font-light leading-none"
+        >
+          +
+        </span>
+        <h2 className="display text-[22px] xs:text-[clamp(20px,4.5vw,26px)] lg:text-3xl font-light tracking-tight leading-none">
+          {title}
+          <span className="accent">.</span>
+        </h2>
+      </div>
+    </div>
+  )
+}
+
 // A single label-left / content-right block on the section grid (right column
 // left open for the prose to breathe), mirroring the project case-study rows.
 function Row({ label, children }: { label: string; children: ReactNode }) {
   return (
     <div className="grid grid-cols-1 xs:grid-cols-[clamp(80px,14vw,140px)_1fr] lg:grid-cols-[140px_1fr] gap-2 xs:gap-6 lg:gap-12 pt-6 xs:pt-8">
       <p className="mono small-caps faint xs:pt-1">{label}</p>
-      <div>{children}</div>
+      {/* min-w-0 zeroes the grid item's automatic minimum so wide children
+          (the pricing table's min-w) scroll inside their overflow wrapper
+          instead of blowing the page out horizontally at 475-615px. */}
+      <div className="min-w-0">{children}</div>
     </div>
   )
 }
 
-// Pricing check / dash cell, matching the site's table treatment.
+// Pricing check / dash cell, matching the site's table treatment. The accent
+// (Core) column carries a whisper of navy so the recommended tier reads first.
+// State is real (visually hidden) text for screen readers; the glyphs are
+// decorative, aria-label on a bare span is ignored by most AT.
 function Mark({ on, accent }: { on: boolean; accent?: boolean }) {
   return (
-    <td className="py-3 px-4">
+    <td className={`py-3 px-4 ${accent ? "accent-col" : ""}`}>
+      <span className="sr-only">{on ? "Included" : "Not included"}</span>
       {on ? (
-        <span className={accent ? "accent" : "ink"} aria-label="included">
+        <span aria-hidden className={accent ? "accent" : "ink"}>
           ✓
         </span>
       ) : (
-        <span className="faint" aria-label="not included">
+        <span aria-hidden className="faint">
           ·
         </span>
       )}
@@ -398,27 +483,38 @@ function Mark({ on, accent }: { on: boolean; accent?: boolean }) {
 // Buy buttons. The primary is a filled accent block, the one deliberate
 // departure from the site's text-link vocabulary, because a storefront needs
 // an unmistakable buy action. The secondary stays a site-standard accent-link.
+// `note` adds a compact risk-reversal line under the pair (used at the hero
+// and final CTA, where the full trust row is not on screen).
 function CTAs({
   coreLabel = "Get the playbook · $15",
   liteLabel = "Read 3 projects free →",
   center,
+  note,
 }: {
   coreLabel?: string
   liteLabel?: string
   center?: boolean
+  note?: boolean
 }) {
   return (
-    <div
-      className={`flex flex-col xs:flex-row items-stretch xs:items-center gap-4 xs:gap-6 ${
-        center ? "xs:justify-center" : ""
-      }`}
-    >
-      <a href={GUMROAD_CORE} data-gumroad-overlay className="cta-buy display">
-        {coreLabel}
-      </a>
-      <a href={GUMROAD_LITE} data-gumroad-overlay className="cta-ghost display">
-        {liteLabel}
-      </a>
+    <div className={center ? "text-center" : ""}>
+      <div
+        className={`flex flex-col xs:flex-row items-stretch xs:items-center gap-4 xs:gap-6 ${
+          center ? "xs:justify-center" : ""
+        }`}
+      >
+        <a href={GUMROAD_CORE} data-gumroad-overlay aria-haspopup="dialog" className="cta-buy display">
+          {coreLabel}
+        </a>
+        <a href={GUMROAD_LITE} data-gumroad-overlay aria-haspopup="dialog" className="cta-ghost display">
+          {liteLabel}
+        </a>
+      </div>
+      {note ? (
+        <p className="mono small-caps faint mt-4">
+          Instant access · 7-day refund, no questions asked
+        </p>
+      ) : null}
     </div>
   )
 }
@@ -432,26 +528,29 @@ function GhMark() {
   )
 }
 
-// Closing words rendered one letter per span so a size pulse can swipe
-// left to right across them. The wrapper carries the accessible label; the
-// per-letter spans are decorative.
+// Closing words rendered one letter per span so a size pulse can swipe left
+// to right across them. Screen readers get real (visually hidden) text; the
+// animated letters are one aria-hidden group, aria-label on a bare span is
+// ignored by most AT and would drop "six months" from the h1.
 function Shimmer({ text }: { text: string }) {
   return (
-    <span className="shimmer" aria-label={text}>
-      {[...text].map((ch, i) =>
-        ch === " " ? (
-          " "
-        ) : (
-          <span
-            key={i}
-            aria-hidden
-            className="shimmer-ch"
-            style={{ animationDelay: `${(i * 0.11).toFixed(2)}s` }}
-          >
-            {ch}
-          </span>
-        ),
-      )}
+    <span className="shimmer">
+      <span className="sr-only">{text}</span>
+      <span aria-hidden>
+        {[...text].map((ch, i) =>
+          ch === " " ? (
+            " "
+          ) : (
+            <span
+              key={i}
+              className="shimmer-ch"
+              style={{ animationDelay: `${(i * 0.11).toFixed(2)}s` }}
+            >
+              {ch}
+            </span>
+          ),
+        )}
+      </span>
     </span>
   )
 }
@@ -463,13 +562,19 @@ function PlaybookStyle() {
     <style>{`
       /* overflow-anchor: none stops the browser's scroll anchoring from nudging
          the viewport as sticky section headers engage/release during scroll. */
-      html { scrollbar-gutter: stable; overflow-anchor: none; }
+      /* scroll-padding-top keeps keyboard focus and programmatic scrolls clear
+         of the fixed header bar. */
+      html { scrollbar-gutter: stable; overflow-anchor: none; scroll-padding-top: 64px; }
       .paper { background-color: #f4f1ec; color: #1a1a1a; }
       .ink { color: #1a1a1a; }
       .muted { color: rgba(26,26,26,0.62); }
-      .faint { color: rgba(26,26,26,0.42); }
+      /* 0.62 is the minimum alpha that clears WCAG AA 4.5:1 for the 10-13px
+         small-caps text on paper and on the tinted .accent-col cells; .faint
+         stays distinct from .muted via size and letterspacing, not lightness. */
+      .faint { color: rgba(26,26,26,0.62); }
       .rule { border-color: rgba(26,26,26,0.12); }
       .accent { color: #1f3a5f; }
+      .accent-col { background-color: rgba(31,58,95,0.05); }
       .display { font-family: "Google Sans", ui-sans-serif, system-ui, sans-serif; font-optical-sizing: auto; }
       .mono { font-family: "Google Sans Code", ui-monospace, "SFMono-Regular", "Menlo", monospace; font-variation-settings: "MONO" 1; }
       .small-caps { text-transform: uppercase; letter-spacing: 0.18em; font-size: 10px; }
@@ -530,37 +635,52 @@ function PlaybookStyle() {
          the bump swipes left to right across "six months" (a "shimmer" done as
          a scale wave, not a colour sweep). transform: scale avoids the per-frame
          reflow that animating font-size would cause. */
-      .shimmer { color: #1f3a5f; }
+      /* nowrap: the per-letter inline-blocks would otherwise create soft-wrap
+         points inside the words, splitting "six months" mid-word at some
+         viewport widths. */
+      .shimmer { color: #1f3a5f; white-space: nowrap; }
       .shimmer-ch {
         display: inline-block; transform-origin: center bottom;
         animation: shimmer 3.6s ease-in-out infinite; will-change: transform;
       }
       @keyframes shimmer {
         0% { transform: scale(1); }
-        7% { transform: scale(1.24); }
+        7% { transform: scale(1.12); }
         16% { transform: scale(1); }
         100% { transform: scale(1); }
       }
 
+      /* No mix-blend-mode: multiplying 3.5% near-black dots over opaque paper
+         is visually identical to plain alpha, and the blend forced the
+         compositor to re-blend the full viewport on every scrolled frame.
+         Alpha matches the landing page's grain (0.035). */
       .grain::before {
         content: ""; position: fixed; inset: 0; pointer-events: none;
-        background-image: radial-gradient(rgba(26,26,26,0.05) 1px, transparent 1px);
-        background-size: 3px 3px; mix-blend-mode: multiply; z-index: 1;
+        background-image: radial-gradient(rgba(26,26,26,0.035) 1px, transparent 1px);
+        background-size: 3px 3px; z-index: 1;
       }
 
-      /* One persistent anchored header. All section headers share a single
-         sticky context; the one pinned at the top (data-stuck) is the only one
-         shown — the rest are invisible placeholders. As the next section reaches
-         the top its header covers the previous, so the heading updates in place
-         with nothing else moving. The Buy CTAs ride along on the right. */
-      .stickhead-grid { position: relative; }
-      .stickhead:not([data-stuck]) { border-color: transparent; }
-      .stickhead:not([data-stuck]) .stickhead-grid { opacity: 0; pointer-events: none; }
-      .stickhead-cta {
+      /* Visible focus for the keyboard-scrollable pricing region. */
+      .pb-scroll:focus-visible { outline: 2px solid #1f3a5f; outline-offset: 2px; }
+
+      /* The anchored header bar. It impersonates the in-flow section headers,
+         so it toggles instantly (no slide/fade): the swap happens exactly when
+         an in-flow header passes under it, which is what makes the takeover
+         read as "the header anchored". Only the title text changes. */
+      .pb-bar { visibility: hidden; }
+      .pb-bar[data-shown] { visibility: visible; }
+      .pb-bar-cta {
         position: absolute; top: 50%; right: 0;
         transform: translateY(-50%);
-        align-items: center; gap: 10px;
+        display: flex; align-items: center; gap: 10px;
       }
+      /* Phones: one clear buy action; the secondary joins at 640px+. (Declared
+         here, not with Tailwind's hidden utility, this style block loads after
+         the compiled sheet, so .sh-cta's display would win the cascade.) */
+      @media (max-width: 639px) {
+        .pb-bar .sh-cta-ghost { display: none; }
+      }
+
       .sh-cta {
         display: inline-flex; align-items: center; justify-content: center;
         padding: 7px 14px; border-radius: 5px; white-space: nowrap;
@@ -579,6 +699,8 @@ function PlaybookStyle() {
         .accent-link, .accent-link::after, .cta-buy, .cta-ghost { transition: none; }
         .shimmer-ch { animation: none; transform: none; }
         .sh-cta { transition: none; }
+        .pb-bar { transition: none; }
+        .pb-bar-title { animation: none; }
       }
     `}</style>
   )
