@@ -335,15 +335,18 @@ Measured 2026-07-04 (post Notion-mobile-hero deploy), warm edge cache, home US c
 | `x-vercel-cache`              | HIT            | HIT                   | HIT            |
 | Route type                    | ○ Static       | ● SSG                 | ○ Static       |
 | Redirects                     | 0              | 0                     | 0              |
-| Lighthouse mobile (perf/FCP/LCP) | 98 / 0.9s / 2.3s | —                | 95 / 1.4s / 2.8s pre-italic-preload |
+| Lighthouse mobile (perf/FCP/LCP) | 98 / 0.9s / 2.3s | —                | 98 / 1.0s / 2.4s |
 
 `/playbook` notes: ~58% of the raw document is the Next.js flight/RSC hydration payload
 (framework tax on a text-heavy page; brotli absorbs most of it). The page is the only route
 with italic display text above the fold, so it preloads `google-sans-italic-latin.woff2`
 itself (page-scoped `ReactDOM.preload`) — without it the italic face started ~90ms after the
 preloaded fonts and delayed the LCP repaint of the hero sub-paragraph, which is the LCP
-element. Gumroad's overlay stylesheets load post-paint via `lazyOnload` and are not in the
-critical path.
+element (pre-preload the route measured 95 / 1.4s / 2.8s). Gumroad's overlay stylesheets
+load post-paint via `lazyOnload` and are not in the critical path. Measurement trap seen
+here: on a loaded host (dev server + several headless Chromes), Lighthouse produced bimodal
+scores (98 vs 75-76) with observed FCP landing seconds *after* observed load — a starved
+renderer, not the page. Quiet the machine before believing a bad run.
 
 A regression is a change against **these** numbers measured the same way — not against a field
 panel percentile.
