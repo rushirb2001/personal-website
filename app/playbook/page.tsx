@@ -122,15 +122,15 @@ export default function PlaybookPage() {
         {/* Top bar: a discreet way back to the portfolio, kept separate from
             the sales story. */}
         <nav className="flex items-center justify-between py-5 xs:py-6">
-          <Link href="/" className="accent-link mono text-[13px] inline-flex items-center gap-1.5">
-            <span aria-hidden>←</span> Rushir Bhavsar
-          </Link>
-          {/* Full product title lives in the header now; short form on the
-              narrowest phones so it never collides with the back-link. */}
-          <span className="mono small-caps accent text-right">
+          {/* Product title on the left; short form on the narrowest phones so
+              it never collides with the back-link. */}
+          <span className="mono small-caps accent">
             <span className="xs:hidden">The Playbook</span>
             <span className="hidden xs:inline">The AI-Engineer Portfolio Playbook</span>
           </span>
+          <Link href="/" className="accent-link mono text-[13px] inline-flex items-center gap-1.5">
+            <span aria-hidden>←</span> Rushir Bhavsar
+          </Link>
         </nav>
 
         {/* ---- Hero ---------------------------------------------------- */}
