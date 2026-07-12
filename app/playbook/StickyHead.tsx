@@ -20,8 +20,12 @@ export function StickyHead({ title, tight }: { title: string; tight?: boolean })
     const sentinel = sentinelRef.current
     const header = headerRef.current
     if (!sentinel || !header || typeof IntersectionObserver === "undefined") return
+    // Anchored only once the sentinel has scrolled ABOVE the viewport top
+    // (top < 0). A sentinel still below the fold is also "not intersecting",
+    // so keying off isIntersecting alone would wrongly anchor sections you
+    // haven't reached yet.
     const io = new IntersectionObserver(
-      ([entry]) => header.toggleAttribute("data-stuck", !entry.isIntersecting),
+      ([entry]) => header.toggleAttribute("data-stuck", entry.boundingClientRect.top < 0),
       { threshold: 0 },
     )
     io.observe(sentinel)
