@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef } from "react"
 import { GUMROAD_CORE, GUMROAD_LITE } from "./links"
 
 // Sticky section header: it anchors at the top of the viewport while its content
@@ -8,18 +8,23 @@ import { GUMROAD_CORE, GUMROAD_LITE } from "./links"
 // the header is anchored, the two Buy CTAs slide in on the right so checkout is
 // always one click away as the reader moves through the page. A zero-height
 // sentinel just above the header (carrying the section's top margin) reports the
-// anchored state via IntersectionObserver. Styling lives in PlaybookStyle.
+// anchored state via IntersectionObserver. The observer toggles the data-stuck
+// attribute directly on the DOM rather than through React state, so crossing a
+// section boundary mid-scroll doesn't trigger a re-render (that re-render was a
+// per-boundary "speed bump"). Styling lives in PlaybookStyle.
 export function StickyHead({ title, tight }: { title: string; tight?: boolean }) {
   const sentinelRef = useRef<HTMLDivElement>(null)
-  const [stuck, setStuck] = useState(false)
+  const headerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    const el = sentinelRef.current
-    if (!el || typeof IntersectionObserver === "undefined") return
-    const io = new IntersectionObserver(([entry]) => setStuck(!entry.isIntersecting), {
-      threshold: 0,
-    })
-    io.observe(el)
+    const sentinel = sentinelRef.current
+    const header = headerRef.current
+    if (!sentinel || !header || typeof IntersectionObserver === "undefined") return
+    const io = new IntersectionObserver(
+      ([entry]) => header.toggleAttribute("data-stuck", !entry.isIntersecting),
+      { threshold: 0 },
+    )
+    io.observe(sentinel)
     return () => io.disconnect()
   }, [])
 
@@ -31,7 +36,7 @@ export function StickyHead({ title, tight }: { title: string; tight?: boolean })
         className={`${tight ? "mt-4 xs:mt-6" : "mt-14 xs:mt-20"} h-0`}
       />
       <div
-        data-stuck={stuck || undefined}
+        ref={headerRef}
         className="stickhead sticky top-0 z-30 -mx-6 lg:-mx-12 px-6 lg:px-12 py-3 border-b rule"
         style={{ backgroundColor: "#f4f1ec" }}
       >

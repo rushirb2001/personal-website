@@ -477,7 +477,9 @@ function Shimmer({ text }: { text: string }) {
 function PlaybookStyle() {
   return (
     <style>{`
-      html { scrollbar-gutter: stable; }
+      /* overflow-anchor: none stops the browser's scroll anchoring from nudging
+         the viewport as sticky section headers engage/release during scroll. */
+      html { scrollbar-gutter: stable; overflow-anchor: none; }
       .paper { background-color: #f4f1ec; color: #1a1a1a; }
       .ink { color: #1a1a1a; }
       .muted { color: rgba(26,26,26,0.62); }
