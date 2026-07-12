@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import Image from "next/image"
 import Link from "next/link"
 import Script from "next/script"
+import ReactDOM from "react-dom"
 import type { ReactNode } from "react"
 import { PlaybookBar } from "./PlaybookBar"
 import { PlaybookRail } from "./PlaybookRail"
@@ -114,6 +115,17 @@ export function generateMetadata(): Metadata {
 }
 
 export default function PlaybookPage() {
+  // The hero sub-paragraph (this page's LCP element) uses italic emphasis, so
+  // the italic face is on the critical path here (it is not on other routes).
+  // Without a preload the browser discovers it only after style/layout
+  // (~90ms after the preloaded fonts) and the LCP text repaints late.
+  // ReactDOM.preload dedupes correctly, matching the layout.tsx pattern.
+  ReactDOM.preload("/fonts/google-sans-italic-latin.woff2", {
+    as: "font",
+    type: "font/woff2",
+    crossOrigin: "anonymous",
+  })
+
   return (
     <main className="paper grain min-h-[100svh]">
       {/* gumroad.js upgrades the overlay anchors into an on-page checkout
