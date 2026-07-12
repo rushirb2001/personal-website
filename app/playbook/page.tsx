@@ -4,6 +4,7 @@ import Link from "next/link"
 import Script from "next/script"
 import type { ReactNode } from "react"
 import { PlaybookBar } from "./PlaybookBar"
+import { PlaybookRail } from "./PlaybookRail"
 import { GUMROAD_CORE, GUMROAD_LITE } from "./links"
 
 // gumroad.js (loaded lazily below) upgrades any <a data-gumroad-overlay> into an
@@ -125,6 +126,10 @@ export default function PlaybookPage() {
       {/* Fixed Buy-CTA overlay: rides at the top-right over whichever section
           header is pinned; the headers themselves anchor and push natively. */}
       <PlaybookBar />
+
+      {/* Minimal page map: tick lines in the left margin that fill as the
+          reader scrolls; names appear on hover. Desktop + hover only. */}
+      <PlaybookRail />
 
       <div className="max-w-[1100px] mx-auto px-6 lg:px-12">
         {/* Top bar: a discreet way back to the portfolio, kept separate from
@@ -729,11 +734,52 @@ function PlaybookStyle() {
         .sh-cta-ghost:hover { background-color: rgba(31,58,95,0.06); }
       }
 
+      /* Page-map rail: tick lines fixed in the left margin. Long line =
+         section, short line = subsection. Lines fill with the accent once
+         scrolled past; the current one stretches. Hovering the rail (or
+         focusing a line) reveals the names. Desktop + hover devices only. */
+      .pb-rail {
+        position: fixed; left: 18px; top: 50%; transform: translateY(-50%);
+        z-index: 35; display: none;
+      }
+      @media (min-width: 1024px) and (hover: hover) {
+        .pb-rail { display: flex; flex-direction: column; gap: 6px; }
+      }
+      .pb-rail-item {
+        position: relative; display: flex; align-items: center;
+        background: none; border: 0; padding: 4px 0; cursor: pointer;
+      }
+      .pb-rail-line {
+        width: 22px; height: 2px; border-radius: 1px; flex: none;
+        background-color: rgba(26,26,26,0.18);
+        transition: background-color 200ms ease, width 200ms ease;
+      }
+      .pb-rail-item.is-sub .pb-rail-line { width: 12px; }
+      .pb-rail-item.is-passed .pb-rail-line { background-color: rgba(31,58,95,0.55); }
+      .pb-rail-item.is-current .pb-rail-line { background-color: #1f3a5f; width: 28px; }
+      .pb-rail-item.is-current.is-sub .pb-rail-line { width: 18px; }
+      /* Absolutely positioned so hidden labels neither stretch the buttons
+         over the page content nor add height to the tick pitch. */
+      .pb-rail-label {
+        position: absolute; left: calc(100% + 10px); top: 50%;
+        opacity: 0; transform: translateY(-50%) translateX(-4px); pointer-events: none;
+        transition: opacity 180ms ease, transform 180ms ease;
+        color: rgba(26,26,26,0.62); white-space: nowrap;
+        background-color: #f4f1ec; padding: 2px 6px; border-radius: 3px;
+      }
+      .pb-rail:hover .pb-rail-label,
+      .pb-rail-item:focus-visible .pb-rail-label {
+        opacity: 1; transform: translateY(-50%) translateX(0);
+      }
+      .pb-rail-item.is-current .pb-rail-label { color: #1f3a5f; }
+      .pb-rail-item:focus-visible { outline: 2px solid #1f3a5f; outline-offset: 2px; }
+
       @media (prefers-reduced-motion: reduce) {
         .accent-link, .accent-link::after, .cta-buy, .cta-ghost { transition: none; }
         .shimmer-ch { animation: none; transform: none; }
         .sh-cta { transition: none; }
         .pb-bar, .pb-bar[data-shown] { transition: none; }
+        .pb-rail-line, .pb-rail-label { transition: none; }
       }
     `}</style>
   )
