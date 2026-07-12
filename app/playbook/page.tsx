@@ -4,15 +4,10 @@ import Link from "next/link"
 import Script from "next/script"
 import type { ReactNode } from "react"
 import { StickyHead } from "./StickyHead"
+import { GUMROAD_CORE, GUMROAD_LITE } from "./links"
 
-// --- Gumroad product links -------------------------------------------------
-// Buy buttons are Gumroad overlay anchors: gumroad.js (loaded lazily below)
-// upgrades any <a data-gumroad-overlay> into an on-page modal. No `?wanted=true`
-// so the overlay opens the product page (cover + description) and the buyer
-// clicks through to checkout, instead of dropping straight into the payment form.
-// Permalinks (subdomain: rushirbhavsar):  Core → playbook  ·  Lite → playbook-lite
-const GUMROAD_CORE = "https://rushirbhavsar.gumroad.com/l/playbook" // $15 Core
-const GUMROAD_LITE = "https://rushirbhavsar.gumroad.com/l/playbook-lite" // Free Lite
+// gumroad.js (loaded lazily below) upgrades any <a data-gumroad-overlay> into an
+// on-page checkout overlay. Product permalinks live in ./links.
 
 const INSIDE = [
   {
@@ -181,7 +176,7 @@ export default function PlaybookPage() {
 
         {/* ---- What's inside ------------------------------------------ */}
         <section>
-        <StickyHead title="What's inside" count={INSIDE.length} />
+        <StickyHead title="What's inside" />
         <ol>
           {INSIDE.map((item, i) => (
             <li
@@ -329,7 +324,7 @@ export default function PlaybookPage() {
 
         {/* ---- FAQ ---------------------------------------------------- */}
         <section>
-        <StickyHead title="FAQ" count={FAQ.length} />
+        <StickyHead title="FAQ" />
         <dl>
           {FAQ.map((f, i) => (
             <div
@@ -567,26 +562,39 @@ function PlaybookStyle() {
         background-size: 3px 3px; mix-blend-mode: multiply; z-index: 1;
       }
 
-      /* Sticky section headers: the "+" marker glides from the left to the right
-         edge while the header is anchored (data-stuck), and slides back when it
-         releases. The marker is an absolute overlay so it can travel the full
-         header width; left: 0 -> 100% (with translateX(-100%) to keep it flush)
-         transitions smoothly. */
+      /* Sticky section headers: while a header is anchored (data-stuck), the two
+         Buy CTAs slide in from the right, absolutely positioned so they never
+         push the title. Hidden (and out of the flow) otherwise. */
       .stickhead-grid { position: relative; }
-      .stickhead-mark {
-        position: absolute; left: 0; top: 0;
-        transition: left 520ms cubic-bezier(0.22,1,0.36,1),
-                    transform 520ms cubic-bezier(0.22,1,0.36,1);
+      .stickhead-cta {
+        position: absolute; top: 50%; right: 0;
+        transform: translateY(-50%) translateX(10px);
+        align-items: center; gap: 10px;
+        opacity: 0; pointer-events: none;
+        transition: opacity 300ms ease, transform 400ms cubic-bezier(0.22,1,0.36,1);
       }
-      .stickhead[data-stuck] .stickhead-mark {
-        left: 100%;
-        transform: translateX(-100%);
+      .stickhead[data-stuck] .stickhead-cta {
+        opacity: 1; pointer-events: auto;
+        transform: translateY(-50%) translateX(0);
+      }
+      .sh-cta {
+        display: inline-flex; align-items: center; justify-content: center;
+        padding: 7px 14px; border-radius: 5px; white-space: nowrap;
+        font-family: "Google Sans", ui-sans-serif, system-ui, sans-serif;
+        font-size: 12.5px; letter-spacing: -0.01em; line-height: 1;
+        transition: background-color 200ms ease;
+      }
+      .sh-cta-solid { background-color: #1f3a5f; color: #f4f1ec; }
+      .sh-cta-ghost { border: 1px solid #1f3a5f; color: #1f3a5f; background-color: transparent; padding: 6px 13px; }
+      @media (hover: hover) {
+        .sh-cta-solid:hover { background-color: #16314f; }
+        .sh-cta-ghost:hover { background-color: rgba(31,58,95,0.06); }
       }
 
       @media (prefers-reduced-motion: reduce) {
         .accent-link, .accent-link::after, .cta-buy, .cta-ghost { transition: none; }
         .shimmer-ch { animation: none; transform: none; }
-        .stickhead-mark { transition: none; }
+        .stickhead-cta, .sh-cta { transition: none; }
       }
     `}</style>
   )
