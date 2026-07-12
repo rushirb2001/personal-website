@@ -325,15 +325,25 @@ Plus §2 Lighthouse if the change touched layout, media, fonts, or anything rend
 make the next regression invisible, so updating this table is part of shipping a perf-relevant
 change.
 
-Measured 2026-07-04 (post Notion-mobile-hero deploy), warm edge cache, home US connection:
+Measured 2026-07-04 (post Notion-mobile-hero deploy), warm edge cache, home US connection;
+`/playbook` column added 2026-07-12 (first production deploy of the route):
 
-| Metric                        | `/`            | `/projects/mace-pinn` |
-| ----------------------------- | -------------- | --------------------- |
-| TTFB (curl, runs 2–3)         | 107–216ms      | 121ms                 |
-| Document size                 | 55.8KB         | 39.1KB                |
-| `x-vercel-cache`              | HIT            | HIT                   |
-| Route type                    | ○ Static       | ● SSG                 |
-| Redirects                     | 0              | 0                     |
+| Metric                        | `/`            | `/projects/mace-pinn` | `/playbook`    |
+| ----------------------------- | -------------- | --------------------- | -------------- |
+| TTFB (curl, runs 2–3)         | 107–216ms      | 121ms                 | 125–129ms      |
+| Document size (raw / brotli)  | 55.8KB / 12.3KB | 39.1KB               | 99.5KB / 15.4KB |
+| `x-vercel-cache`              | HIT            | HIT                   | HIT            |
+| Route type                    | ○ Static       | ● SSG                 | ○ Static       |
+| Redirects                     | 0              | 0                     | 0              |
+| Lighthouse mobile (perf/FCP/LCP) | 98 / 0.9s / 2.3s | —                | 95 / 1.4s / 2.8s pre-italic-preload |
+
+`/playbook` notes: ~58% of the raw document is the Next.js flight/RSC hydration payload
+(framework tax on a text-heavy page; brotli absorbs most of it). The page is the only route
+with italic display text above the fold, so it preloads `google-sans-italic-latin.woff2`
+itself (page-scoped `ReactDOM.preload`) — without it the italic face started ~90ms after the
+preloaded fonts and delayed the LCP repaint of the hero sub-paragraph, which is the LCP
+element. Gumroad's overlay stylesheets load post-paint via `lazyOnload` and are not in the
+critical path.
 
 A regression is a change against **these** numbers measured the same way — not against a field
 panel percentile.
