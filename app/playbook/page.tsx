@@ -151,9 +151,11 @@ export default function PlaybookPage() {
         </section>
 
         {/* ---- The problem -------------------------------------------- */}
-        {/* Each section wraps its header + content so the sticky header anchors
-            only while that section is in view, then releases at its boundary
-            (the landing page's per-section anchoring, without the collapse). */}
+        {/* One sticky context for all sections: each section header anchors at
+            the top and holds until the next section's header covers it, so the
+            heading updates in place with no gap — a single persistent bar. Only
+            the anchored header is shown; the others are invisible placeholders
+            (see .stickhead CSS). */}
         <section>
         <StickyHead title="The problem" tight />
         <Row label="The gap">
@@ -172,10 +174,7 @@ export default function PlaybookPage() {
           </p>
         </Row>
 
-        </section>
-
         {/* ---- What's inside ------------------------------------------ */}
-        <section>
         <StickyHead title="What's inside" />
         <ol>
           {INSIDE.map((item, i) => (
@@ -213,10 +212,7 @@ export default function PlaybookPage() {
           ))}
         </ol>
 
-        </section>
-
         {/* ---- A look inside (samples) -------------------------------- */}
-        <section>
         <StickyHead title="A look inside" />
         <Row label="Sample pages">
           <div className="grid grid-cols-1 xs:grid-cols-3 gap-4 lg:gap-6">
@@ -240,10 +236,7 @@ export default function PlaybookPage() {
           </div>
         </Row>
 
-        </section>
-
         {/* ---- Why trust this ----------------------------------------- */}
-        <section>
         <StickyHead title="Why trust this" />
         <Row label="Proof">
           <p className="display font-light text-[16px] xs:text-[18px] leading-relaxed ink max-w-[76ch]">
@@ -268,10 +261,7 @@ export default function PlaybookPage() {
           </p>
         </Row>
 
-        </section>
-
         {/* ---- Pricing ------------------------------------------------ */}
-        <section>
         <StickyHead title="Pricing" />
         <Row label="Plans">
           <div className="overflow-x-auto">
@@ -320,10 +310,7 @@ export default function PlaybookPage() {
           </div>
         </Row>
 
-        </section>
-
         {/* ---- FAQ ---------------------------------------------------- */}
-        <section>
         <StickyHead title="FAQ" />
         <dl>
           {FAQ.map((f, i) => (
@@ -346,10 +333,7 @@ export default function PlaybookPage() {
           ))}
         </dl>
 
-        </section>
-
         {/* ---- Guarantee ---------------------------------------------- */}
-        <section>
         <StickyHead title="Guarantee" />
         <Row label="7 days">
           <p className="display font-light text-[16px] xs:text-[18px] leading-relaxed ink max-w-[68ch]">
@@ -564,20 +548,18 @@ function PlaybookStyle() {
         background-size: 3px 3px; mix-blend-mode: multiply; z-index: 1;
       }
 
-      /* Sticky section headers: while a header is anchored (data-stuck), the two
-         Buy CTAs slide in from the right, absolutely positioned so they never
-         push the title. Hidden (and out of the flow) otherwise. */
+      /* One persistent anchored header. All section headers share a single
+         sticky context; the one pinned at the top (data-stuck) is the only one
+         shown — the rest are invisible placeholders. As the next section reaches
+         the top its header covers the previous, so the heading updates in place
+         with nothing else moving. The Buy CTAs ride along on the right. */
       .stickhead-grid { position: relative; }
+      .stickhead:not([data-stuck]) { border-color: transparent; }
+      .stickhead:not([data-stuck]) .stickhead-grid { opacity: 0; pointer-events: none; }
       .stickhead-cta {
         position: absolute; top: 50%; right: 0;
-        transform: translateY(-50%) translateX(10px);
+        transform: translateY(-50%);
         align-items: center; gap: 10px;
-        opacity: 0; pointer-events: none;
-        transition: opacity 300ms ease, transform 400ms cubic-bezier(0.22,1,0.36,1);
-      }
-      .stickhead[data-stuck] .stickhead-cta {
-        opacity: 1; pointer-events: auto;
-        transform: translateY(-50%) translateX(0);
       }
       .sh-cta {
         display: inline-flex; align-items: center; justify-content: center;
@@ -596,7 +578,7 @@ function PlaybookStyle() {
       @media (prefers-reduced-motion: reduce) {
         .accent-link, .accent-link::after, .cta-buy, .cta-ghost { transition: none; }
         .shimmer-ch { animation: none; transform: none; }
-        .stickhead-cta, .sh-cta { transition: none; }
+        .sh-cta { transition: none; }
       }
     `}</style>
   )
