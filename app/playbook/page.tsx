@@ -90,11 +90,11 @@ const FAQ = [
   },
   {
     q: "I'm not in the US / not a student.",
-    a: "It still works, and the playbook is about what to build and how to show it, which is universal.",
+    a: "It still works, and the playbook is about what to build and how to show it, which is universal. Price is shown in USD; your card network converts it automatically at checkout.",
   },
   {
     q: "Is there a student discount?",
-    a: "The launch price is the discount, the Lite tier is free, and every project runs on a $0 stack. That is the student pricing.",
+    a: "Launch price is $10 (33% off), pre-applied at checkout for the first 50 buyers. After that it returns to $15.",
   },
   {
     q: "Will it go stale?",
@@ -336,7 +336,8 @@ export default function PlaybookPage() {
                   </th>
                   <th scope="col" className="accent-col font-normal text-left py-3 px-4">
                     <span className="display ink text-[15px] font-light">Core</span>{" "}
-                    <span className="small-caps accent">$15</span>
+                    <span className="small-caps faint line-through">$15</span>{" "}
+                    <span className="small-caps accent">$10</span>
                   </th>
                   <th scope="col" className="font-normal text-left py-3 pl-4">
                     <span className="display muted text-[15px] font-light">Cohort</span>{" "}
@@ -359,11 +360,17 @@ export default function PlaybookPage() {
             </table>
           </div>
           <p className="mono text-[11px] faint mt-4">
-            Launch price $9-12 for the first 50 buyers, then $15. Core buyers get the cohort
+            Launch price $10 (33% off), first 50 buyers, then $15. Core buyers get the cohort
             at a discount when it opens, and everything in Core carries over.
           </p>
           <div className="mt-7">
-            <CTAs coreLabel="Get Core · $15" />
+            <CTAs
+              coreLabel={
+                <>
+                  Get Core · <span className="line-through" style={{ opacity: 0.6 }}>$15</span> $10
+                </>
+              }
+            />
           </div>
           {/* Separators ride with their preceding label so a wrapped line can
               never start with a bare dot. */}
@@ -535,12 +542,16 @@ function Mark({ on, accent }: { on: boolean; accent?: boolean }) {
 // `note` adds a compact risk-reversal line under the pair (used at the hero
 // and final CTA, where the full trust row is not on screen).
 function CTAs({
-  coreLabel = "Get the playbook · $15",
+  coreLabel = (
+    <>
+      Get the playbook · <span className="line-through" style={{ opacity: 0.6 }}>$15</span> $10
+    </>
+  ),
   liteLabel = "Read 3 projects free →",
   center,
   note,
 }: {
-  coreLabel?: string
+  coreLabel?: ReactNode
   liteLabel?: string
   center?: boolean
   note?: boolean
@@ -561,7 +572,7 @@ function CTAs({
       </div>
       {note ? (
         <p className="mono small-caps faint mt-4">
-          Instant access · 7-day refund, no questions asked
+          $10 launch price, first 50 buyers · Instant access · 7-day refund
         </p>
       ) : null}
     </div>
