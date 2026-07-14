@@ -6,7 +6,8 @@ import ReactDOM from "react-dom"
 import type { ReactNode } from "react"
 import { PlaybookBar } from "./PlaybookBar"
 import { PlaybookRail } from "./PlaybookRail"
-import { GUMROAD_CORE, GUMROAD_LITE } from "./links"
+import { headers } from "next/headers"
+import { BUY_PATH, GUMROAD_LITE, PRICING_INR, PRICING_USD, type Pricing } from "./links"
 
 // gumroad.js (loaded lazily below) upgrades any <a data-gumroad-overlay> into an
 // on-page checkout overlay. Product permalinks live in ./links.
@@ -71,36 +72,46 @@ const PRICING_ROWS = [
   { label: "Live cohort + office hours", lite: false, core: false, cohort: true },
 ]
 
-const FAQ = [
-  {
-    q: "What exactly do I get, and how?",
-    a: "A 52-page PDF plus the companion zip: clone-ready repo skeletons, the 6-month tracker, and the Resume Bullet Bank. Gumroad delivers everything instantly after checkout, and updates land in your library free.",
-  },
-  {
-    q: "Do I need money or a GPU?",
-    a: "No. Every project runs on free tiers. That's the whole point.",
-  },
-  {
-    q: "Solo, or do I need a partner?",
-    a: "Solo-first: the plans are written for one person. A Partner Bonus appendix covers the two-person review workflow if you find one.",
-  },
-  {
-    q: "Is this just a list of ideas?",
-    a: "No, it's a 6-month system: week-by-week plans, the git/LinkedIn operating manual, repo skeletons, and a tracker.",
-  },
-  {
-    q: "I'm not in the US / not a student.",
-    a: "It still works, and the playbook is about what to build and how to show it, which is universal. Price is shown in USD; your card network converts it automatically at checkout.",
-  },
-  {
-    q: "Is there a student discount?",
-    a: "Launch price is $10 (33% off), pre-applied at checkout for the first 50 buyers. After that it returns to $15.",
-  },
-  {
-    q: "Will it go stale?",
-    a: "Lifetime updates on Core. The stack and projects evolve with the market.",
-  },
-]
+// Any answer that names a price or a storefront has to follow the visitor's rail,
+// so the FAQ is built per request rather than living as a module const.
+function faqs(p: Pricing) {
+  return [
+    {
+      q: "What exactly do I get, and how?",
+      a: `A 52-page PDF plus the companion zip: clone-ready repo skeletons, the 6-month tracker, and the Resume Bullet Bank. ${
+        p.usd ? "Gumroad" : "Sauce"
+      } delivers everything instantly after checkout, and updates land in your library free.`,
+    },
+    {
+      q: "Do I need money or a GPU?",
+      a: "No. Every project runs on free tiers. That's the whole point.",
+    },
+    {
+      q: "Solo, or do I need a partner?",
+      a: "Solo-first: the plans are written for one person. A Partner Bonus appendix covers the two-person review workflow if you find one.",
+    },
+    {
+      q: "Is this just a list of ideas?",
+      a: "No, it's a 6-month system: week-by-week plans, the git/LinkedIn operating manual, repo skeletons, and a tracker.",
+    },
+    {
+      q: "I'm not in the US / not a student.",
+      a: p.usd
+        ? "It still works, and the playbook is about what to build and how to show it, which is universal. Price is shown in USD; your card network converts it automatically at checkout."
+        : "It still works, and the playbook is about what to build and how to show it, which is universal. You are seeing India pricing, and checkout takes UPI.",
+    },
+    {
+      q: "Is there a student discount?",
+      a: p.list
+        ? `Launch price is ${p.now} (33% off), pre-applied at checkout for the first 50 buyers. After that it returns to ${p.list}.`
+        : `The playbook is ${p.now}. The Lite tier is free, and every project in it runs on a $0 stack, so you can start without paying anything.`,
+    },
+    {
+      q: "Will it go stale?",
+      a: "Lifetime updates on Core. The stack and projects evolve with the market.",
+    },
+  ]
+}
 
 export function generateMetadata(): Metadata {
   const title = "Zero to Hired: The AI-Engineer Portfolio Playbook · Rushir Bhavsar"
@@ -114,7 +125,7 @@ export function generateMetadata(): Metadata {
   }
 }
 
-export default function PlaybookPage() {
+export default async function PlaybookPage() {
   // The hero sub-paragraph (this page's LCP element) uses italic emphasis, so
   // the italic face is on the critical path here (it is not on other routes).
   // Without a preload the browser discovers it only after style/layout
@@ -125,6 +136,13 @@ export default function PlaybookPage() {
     type: "font/woff2",
     crossOrigin: "anonymous",
   })
+
+  // Reading geo opts this route out of static prerender, which is the deliberate
+  // trade: an Indian visitor who reads "$10" prices themselves out before ever
+  // reaching Sauce, so the rupee figure has to be in the HTML, not behind a hop.
+  const country = (await headers()).get("x-vercel-ip-country")
+  const pricing = country === "IN" ? PRICING_INR : PRICING_USD
+  const faq = faqs(pricing)
 
   return (
     <main className="paper grain min-h-[100svh]">
@@ -137,7 +155,7 @@ export default function PlaybookPage() {
 
       {/* Fixed Buy-CTA overlay: rides at the top-right over whichever section
           header is pinned; the headers themselves anchor and push natively. */}
-      <PlaybookBar />
+      <PlaybookBar pricing={pricing} />
 
       {/* Minimal page map: tick lines in the left margin that fill as the
           reader scrolls; names appear on hover. Desktop + hover only. */}
@@ -176,7 +194,7 @@ export default function PlaybookPage() {
             tiers, a git and LinkedIn playbook, and the resume bullets each one produces.
           </div>
           <div className="mt-9 xs:mt-10">
-            <CTAs note />
+            <CTAs pricing={pricing} note />
           </div>
         </section>
 
@@ -336,8 +354,12 @@ export default function PlaybookPage() {
                   </th>
                   <th scope="col" className="accent-col font-normal text-left py-3 px-4">
                     <span className="display ink text-[15px] font-light">Core</span>{" "}
-                    <span className="small-caps faint line-through">$15</span>{" "}
-                    <span className="small-caps accent">$10</span>
+                    {pricing.list ? (
+                      <>
+                        <span className="small-caps faint line-through">{pricing.list}</span>{" "}
+                      </>
+                    ) : null}
+                    <span className="small-caps accent">{pricing.now}</span>
                   </th>
                   <th scope="col" className="font-normal text-left py-3 pl-4">
                     <span className="display muted text-[15px] font-light">Cohort</span>{" "}
@@ -360,14 +382,24 @@ export default function PlaybookPage() {
             </table>
           </div>
           <p className="mono text-[11px] faint mt-4">
-            Launch price $10 (33% off), first 50 buyers, then $15. Core buyers get the cohort
-            at a discount when it opens, and everything in Core carries over.
+            {pricing.list
+              ? `Launch price ${pricing.now} (33% off), first 50 buyers, then ${pricing.list}.`
+              : `${pricing.now}.`}{" "}
+            Core buyers get the cohort at a discount when it opens, and everything in Core
+            carries over.
           </p>
           <div className="mt-7">
             <CTAs
+              pricing={pricing}
               coreLabel={
                 <>
-                  Get Core · <span className="line-through" style={{ opacity: 0.6 }}>$15</span> $10
+                  Get Core ·{" "}
+                  {pricing.list ? (
+                    <>
+                      <span className="line-through" style={{ opacity: 0.6 }}>{pricing.list}</span>{" "}
+                    </>
+                  ) : null}
+                  {pricing.now}
                 </>
               }
             />
@@ -399,11 +431,11 @@ export default function PlaybookPage() {
         {/* Plain headings + paragraphs: dl semantics with decorative dt text
             read as "Q, Q, Q" in screen readers; h3s match the tier list. */}
         <div>
-          {FAQ.map((f, i) => (
+          {faq.map((f, i) => (
             <div
               key={f.q}
               className={`grid grid-cols-1 xs:grid-cols-[clamp(80px,14vw,140px)_1fr] lg:grid-cols-[140px_1fr] gap-2 xs:gap-6 lg:gap-12 py-5 xs:py-6 first:pt-4 xs:first:pt-6 ${
-                i !== FAQ.length - 1 ? "border-b rule" : ""
+                i !== faq.length - 1 ? "border-b rule" : ""
               }`}
             >
               <span aria-hidden className="mono small-caps faint xs:pt-1">
@@ -456,7 +488,7 @@ export default function PlaybookPage() {
             <span className="accent">.</span>
           </h2>
           <div className="mt-9 flex justify-center">
-            <CTAs center note />
+            <CTAs pricing={pricing} center note />
           </div>
         </section>
 
@@ -542,15 +574,13 @@ function Mark({ on, accent }: { on: boolean; accent?: boolean }) {
 // `note` adds a compact risk-reversal line under the pair (used at the hero
 // and final CTA, where the full trust row is not on screen).
 function CTAs({
-  coreLabel = (
-    <>
-      Get the playbook · <span className="line-through" style={{ opacity: 0.6 }}>$15</span> $10
-    </>
-  ),
+  pricing,
+  coreLabel,
   liteLabel = "Read 3 projects free →",
   center,
   note,
 }: {
+  pricing: Pricing
   coreLabel?: ReactNode
   liteLabel?: string
   center?: boolean
@@ -563,8 +593,18 @@ function CTAs({
           center ? "xs:justify-center" : ""
         }`}
       >
-        <a href={GUMROAD_CORE} data-gumroad-overlay aria-haspopup="dialog" className="cta-buy display">
-          {coreLabel}
+        <a href={BUY_PATH} className="cta-buy display">
+          {coreLabel ?? (
+            <>
+              Get the playbook ·{" "}
+              {pricing.list ? (
+                <>
+                  <span className="line-through" style={{ opacity: 0.6 }}>{pricing.list}</span>{" "}
+                </>
+              ) : null}
+              {pricing.now}
+            </>
+          )}
         </a>
         <a href={GUMROAD_LITE} data-gumroad-overlay aria-haspopup="dialog" className="cta-ghost display">
           {liteLabel}
@@ -572,7 +612,8 @@ function CTAs({
       </div>
       {note ? (
         <p className="mono small-caps faint mt-4">
-          $10 launch price, first 50 buyers · Instant access · 7-day refund
+          {pricing.list ? `${pricing.now} launch price, first 50 buyers` : pricing.now} · Instant
+          access · 7-day refund
         </p>
       ) : null}
     </div>

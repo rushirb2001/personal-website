@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
-import { GUMROAD_CORE, GUMROAD_LITE } from "./links"
+import { BUY_PATH, GUMROAD_LITE, type Pricing } from "./links"
 
 // Fixed Buy-CTA overlay. The section headers themselves anchor and hand off
 // natively (sticky within contiguous sections, so the next header physically
@@ -9,7 +9,7 @@ import { GUMROAD_CORE, GUMROAD_LITE } from "./links"
 // only keeps the two Buy buttons floating at the top-right over whichever
 // header is pinned; it appears when the reader is inside the sections and
 // hides in the hero and at the final CTA (no section straddling the band).
-export function PlaybookBar() {
+export function PlaybookBar({ pricing }: { pricing: Pricing }) {
   const [active, setActive] = useState(false)
   const stripRef = useRef<HTMLDivElement>(null)
 
@@ -75,12 +75,16 @@ export function PlaybookBar() {
       <div className="max-w-[1100px] mx-auto px-6 lg:px-12">
         <div className="flex items-center justify-end gap-2.5 py-3">
           <a
-            href={GUMROAD_CORE}
-            data-gumroad-overlay
-            aria-haspopup="dialog"
+            href={BUY_PATH}
             className="sh-cta sh-cta-solid"
           >
-            Get the playbook · <span className="line-through" style={{ opacity: 0.6 }}>$15</span> $10
+            Get the playbook ·{" "}
+            {pricing.list ? (
+              <>
+                <span className="line-through" style={{ opacity: 0.6 }}>{pricing.list}</span>{" "}
+              </>
+            ) : null}
+            {pricing.now}
           </a>
           {/* Hidden below 640px via the .pb-bar rule in PlaybookStyle. */}
           <a
