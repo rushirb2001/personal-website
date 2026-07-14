@@ -80,7 +80,7 @@ export function PlaybookBar() {
             aria-haspopup="dialog"
             className="sh-cta sh-cta-solid"
           >
-            Get the playbook · $15
+            Get the playbook · <span className="line-through" style={{ opacity: 0.6 }}>$15</span> $10
           </a>
           {/* Hidden below 640px via the .pb-bar rule in PlaybookStyle. */}
           <a
