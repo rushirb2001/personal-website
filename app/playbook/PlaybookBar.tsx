@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
-import { BUY_PATH, GUMROAD_LITE, type Pricing } from "./links"
+import { BUY_PATH, type Pricing } from "./links"
 
 // Fixed Buy-CTA overlay. The section headers themselves anchor and hand off
 // natively (sticky within contiguous sections, so the next header physically
@@ -85,15 +85,6 @@ export function PlaybookBar({ pricing }: { pricing: Pricing }) {
               </>
             ) : null}
             {pricing.now}
-          </a>
-          {/* Hidden below 640px via the .pb-bar rule in PlaybookStyle. */}
-          <a
-            href={GUMROAD_LITE}
-            data-gumroad-overlay
-            aria-haspopup="dialog"
-            className="sh-cta sh-cta-ghost"
-          >
-            Read 3 free →
           </a>
         </div>
       </div>
