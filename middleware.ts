@@ -2,8 +2,7 @@ import { NextResponse, type NextRequest } from "next/server"
 import { GUMROAD_CORE, SAUCE_INDIA } from "@/app/playbook/links"
 
 // Sends /buy to a checkout the visitor can actually complete: Sauce (UPI, priced
-// in INR) for India, Gumroad for everyone else. The free Lite deliberately stays
-// on Gumroad worldwide — it takes no payment, so it has no rail to fail.
+// in INR) for India, Gumroad for everyone else.
 export function middleware(req: NextRequest) {
   const country = req.headers.get("x-vercel-ip-country")
   const res = NextResponse.redirect(country === "IN" ? SAUCE_INDIA : GUMROAD_CORE, 307)
