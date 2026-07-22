@@ -44,3 +44,6 @@ next-env.d.ts
 
 # Local diagram/asset previews (served in dev, not deployed)
 /public/previews/
+
+# Local-only LinkedIn banner font lab (not part of the site)
+/app/banner/
