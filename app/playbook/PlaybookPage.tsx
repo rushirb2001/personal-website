@@ -194,7 +194,7 @@ export function PlaybookPage({ pricing }: { pricing: Pricing }) {
       <div className="max-w-[1100px] mx-auto px-6 lg:px-12">
         {/* Top bar: a discreet way back to the portfolio, kept separate from
             the sales story. */}
-        <nav className="flex items-center justify-between py-5 xs:py-6">
+        <nav className="pb-nav flex items-center justify-between py-5 xs:py-6">
           {/* Descriptor only: the H1 below owns the "Zero to Hired" brand, so
               repeating it here would double the name in the first screenful. */}
           <span className="mono small-caps accent">
@@ -214,7 +214,7 @@ export function PlaybookPage({ pricing }: { pricing: Pricing }) {
               read as two disconnected halves at this width); lg reverts to
               pages-left / title+body+cta-right. See .hero-grid in
               PlaybookStyle for the per-breakpoint grid-template-areas. */}
-          <div className="hero-grid">
+          <div className="hero-grid pb-enter">
             <div className="hero-area-title">
               <h1 className="display font-light tracking-tight leading-[1.08] text-[30px] xs:text-[clamp(34px,5vw,52px)] lg:text-[clamp(30px,3.6vw,44px)] max-w-[38ch]">
                 Zero to Hired: from a blank{" "}
@@ -1389,6 +1389,48 @@ function PlaybookStyle() {
       @media (min-width: 1024px) {
         .hero-area-body { margin-top: 1.75rem; }
         .hero-area-cta { margin-top: 2.25rem; }
+      }
+
+      /* ---- Entrance ---------------------------------------------------
+         Same keyframe, duration and easing as the landing page's hero
+         (hero-fade-up in app/HomePage.tsx), so arriving here from / reads as
+         one site rather than two.
+
+         The stagger is ordered by LCP, not by reading order. Chrome ignores an
+         element while its opacity is 0, so an entrance delay is added directly
+         to LCP — the DURATION is free, the DELAY is not. Measured on this page:
+         the H1 is the desktop LCP element (104ms local prod) and .hero-area-body
+         is the mobile one (1424ms, gated by the italic font). Both therefore
+         start at 0ms and pay nothing; only the chrome around them is delayed. */
+      @keyframes pb-rise {
+        from { opacity: 0; transform: translateY(14px); }
+        to   { opacity: 1; transform: translateY(0); }
+      }
+      .pb-enter > * {
+        animation: pb-rise 700ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
+      }
+      /* Both LCP candidates: no delay. */
+      .pb-enter > .hero-area-title,
+      .pb-enter > .hero-area-body { animation-delay: 0ms; }
+      /* Everything else falls in behind them. */
+      .pb-enter > .hero-area-pages { animation-delay: 140ms; }
+      .pb-enter > .hero-area-cta { animation-delay: 260ms; }
+      .pb-nav { animation: pb-rise 600ms cubic-bezier(0.22, 1, 0.36, 1) backwards; }
+
+      /* NO scroll-driven reveal on the section Rows. This was built and then
+         removed on measurement, so it does not get rebuilt:
+         a view() animation-timeline reports NEGATIVE progress for a subject
+         taller than the scrollport (measured -72% on the 1874px "What's inside"
+         Row at 375px), and animation-fill-mode:both then pins it at the
+         from-state. Incremental scrolling masks it; a direct jump does not, and
+         jumps are exactly what a reload with restored scroll, a back-navigation
+         and the page rail all produce. Reproduced at 375px, scrollY 2030: a Row
+         filling the screen sat at opacity 0 through a 400ms settle.
+         Percentage and length ranges both failed. Invisible pricing copy is a
+         worse outcome than a page that does not fade on scroll. */
+
+      @media (prefers-reduced-motion: reduce) {
+        .pb-enter > *, .pb-nav { animation: none; }
       }
 
       /* Hero signature: three PDF pages fanned like a stack of paper, center
