@@ -438,6 +438,31 @@ export default function HomePage() {
           font-size: 10px;
         }
 
+        /* The one commercial link on the portfolio, and the only thing in the
+           sticky footer that is an offer rather than a fact. It used to render
+           at .faint 10px between two other .faint items, which made the single
+           thing worth clicking the least visible element in its own row.
+           Deliberately a tinted outline and NOT a filled pill: the site keeps
+           exactly one filled control (.cta-buy, on /playbook itself), and a
+           solid navy button here would be the loudest object on an otherwise
+           quiet landing page. */
+        .footer-cta {
+          display: inline-flex; align-items: center; gap: 6px;
+          padding: 4px 10px; border-radius: 6px;
+          color: #1f3a5f;
+          background-color: rgba(31,58,95,0.07);
+          border: 1px solid rgba(31,58,95,0.28);
+          text-transform: uppercase; letter-spacing: 0.12em; font-size: 11px;
+          white-space: nowrap;
+          transition: background-color 200ms ease, border-color 200ms ease;
+        }
+        @media (hover: hover) {
+          .footer-cta:hover {
+            background-color: rgba(31,58,95,0.13);
+            border-color: rgba(31,58,95,0.5);
+          }
+        }
+
         /* All scrolling on this page is choreographed manually (pre-computed
            targets, scroll-then-flip sequencing). Browser scroll anchoring
            fights that: when a section's min-height snaps open while the
@@ -1067,18 +1092,17 @@ export default function HomePage() {
               <p className="muted whitespace-nowrap">
                 <span className="faint">© 2026 </span>Rushir Bhavsar
               </p>
-              {/* Discreet storefront link — kept separate from the hire-me
-                  story, hidden on the narrowest phones so the footer row
-                  never overflows. */}
-              <Link
-                href="/playbook"
-                className="accent-link small-caps faint whitespace-nowrap hidden xs:inline-flex items-center gap-1"
-              >
+              {/* Storefront link. Still separate from the hire-me story, but no
+                  longer whispered: this footer is sticky, so it is the one
+                  offer that is on screen the entire visit. */}
+              <Link href="/playbook" className="footer-cta mono">
                 The Playbook <span aria-hidden>↗</span>
               </Link>
-              <p className="small-caps faint whitespace-nowrap">
-                <span className="accent">+</span> <span className="xs:hidden">Tempe, AZ</span>
-                <span className="hidden xs:inline">Tempe, Arizona</span>
+              {/* The row only fits two items on the narrowest phones. It used
+                  to be the playbook that got dropped there; the location is the
+                  least useful of the three, so it is the one that goes now. */}
+              <p className="small-caps faint whitespace-nowrap hidden xs:block">
+                <span className="accent">+</span> Tempe, Arizona
               </p>
             </div>
           </div>

@@ -190,10 +190,12 @@ export default async function PostPage({
             <span className="faint">&copy; 2026 </span>
             {AUTHOR.name}
           </Link>
-          <Link href="/playbook" className="accent-link small-caps faint whitespace-nowrap">
-            The Playbook
+          <Link href="/playbook" className="footer-cta mono">
+            The Playbook <span aria-hidden>↗</span>
           </Link>
-          <span className="small-caps faint">{AUTHOR.location}</span>
+          {/* Dropped on the narrowest phones: three items do not fit, and the
+              location is the least useful of them. */}
+          <span className="small-caps faint hidden xs:inline">{AUTHOR.location}</span>
         </footer>
       </div>
     </main>

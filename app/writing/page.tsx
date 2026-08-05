@@ -171,10 +171,12 @@ export default function WritingIndex() {
           <Link href="/" className="accent-link muted">
             <span className="faint">&copy; 2026 </span>Rushir Bhavsar
           </Link>
-          <Link href="/playbook" className="accent-link small-caps faint whitespace-nowrap">
-            The Playbook
+          <Link href="/playbook" className="footer-cta mono">
+            The Playbook <span aria-hidden>↗</span>
           </Link>
-          <span className="small-caps faint">Tempe, Arizona</span>
+          {/* Dropped on the narrowest phones: three items do not fit, and the
+              location is the least useful of them. */}
+          <span className="small-caps faint hidden xs:inline">Tempe, Arizona</span>
         </footer>
       </div>
     </main>

@@ -41,6 +41,28 @@ export function WritingStyle() {
         background-size: 22px 22px;
       }
 
+      /* Cross-link out of the cluster, same chip as the landing page's footer
+         (see .footer-cta in app/HomePage.tsx) so the one commercial link on the
+         site looks identical wherever it appears. A tinted outline rather than
+         a filled pill: the site keeps exactly one filled control, .cta-buy on
+         /playbook itself. */
+      .footer-cta {
+        display: inline-flex; align-items: center; gap: 6px;
+        padding: 4px 10px; border-radius: 6px;
+        color: #1f3a5f;
+        background-color: rgba(31,58,95,0.07);
+        border: 1px solid rgba(31,58,95,0.28);
+        text-transform: uppercase; letter-spacing: 0.12em; font-size: 11px;
+        white-space: nowrap;
+        transition: background-color 200ms ease, border-color 200ms ease;
+      }
+      @media (hover: hover) {
+        .footer-cta:hover {
+          background-color: rgba(31,58,95,0.13);
+          border-color: rgba(31,58,95,0.5);
+        }
+      }
+
       /* ---- Prose ------------------------------------------------------ */
 
       /* Paragraphs are the playbook's argument-paragraph treatment: display
