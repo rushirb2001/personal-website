@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next"
 import ReactDOM from "react-dom"
 import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from "@vercel/speed-insights/next"
+import { GoogleAnalytics } from "./GoogleAnalytics"
 import { AUTHOR, SITE_URL } from "./site"
 import "./globals.css"
 
@@ -89,6 +90,7 @@ export default function RootLayout({
         {modal}
         <Analytics />
         <SpeedInsights />
+        <GoogleAnalytics />
       </body>
     </html>
   )
