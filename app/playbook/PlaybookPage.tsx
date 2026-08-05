@@ -405,12 +405,17 @@ export function PlaybookPage({ pricing }: { pricing: Pricing }) {
               {/* git spans the two steps it powers and sits ABOVE them,
                   pointing down; DevOps and LinkedIn hang BELOW theirs,
                   pointing up. Each rail is adjacent to its own steps. */}
+              {/* Two arrowheads, not one: this rail spans two steps, and a
+                  single connector at its left edge read as "git feeds the build
+                  plan" while the bar stretched on over the interview with
+                  nothing to justify it. One drop per step it actually powers. */}
               <div className="rail rail-above rail-git">
                 <span className="mono small-caps accent rail-name">git</span>
                 <span className="mono rail-note">
                   commit-discipline ladder: your history becomes the evidence
                 </span>
                 <VArrow className="rail-arrow" dir="down" />
+                <VArrow className="rail-arrow rail-arrow-2" dir="down" />
               </div>
 
               <div className="flow-box fb-1">
@@ -435,7 +440,7 @@ export function PlaybookPage({ pricing }: { pricing: Pricing }) {
 
               <div className="rail rail-devops">
                 <span className="mono small-caps accent rail-name">DevOps</span>
-                <span className="mono rail-note">networking + deployment depth map</span>
+                <span className="mono rail-note">networking + deployment depth</span>
                 <VArrow className="rail-arrow" />
               </div>
               <div className="rail rail-linkedin">
@@ -444,11 +449,13 @@ export function PlaybookPage({ pricing }: { pricing: Pricing }) {
                 <VArrow className="rail-arrow" />
               </div>
 
-              <div className="flow-feed">
-                <VArrow />
-              </div>
-
+              {/* The stack's riser rides on the stack itself, the same way every
+                  rail carries its own connector. It used to be a grid row of its
+                  own, which put a lone arrowhead in a band where all seven
+                  columns were otherwise empty: it read as an orphan mark rather
+                  than as a join between two things. */}
               <div className="flow-stack">
+                <VArrow className="stack-arrow" />
                 <p className="mono small-caps accent flow-stack-label">The $0 stack</p>
                 <ul className="brand-row">
                   {STACK.map((s) => (
@@ -1218,16 +1225,17 @@ function PlaybookStyle() {
       .flow-body { margin: 5px 0 0; font-size: 12px; line-height: 1.55; color: #1a1a1a; }
       .flow-arrow { width: 26px; height: 12px; display: block; margin: 7px auto; rotate: 90deg; }
 
-      /* Connector: arrowhead butted against the fed box, dashed line running
-         down from it to the stack module. */
-      .flow-feed { display: flex; justify-content: center; }
-      .flow-feed svg { width: 12px; height: 20px; }
-
       .flow-stack {
+        position: relative;
         border: 1px solid rgba(31,58,95,0.28); border-radius: 8px;
         background: rgba(31,58,95,0.035); padding: 11px 13px;
         display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px;
       }
+      /* Riser into the build-plan column, drawn like every .rail-arrow: butted
+         against the box it belongs to rather than floating in its own row.
+         Single-column layout has no build-plan column to aim at, so it is
+         centred there and only offset once the 640px grid exists. */
+      .stack-arrow { position: absolute; top: -20px; left: 50%; translate: -50% 0; width: 12px; height: 20px; }
       .flow-stack-label { margin: 0; flex: none; }
 
       /* Proof rows: the link leads, the note explains what it proves. An
@@ -1300,11 +1308,15 @@ function PlaybookStyle() {
       .flow-stack .brand-chip { background: #fff; }
 
       @media (min-width: 640px) {
-        /* 4 step columns with an arrow gutter between each. */
-        .flow-grid { grid-template-columns: 1fr auto 1fr auto 1fr auto 1fr; align-items: stretch; }
-        /* Connector under the build-plan column; stack spans the full width;
-           the flow's own arrows carry the rest. */
-        .flow-grid { row-gap: 20px; }
+        /* 4 step columns with an arrow gutter between each. The gutter is the
+           FlowArrow's own box (26px svg + 9px margin each side); the risers
+           below reconstruct column positions from it, so keep the three in
+           sync if any one changes. */
+        .flow-grid {
+          --flow-gutter: 44px;
+          grid-template-columns: 1fr auto 1fr auto 1fr auto 1fr;
+          align-items: stretch; row-gap: 20px;
+        }
         .rail-git { grid-area: 1 / 3 / 2 / 6; }
         .fb-1 { grid-area: 2 / 1; }
         .fa-1 { grid-area: 2 / 2; }
@@ -1315,9 +1327,34 @@ function PlaybookStyle() {
         .fb-4 { grid-area: 2 / 7; }
         .rail-devops { grid-area: 3 / 3 / 4 / 4; }
         .rail-linkedin { grid-area: 3 / 7 / 4 / 8; }
-        .flow-feed { grid-area: 4 / 3; }
-        .flow-stack { grid-area: 5 / 1 / 6 / -1; }
+        /* Row 4, not 5: the old row 4 held nothing but a lone arrowhead. */
+        .flow-stack { grid-area: 4 / 1 / 5 / -1; }
         .flow-arrow { rotate: none; margin: 0 9px; align-self: center; }
+
+        /* The git rail spans two step columns, so its second drop lands on the
+           second of them. Rail width is 2 steps + 1 gutter, so a step is
+           (100% - gutter)/2 and the interview column starts one step + one
+           gutter in; +14px matches the first arrow's inset. */
+        /* Two classes deep on purpose: the generic .rail-arrow { left: 14px }
+           lives BELOW this media query in source, so at equal specificity it
+           would win and both drops would land on the same column. */
+        .rail-git .rail-arrow-2 {
+          display: block;
+          left: calc((100% - var(--flow-gutter)) / 2 + var(--flow-gutter) + 14px);
+        }
+
+        /* Riser into the build-plan column. Aligned to that column's LEFT edge
+           + the same 14px inset every rail arrow uses (+6px to centre the 12px
+           glyph), not to the column's centre: the DevOps arrow sits directly
+           above it at that inset, so matching it makes stack, DevOps rail and
+           build plan read as one straight vertical chain instead of three
+           connectors at three different x positions.
+           The stack spans all 7 tracks, so with 4 equal steps and 3 gutters a
+           step is (100% - 3*gutter)/4 and the build plan starts one step and
+           one gutter in. */
+        .stack-arrow {
+          left: calc((100% - 3 * var(--flow-gutter)) / 4 + var(--flow-gutter) + 20px);
+        }
       }
 
       /* Support rails: a labelled bar spanning exactly the steps it powers.
@@ -1333,6 +1370,13 @@ function PlaybookStyle() {
          a filled triangle on a hairline read as a blob and matched nothing. */
       .rail-arrow { position: absolute; left: 14px; top: -20px; width: 12px; height: 20px; }
       .rail-arrow[data-dir="down"] { top: auto; bottom: -20px; rotate: 180deg; }
+      /* Second drop off the git rail. Only meaningful once the 640px grid puts
+         two step columns under that rail; stacked single-column, the rail sits
+         above one block and a second arrowhead would point at nothing.
+         Scoped to a max-width query rather than left as a bare rule: this block
+         sits BELOW the 640px grid rules in source, so an unscoped display:none
+         at equal specificity would win there and hide the arrow outright. */
+      @media (max-width: 639.98px) { .rail-arrow-2 { display: none; } }
       .rail-above {
         border-top: 0; border-bottom: 2px solid rgba(31,58,95,0.5);
         border-radius: 6px 6px 0 0;
