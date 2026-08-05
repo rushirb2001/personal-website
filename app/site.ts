@@ -20,7 +20,7 @@ export const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_ID ?? "G-YEWFPENS23"
 export const AUTHOR = {
   name: "Rushir Bhavsar",
   email: "bhavsarrushir@gmail.com",
-  location: "Tempe, Arizona",
+  location: "Ahmedabad, India",
   jobTitle: "Machine Learning Engineer",
   sameAs: [
     "https://www.linkedin.com/in/rushir-bhavsar/",

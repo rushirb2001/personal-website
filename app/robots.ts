@@ -14,6 +14,9 @@ export default function robots(): MetadataRoute.Robots {
       disallow: ["/buy"],
     },
     sitemap: `${SITE_URL}/sitemap.xml`,
+    // NOTE: the RSS feed at /writing/rss.xml is discovered via the
+    // <link rel="alternate"> in the /writing pages' head, not from here;
+    // robots.txt has no directive for feeds.
     host: SITE_URL,
   }
 }
