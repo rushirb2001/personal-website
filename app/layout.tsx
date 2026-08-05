@@ -2,17 +2,62 @@ import type { Metadata, Viewport } from "next"
 import ReactDOM from "react-dom"
 import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from "@vercel/speed-insights/next"
+import { AUTHOR, SITE_URL } from "./site"
 import "./globals.css"
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
+  // Matches the paper background, so the browser chrome does not flash a
+  // default white or black band around the page on mobile.
+  themeColor: "#f4f1ec",
 }
 
 export const metadata: Metadata = {
-  title: "Rushir Bhavsar · Product & RAG",
+  // Without this, every relative URL in the metadata tree (og:image, canonical)
+  // resolves against nothing and Next drops or mangles it. Everything else in
+  // this file assumes it is set.
+  metadataBase: new URL(SITE_URL),
+  // `default` is the home page's own title; `template` wraps every child route
+  // that exports a plain string title, so those routes no longer hand-append
+  // the name themselves.
+  title: {
+    default: "Rushir Bhavsar · ML Engineer and AI Researcher",
+    template: "%s · Rushir Bhavsar",
+  },
   description:
-    "Building sushrutalgs.ai — medical AI for India. Previously ASU and Cadence. Open to Product Manager, AI Engineer, and Forward-Deployed Engineer roles.",
+    "ML engineer and researcher at ASU, previously Cadence and Talin Labs. Building sushrutalgs.ai, medical AI for India. Open to AI Engineer, FDE and PM roles.",
+  applicationName: "Rushir Bhavsar",
+  authors: [{ name: AUTHOR.name, url: SITE_URL }],
+  creator: AUTHOR.name,
+  // NOTE: `alternates` is inherited by child segments, so a canonical set here
+  // would silently point every page at "/". Each route declares its own.
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      // Without max-image-preview:large the generated OG card is not eligible
+      // to render at full size in results or in Discover.
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
+  openGraph: {
+    type: "website",
+    siteName: "Rushir Bhavsar",
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary_large_image",
+  },
+  // Set GOOGLE_SITE_VERIFICATION in the Vercel project to verify Search Console
+  // without editing code; unset, Next omits the tag entirely.
+  verification: process.env.GOOGLE_SITE_VERIFICATION
+    ? { google: process.env.GOOGLE_SITE_VERIFICATION }
+    : undefined,
 }
 
 export default function RootLayout({
