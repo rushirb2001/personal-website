@@ -39,6 +39,18 @@ export type ProjectDetail = {
   name: string
   /** Full display title for the h1. Falls back to `name` when omitted. */
   title?: string
+  /**
+   * <title> for search results. `name` alone produces "BFF", "iOS", "Web",
+   * which say nothing to a searcher and rank for nothing; `title` is often too
+   * long to survive truncation. This is the middle: ~45 characters, leading
+   * with the term someone would actually type. Falls back to `name`.
+   */
+  seoTitle?: string
+  /**
+   * Meta description. `tagline` runs 300+ characters and Google shows ~155, so
+   * without this the useful half is never displayed. Falls back to `tagline`.
+   */
+  seoDescription?: string
   /** One-line description under the title, also used for link previews. */
   tagline: string
   /** Rendered as "<type> @ <place>". For personal work: "Personal project", etc. */
@@ -76,6 +88,9 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
     slug: "mace-pinn",
     name: "MACE-PINN",
     title: "Multi-Architecture Coupled Ensemble Physics-Informed Neural Networks",
+    seoTitle: "MACE-PINN: ensemble physics-informed neural networks",
+    seoDescription:
+      "Master's thesis at ASU: coupled ensembles of physics-informed neural networks, benchmarked against traditional solvers. Public repo and thesis.",
     tagline:
       "Built a physics-informed neural network that solves coupled reaction-diffusion equations, using a dedicated subnetwork per variable, Fourier input features, and self-balancing loss weights. It matches reference solutions within a few percent and cuts error 40 to 60 percent against a standard PINN.",
     type: "Master's thesis",
@@ -152,6 +167,9 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
   samhita: {
     slug: "samhita",
     name: "Samhita",
+    seoTitle: "Samhita: surgical textbook PDFs to structured data",
+    seoDescription:
+      "A Python pipeline turning 220 surgical-textbook chapters into versioned, hash-verified structured data for a graph and vector search stack.",
     tagline:
       "Built a Python pipeline that turns full-length surgical-textbook PDFs into clean, structured, machine-readable data, processing 220 chapters into a searchable knowledge base of sections, figures, and tables enriched with AI-generated descriptions. It produces a versioned, hash-verified export that the search platform loads into its graph and vector databases.",
     type: "Data pipeline",
@@ -192,6 +210,9 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
   hybridflow: {
     slug: "hybridflow",
     name: "HybridFlow",
+    seoTitle: "HybridFlow: hybrid RAG over surgical textbooks",
+    seoDescription:
+      "A search backend combining vector retrieval, a knowledge graph and streaming LLM planning to answer clinical questions with traceable citations.",
     tagline:
       "Built a search-and-answer backend that lets clinicians and medical students ask questions of major surgical textbooks and get cited, structured answers. It combines semantic vector search, a knowledge graph of how the books are organized, and a streaming service that uses Claude to plan and write each answer.",
     type: "Retrieval backend",
@@ -232,6 +253,9 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
   "sushrutalgs-bff": {
     slug: "sushrutalgs-bff",
     name: "BFF",
+    seoTitle: "Cloudflare Worker BFF gateway for an AI product",
+    seoDescription:
+      "An edge gateway handling auth, per-user rate limits and secure forwarding for a RAG product's web and iOS clients, at roughly 14ms of overhead.",
     tagline:
       "Built a Cloudflare Worker gateway that sits between the sushrutalgs.ai web and iOS apps and the AI backend, handling user authentication, per-user daily usage limits, and secure request forwarding so both apps talk to one trusted entry point. It runs live in staging and production and adds only about 14 milliseconds of overhead at the edge.",
     type: "Backend-for-frontend",
@@ -272,6 +296,9 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
   "sushrutalgs-ios": {
     slug: "sushrutalgs-ios",
     name: "iOS",
+    seoTitle: "sushrutalgs.ai iOS app: streaming cited answers",
+    seoDescription:
+      "The native iOS client for sushrutalgs.ai: streaming answers cited to surgical textbooks, three sign-in options, and history synced across devices.",
     tagline:
       "Built the native iOS app for sushrutalgs.ai, an AI study companion that answers surgical-exam questions with streaming responses backed by citations, figures, and tables from standard textbooks. It ships three sign-in options, conversation history that syncs across a user's devices, and an iPhone and iPad interface.",
     type: "iOS app",
@@ -320,6 +347,9 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
   "sushrutalgs-web": {
     slug: "sushrutalgs-web",
     name: "Web",
+    seoTitle: "sushrutalgs.ai web app: a cited RAG study assistant",
+    seoDescription:
+      "Streaming chat with branching conversations, inline textbook figures and tables, and every answer traced back to a source, for surgical exam prep.",
     tagline:
       "Built the web application for sushrutalgs.ai, an AI study assistant for advanced surgical exam prep that answers questions with citations traced back to standard textbooks. It delivers a streaming chat interface with branching conversations, inline textbook figures and tables, and the marketing, sign-up, and onboarding flows.",
     type: "Web app",
@@ -362,6 +392,9 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
   "yelp-ml-platform": {
     slug: "yelp-ml-platform",
     name: "Yelp ML Platform",
+    seoTitle: "Yelp ML platform: 7M reviews, recsys and sentiment API",
+    seoDescription:
+      "An end-to-end ML platform on 7M Yelp reviews: recommendations and sentiment behind one REST API. ETL at 462K rows/sec, p99 0.11ms serving.",
     tagline:
       "Built an end-to-end machine learning platform on the full 7-million-review Yelp dataset that powers two services: a business recommendation engine and a sentiment classifier, served through one REST API. The work spans large-scale data processing, model training, API serving, containerization, and automated testing.",
     type: "Personal project",
@@ -403,6 +436,8 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
 // "<slug>": {
 //   slug: "<slug>",
 //   name: "Project Name",
+//   seoTitle: "Name: what it is",           // ~45 chars, leads with the searchable term
+//   seoDescription: "...",                  // ~155 chars; past that Google truncates
 //   tagline: "One specific sentence: what it is and why it's impressive.",
 //   type: "Personal project",   // or "Master's thesis", "Open-source", "Internship", ...
 //   place: "Org / school",      // optional, omit entirely for personal projects
