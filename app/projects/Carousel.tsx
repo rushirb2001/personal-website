@@ -99,6 +99,7 @@ export function Carousel({ slides, frozen = false }: { slides: Slide[]; frozen?:
       className="outline-none"
       aria-roledescription="carousel"
     >
+      <figure className="m-0">
       <div ref={stripRef} className="relative w-full aspect-[16/9] rounded-lg ring-1 ring-black/10 bg-[#faf8f4] overflow-hidden">
         {slides.map((s, k) => (
           <div
@@ -113,42 +114,51 @@ export function Carousel({ slides, frozen = false }: { slides: Slide[]; frozen?:
         ))}
       </div>
 
-      <div className="mt-3 flex items-center gap-3">
+      {/* Caption and controls are CENTRED under the frame, not pinned to its
+          extremes. The media now breaks out past the reading column, so an
+          edge-anchored row put the arrows a long way from both the text and
+          each other, and read as detached furniture rather than as this
+          figure's own controls. Two stacked, centred rows keep the whole
+          assembly reading as one object. */}
+      <figcaption className="mt-3.5 flex flex-col items-center gap-2.5 text-center">
+        {/* Two lines reserved: a shorter caption must not reflow everything
+            below mid-crossfade. Centred vertically as well as horizontally,
+            which the old items-center row got wrong by pairing a top-aligned
+            paragraph with vertically centred arrows. */}
+        <p className="mono text-[11px] xs:text-[12px] muted leading-relaxed max-w-[68ch] min-h-[2.6em] flex items-center justify-center">
+          {cur.caption}
+        </p>
         {multi && (
-          <button type="button" onClick={() => go(idx - 1)} aria-label="Previous artifact" className={arrowCls}>
-            ‹
-          </button>
-        )}
-        {/* min-height reserves two caption lines so slides with shorter
-            captions don't reflow everything below the carousel mid-crossfade. */}
-        <p className="mono text-[11px] xs:text-[12px] muted leading-relaxed flex-1 min-w-0 min-h-[3.25em]">{cur.caption}</p>
-        {multi && (
-          <div className="flex items-center gap-0.5 shrink-0">
-            {slides.map((s, k) => (
-              // 16px hit area around a 6px visual dot — bare 6px buttons are
-              // untappable on touch screens.
-              <button
-                key={s.key}
-                type="button"
-                onClick={() => jumpTo(k)}
-                aria-label={`Show artifact ${k + 1} of ${len}`}
-                aria-current={k === idx ? "true" : undefined}
-                className="w-4 h-4 grid place-items-center"
-              >
-                <span
-                  className="w-1.5 h-1.5 rounded-full transition-colors"
-                  style={{ backgroundColor: k === idx ? "#1f3a5f" : "rgba(26,26,26,0.22)" }}
-                />
-              </button>
-            ))}
+          <div className="flex items-center gap-2">
+            <button type="button" onClick={() => go(idx - 1)} aria-label="Previous artifact" className={arrowCls}>
+              ‹
+            </button>
+            <div className="flex items-center gap-0.5">
+              {slides.map((s, k) => (
+                // 16px hit area around a 6px visual dot — bare 6px buttons are
+                // untappable on touch screens.
+                <button
+                  key={s.key}
+                  type="button"
+                  onClick={() => jumpTo(k)}
+                  aria-label={`Show artifact ${k + 1} of ${len}`}
+                  aria-current={k === idx ? "true" : undefined}
+                  className="w-4 h-4 grid place-items-center"
+                >
+                  <span
+                    className="w-1.5 h-1.5 rounded-full transition-colors"
+                    style={{ backgroundColor: k === idx ? "#1f3a5f" : "rgba(26,26,26,0.22)" }}
+                  />
+                </button>
+              ))}
+            </div>
+            <button type="button" onClick={() => go(idx + 1)} aria-label="Next artifact" className={arrowCls}>
+              ›
+            </button>
           </div>
         )}
-        {multi && (
-          <button type="button" onClick={() => go(idx + 1)} aria-label="Next artifact" className={arrowCls}>
-            ›
-          </button>
-        )}
-      </div>
+      </figcaption>
+      </figure>
     </div>
   )
 }

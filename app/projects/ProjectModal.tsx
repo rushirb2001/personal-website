@@ -709,8 +709,14 @@ const TOKENS = `
   .cs-meta-links { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 12.5px; }
 
   /* The one element that breaks the measure. */
-  /* The one break-out. Symmetric, and clamped so it can never exceed the card. */
-  .cs-media { margin-top: 34px; width: min(116%, 100vw - 5rem); max-width: none; margin-inline: auto; align-self: center; }
+  /* The one break-out. margin-inline:auto CANNOT centre a flex item that is
+     wider than its container: negative free space resolves both auto margins
+     to zero, so the media hung off the right edge only. An explicit symmetric
+     negative margin is the fix. Only breaks out where there is room for it. */
+  .cs-media { margin-top: 34px; width: 100%; max-width: none; }
+  @media (min-width: 1024px) {
+    .cs-media { width: 116%; margin-inline: -8%; }
+  }
 
   .cs-note { margin: 22px 0 0; font-size: 12.5px; line-height: 1.7; color: rgba(26,26,26,0.7); }
 
