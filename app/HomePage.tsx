@@ -47,7 +47,7 @@ const PROJECTS = [
   {
     name: "website-client",
     platform: "sushrutalgs.ai",
-    slug: "sushrutalgs-web",
+    slug: "sushrutalgs-web-app",
     descShort: "Web app for studying with the AI assistant, every answer backed by textbook citations.",
     type: "Web app",
     year: "2026",
@@ -58,7 +58,7 @@ const PROJECTS = [
   {
     name: "HybridFlow",
     platform: "sushrutalgs.ai",
-    slug: "hybridflow",
+    slug: "hybridflow-rag-backend",
     descShort: "Retrieves the most relevant medical knowledge and streams grounded answers to each question.",
     type: "Retrieval backend",
     year: "2026",
@@ -69,7 +69,7 @@ const PROJECTS = [
   {
     name: "backend-for-frontend",
     platform: "sushrutalgs.ai",
-    slug: "sushrutalgs-bff",
+    slug: "sushrutalgs-api-gateway",
     descShort: "Gateway connecting the apps to the AI backend: sign-in, plan limits, streaming.",
     type: "API gateway",
     year: "2026",
@@ -80,7 +80,7 @@ const PROJECTS = [
   {
     name: "ios-app-client",
     platform: "sushrutalgs.ai",
-    slug: "sushrutalgs-ios",
+    slug: "sushrutalgs-ios-app",
     descShort: "Native iPhone app for studying with the AI assistant, with live streaming answers across devices.",
     type: "iOS app",
     year: "2026",
@@ -91,7 +91,7 @@ const PROJECTS = [
   {
     name: "Samhita",
     platform: "sushrutalgs.ai",
-    slug: "samhita",
+    slug: "samhita-textbook-pipeline",
     descShort: "Turns surgical-textbook PDFs into a structured, searchable knowledge base for the platform.",
     type: "Data pipeline",
     year: "2026",

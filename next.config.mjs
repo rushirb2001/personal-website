@@ -18,6 +18,22 @@ const nextConfig = {
         destination: "https://www.rushirbhavsar.dev/:path*",
         permanent: true,
       },
+      // Project slugs renamed 2026-08-05 to say what the thing is rather than
+      // carry an internal codename ("bff", "ios", "web"). Nothing had been
+      // indexed yet, but these URLs were already in a submitted sitemap and may
+      // have been shared, so the old paths keep resolving permanently rather
+      // than 404ing. Cheap to keep; do not remove.
+      ...[
+        ["samhita", "samhita-textbook-pipeline"],
+        ["hybridflow", "hybridflow-rag-backend"],
+        ["sushrutalgs-bff", "sushrutalgs-api-gateway"],
+        ["sushrutalgs-ios", "sushrutalgs-ios-app"],
+        ["sushrutalgs-web", "sushrutalgs-web-app"],
+      ].map(([from, to]) => ({
+        source: `/projects/${from}`,
+        destination: `/projects/${to}`,
+        permanent: true,
+      })),
     ]
   },
 }

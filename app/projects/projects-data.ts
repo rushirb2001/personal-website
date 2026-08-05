@@ -164,8 +164,8 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
   },
 
   // ── sushrutalgs.ai data layer ──────────────────────────────────────────────
-  samhita: {
-    slug: "samhita",
+  "samhita-textbook-pipeline": {
+    slug: "samhita-textbook-pipeline",
     name: "Samhita",
     seoTitle: "Samhita: surgical textbook PDFs to structured data",
     seoDescription:
@@ -207,8 +207,8 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
     verify: { requestAccessEmail: "bhavsarrushir@gmail.com" },
   },
 
-  hybridflow: {
-    slug: "hybridflow",
+  "hybridflow-rag-backend": {
+    slug: "hybridflow-rag-backend",
     name: "HybridFlow",
     seoTitle: "HybridFlow: hybrid RAG over surgical textbooks",
     seoDescription:
@@ -250,8 +250,8 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
     verify: { requestAccessEmail: "bhavsarrushir@gmail.com" },
   },
 
-  "sushrutalgs-bff": {
-    slug: "sushrutalgs-bff",
+  "sushrutalgs-api-gateway": {
+    slug: "sushrutalgs-api-gateway",
     name: "BFF",
     seoTitle: "Cloudflare Worker BFF gateway for an AI product",
     seoDescription:
@@ -293,8 +293,8 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
     verify: { requestAccessEmail: "bhavsarrushir@gmail.com" },
   },
 
-  "sushrutalgs-ios": {
-    slug: "sushrutalgs-ios",
+  "sushrutalgs-ios-app": {
+    slug: "sushrutalgs-ios-app",
     name: "iOS",
     seoTitle: "sushrutalgs.ai iOS app: streaming cited answers",
     seoDescription:
@@ -344,8 +344,8 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
     verify: { requestAccessEmail: "bhavsarrushir@gmail.com" },
   },
 
-  "sushrutalgs-web": {
-    slug: "sushrutalgs-web",
+  "sushrutalgs-web-app": {
+    slug: "sushrutalgs-web-app",
     name: "Web",
     seoTitle: "sushrutalgs.ai web app: a cited RAG study assistant",
     seoDescription:
@@ -464,6 +464,25 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
 
 export function getProjectDetail(slug: string): ProjectDetail | undefined {
   return PROJECT_DETAILS[slug]
+}
+
+// The record KEY is the URL segment (this is what generateStaticParams reads),
+// so a key that disagrees with its own `slug` field silently ships a page whose
+// data thinks it lives at a different address. TypeScript cannot catch it:
+// both sides are just strings.
+//
+// This bit during the 2026-08-05 slug rename. Two keys were unquoted JS
+// identifiers (`samhita:`, `hybridflow:`) rather than quoted strings, so a
+// find-and-replace over quoted occurrences updated every `slug` value but left
+// those two keys behind. The build happily emitted /projects/samhita while its
+// data claimed /projects/samhita-textbook-pipeline. Fail loudly instead.
+for (const [key, detail] of Object.entries(PROJECT_DETAILS)) {
+  if (key !== detail.slug) {
+    throw new Error(
+      `PROJECT_DETAILS key "${key}" does not match its slug "${detail.slug}". ` +
+        "The key is the URL segment; keep the two identical."
+    )
+  }
 }
 
 export const PROJECT_DETAIL_SLUGS = Object.keys(PROJECT_DETAILS)
