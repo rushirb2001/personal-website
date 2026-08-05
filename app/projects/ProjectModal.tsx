@@ -419,6 +419,34 @@ export function ProjectModal({
             </div>
           </div>
 
+          {/* Evidence strip. `highlights` already held the hard numbers for every
+              project and was rendered nowhere. On a page whose entire job is
+              making work credible to someone who cannot see the repo, the
+              numbers were the one thing buried in prose. They lead now. */}
+          {detail.highlights && detail.highlights.length > 0 && (
+            <div className="mt-10 lg:mt-12 pl-1 sm:pl-3 lg:pl-6 pr-1 sm:pr-3 lg:pr-6">
+              <ul className="ev-strip">
+                {detail.highlights.map((h) => {
+                  // Split on a COLON only. Splitting on the first period turned
+                  // "2.3-3.5% relative L2 ..." into a heading of just "2", and
+                  // any highlight without a colon became one oversized accent
+                  // paragraph. A colon is the only reliable label/value marker
+                  // in this data, and highlights without one simply do not have
+                  // a heading.
+                  const i = h.indexOf(": ")
+                  const key = i > 0 ? h.slice(0, i) : null
+                  const note = i > 0 ? h.slice(i + 2) : h
+                  return (
+                    <li key={h} className="ev-item">
+                      {key && <span className="ev-key display">{key}</span>}
+                      <span className="ev-note mono">{note}</span>
+                    </li>
+                  )
+                })}
+              </ul>
+            </div>
+          )}
+
           {/* Case-study detail — faint divider, then the deeper content */}
           {detail.sections && detail.sections.length > 0 && (
             <div className="mt-12 lg:mt-14 border-t rule pt-10 lg:pt-12">
@@ -426,14 +454,12 @@ export function ProjectModal({
               {detail.sections.map((s) => (
                 <section
                   key={s.label}
-                  className="grid grid-cols-1 lg:grid-cols-[160px_1fr] gap-2 lg:gap-12"
+                  className="grid grid-cols-1 xs:grid-cols-[clamp(80px,14vw,140px)_1fr] lg:grid-cols-[140px_1fr] gap-3 xs:gap-6 lg:gap-12"
                 >
-                  <p className="mono uppercase tracking-[0.15em] text-[13px] xs:text-[14px] faint lg:pt-1">
-                    {s.label}
-                  </p>
+                  <p className="mono small-caps accent lg:pt-1.5">{s.label}</p>
                   <div>
                     {s.body && (
-                      <p className="display text-[14px] xs:text-[15px] lg:text-[16px] muted leading-relaxed">
+                      <p className="display text-[15px] xs:text-[16px] lg:text-[17px] ink font-light leading-relaxed max-w-[72ch]">
                         {s.body}
                       </p>
                     )}
@@ -447,7 +473,7 @@ export function ProjectModal({
                             <li key={b} className="pl-4 relative leading-relaxed">
                               <span className="absolute left-0 top-[0.5em] w-2 h-px accent-line" aria-hidden />
                               {lead && <span className="ink">{lead} </span>}
-                              <span className="muted">{rest}</span>
+                              <span className="ink font-light">{rest}</span>
                             </li>
                           )
                         })}
@@ -457,9 +483,9 @@ export function ProjectModal({
                       <div className={`overflow-x-auto ${s.body || s.bullets ? "mt-5" : ""}`}>
                         <table className="w-full border-collapse mono text-[12px] xs:text-[13px]">
                           <thead>
-                            <tr className="border-b rule">
+                            <tr style={{ borderBottom: "1px solid rgba(31,58,95,0.35)" }}>
                               {s.table.headers.map((h) => (
-                                <th key={h} className="small-caps faint font-normal text-left py-2.5 pr-6">
+                                <th key={h} className="small-caps accent font-normal text-left py-3 pr-6">
                                   {h}
                                 </th>
                               ))}
@@ -469,7 +495,7 @@ export function ProjectModal({
                             {s.table.rows.map((r, ri) => (
                               <tr key={ri} className={ri < s.table!.rows.length - 1 ? "border-b rule" : ""}>
                                 {r.map((cell, ci) => (
-                                  <td key={ci} className={`py-2.5 pr-6 ${ci === 0 ? "ink" : "muted"}`}>
+                                  <td key={ci} className={`py-3 pr-6 ${ci === 0 ? "ink" : "muted"}`}>
                                     {cell}
                                   </td>
                                 ))}
@@ -477,7 +503,7 @@ export function ProjectModal({
                             ))}
                           </tbody>
                         </table>
-                        {s.table.note && <p className="mono text-[11px] faint mt-3">{s.table.note}</p>}
+                        {s.table.note && <p className="mono text-[12px] muted mt-3">{s.table.note}</p>}
                       </div>
                     )}
                   </div>
@@ -677,6 +703,41 @@ const TOKENS = `
   /* While closing, freeze the reveal where it is so a mid-stagger close
      doesn't snap half-faded content to full opacity before the card sinks. */
   .modal-card.is-closing .modal-reveal { animation-play-state: paused; }
+
+  /* Evidence strip: the measurements, pulled out of the prose and given the
+     first screenful. Drawn as ruled columns rather than boxed cards so it stays
+     in the site's editorial register instead of turning into a dashboard. */
+  .ev-strip {
+    list-style: none; margin: 0; padding: 18px 0 0;
+    border-top: 1px solid rgba(31,58,95,0.35);
+    display: grid; grid-template-columns: 1fr; gap: 18px 32px;
+  }
+  @media (min-width: 640px) { .ev-strip { grid-template-columns: 1fr 1fr; } }
+  @media (min-width: 1024px) { .ev-strip { grid-template-columns: repeat(4, 1fr); gap: 0 28px; } }
+  .ev-item { display: flex; flex-direction: column; gap: 6px; position: relative; }
+  @media (min-width: 1024px) {
+    .ev-item { padding-left: 20px; }
+    /* Hairline between columns, not around them: a rule reads as a table of
+       facts, a border reads as a card. */
+    .ev-item + .ev-item::before {
+      content: ""; position: absolute; left: 0; top: 2px; bottom: 2px;
+      width: 1px; background: rgba(26,26,26,0.12);
+    }
+    .ev-item:first-child { padding-left: 0; }
+  }
+  .ev-key {
+    font-size: 17px; font-weight: 300; letter-spacing: -0.01em;
+    line-height: 1.25; color: #1f3a5f;
+  }
+  @media (min-width: 1024px) { .ev-key { font-size: 18px; } }
+  .ev-note { font-size: 12.5px; line-height: 1.6; color: #1a1a1a; }
+  /* Accent tick above each fact, so a column without a heading still reads as
+     its own item rather than as a runover of the one before it. */
+  .ev-item::after {
+    content: ""; position: absolute; top: -19px; left: 0; width: 22px; height: 2px;
+    background: #1f3a5f;
+  }
+  @media (min-width: 1024px) { .ev-item { padding-left: 0; margin-right: 28px; } .ev-item + .ev-item::before { display: none; } }
 
   .grain::before {
     content: ""; position: fixed; inset: 0; pointer-events: none;
