@@ -330,63 +330,56 @@ export function ProjectModal({
               lg: carousel sits to the right of the whole header.
               md (iPad portrait): text and Links/Stack split 80:20 above a
               slightly reduced carousel. base (phone): everything stacks. */}
-          <div className="proj-hero pt-2 sm:pt-4 lg:pt-8 pl-1 sm:pl-3 lg:pl-6 pr-1 sm:pr-3 lg:pr-6">
-            <header className="ph-head">
-              <h1
-                id="proj-title"
-                className="modal-reveal display font-light tracking-tight leading-[1.1] text-[26px] xs:text-[clamp(28px,3.2vw,40px)] lg:text-[clamp(30px,2.5vw,40px)]"
-                style={{ animationDelay: "0s" }}
-              >
-                {detail.title ?? detail.name}
-                <span className="accent">.</span>
-              </h1>
-              <p
-                className="modal-reveal display accent text-[clamp(16px,1.7vw,21px)] leading-snug mt-2.5"
-                style={{ animationDelay: "0.06s" }}
-              >
-                {detail.type}
-                {detail.place && ` @${detail.place}`}
-              </p>
-            </header>
+          <div className="cs pt-2 sm:pt-4 lg:pt-6 pl-1 sm:pl-3 lg:pl-6 pr-1 sm:pr-3 lg:pr-6">
+            {/* Eyebrow: role, org, and what kind of thing this is. A case study
+                establishes context before it says anything. */}
+            <p className="cs-eyebrow mono modal-reveal" style={{ animationDelay: "0s" }}>
+              {detail.type}
+              {detail.place && <span className="faint"> / {detail.place}</span>}
+            </p>
 
-            <div className="ph-body">
-              <p
-                className="modal-reveal display font-light text-[15px] xs:text-[17px] lg:text-[18px] leading-relaxed muted"
-                style={{ animationDelay: "0.06s" }}
-              >
-                {detail.tagline}
-              </p>
-
-              {detail.repoNote && (
-                <p
-                  className={`modal-reveal mono text-[12px] leading-relaxed mt-4 ${isPrivate ? "ink" : "muted"}`}
-                  style={{ animationDelay: "0.12s" }}
-                >
-                  {linkifyPlatform(detail.repoNote)}
-                </p>
-              )}
-            </div>
-
-            {/* Links + Stack — two columns on the site's rhythm. */}
-            <div
-              className="ph-meta modal-reveal grid grid-cols-2 gap-6 xs:gap-8"
-              style={{ animationDelay: "0.12s" }}
+            <h1
+              id="proj-title"
+              className="cs-title display modal-reveal"
+              style={{ animationDelay: "0s" }}
             >
+              {detail.title ?? detail.name}
+              <span className="accent">.</span>
+            </h1>
+
+            <p className="cs-lead display modal-reveal" style={{ animationDelay: "0.06s" }}>
+              {detail.tagline}
+            </p>
+
+            {/* Metadata bar. Ruled columns, the way a case study states its
+                facts up front, rather than two cramped lists in a side gutter. */}
+            <div className="cs-meta modal-reveal" style={{ animationDelay: "0.12s" }}>
+              {detail.stack.length > 0 && (
+                <div className="cs-meta-col">
+                  <p className="mono small-caps faint">Built with</p>
+                  <p className="mono cs-meta-val">{detail.stack.join(" · ")}</p>
+                </div>
+              )}
+              <div className="cs-meta-col">
+                <p className="mono small-caps faint">Source</p>
+                <p className="mono cs-meta-val">
+                  {isPrivate ? "Private repo" : "Public repo"}
+                </p>
+              </div>
               {heroLinks.length > 0 && (
-                <div>
-                  <p className="mono small-caps faint mb-2 xs:mb-3">Links</p>
-                  <ul className="flex flex-wrap gap-x-4 gap-y-2 mono text-[11px] xs:text-[13px]">
+                <div className="cs-meta-col">
+                  <p className="mono small-caps faint">Links</p>
+                  <ul className="cs-meta-links mono">
                     {heroLinks.map((l) => {
-                      const external = l.href.startsWith("http")
+                      const ext = l.href.startsWith("http")
                       return (
                         <li key={l.href}>
                           <a
                             href={l.href}
-                            {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-                            className="accent-link inline-flex items-center gap-1.5"
+                            {...(ext ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                            className="accent-link accent"
                           >
                             {l.label}
-                            <span aria-hidden className="faint">{external ? "↗" : "→"}</span>
                           </a>
                         </li>
                       )
@@ -394,70 +387,46 @@ export function ProjectModal({
                   </ul>
                 </div>
               )}
-              {detail.stack.length > 0 && (
-                <div>
-                  <p className="mono small-caps faint mb-2 xs:mb-3">Stack</p>
-                  <ul className="flex flex-wrap gap-x-3 gap-y-1.5 mono text-[11px] xs:text-[13px]">
-                    {detail.stack.map((s) => (
-                      <li key={s} className="muted">
-                        {s}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
             </div>
 
-            <div
-              className="ph-media modal-reveal"
-              style={{ animationDelay: "0s" }}
-            >
-              {/* Frozen while the diagram zoom is up: the zoom-close FLIP
-                  shrinks back into the diagram slide's rect, so the carousel
-                  must not auto-advance out from under it. */}
+            {/* The artifact, at full card width. It is the evidence on a page
+                about work that mostly cannot be opened, so it stops being a
+                thumbnail in a 48% gutter. */}
+            <div className="cs-media modal-reveal" style={{ animationDelay: "0s" }}>
               <Carousel slides={slides} frozen={zoomed || zoomClosing} />
             </div>
+
+            {detail.repoNote && (
+              <p className={`cs-note mono modal-reveal ${isPrivate ? "ink" : "muted"}`} style={{ animationDelay: "0.12s" }}>
+                {linkifyPlatform(detail.repoNote)}
+              </p>
+            )}
+
+            {/* Outcomes. The numbers, large, before any prose. */}
+            {detail.metrics && detail.metrics.length > 0 && (
+              <aside className="cs-callout modal-reveal" style={{ animationDelay: "0.12s" }}>
+                <p className="mono small-caps accent cs-callout-label">What it came out at</p>
+                <dl className="cs-metrics">
+                  {detail.metrics.map((m) => (
+                    <div key={m.label} className="cs-metric">
+                      <dt className="display cs-metric-value">{m.value}</dt>
+                      <dd className="mono cs-metric-label">{m.label}</dd>
+                    </div>
+                  ))}
+                </dl>
+              </aside>
+            )}
           </div>
 
-          {/* Evidence strip. `highlights` already held the hard numbers for every
-              project and was rendered nowhere. On a page whose entire job is
-              making work credible to someone who cannot see the repo, the
-              numbers were the one thing buried in prose. They lead now. */}
-          {detail.highlights && detail.highlights.length > 0 && (
-            <div className="mt-10 lg:mt-12 pl-1 sm:pl-3 lg:pl-6 pr-1 sm:pr-3 lg:pr-6">
-              <ul className="ev-strip">
-                {detail.highlights.map((h) => {
-                  // Split on a COLON only. Splitting on the first period turned
-                  // "2.3-3.5% relative L2 ..." into a heading of just "2", and
-                  // any highlight without a colon became one oversized accent
-                  // paragraph. A colon is the only reliable label/value marker
-                  // in this data, and highlights without one simply do not have
-                  // a heading.
-                  const i = h.indexOf(": ")
-                  const key = i > 0 ? h.slice(0, i) : null
-                  const note = i > 0 ? h.slice(i + 2) : h
-                  return (
-                    <li key={h} className="ev-item">
-                      {key && <span className="ev-key display">{key}</span>}
-                      <span className="ev-note mono">{note}</span>
-                    </li>
-                  )
-                })}
-              </ul>
-            </div>
-          )}
 
           {/* Case-study detail — faint divider, then the deeper content */}
           {detail.sections && detail.sections.length > 0 && (
             <div className="mt-12 lg:mt-14 border-t rule pt-10 lg:pt-12">
-              <div className="pl-1 sm:pl-3 lg:pl-6 pr-1 sm:pr-3 lg:pr-6 space-y-10 lg:space-y-12">
+              <div className="cs-body pl-1 sm:pl-3 lg:pl-6 pr-1 sm:pr-3 lg:pr-6">
               {detail.sections.map((s) => (
-                <section
-                  key={s.label}
-                  className="grid grid-cols-1 xs:grid-cols-[clamp(80px,14vw,140px)_1fr] lg:grid-cols-[140px_1fr] gap-3 xs:gap-6 lg:gap-12"
-                >
-                  <p className="mono small-caps accent lg:pt-1.5">{s.label}</p>
-                  <div>
+                <section key={s.label} className="cs-section">
+                  <h2 className="cs-section-head display">{s.label}</h2>
+                  <div className="cs-section-body">
                     {s.body && (
                       <p className="display text-[15px] xs:text-[16px] lg:text-[17px] ink font-light leading-relaxed max-w-[72ch]">
                         {s.body}
@@ -703,6 +672,75 @@ const TOKENS = `
   /* While closing, freeze the reveal where it is so a mid-stagger close
      doesn't snap half-faded content to full opacity before the card sinks. */
   .modal-card.is-closing .modal-reveal { animation-play-state: paused; }
+
+  /* ── Reading layout ───────────────────────────────────────────────────
+     Shaped like an article, not a paper. One narrow measure carries every
+     word; only media breaks out of it. No numbered chapters, no ruled bands,
+     no gutter labels — those all read as a formal document, and this is meant
+     to read as someone explaining how a thing was built. */
+
+  .cs, .cs-body { display: flex; flex-direction: column; max-width: 44rem; margin-inline: auto; width: 100%; }
+
+  .cs-eyebrow {
+    font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: #1f3a5f; margin: 0 0 16px;
+  }
+
+  .cs-title {
+    margin: 0; font-weight: 300; letter-spacing: -0.022em; line-height: 1.12;
+    font-size: clamp(28px, 3.6vw, 42px); color: #1a1a1a;
+  }
+
+  .cs-lead {
+    margin: 20px 0 0; font-weight: 300; line-height: 1.62;
+    font-size: clamp(17px, 1.5vw, 20px); color: rgba(26,26,26,0.66);
+  }
+
+  /* Byline-style facts row, the way an article states its particulars. */
+  .cs-meta {
+    margin-top: 26px; padding: 14px 0;
+    border-top: 1px solid rgba(26,26,26,0.12);
+    border-bottom: 1px solid rgba(26,26,26,0.12);
+    display: flex; flex-wrap: wrap; gap: 6px 26px; align-items: baseline;
+  }
+  .cs-meta-col { display: flex; align-items: baseline; gap: 9px; min-width: 0; }
+  .cs-meta-col .small-caps { flex: none; }
+  .cs-meta-val { margin: 0; font-size: 12.5px; line-height: 1.6; color: rgba(26,26,26,0.7); }
+  .cs-meta-links { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 12.5px; }
+
+  /* The one element that breaks the measure. */
+  /* The one break-out. Symmetric, and clamped so it can never exceed the card. */
+  .cs-media { margin-top: 34px; width: min(132%, 100vw - 5rem); max-width: none; margin-inline: auto; align-self: center; }
+
+  .cs-note { margin: 22px 0 0; font-size: 12.5px; line-height: 1.7; color: rgba(26,26,26,0.7); }
+
+  /* Notion-style callout: the numbers, sitting inside the flow instead of
+     standing up as a dashboard band. */
+  .cs-callout {
+    margin-top: 34px; padding: 20px 22px; border-radius: 10px;
+    background: rgba(31,58,95,0.05);
+    border-left: 2px solid #1f3a5f;
+  }
+  .cs-callout-label { margin: 0 0 14px; }
+  .cs-metrics { margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 16px 22px; }
+  @media (min-width: 700px) { .cs-metrics { grid-template-columns: repeat(4, 1fr); } }
+  .cs-metric { display: flex; flex-direction: column; gap: 4px; }
+  .cs-metric-value {
+    margin: 0; font-weight: 300; letter-spacing: -0.02em; line-height: 1.05;
+    font-size: 23px; color: #1f3a5f;
+  }
+  .cs-metric-label { margin: 0; font-size: 11px; line-height: 1.4; color: rgba(26,26,26,0.6); }
+
+  /* Chapters: space and weight do the work, no rules and no numerals. */
+  .cs-section { padding: 0; border: 0; }
+  .cs-section-head {
+    margin: 52px 0 14px; font-weight: 400; letter-spacing: -0.015em;
+    line-height: 1.25; font-size: clamp(20px, 2vw, 25px); color: #1a1a1a;
+  }
+  .cs-section-body { max-width: 100%; }
+  .cs-section:first-child .cs-section-head { margin-top: 0; }
+  .cs-section-body p { line-height: 1.72; }
+
 
   /* Evidence strip: the measurements, pulled out of the prose and given the
      first screenful. Drawn as ruled columns rather than boxed cards so it stays

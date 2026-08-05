@@ -62,6 +62,13 @@ export type ProjectDetail = {
   repoNote?: string
   /** Concise highlight bullets — optional, currently unused in render. */
   highlights?: string[]
+  /**
+   * Headline numbers for the outcomes band. Structured on purpose: an earlier
+   * attempt derived these by regex-splitting `highlights`, which turned
+   * "2.3-3.5% relative L2..." into a heading of "2". A case study leads with
+   * its measurements, so they get a real field.
+   */
+  metrics?: { value: string; label: string }[]
   /** Deeper case-study sections rendered below the hero (Overview, Approach, …). */
   sections?: CaseSection[]
   stack: string[]
@@ -134,6 +141,12 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
         body: "Implemented from scratch in JAX and Flax. Evaluated across four benchmark variations spanning the Gray-Scott and Ginzburg-Landau systems, each measured as relative L2 error against a reference numerical solution.",
       },
     ],
+    metrics: [
+      { value: "2.3-3.5%", label: "relative L2 error" },
+      { value: "40-60%", label: "lower than a single-network PINN" },
+      { value: "1x H100", label: "whole thesis, one GPU" },
+      { value: "4", label: "benchmark variations" },
+    ],
     stack: ["JAX", "Flax", "NumPy", "Random Fourier Features"],
     links: [
       { label: "github", href: "https://github.com/rushirb2001/thesis-mace-pinn" },
@@ -199,6 +212,12 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
         body: "Built in Python with Pydantic, PyMuPDF, and the Adobe PDF Services and Anthropic Claude APIs. Exports are immutable and content-hashed, published to Cloudflare R2 with manifest drift detection, and gated by a CI workflow with mocked tests.",
       },
     ],
+    metrics: [
+      { value: "220", label: "chapters ingested" },
+      { value: "71,621", label: "knowledge-graph nodes" },
+      { value: "52,871", label: "dense vectors" },
+      { value: "SHA-256", label: "content-hashed exports" },
+    ],
     stack: ["Python", "Pydantic", "BioLORD", "Cloudflare R2"],
     links: [{ label: "live product", href: "https://sushrutalgs.ai" }],
     artifacts: {
@@ -241,6 +260,12 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
         label: "Engineering",
         body: "Python and FastAPI with server-sent-events streaming, Qdrant and Neo4j for storage, and the Anthropic Claude API for planning and generation. Prompt caching cuts the planning call by thousands of tokens at an 80 percent hit rate, holding cost near 0.05 to 0.06 dollars per answered query. Served behind a Cloudflare Worker gateway with two-factor service auth.",
       },
+    ],
+    metrics: [
+      { value: "15", label: "agentic tools exposed" },
+      { value: "53K", label: "vectors, 768-dim" },
+      { value: "73K", label: "graph nodes, 4-level" },
+      { value: "3", label: "stores, one query" },
     ],
     stack: ["Python", "FastAPI", "Qdrant", "Neo4j", "Docker", "Cloudflare"],
     links: [{ label: "live product", href: "https://sushrutalgs.ai" }],
@@ -285,6 +310,12 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
         body: "TypeScript and Hono on Cloudflare Workers, with the jose library for JWT and JWKS verification, Supabase for auth and the quota function, and Cloudflare Access service tokens for upstream auth. Staging auto-deploys on push; production is gated by a release, so the iOS app's uptime is decoupled from web deploys.",
       },
     ],
+    metrics: [
+      { value: "~14 ms", label: "p50 edge overhead" },
+      { value: "33 KiB", label: "gzipped worker" },
+      { value: "200", label: "concurrent, zero errors" },
+      { value: "5", label: "pipeline stages" },
+    ],
     stack: ["TypeScript", "Hono", "Cloudflare Workers", "jose (JWT)", "Supabase", "Vitest"],
     links: [{ label: "live product", href: "https://sushrutalgs.ai" }],
     artifacts: {
@@ -327,6 +358,12 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
         label: "Engineering",
         body: "Swift 6 and SwiftUI with Swift Package Manager, supabase-swift for auth, Realtime, and database access, GoogleSignIn and Sign in with Apple for identity, and Xcode Cloud for CI. It is a leaf client: all model inference goes through the sushrutalgs.ai BFF, so it holds no backend secrets.",
       },
+    ],
+    metrics: [
+      { value: "7", label: "Observable services" },
+      { value: "1:1", label: "chat tree ported from web" },
+      { value: "3", label: "sign-in methods" },
+      { value: "iOS 26", label: "Model-View, no ViewModels" },
     ],
     stack: ["Swift 6", "SwiftUI", "supabase-swift", "Google Sign-In", "Sign in with Apple", "Xcode Cloud"],
     links: [{ label: "live product", href: "https://sushrutalgs.ai" }],
@@ -378,6 +415,11 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
         label: "Engineering",
         body: "Next.js 16 and React 19 with Tailwind CSS v4, Supabase for auth and Postgres, Cloudflare R2 for assets, and Resend for email, deployed on Vercel. Model inference is delegated to the sushrutalgs.ai BFF, so the web client never holds the backend key.",
       },
+    ],
+    metrics: [
+      { value: "8", label: "SSE frame types parsed" },
+      { value: "2", label: "R2 buckets, auth-gated" },
+      { value: ">99.9%", label: "JWKS cache hit rate" },
     ],
     stack: ["Next.js 16", "React 19", "TypeScript", "Tailwind CSS v4", "Supabase", "Cloudflare R2", "Vercel"],
     links: [{ label: "live product", href: "https://sushrutalgs.ai" }],
@@ -434,6 +476,12 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
         label: "Engineering",
         body: "PySpark for ETL and model training, FastAPI for serving, MLflow for experiment tracking, and Docker Compose for orchestration, with a Pytest suite and GitHub Actions CI. Every headline number is backed by committed, provenance-stamped benchmark outputs.",
       },
+    ],
+    metrics: [
+      { value: "6.99M", label: "reviews processed" },
+      { value: "462K", label: "rows/sec ETL" },
+      { value: "0.11 ms", label: "p99 serving latency" },
+      { value: "86.3%", label: "sentiment accuracy" },
     ],
     stack: ["PySpark", "FastAPI", "MLflow", "Docker", "NLTK", "NumPy", "Pytest"],
     links: [{ label: "github", href: "https://github.com/rushirb2001/yelp-ml-platform" }],
