@@ -405,7 +405,10 @@ function SushrutalgsWebDiagram() {
       <path d="M268 342 L286 360" stroke={ACCENT} strokeWidth="1.3" strokeDasharray="4 4" markerEnd="url(#arrow-accent)" />
       <path d="M372 342 C 410 352, 440 356, 458 360" stroke={ACCENT} strokeWidth="1.3" strokeDasharray="4 4" markerEnd="url(#arrow-accent)" />
       <path d="M440 342 C 520 354, 580 356, 608 360" stroke={ACCENT} strokeWidth="1.3" strokeDasharray="4 4" markerEnd="url(#arrow-accent)" />
-      <text x={500} y={336} textAnchor="middle" fontSize="9" fill={SUB}>auth-gated proxy · media</text>
+      {/* Sits clear of the app container and the three dashed runs. At its old
+          x=500/y=336 it landed on the container's right border (x=502) and cut
+          straight through the proxy arrows. */}
+      <text x={790} y={392} textAnchor="middle" fontSize="9" fill={SUB}>auth-gated proxy · media</text>
     </Frame>
   )
 }
