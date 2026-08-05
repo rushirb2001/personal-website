@@ -1,12 +1,10 @@
-import type { Metadata } from "next"
 import Image from "next/image"
 import Link from "next/link"
 import ReactDOM from "react-dom"
 import type { ReactNode } from "react"
 import { PlaybookBar } from "./PlaybookBar"
 import { PlaybookRail } from "./PlaybookRail"
-import { headers } from "next/headers"
-import { BUY_PATH, PRICING_INR, PRICING_USD, type Pricing } from "./links"
+import { BUY_PATH, type Pricing } from "./links"
 
 // Product permalinks live in ./links.
 
@@ -121,8 +119,9 @@ const CORE_INCLUDES = [
 ]
 
 // Any answer that names a price or a storefront has to follow the visitor's rail,
-// so the FAQ is built per request rather than living as a module const.
-function faqs(p: Pricing) {
+// so the FAQ is built per rail rather than living as a module const. Exported
+// because the FAQPage JSON-LD has to carry exactly the Q&A the reader sees.
+export function faqs(p: Pricing) {
   return [
     {
       q: "What do I get?",
@@ -155,19 +154,18 @@ function faqs(p: Pricing) {
   ]
 }
 
-export function generateMetadata(): Metadata {
-  const title = "Zero to Hired: The AI-Engineer Portfolio Playbook · Rushir Bhavsar"
-  const description =
-    "Zero to Hired is the AI-engineer portfolio playbook: go from a blank GitHub to an interview-ready portfolio in six months, on $0 of compute. 16 production-grade projects chosen by target role, each with a week-by-week plan, the interview questions it prepares you for, and the resume bullets it produces."
-  return {
-    title,
-    description,
-    openGraph: { title, description, type: "website" },
-    twitter: { card: "summary", title, description },
-  }
-}
-
-export default async function PlaybookPage() {
+// The whole sales page, minus the choice of which pricing rail to show. That
+// choice used to be made here by reading request geo, which forced the route
+// dynamic: ~1s TTFB and Cache-Control: no-store on the most commercially
+// important page on the site.
+//
+// It is now made by the routing layer instead. ./page.tsx renders this with USD
+// and ./in/page.tsx renders it with INR; both prerender at build time, and
+// middleware.ts rewrites an Indian visitor's /playbook request to the INR
+// variant at the edge, before the cache. The invariant from ./links holds
+// either way: the rupee figure is in the HTML the visitor receives, never
+// behind a hop.
+export function PlaybookPage({ pricing }: { pricing: Pricing }) {
   // The hero sub-paragraph (this page's LCP element) uses italic emphasis, so
   // the italic face is on the critical path here (it is not on other routes).
   // Without a preload the browser discovers it only after style/layout
@@ -179,11 +177,6 @@ export default async function PlaybookPage() {
     crossOrigin: "anonymous",
   })
 
-  // Reading geo opts this route out of static prerender, which is the deliberate
-  // trade: an Indian visitor who reads "$10" prices themselves out before ever
-  // reaching Sauce, so the rupee figure has to be in the HTML, not behind a hop.
-  const country = (await headers()).get("x-vercel-ip-country")
-  const pricing = country === "IN" ? PRICING_INR : PRICING_USD
   const faq = faqs(pricing)
 
   return (
@@ -737,6 +730,11 @@ export default async function PlaybookPage() {
         <footer className="border-t rule py-6 xs:py-8 mono text-[11px] flex items-center justify-between gap-4">
           <Link href="/" className="accent-link muted">
             <span className="faint">© 2026 </span>Rushir Bhavsar
+          </Link>
+          {/* Keeps the /writing cluster reachable from the sales page, so the
+              two are crawled as one site rather than as an orphaned pair. */}
+          <Link href="/writing" className="accent-link small-caps faint whitespace-nowrap">
+            Writing
           </Link>
           <span className="small-caps faint">Tempe, Arizona</span>
         </footer>
