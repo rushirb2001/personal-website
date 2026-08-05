@@ -164,8 +164,8 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
   },
 
   // ── sushrutalgs.ai data layer ──────────────────────────────────────────────
-  "samhita-textbook-pipeline": {
-    slug: "samhita-textbook-pipeline",
+  "samhita": {
+    slug: "samhita",
     name: "Samhita",
     seoTitle: "Samhita: surgical textbook PDFs to structured data",
     seoDescription:
@@ -207,8 +207,8 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
     verify: { requestAccessEmail: "bhavsarrushir@gmail.com" },
   },
 
-  "hybridflow-rag-backend": {
-    slug: "hybridflow-rag-backend",
+  "hybridflow": {
+    slug: "hybridflow",
     name: "HybridFlow",
     seoTitle: "HybridFlow: hybrid RAG over surgical textbooks",
     seoDescription:
@@ -250,8 +250,8 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
     verify: { requestAccessEmail: "bhavsarrushir@gmail.com" },
   },
 
-  "sushrutalgs-api-gateway": {
-    slug: "sushrutalgs-api-gateway",
+  "sushrutalgs-bff": {
+    slug: "sushrutalgs-bff",
     name: "BFF",
     seoTitle: "Cloudflare Worker BFF gateway for an AI product",
     seoDescription:
@@ -293,8 +293,8 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
     verify: { requestAccessEmail: "bhavsarrushir@gmail.com" },
   },
 
-  "sushrutalgs-ios-app": {
-    slug: "sushrutalgs-ios-app",
+  "sushrutalgs-ios": {
+    slug: "sushrutalgs-ios",
     name: "iOS",
     seoTitle: "sushrutalgs.ai iOS app: streaming cited answers",
     seoDescription:
@@ -344,8 +344,8 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
     verify: { requestAccessEmail: "bhavsarrushir@gmail.com" },
   },
 
-  "sushrutalgs-web-app": {
-    slug: "sushrutalgs-web-app",
+  "sushrutalgs-web": {
+    slug: "sushrutalgs-web",
     name: "Web",
     seoTitle: "sushrutalgs.ai web app: a cited RAG study assistant",
     seoDescription:
