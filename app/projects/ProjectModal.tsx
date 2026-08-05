@@ -183,7 +183,7 @@ export function ProjectModal({
           type="button"
           onClick={openZoom}
           aria-label="Enlarge architecture diagram"
-          className="group relative w-full h-full grid place-items-center px-2 sm:px-4 py-2 cursor-zoom-in bg-transparent border-0"
+          className="group relative w-full h-full grid place-items-center px-1 sm:px-2 py-1 cursor-zoom-in bg-transparent border-0"
         >
           <ArchitectureDiagram slug={detail.slug} />
           <span
