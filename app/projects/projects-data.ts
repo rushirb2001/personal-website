@@ -111,20 +111,34 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
     ],
     sections: [
       {
-        label: "Overview",
-        body: "Reaction-diffusion equations describe how patterns form and spread across physics, chemistry, and biology, from chemical fronts to biological morphogenesis. They are normally solved with slow numerical methods. This thesis trains a neural network to learn those solutions directly from the governing equations, and makes that approach work for the stiff, coupled systems where standard physics-informed neural networks break down.",
+        label: "The problem",
+        body:
+          "Reaction-diffusion equations describe how patterns organize themselves out of nothing much: chemical fronts, spots that split and replicate, spiral waves in excitable media. Solving them normally means stepping a fine grid forward in time, and the grid has to stay fine wherever the solution is sharp, which is exactly where the interesting behavior is. Physics-informed neural networks offer a mesh-free alternative that learns a solution from the governing equations themselves, but the standard formulation is demonstrated mostly on single-field, well-behaved problems. On genuinely coupled, stiff systems (Gray-Scott, Ginzburg-Landau) the standard formulation breaks down, and that gap is what the thesis went after.",
       },
       {
-        label: "Approach",
+        label: "Why it is hard",
+        body:
+          "Three failure modes stack on top of each other. One network predicting both fields shares every weight between two objectives, so gradients from one field's residual drag the shared representation away from what the other field needs, and the coupling that makes the system worth solving is also what makes it fight itself. Separately, an MLP fed raw (x, y, t) has a spectral bias: it fits the smooth, low-frequency part of the solution first, and the sharp spot boundaries and stripe edges are precisely the high-frequency content it learns last or not at all. Then the loss itself is unbalanced, because the initial-condition, residual and data terms do not arrive with comparable gradient magnitudes, so a fixed hand-tuned weighting is a knob you have to rediscover for every system you touch.",
+      },
+      {
+        label: "The design",
+        body:
+          "The answer was one jointly trained block that gives each coupled field its own network instead of splitting one network's capacity between them. The cheaper obvious alternative, a single wider MLP with two output heads, was rejected on purpose: shared weights are where the gradient interference lives, so widening the network buys capacity without removing the actual conflict. Three decisions do the work.",
         bullets: [
-          "Parallel subnetworks. A dedicated network for each coupled field, trained jointly under one physics-informed loss, which removes the gradient interference that degrades single-network PINNs.",
-          "Fourier feature embeddings. A 64-dimensional random-feature lift of the (x, y, t) inputs that overcomes spectral bias and lets the model resolve sharp, high-frequency pattern structure.",
-          "Gradient-norm adaptive loss weighting. Per-term weights set from running gradient magnitudes, automatically balancing the initial-condition, residual, and data objectives for stable convergence.",
+          "A subnetwork per field. The u and v networks are trained together under one physics-informed loss with an iterative coupling between them, so the fields stay linked without sharing parameters.",
+          "A 64-dimensional random Fourier lift. The (x, y, t) inputs are embedded before they reach either subnetwork, which sidesteps spectral bias and lets the model resolve sharp structure instead of smoothing it away.",
+          "Gradient-norm adaptive loss weights. Per-term weights are set from running gradient magnitudes and fed back into the block, so the initial-condition, residual and data objectives balance themselves rather than being tuned by hand per system.",
         ],
       },
       {
-        label: "Results",
-        body: "40 to 60 percent lower relative L2 error than single-network PINN baselines, consistently across both systems.",
+        label: "What it cost",
+        body:
+          "Two subnetworks plus a coupling term is more parameters and more compute per training step than one shared network, and it adds another moving part that has to stay stable. The two are also not symmetric (u is 3 layers of 64 units, v is 4 of 128) because the fields do not have equal complexity, and those shapes were picked empirically rather than derived. The structural limit is the one every vanilla PINN has: a trained model solves one parameter setting, not a family, so changing the coefficients means training again rather than re-running a solver.",
+      },
+      {
+        label: "Where it stands",
+        body:
+          "Across four benchmark variations spanning both systems, relative L2 error against a reference numerical solution landed between 2.3 and 3.5 percent, 40 to 60 percent below single-network PINN baselines on the same problems. The model reproduces the behavior that defeats a standard PINN here, including spot splitting, stripe formation and the chaotic Gray-Scott regime shown in the clips. Everything was implemented from scratch in JAX and Flax, and every run fit on a single GPU in under two and a half hours.",
         table: {
           headers: ["System", "Variation", "Rel. L2", "Train", "Pattern"],
           rows: [
@@ -135,10 +149,6 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
           ],
           note: "Trained on a single NVIDIA H100 (80 GB).",
         },
-      },
-      {
-        label: "Engineering",
-        body: "Implemented from scratch in JAX and Flax. Evaluated across four benchmark variations spanning the Gray-Scott and Ginzburg-Landau systems, each measured as relative L2 error against a reference numerical solution.",
       },
     ],
     metrics: [
@@ -192,24 +202,30 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
       "Source is private; sushrutalgs.ai is a live product. Happy to walk through the code or grant read access on request.",
     sections: [
       {
-        label: "Overview",
-        body: "sushrutalgs.ai answers surgical-exam questions with citations traced back to standard textbooks. Samhita is the data layer that makes that possible: it converts three full surgical textbooks from raw PDF into clean, structured, machine-readable knowledge that the retrieval backend can load.",
+        label: "The problem",
+        body:
+          "sushrutalgs.ai answers surgical-exam questions and traces every claim back to a line in a standard textbook, so a citation is only worth anything if the text behind it is intact and addressable down to the section, figure or table. What actually existed was three full surgical textbooks as print PDFs: 220 chapters and 5,941 pages laid out for a typesetter, where a table is drawn rather than encoded and a figure's caption is a floating run of text that happens to sit near it. None of the retrieval work could start until that was structured data, and nobody was going to re-key three textbooks by hand.",
       },
       {
-        label: "Approach",
+        label: "Why it is hard",
+        body:
+          "PDF extraction fails silently. A parser that loses content does not raise an error, it returns a slightly smaller document, and every downstream count still looks plausible, so the loss only surfaces months later when someone asks about a topic the book plainly covers and the answer has nothing to cite. One bug in the extraction path quietly dropped 968 table elements while the run reported success. The second half of the problem is that layout rules tuned to one publisher break on the next, so a single static rule set cannot be trusted across three books, and \"it ran without errors\" is not evidence of anything.",
+      },
+      {
+        label: "The design",
+        body:
+          "Two rules shaped the pipeline: structure is decided only by code that behaves the same way twice, and every stage has to be able to say what it lost.",
         bullets: [
-          "Deterministic parsing. An Adobe-JSON parser with a six-phase recovery pipeline extracts sections, figures, and tables, fixing documented edge cases such as a bug that silently dropped 968 table elements.",
-          "Knowledge graph. The content is assembled into a 71,621-node, 130,057-edge graph spanning chapters, sections, figures, tables, and cross-references.",
-          "Embeddings and taxonomy. Each unit is embedded with BioLORD, a medical-domain model, and tagged against a 17-domain taxonomy for retrieval.",
+          "Recovery as its own phase, not as error handling. Parsing starts from Adobe's PDF extraction JSON and runs parse, recover and structure, then cleaning, enhancement and annotation in parallel; the six-phase recovery stage exists to detect and repair the specific ways each book breaks rather than to skip the pages it cannot read.",
+          "Deterministic structure, models only at the edges. The tempting alternative was to hand whole pages to an LLM and ask for structured output, which is far less work to build, but it reruns differently and gives you no way to tell a hallucinated section boundary from a real one, which is fatal when the citation is the product. Claude is used only to describe figures and tables that a deterministic pass has already located.",
+          "Structure before embeddings. Content is assembled into a knowledge graph of 71,621 nodes and 130,057 edges with 5,987 cross-references resolved and a 17-domain taxonomy over the top, and only then embedded, into 52,871 vectors from BioLORD, a medical-domain model, rather than a general-purpose one that flattens surgical vocabulary.",
+          "Immutable, content-hashed exports. Each run publishes versioned chapter packages under SHA-256 hashes to Cloudflare R2 with manifest drift detection, so the retrieval backend pins a known version instead of reading a bucket that can change underneath it, and a CI workflow with mocked services runs the pipeline so a parser change cannot quietly alter an export.",
         ],
       },
       {
-        label: "Results",
-        body: "220 chapters and 5,941 pages processed end to end, into 52,871 embeddings and 5,987 resolved cross-references, with 100 percent structural validation across all 220 exported chapter packages and a clean rebuild that reproduced every count.",
-      },
-      {
-        label: "Engineering",
-        body: "Built in Python with Pydantic, PyMuPDF, and the Adobe PDF Services and Anthropic Claude APIs. Exports are immutable and content-hashed, published to Cloudflare R2 with manifest drift detection, and gated by a CI workflow with mocked tests.",
+        label: "Where it stands",
+        body:
+          "All 220 chapters and 5,941 pages went through end to end, and all 220 exported chapter packages pass structural validation. The check that mattered most was a clean rebuild from the source PDFs reproducing every count, because that is the only way to know the output does not depend on incremental state left over from earlier runs. The honest limit is that the validation is structural: it shows nothing went missing or landed in the wrong chapter, but a model-written figure description is still a model's description, and those are spot-checked by hand rather than measured. A fourth textbook would still need parser work; the pipeline adapts, it is not publisher-agnostic.",
       },
     ],
     metrics: [
@@ -241,24 +257,32 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
       "Source is private; sushrutalgs.ai is a live product. Happy to walk through the code or grant read access on request.",
     sections: [
       {
-        label: "Overview",
-        body: "HybridFlow is the retrieval and answer engine behind sushrutalgs.ai. A user asks a question; the system finds the right passages across three surgical textbooks and streams back a cited, structured answer. It is built for the hard case where a single search method is not enough.",
+        label: "The problem",
+        body:
+          "sushrutalgs.ai answers surgical exam questions with citations that trace back to a specific place in a specific textbook, so retrieval has to return more than a plausible paragraph. Three full surgical textbooks are structured documents: the same sentence carries a different meaning under operative technique than under complications, and the answer to a real clinical question is usually spread across a chapter rather than sitting in one chunk. Ordinary chunk-and-embed search finds text that reads correctly but hands it back stripped of where it came from, which is the part a clinician needs in order to check it. HybridFlow exists to keep the structure of the book attached to whatever retrieval returns.",
       },
       {
-        label: "Approach",
+        label: "Why one index is not enough",
+        body:
+          "Vector search can find the right paragraph from a question phrased in a clinician's words, but it cannot say which chapter that paragraph belongs to or which cross-reference qualifies it. A graph of the book's hierarchy knows all of that and cannot be searched by meaning, so on its own it never finds the entry point. The naive fix, querying both and concatenating, produces two rankings on no shared scale and leaves the writing model to reconcile them, while every extra passage it drags in widens the context. That is the condition under which the answer stays fluent and starts attributing a figure to the wrong chapter, which is the one failure a cited product cannot absorb.",
+      },
+      {
+        label: "The design",
         bullets: [
-          "Hybrid retrieval. Semantic search over medical-domain vectors in Qdrant runs alongside a Neo4j knowledge graph that captures the chapter-to-section-to-paragraph hierarchy, cross-references, and concepts.",
-          "Agentic orchestration. A streaming FastAPI service runs a multi-call Claude pipeline: Haiku validates and selects chapters and scores figures and tables, then Sonnet writes the answer, all exposed through 15 retrieval tools.",
-          "Quality gates. Answers pass an eight-gate regression suite covering classification, citation integrity, hallucination density, format, and fallbacks.",
+          "Vector first, graph second. Semantic search over 53K 768-dim BioLORD vectors finds the entry points, then each hit is expanded through a 73K-node, four-level Neo4j graph to pick up its chapter, its siblings and its cross-references. One ranking decides relevance and structure is attached afterwards, rather than two incomparable scores being merged.",
+          "A cheap model narrows before an expensive one writes. Claude Haiku validates the question, selects the chapters worth reading and scores the figures and tables; Sonnet only ever sees the shortlist. The rejected alternative was a single large Sonnet call over everything retrieved: fewer moving parts, but it pays full price for a wide context on every query and gives the writing model no reason to prefer one retrieved passage over another.",
+          "One query, three stores, one loader. Qdrant, Neo4j and a SQLite metadata store covering 220 chapters are read together per query and written together on ingest, with content-hash change detection so a re-run of the Samhita export only touches what changed. The cost is that a partial write becomes a real failure mode, so ingestion is transactional across all three instead of three independent upserts.",
         ],
       },
       {
-        label: "Results",
-        body: "Sustained 30 concurrent queries with zero errors at about 14.7 times the throughput of a sequential baseline, passing the answer-quality suite 20 of 20. Component vector retrieval scored success@5 of 0.90 and MRR 0.79 on a frozen gold set, with p50 search latency around 178 ms.",
+        label: "What it cost",
+        body:
+          "Splitting the pipeline into a planning call and a writing call adds a round trip to every query, and prompt caching is what makes that affordable: the planning prompt hits cache about 80 percent of the time, holding an answered query near five to six cents. The other standing cost is verification. Answers run against an eight-gate regression suite covering classification, citation integrity, hallucination density, format and fallbacks, because a system that cites its sources is only worth the extra machinery if the citations are checked automatically rather than by reading.",
       },
       {
-        label: "Engineering",
-        body: "Python and FastAPI with server-sent-events streaming, Qdrant and Neo4j for storage, and the Anthropic Claude API for planning and generation. Prompt caching cuts the planning call by thousands of tokens at an 80 percent hit rate, holding cost near 0.05 to 0.06 dollars per answered query. Served behind a Cloudflare Worker gateway with two-factor service auth.",
+        label: "Where it stands",
+        body:
+          "It runs live behind sushrutalgs.ai, reached through a Cloudflare Worker gateway with two-factor service auth. Under load it sustained 30 concurrent queries with zero errors at about 14.7 times the throughput of a sequential baseline, and it passes the answer-quality suite 20 of 20. Measured on its own, vector retrieval scores success@5 of 0.90 and MRR 0.79 against a frozen gold set, at a p50 search latency around 178 ms. The honest reading of that 0.90 is that roughly one question in ten does not have its best passage in the top five, and the chapter-selection pass and graph expansion are what keep those cases turning into thin answers rather than confident wrong ones.",
       },
     ],
     metrics: [
@@ -290,24 +314,35 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
       "Source is private; sushrutalgs.ai is a live product. Happy to walk through the code or grant read access on request.",
     sections: [
       {
-        label: "Overview",
-        body: "The BFF is the single trusted entry point for sushrutalgs.ai. Both the web and iOS apps call it instead of holding backend secrets or duplicating auth and billing logic. It verifies who the user is, enforces their daily usage limit, and forwards the request to the AI backend.",
+        label: "The problem",
+        body:
+          "sushrutalgs.ai has two clients, a Next.js web app and a native iOS app, and both need to reach the same AI backend. The obvious route, letting each client call the backend directly, means shipping the backend credential inside an App Store binary and writing the sign-in check and the paid usage limit twice, once in TypeScript and once in Swift. Two copies of a billing rule drift, and the copy inside a shipped iOS build cannot be corrected until the next review cycle. The gateway exists so there is exactly one place that knows who the user is, what they are still allowed, and how to talk upstream.",
       },
       {
-        label: "Approach",
+        label: "Why it is hard",
+        body:
+          "The hard part is not proxying, it is charging correctly for a response that has not finished yet. A user with a phone and a laptop open can fire two questions in the same instant: read the daily counter, decide, then write it back, and both requests pass, because both reads happened before either write. Answers also arrive as a server-sent-event stream, so once the first byte is on the wire the decision cannot be taken back, and a retry is not safe either: replaying a paid stream either charges twice or hands out an answer nobody paid for. All of this sits in front of every single request, so the budget for solving it is a few milliseconds.",
+      },
+      {
+        label: "The design",
+        body:
+          "The worker runs five stages in a fixed order: origin check, token verify, quota debit, body transform, forward. The ordering is the design. Nothing that costs money happens before the debit, and nothing that identifies the user travels past the transform.",
         bullets: [
-          "One gateway, two clients. It accepts an iOS bearer token or a web auth cookie and verifies Supabase JWTs at the edge, so neither client embeds the backend API key.",
-          "Atomic quota. A plan-aware daily limit is enforced through a single Supabase database function against the same row the apps read for their usage display, giving one source of truth.",
-          "Streaming pass-through. The query endpoint streams server-sent events back byte for byte, failing closed on quota or backend errors.",
+          "One gateway, two credential shapes. The web sends an auth cookie and iOS sends a bearer token, and both resolve to a Supabase JWT verified at the edge against cached JWKS (above a 99.9 percent hit rate), so neither client holds the backend key.",
+          "The debit is a database function, not an edge counter. A Workers KV or Durable Object counter would have been faster and saved a round trip, but it becomes a second source of truth beside the row the apps already read for their usage display, and eventually consistent reads let a user overspend. One Supabase function does the check and the decrement atomically on the row the user sees, and measured about 9,200 operations per second on a single hot row, far above anything the product generates.",
+          "Fail closed, and only before the first byte. Quota and upstream failures are resolved while the response can still be refused; after that the stream is piped through byte for byte, never buffered, with no retry on a paid stream.",
+          "The backend never sees a user id. The transform stage swaps verified identity for a scoped user_context, and the upstream hop is authenticated twice over, by a Cloudflare Access service token as well as the backend's own credential, so a compromise on either side does not hand over the other's users.",
         ],
       },
       {
-        label: "Results",
-        body: "Live in staging and production at about 14 ms of edge overhead, a roughly 33 KB gzipped bundle, and JWT verification at p95 around 0.13 ms. Quota enforcement measured about 9,200 operations per second on a single hot row, with verified fail-closed mapping and zero errors through 200 concurrent requests.",
+        label: "What it cost",
+        body:
+          "The extra hop is real: about 14 milliseconds at p50, plus the Supabase round trip on the debit, added to every question anyone asks. Failing closed means a Supabase outage stops the product rather than quietly serving free answers, which is the trade taken on purpose for a paid product. The worker also stays deliberately thin, roughly 33 KiB gzipped, which rules out most of what a normal Node service would reach for: it runs on Hono and jose and very little else.",
       },
       {
-        label: "Engineering",
-        body: "TypeScript and Hono on Cloudflare Workers, with the jose library for JWT and JWKS verification, Supabase for auth and the quota function, and Cloudflare Access service tokens for upstream auth. Staging auto-deploys on push; production is gated by a release, so the iOS app's uptime is decoupled from web deploys.",
+        label: "Where it stands",
+        body:
+          "It is live in staging and production, serving both clients. Edge overhead sits at about 14 milliseconds p50 with JWT verification at p95 around 0.13 milliseconds, and a load run held 200 concurrent requests with zero errors and the fail-closed mapping verified. Staging deploys on every push while production is gated behind a release, so a web change cannot take the shipped iOS app down with it.",
       },
     ],
     metrics: [
@@ -339,24 +374,29 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
       "Source is private; sushrutalgs.ai is a live product. Happy to walk through the code or grant read access on request.",
     sections: [
       {
-        label: "Overview",
-        body: "The iOS app is the native client for sushrutalgs.ai. It gives surgery residents a fast, polished way to study on iPhone and iPad: ask a question, watch the answer stream in with citations, figures, and tables, and pick up the same conversation on another device.",
+        label: "The problem",
+        body:
+          "sushrutalgs.ai already worked in a mobile browser, and that was the problem. Residents study in the gaps between cases, on a phone, and an answer arrives as a stream that takes several seconds to fill in with its citations, figures and tables, so a backgrounded tab or a dropped connection costs the whole answer rather than delaying it. The same people move between a phone and an iPad mid-session and expect the thread to be where they left it. A native client was the way to hold a session in the Keychain, survive app state changes while a stream is open, and hand a live answer to the user's other device.",
       },
       {
-        label: "Approach",
+        label: "Why it is hard",
+        body:
+          "The hard part is not the chat UI: it is that the same conversation has to be true in two clients. Retry and edit fork a thread into a tree instead of overwriting it, and the web client already owned that model, so an iOS version that grew its own idea of a fork would drift on exactly the awkward cases (editing a message halfway up a branch, resuming a partly streamed reply) and the drift would only surface later, in stored conversations neither client could render. The stream is the second constraint: frames arrive off the network as thinking, metadata, text, error and done, every one of them mutates view state, and under Swift 6 strict concurrency that has to be actor-correct before it compiles at all. And because the gateway debits a daily quota per request, anything that quietly re-sends a query (a token refresh mid-answer, a retry after a timeout) spends the user's allowance a second time.",
+      },
+      {
+        label: "The design",
         bullets: [
-          "Native and modern. SwiftUI only, iOS 26, Swift 6 strict concurrency, with a Model-View architecture and observable services injected at the root.",
-          "Streaming chat. A five-type server-sent-events protocol drives a per-bubble typewriter reveal, with cross-device handoff broadcast over a Supabase Realtime channel.",
-          "Secure auth. Email one-time codes, Google Sign-In, and Sign in with Apple, all exchanged through Supabase with nonce-based replay protection.",
+          "Port the tree, do not redesign it. The conversation model is a one-to-one port of the web client's tree, down to how a fork is created and identified, so a thread started on one client opens correctly on the other. A Swift-idiomatic rewrite was the tempting option and was rejected: it would have been better Swift and a second definition of what a conversation is.",
+          "No ViewModels. Observable services are injected once at the root and views read them directly, which keeps one source of truth for the tree and the open stream. The conventional MVVM layer would have handed every screen its own copy of state the model already holds, which is the same divergence problem one layer down.",
+          "A leaf client. All inference goes through the Cloudflare Worker gateway, so the app ships no backend host and no key, and a CI check fails any build that would embed one. The cost is that nothing can be answered offline: cached history and Keychain state make a cold start useful, but the answer path always needs the network.",
+          "Handoff by broadcast, not polling. A stream in progress is published on a Supabase Realtime channel so the second device picks it up live, instead of persisting the finished answer and letting that device discover it whenever it next opens.",
+          "Three ways in. Email one-time codes, Google and Apple, each exchanged for a Supabase session with nonce-based replay protection. Offering Google on iOS obliges Sign in with Apple too, so the third path was a requirement rather than a choice.",
         ],
       },
       {
-        label: "Results",
-        body: "About 33,200 lines of Swift across 105 files and 80 views, shipping at a 20.8 MB App Store install size. A CI security gate fails any build that would leak a backend host or secret, and the conversation model and streaming protocol are shared one-to-one with the web client.",
-      },
-      {
-        label: "Engineering",
-        body: "Swift 6 and SwiftUI with Swift Package Manager, supabase-swift for auth, Realtime, and database access, GoogleSignIn and Sign in with Apple for identity, and Xcode Cloud for CI. It is a leaf client: all model inference goes through the sushrutalgs.ai BFF, so it holds no backend secrets.",
+        label: "Where it stands",
+        body:
+          "It ships on the App Store at 20.8 MB installed, with one SwiftUI shell covering both iPhone and iPad. Answers stream with the same citations, figures and tables as the web client, and a conversation started on either one opens correctly on the other, which is the whole point of porting the tree rather than rewriting it. The honest limits: it targets iOS 26, so the observation model that removes the ViewModel layer also gives up older devices; the iPad runs the phone's shell rather than a layout of its own; and offline gets you your history, not an answer.",
       },
     ],
     metrics: [
@@ -396,24 +436,28 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
       "Source is private; sushrutalgs.ai is a live product. Happy to walk through the code or grant read access on request.",
     sections: [
       {
-        label: "Overview",
-        body: "The web app is the primary sushrutalgs.ai client and marketing site. It delivers the streaming chat experience, the figure and table citations, and the sign-up and onboarding flows that bring a user into the product.",
+        label: "The problem",
+        body:
+          "Surgery residents revising for advanced exams cannot act on an answer they cannot check. A chat box that streams confident prose is worse than useless there: if a claim does not point back to a page, a figure or a table in a standard textbook, it is not revisable, it is just fluent. So the web client's job was never to render text. It was to keep every answer attached to its sources while the answer is still arriving, from a browser that must never hold a backend key.",
       },
       {
-        label: "Approach",
+        label: "Why it is hard",
+        body:
+          "An answer does not arrive as a document. It arrives as an interleaved stream of eight server-sent-event frame types (thinking steps, metadata, text, citations, figure and table artifacts, error, done), any of which can stop mid-flight when the connection drops or a token expires. Buffering until the stream ends is the easy version, and it makes a long answer feel broken, so the client has to render as frames land and keep message state consistent through partial and aborted answers. Studying is also not linear: a user retries a question, or edits it to ask a sharper one, and a flat message list can only serve that by destroying the answer they were comparing against.",
+      },
+      {
+        label: "The design",
         bullets: [
-          "Branching conversations. Retry and edit create sibling branches in a tree-structured message model, driven by a reducer store and mirrored in Postgres so a conversation can be resumed anywhere.",
-          "Streaming UI. A server-sent-events client decodes tokens, thinking steps, citations, and figure and table artifacts as they arrive from the gateway.",
-          "Hardened data path. Auth-gated Cloudflare R2 proxies serve textbook figures and tables, behind a build-time content-security policy and redaction-wrapped scripts.",
+          "A tree, not a list. Retry and edit fork sibling branches in a tree-structured message model held in a reducer store and mirrored into Postgres, so a conversation resumes anywhere and both answers survive. The cheaper option, an append-only list where regenerate overwrites the previous reply, was rejected because comparing two answers is exactly what a revising resident does.",
+          "Parse frames, do not buffer. A dedicated chat service decodes all eight frame types as they arrive, so thinking steps and citations can land before the prose finishes, and error and done are handled as terminal states rather than edge cases.",
+          "No secrets in the browser. Every inference call goes through the Cloudflare Worker gateway, which verifies the Supabase session and debits the daily quota, so the client holds no backend key and cannot be talked into spending someone else's allowance. Refresh-on-401 keeps that invisible to the user.",
+          "Licensed assets behind a proxy. Textbook figures (WebP) and tables (JSON) sit in two private R2 buckets served through auth-gated routes instead of public URLs. That costs a hop and rules out plain public CDN caching, but the content is licensed, and public object URLs would hand it to anyone with the link.",
         ],
       },
       {
-        label: "Results",
-        body: "About 27,300 lines of TypeScript across 51 components, 18 routes, and 6 API routes, with 23 consecutive Supabase migrations hardening row-level security, quota enforcement, and search. Clean production build with a roughly 2 MB client footprint.",
-      },
-      {
-        label: "Engineering",
-        body: "Next.js 16 and React 19 with Tailwind CSS v4, Supabase for auth and Postgres, Cloudflare R2 for assets, and Resend for email, deployed on Vercel. Model inference is delegated to the sushrutalgs.ai BFF, so the web client never holds the backend key.",
+        label: "Where it stands",
+        body:
+          "It is live at sushrutalgs.ai as the primary client, carrying the streaming chat, the citation and figure rendering, and the sign-up and onboarding path into the product. Session verification is cheap in practice: the JWKS cache behind it runs above a 99.9 percent hit rate, so a signed-in request almost never pays for a key fetch. The honest cost is weight. The production build ships roughly 2 MB of client JavaScript, which is more than a text-first reading interface should need, and trimming it is the open work; the proxy in front of the asset buckets is the other standing tax, and that one I would pay again.",
       },
     ],
     metrics: [
@@ -457,24 +501,35 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
     repoStatus: "public",
     sections: [
       {
-        label: "Overview",
-        body: "A production-style machine learning platform built on the full Yelp Open Dataset. It takes raw review data all the way to a served API, with two models: one that recommends businesses and one that scores the sentiment of review text.",
+        label: "The problem",
+        body:
+          "A model that scores well in a notebook is not a service, and the distance between the two is where most of the actual work hides. The Yelp Open Dataset is 5.3 GB of raw JSON across 6.99 million reviews, which is past the point where a single-machine dataframe stays comfortable and past the point where the training code and the serving code can honestly be the same code. The aim was to take the raw dumps all the way to a REST API answering two unrelated questions, which business to recommend and how a review actually feels, and find out what breaks in between.",
       },
       {
-        label: "Approach",
+        label: "Why it is hard",
+        body:
+          "Spark is the right tool for the first half of that and the wrong tool for the second. It converts 5.3 GB and factorises 4.39 million interactions without complaining, but the same session called from inside a web request spends roughly 290 ms on a single prediction, almost all of it planning a query and crossing into the JVM to score one row. The data pushes back as well: Yelp star ratings pile up at the top end, so a three-class sentiment model can post a healthy accuracy while barely handling the middle class, and recall on a recommender is a small number by nature (any honest figure looks like failure until a baseline sits next to it).",
+      },
+      {
+        label: "The design",
+        body:
+          "The shape follows from that split. Everything heavy happens once, offline, and the request path is allowed to know nothing about Spark.",
         bullets: [
-          "Large-scale ETL. A Spark pipeline converts the full seven-million-review dataset from JSON to Parquet at about 462,000 rows per second on a single eight-core node.",
-          "Two models. A Spark ALS collaborative-filtering recommender and a TF-IDF plus logistic-regression sentiment classifier, tracked and versioned with MLflow.",
-          "Fast serving. The sentiment model is exported to a Spark-free NumPy inference path with verified prediction parity, served through a FastAPI service.",
+          "One pass over the raw JSON. The ETL writes snappy Parquet in a single Spark pass at about 462,000 rows per second on one eight-core node, then 5-core filters to 4.39 million interactions over 287,000 users and 148,000 items, so every job downstream reads a columnar table instead of re-parsing JSON.",
+          "Train in Spark, serve without it. The sentiment model is exported to plain numpy artifacts (the TF-IDF vocabulary, the IDF vector, the logistic-regression coefficients) and the transform is reimplemented on top of them, which takes p99 to 0.11 ms and about 34,000 predictions per second.",
+          "The rejected option was keeping Spark in the request path. It is one code path rather than two and it cannot drift, but 290 ms per single-row prediction is not a serving story, and a dedicated model server meant another runtime to install and version for what is, in the end, a sparse dot product.",
+          "Bias terms before bigger models. ALS on its own predicts ratings poorly when the ratings are this skewed, so global, user and item bias terms went in first and took RMSE to 1.17, which is a cheaper win than widening the latent space.",
         ],
       },
       {
-        label: "Results",
-        body: "The recommender reached Recall@10 of 5.5 percent, 6.2 times a most-popular baseline, with a bias-augmented variant at RMSE 1.17. The sentiment classifier reached 86.3 percent accuracy and a macro-F1 of 0.73 with class weighting. The exported inference path runs at p99 0.11 ms with 100 percent parity to the training model.",
+        label: "What it cost",
+        body:
+          "Two implementations of the same maths is a genuine liability: the numpy path can drift from the trained model and nothing would visibly fail, it would just answer differently. The fix is to make parity a test rather than a claim, checking that the exported artifacts reproduce Spark's predictions on held-out reviews, which currently holds at 100 percent. The rest of the tax is ordinary but not free: MLflow to keep runs and model versions straight, Docker Compose so the API and its dependencies come up the same way twice, a Pytest suite in CI, and benchmark numbers written to provenance-stamped files that are committed rather than quoted from a terminal.",
       },
       {
-        label: "Engineering",
-        body: "PySpark for ETL and model training, FastAPI for serving, MLflow for experiment tracking, and Docker Compose for orchestration, with a Pytest suite and GitHub Actions CI. Every headline number is backed by committed, provenance-stamped benchmark outputs.",
+        label: "Where it stands",
+        body:
+          "The serving side is the clean result: 0.11 ms at p99 against roughly 290 ms for the in-process Spark path, at full prediction parity. The models are more modest and are worth stating plainly. Recall@10 of 5.5 percent means nothing on its own, but it is 6.2 times the most-popular baseline it was measured against, and 86.3 percent sentiment accuracy sits beside a macro-F1 of 0.70 against a 0.67 baseline, which is the class imbalance showing through. Both are reported against those baselines below rather than in isolation.",
       },
     ],
     metrics: [
