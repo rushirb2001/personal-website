@@ -33,7 +33,7 @@ export const metadata: Metadata = {
   // techniques, because this page has to answer "what does he do" for a
   // recruiter, not sell the product. 151 chars, inside the ~155 Google shows.
   description:
-    "ML engineer and researcher at ASU, previously Cadence. Physics-informed neural networks, RAG, and distributed ML pipelines. Open to AI and product roles.",
+    "Founding engineer at sushrutalgs.ai, medical AI for India. Previously Cadence. RAG systems, physics-informed neural networks, distributed ML pipelines.",
   applicationName: "Rushir Bhavsar",
   authors: [{ name: AUTHOR.name, url: SITE_URL }],
   creator: AUTHOR.name,
