@@ -155,11 +155,9 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
           caption: "Gray-Scott chaotic dynamics: predicted solution vs. reference.",
         },
       ],
-      // Dev-only placeholders; swap in real URLs to render them live.
-      liveUrl: { todo: "Hosted interactive solver demo. Paste the URL" },
     },
     verify: {
-      walkthrough: { todo: "cal.com / Calendly link for a 15-min walkthrough" },
+      requestAccessEmail: "bhavsarrushir@gmail.com",
     },
   },
 
@@ -383,7 +381,18 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
     links: [{ label: "live product", href: "https://sushrutalgs.ai" }],
     artifacts: {
       diagram: "builtin",
-      screenshots: { todo: "Screenshots of the chat and citations" },
+      // Real capture of the product, which replaces the screenshots placeholder
+      // that used to sit here. Re-encoded before upload: the source was 16MB at
+      // 3556x2160/60fps with an audio track, for a slot that renders ~700px
+      // wide and plays muted. 1440px wide at 30fps with the audio stripped is
+      // 4.2MB, a 74% cut, with no visible difference at display size.
+      clips: [
+        {
+          src: "https://v9fl0vq2qbxv8yrh.public.blob.vercel-storage.com/projects/sushrutalgs-web-app/thread-FZeoxDWlo7Jb5j0O219ek9lNb5lKeB.mp4",
+          caption:
+            "A study thread in the web app: a question, the streamed answer, and the textbook citations behind it.",
+        },
+      ],
     },
     verify: { requestAccessEmail: "bhavsarrushir@gmail.com" },
   },
