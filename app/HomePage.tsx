@@ -8,13 +8,13 @@ import { hasProjectDetail } from "./projects/projects-data"
 
 const WORK = [
   {
-    company: "Arizona State University",
-    companyShort: "ASU",
-    role: "ML Researcher",
-    period: "Nov 2025 – Present",
-    desc: "Developing a modular PyTorch Lightning + JAX framework to benchmark neural surrogate models against traditional plasma solvers for semiconductor etch-chamber simulations.",
-    descShort: "Benchmarking neural surrogate models against traditional plasma solvers for etch-chamber simulations.",
-    stack: ["PyTorch Lightning", "JAX", "Hydra", "WandB"],
+    company: "sushrutalgs.ai",
+    companyShort: "sushrutalgs.ai",
+    role: "Founding Engineer",
+    period: "2025 – Present",
+    desc: "Building a medical AI platform for India's students, residents, and surgeons: a retrieval backend over surgical textbooks, an edge gateway handling auth and per-user limits, and native web and iOS clients that stream cited answers. Live in production.",
+    descShort: "Building a medical AI platform for India's surgical trainees: RAG backend, edge gateway, web and iOS clients.",
+    stack: ["Next.js 16", "Swift 6", "FastAPI", "Qdrant", "Neo4j", "Cloudflare Workers"],
     current: true,
   },
   {

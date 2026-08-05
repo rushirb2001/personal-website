@@ -24,7 +24,9 @@ const PERSON = {
   jobTitle: AUTHOR.jobTitle,
   email: `mailto:${AUTHOR.email}`,
   sameAs: [...AUTHOR.sameAs],
-  worksFor: { "@type": "Organization", name: "Arizona State University" },
+  // Current employer, which is now the company rather than the university.
+  // alumniOf below keeps ASU, since the MS is a fact that does not expire.
+  worksFor: { "@type": "Organization", name: "sushrutalgs.ai", url: "https://sushrutalgs.ai" },
   alumniOf: [
     { "@type": "CollegeOrUniversity", name: "Arizona State University" },
     { "@type": "CollegeOrUniversity", name: "Nirma University" },
