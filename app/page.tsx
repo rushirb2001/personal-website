@@ -33,9 +33,9 @@ const PERSON = {
     "@type": "Place",
     address: {
       "@type": "PostalAddress",
-      addressLocality: "Tempe",
-      addressRegion: "AZ",
-      addressCountry: "US",
+      addressLocality: "Ahmedabad",
+      addressRegion: "Gujarat",
+      addressCountry: "IN",
     },
   },
   knowsAbout: [

@@ -737,7 +737,7 @@ export default function HomePage() {
                   <span className="accent">+</span> Product, AI, DevOps
                 </p>
                 <p>
-                  <span className="accent">+</span> Tempe, Arizona
+                  <span className="accent">+</span> Ahmedabad, India
                 </p>
               </div>
             </div>
@@ -1025,7 +1025,7 @@ export default function HomePage() {
           <div className="grid grid-cols-1 xs:grid-cols-[clamp(80px,14vw,140px)_1fr_clamp(140px,22vw,240px)] lg:grid-cols-[140px_1fr_240px] gap-3 xs:gap-6 lg:gap-12 py-5 xs:py-8 lg:py-10 pt-3 xs:pt-4 lg:pt-6">
             <div className="mono text-[12px] xs:text-[13px] leading-none flex xs:flex-col items-start gap-3 xs:gap-2 xs:pt-2 lg:pt-[10px]">
               <span className="accent">Open to work</span>
-              <span className="muted">Tempe, AZ</span>
+              <span className="muted">Ahmedabad, India</span>
             </div>
             <div>
               <h3 className="display text-[21px] xs:text-[26px] lg:text-3xl font-light tracking-tight leading-tight">
@@ -1102,7 +1102,7 @@ export default function HomePage() {
                   to be the playbook that got dropped there; the location is the
                   least useful of the three, so it is the one that goes now. */}
               <p className="small-caps faint whitespace-nowrap hidden xs:block">
-                <span className="accent">+</span> Tempe, Arizona
+                <span className="accent">+</span> Ahmedabad, India
               </p>
             </div>
           </div>

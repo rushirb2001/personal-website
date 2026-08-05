@@ -745,7 +745,7 @@ export function PlaybookPage({ pricing }: { pricing: Pricing }) {
           </Link>
           {/* Dropped on the narrowest phones: three items do not fit, and the
               location is the least useful of them. */}
-          <span className="small-caps faint hidden xs:inline">Tempe, Arizona</span>
+          <span className="small-caps faint hidden xs:inline">Ahmedabad, India</span>
         </footer>
       </div>
     </main>

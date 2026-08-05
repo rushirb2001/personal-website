@@ -27,7 +27,12 @@ export async function generateMetadata({
     // full phrasing either way. The layout template appends the site name.
     title: post.seoTitle ?? post.title,
     description: post.description,
-    alternates: { canonical: `/writing/${post.slug}` },
+    alternates: {
+      canonical: `/writing/${post.slug}`,
+      // Also advertised from each post, since a reader arriving from search
+      // lands here rather than on the index.
+      types: { "application/rss+xml": [{ url: "/writing/rss.xml", title: "Writing · Rushir Bhavsar" }] },
+    },
     openGraph: {
       type: "article",
       url,

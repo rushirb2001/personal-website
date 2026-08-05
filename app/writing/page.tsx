@@ -12,7 +12,13 @@ export const metadata: Metadata = {
   title: "Writing on AI engineering portfolios",
   description:
     "Notes on building an AI engineering portfolio that survives an interview: project selection, evaluation, free-tier infrastructure, and private-repo credibility.",
-  alternates: { canonical: "/writing" },
+  alternates: {
+    canonical: "/writing",
+    // Emits <link rel="alternate" type="application/rss+xml">, which is how
+    // every feed reader and most aggregators find a feed. Without it the feed
+    // exists but is effectively unlisted.
+    types: { "application/rss+xml": [{ url: "/writing/rss.xml", title: "Writing · Rushir Bhavsar" }] },
+  },
   openGraph: {
     type: "website",
     url: absoluteUrl("/writing"),
@@ -179,7 +185,7 @@ export default function WritingIndex() {
           </Link>
           {/* Dropped on the narrowest phones: three items do not fit, and the
               location is the least useful of them. */}
-          <span className="small-caps faint hidden xs:inline">Tempe, Arizona</span>
+          <span className="small-caps faint hidden xs:inline">Ahmedabad, India</span>
         </footer>
       </div>
     </main>
