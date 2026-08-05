@@ -9,7 +9,7 @@ export const meta: PostMeta = {
   title: "How to make a private repo credible to a recruiter who cannot see the code",
   seoTitle: "Make a private repo credible to recruiters",
   description:
-    "Your best work is often under an NDA or a startup you have not launched. Six artefacts that make a private project verifiable without ever exposing the source.",
+    "Your best work is often under an NDA or unlaunched. Six artefacts that make a private project verifiable without ever exposing the source.",
   standfirst:
     "Work you cannot show is not the same as work you cannot prove. The trick is to move the evidence out of the source and into artefacts a reader can check.",
   published: "2026-08-04",

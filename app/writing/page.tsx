@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   // so it names the subject. The visible nav label stays "Writing".
   title: "Writing on AI engineering portfolios",
   description:
-    "Notes on building an AI engineering portfolio that survives an interview: project selection, evaluation, free-tier infrastructure, and private-repo credibility.",
+    "Building an AI engineering portfolio that survives an interview: project selection, evaluation, free-tier infrastructure, and private-repo credibility.",
   alternates: {
     canonical: "/writing",
     // Emits <link rel="alternate" type="application/rss+xml">, which is how
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     url: absoluteUrl("/writing"),
     title: "Writing · Rushir Bhavsar",
     description:
-      "Notes on building an AI engineering portfolio that survives an interview: project selection, evaluation, free-tier infrastructure, and private-repo credibility.",
+      "Building an AI engineering portfolio that survives an interview: project selection, evaluation, free-tier infrastructure, and private-repo credibility.",
   },
 }
 
