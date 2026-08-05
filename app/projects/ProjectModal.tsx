@@ -515,7 +515,7 @@ export function ProjectModal({
             </div>
             {/* flex + m-auto (not grid centering) so the phone-size min-width
                 overflow stays reachable by panning on both sides. */}
-            <div className="grow overflow-auto overscroll-contain flex p-3 sm:p-12 lg:p-16">
+            <div className="grow overflow-auto overscroll-contain flex p-3 sm:p-8 lg:p-10">
               <div
                 ref={zoomStageRef}
                 // Phone min-width is sized so the SMALLEST label in the densest
@@ -525,7 +525,7 @@ export function ProjectModal({
                 // it exists for. 1100px puts every diagram's floor at 8.6-11.5px.
                 // More panning, but the container already scrolls both axes, and
                 // legible-while-panning beats fully visible and unreadable.
-                className="w-full max-w-[1200px] min-w-[1100px] sm:min-w-0 m-auto"
+                className="w-full max-w-[1600px] min-w-[1100px] sm:min-w-0 m-auto"
                 onClick={(e) => e.stopPropagation()}
               >
                 <ArchitectureDiagram slug={detail.slug} />
