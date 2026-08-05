@@ -1,5 +1,5 @@
 import type { Metadata } from "next"
-import { SITE_URL, absoluteUrl } from "../site"
+import { AUTHOR, SITE_URL, absoluteUrl } from "../site"
 import { faqs } from "./PlaybookPage"
 import type { Pricing } from "./links"
 
@@ -49,6 +49,21 @@ function offerPrice(p: Pricing) {
 
 export function playbookJsonLd(pricing: Pricing) {
   const { price, currency } = offerPrice(pricing)
+  // The Offer's seller points at the Person node declared in full on the home
+  // page. A cross-page @id reference is legitimate and Google often resolves it
+  // site-wide, but nothing on THIS page defines the node, so a validator reading
+  // /playbook on its own falls back to a bare Thing (confirmed in the Rich
+  // Results Test: seller came out as `type: Thing`). Restating a minimal Person
+  // under the same @id makes the reference resolve in-document while still
+  // folding into the one entity everywhere else.
+  const seller = {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "@id": `${SITE_URL}/#person`,
+    name: AUTHOR.name,
+    url: SITE_URL,
+  }
+
   const breadcrumb = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -105,5 +120,5 @@ export function playbookJsonLd(pricing: Pricing) {
     })),
   }
 
-  return [breadcrumb, product, faqPage]
+  return [seller, breadcrumb, product, faqPage]
 }
