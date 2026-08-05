@@ -740,10 +740,12 @@ export function PlaybookPage({ pricing }: { pricing: Pricing }) {
           </Link>
           {/* Keeps the /writing cluster reachable from the sales page, so the
               two are crawled as one site rather than as an orphaned pair. */}
-          <Link href="/writing" className="accent-link small-caps faint whitespace-nowrap">
-            Writing
+          <Link href="/writing" className="footer-cta mono">
+            Writing <span aria-hidden>↗</span>
           </Link>
-          <span className="small-caps faint">Tempe, Arizona</span>
+          {/* Dropped on the narrowest phones: three items do not fit, and the
+              location is the least useful of them. */}
+          <span className="small-caps faint hidden xs:inline">Tempe, Arizona</span>
         </footer>
       </div>
     </main>
@@ -1057,6 +1059,27 @@ function PlaybookStyle() {
       .display { font-family: "Google Sans", ui-sans-serif, system-ui, sans-serif; font-optical-sizing: auto; }
       .mono { font-family: "Google Sans Code", ui-monospace, "SFMono-Regular", "Menlo", monospace; font-variation-settings: "MONO" 1; }
       .small-caps { text-transform: uppercase; letter-spacing: 0.18em; font-size: 10px; }
+
+      /* Cross-link out of the sales page, same chip as the landing page's
+         footer (see .footer-cta in app/HomePage.tsx). Sits below the final CTA
+         and stays an outline, never a fill, so it cannot compete with .cta-buy
+         above it. */
+      .footer-cta {
+        display: inline-flex; align-items: center; gap: 6px;
+        padding: 4px 10px; border-radius: 6px;
+        color: #1f3a5f;
+        background-color: rgba(31,58,95,0.07);
+        border: 1px solid rgba(31,58,95,0.28);
+        text-transform: uppercase; letter-spacing: 0.12em; font-size: 11px;
+        white-space: nowrap;
+        transition: background-color 200ms ease, border-color 200ms ease;
+      }
+      @media (hover: hover) {
+        .footer-cta:hover {
+          background-color: rgba(31,58,95,0.13);
+          border-color: rgba(31,58,95,0.5);
+        }
+      }
 
       .accent-link { position: relative; transition: color 200ms ease; }
       .accent-link::after {
