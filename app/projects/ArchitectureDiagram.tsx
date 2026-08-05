@@ -555,11 +555,11 @@ function YelpDiagram() {
 
 const DIAGRAMS: Record<string, () => React.JSX.Element> = {
   "mace-pinn": MacePinnDiagram,
-  "samhita-textbook-pipeline": SamhitaDiagram,
-  "hybridflow-rag-backend": HybridFlowDiagram,
-  "sushrutalgs-api-gateway": SushrutalgsBffDiagram,
-  "sushrutalgs-web-app": SushrutalgsWebDiagram,
-  "sushrutalgs-ios-app": SushrutalgsIosDiagram,
+  "samhita": SamhitaDiagram,
+  "hybridflow": HybridFlowDiagram,
+  "sushrutalgs-bff": SushrutalgsBffDiagram,
+  "sushrutalgs-web": SushrutalgsWebDiagram,
+  "sushrutalgs-ios": SushrutalgsIosDiagram,
   "yelp-ml-platform": YelpDiagram,
 }
 
