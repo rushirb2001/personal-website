@@ -9,7 +9,7 @@ export const meta: PostMeta = {
   title: "RAG with an eval harness: the questions interviewers actually ask",
   seoTitle: "RAG eval harness: what interviewers ask",
   description:
-    "Anyone can wire an embedding model to a vector store. The interview is about evaluation. Nine questions RAG candidates get asked, and what a good answer looks like.",
+    "Anyone can wire an embedding model to a vector store. The interview is about evaluation. Nine questions RAG candidates get asked, and how to answer them.",
   standfirst:
     "RAG is the most common project on AI engineering resumes and the one candidates are least able to defend. The gap is always evaluation.",
   published: "2026-08-04",
