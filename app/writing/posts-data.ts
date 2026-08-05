@@ -17,8 +17,15 @@ import RagEval, { meta as ragEval } from "./posts/rag-eval-harness-interview"
 // and the JSON-LD all read from here, so there is nothing else to update.
 export type PostMeta = {
   slug: string
-  /** H1 and the base of the <title>. Front-load the phrase people search. */
+  /** H1 on the post itself. Can run long; nothing truncates it there. */
   title: string
+  /**
+   * <title> for search results, when `title` is too long to survive Google's
+   * ~60-character display. Mirrors ProjectDetail.seoTitle. Keep the searchable
+   * phrase and drop the rest; the layout template appends the site name, so
+   * budget ~45 characters. Falls back to `title`.
+   */
+  seoTitle?: string
   /** Meta description. Keep to ~155 chars; past that Google truncates it. */
   description: string
   /** Deck under the H1 on the post itself. Longer and less clipped than the

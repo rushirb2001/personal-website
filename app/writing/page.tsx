@@ -6,7 +6,10 @@ import { POSTS } from "./posts-data"
 import { WritingStyle } from "./WritingStyle"
 
 export const metadata: Metadata = {
-  title: "Writing",
+  // Not just "Writing": that spent the most valuable field on the page on a
+  // nav label. The <title> is the strongest on-page relevance signal there is,
+  // so it names the subject. The visible nav label stays "Writing".
+  title: "Writing on AI engineering portfolios",
   description:
     "Notes on building an AI engineering portfolio that survives an interview: project selection, evaluation, free-tier infrastructure, and private-repo credibility.",
   alternates: { canonical: "/writing" },
