@@ -26,8 +26,14 @@ export const metadata: Metadata = {
     default: "Rushir Bhavsar · ML Engineer and AI Researcher",
     template: "%s · Rushir Bhavsar",
   },
+  // Front-loads credentials, then the three technical areas someone would
+  // actually type, then availability. Two deliberate changes from the first
+  // pass: "FDE" is gone (an acronym nobody searches and that reads as noise in
+  // a snippet), and the product pitch for sushrutalgs.ai gave way to the
+  // techniques, because this page has to answer "what does he do" for a
+  // recruiter, not sell the product. 151 chars, inside the ~155 Google shows.
   description:
-    "ML engineer and researcher at ASU, previously Cadence and Talin Labs. Building sushrutalgs.ai, medical AI for India. Open to AI Engineer, FDE and PM roles.",
+    "ML engineer and researcher at ASU, previously Cadence. Physics-informed neural networks, RAG, and distributed ML pipelines. Open to AI and product roles.",
   applicationName: "Rushir Bhavsar",
   authors: [{ name: AUTHOR.name, url: SITE_URL }],
   creator: AUTHOR.name,

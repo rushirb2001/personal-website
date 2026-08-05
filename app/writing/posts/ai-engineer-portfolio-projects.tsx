@@ -7,6 +7,7 @@ import { NextStep } from "../NextStep"
 export const meta: PostMeta = {
   slug: "ai-engineer-portfolio-projects",
   title: "The AI engineer portfolio projects that actually get you hired",
+  seoTitle: "AI engineer portfolio projects that get you hired",
   description:
     "Most AI portfolios fail for the same three reasons. What hiring managers look for in 2026, and how to pick two or three projects that survive an interview.",
   standfirst:

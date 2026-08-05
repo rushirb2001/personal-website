@@ -23,9 +23,9 @@ export async function generateMetadata({
 
   const url = absoluteUrl(`/writing/${post.slug}`)
   return {
-    // The root layout's template appends the name, so the title stays short
-    // enough to survive truncation in a result.
-    title: post.title,
+    // seoTitle where the headline is too long for a result; the H1 keeps the
+    // full phrasing either way. The layout template appends the site name.
+    title: post.seoTitle ?? post.title,
     description: post.description,
     alternates: { canonical: `/writing/${post.slug}` },
     openGraph: {

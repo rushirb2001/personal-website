@@ -7,6 +7,7 @@ import { NextStep } from "../NextStep"
 export const meta: PostMeta = {
   slug: "rag-eval-harness-interview",
   title: "RAG with an eval harness: the questions interviewers actually ask",
+  seoTitle: "RAG eval harness: what interviewers ask",
   description:
     "Anyone can wire an embedding model to a vector store. The interview is about evaluation. Nine questions RAG candidates get asked, and what a good answer looks like.",
   standfirst:

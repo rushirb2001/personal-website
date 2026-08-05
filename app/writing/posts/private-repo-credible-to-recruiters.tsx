@@ -7,6 +7,7 @@ import { NextStep } from "../NextStep"
 export const meta: PostMeta = {
   slug: "private-repo-credible-to-recruiters",
   title: "How to make a private repo credible to a recruiter who cannot see the code",
+  seoTitle: "Make a private repo credible to recruiters",
   description:
     "Your best work is often under an NDA or a startup you have not launched. Six artefacts that make a private project verifiable without ever exposing the source.",
   standfirst:

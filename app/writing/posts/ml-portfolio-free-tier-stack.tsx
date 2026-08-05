@@ -7,6 +7,7 @@ import { NextStep } from "../NextStep"
 export const meta: PostMeta = {
   slug: "ml-portfolio-free-tier-stack",
   title: "Building an ML portfolio on $0: the free-tier stack, and where it breaks",
+  seoTitle: "Build an ML portfolio on $0: the free-tier stack",
   description:
     "Inference, GPU time, Postgres and a permanent server, all on free tiers. What each one actually gives you in 2026, and the limit you will hit first.",
   standfirst:
