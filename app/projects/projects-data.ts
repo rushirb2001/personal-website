@@ -155,9 +155,11 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
           caption: "Gray-Scott chaotic dynamics: predicted solution vs. reference.",
         },
       ],
+      // Dev-only placeholders; swap in real URLs to render them live.
+      liveUrl: { todo: "Hosted interactive solver demo. Paste the URL" },
     },
     verify: {
-      requestAccessEmail: "bhavsarrushir@gmail.com",
+      walkthrough: { todo: "cal.com / Calendly link for a 15-min walkthrough" },
     },
   },
 
@@ -393,6 +395,9 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
             "A study thread in the web app: a question, the streamed answer, and the textbook citations behind it.",
         },
       ],
+      // Still a placeholder: the clip above shows the flow, but stills of the
+      // citation panel would carry it better in a link preview. Dev-only.
+      screenshots: { todo: "Screenshots of the chat and citations" },
     },
     verify: { requestAccessEmail: "bhavsarrushir@gmail.com" },
   },
