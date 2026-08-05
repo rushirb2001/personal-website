@@ -518,7 +518,14 @@ export function ProjectModal({
             <div className="grow overflow-auto overscroll-contain flex p-3 sm:p-12 lg:p-16">
               <div
                 ref={zoomStageRef}
-                className="w-full max-w-[1200px] min-w-[640px] sm:min-w-0 m-auto"
+                // Phone min-width is sized so the SMALLEST label in the densest
+                // diagram stays readable, not so the diagram fits. At 640px a
+                // 9px annotation inside a 1150-unit viewBox landed at ~5.0px,
+                // which is unreadable, so zooming did not deliver the one thing
+                // it exists for. 1100px puts every diagram's floor at 8.6-11.5px.
+                // More panning, but the container already scrolls both axes, and
+                // legible-while-panning beats fully visible and unreadable.
+                className="w-full max-w-[1200px] min-w-[1100px] sm:min-w-0 m-auto"
                 onClick={(e) => e.stopPropagation()}
               >
                 <ArchitectureDiagram slug={detail.slug} />
