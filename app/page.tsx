@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import HomePage from "./HomePage"
 import { JsonLd } from "./JsonLd"
-import { AUTHOR, SITE_URL, absoluteUrl } from "./site"
+import { AUTHOR, ORCID_URL, SITE_URL, absoluteUrl } from "./site"
 
 // The landing page itself is a client component (the accordion owns scroll and
 // layout state), and a client component cannot export metadata or render a
@@ -37,6 +37,15 @@ const PERSON = {
       addressRegion: "Gujarat",
       addressCountry: "IN",
     },
+  },
+  // ORCID as a formal identifier, not just another sameAs link. This is the
+  // property that lets an indexer match this Person to the same researcher on
+  // IEEE, Wiley and ASU without relying on name matching, which is exactly the
+  // problem ORCID exists to solve.
+  identifier: {
+    "@type": "PropertyValue",
+    propertyID: "ORCID",
+    value: ORCID_URL,
   },
   knowsAbout: [
     "Machine learning engineering",
