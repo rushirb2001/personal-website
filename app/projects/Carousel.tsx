@@ -99,7 +99,7 @@ export function Carousel({ slides, frozen = false }: { slides: Slide[]; frozen?:
       className="outline-none"
       aria-roledescription="carousel"
     >
-      <div ref={stripRef} className="relative w-full aspect-[4/3] rounded-lg ring-1 ring-black/10 bg-[#faf8f4] overflow-hidden">
+      <div ref={stripRef} className="relative w-full aspect-[16/9] rounded-lg ring-1 ring-black/10 bg-[#faf8f4] overflow-hidden">
         {slides.map((s, k) => (
           <div
             key={s.key}
