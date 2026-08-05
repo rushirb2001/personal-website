@@ -335,14 +335,14 @@ export function ProjectModal({
               <h1
                 id="proj-title"
                 className="modal-reveal display font-light tracking-tight leading-[1.1] text-[26px] xs:text-[clamp(28px,3.2vw,40px)] lg:text-[clamp(30px,2.5vw,40px)]"
-                style={{ animationDelay: "0.04s" }}
+                style={{ animationDelay: "0s" }}
               >
                 {detail.title ?? detail.name}
                 <span className="accent">.</span>
               </h1>
               <p
                 className="modal-reveal display accent text-[clamp(16px,1.7vw,21px)] leading-snug mt-2.5"
-                style={{ animationDelay: "0.1s" }}
+                style={{ animationDelay: "0.06s" }}
               >
                 {detail.type}
                 {detail.place && ` @${detail.place}`}
@@ -352,7 +352,7 @@ export function ProjectModal({
             <div className="ph-body">
               <p
                 className="modal-reveal display font-light text-[15px] xs:text-[17px] lg:text-[18px] leading-relaxed muted"
-                style={{ animationDelay: "0.16s" }}
+                style={{ animationDelay: "0.06s" }}
               >
                 {detail.tagline}
               </p>
@@ -360,7 +360,7 @@ export function ProjectModal({
               {detail.repoNote && (
                 <p
                   className={`modal-reveal mono text-[12px] leading-relaxed mt-4 ${isPrivate ? "ink" : "muted"}`}
-                  style={{ animationDelay: "0.2s" }}
+                  style={{ animationDelay: "0.12s" }}
                 >
                   {linkifyPlatform(detail.repoNote)}
                 </p>
@@ -370,7 +370,7 @@ export function ProjectModal({
             {/* Links + Stack — two columns on the site's rhythm. */}
             <div
               className="ph-meta modal-reveal grid grid-cols-2 gap-6 xs:gap-8"
-              style={{ animationDelay: "0.24s" }}
+              style={{ animationDelay: "0.12s" }}
             >
               {heroLinks.length > 0 && (
                 <div>
@@ -410,7 +410,7 @@ export function ProjectModal({
 
             <div
               className="ph-media modal-reveal"
-              style={{ animationDelay: "0.3s" }}
+              style={{ animationDelay: "0s" }}
             >
               {/* Frozen while the diagram zoom is up: the zoom-close FLIP
                   shrinks back into the diagram slide's rect, so the carousel
@@ -653,6 +653,15 @@ const TOKENS = `
   }
 
   /* Staggered reveal of the hero content on open (per-element delay set inline). */
+  /* Entrance stagger is ordered by LCP candidate, not by reading order.
+     animation-fill-mode: both holds the from-state (opacity: 0) through the
+     delay, and Chrome ignores a zero-opacity element for LCP, so a delay is
+     added directly to LCP while the DURATION costs nothing. The h1 and the
+     carousel are the two plausible candidates (largest text, largest media) and
+     both start at 0s; the supporting copy cascades behind them, capped at 0.12s
+     so nothing can add more than that even if the candidate is misjudged.
+     Previously the carousel carried the LONGEST delay (0.3s) of anything on the
+     page, which is the worst possible assignment. */
   .modal-reveal { animation: modal-content-in 520ms cubic-bezier(0.22, 1, 0.36, 1) both; }
   @keyframes modal-content-in {
     from { opacity: 0; transform: translateY(8px); }
