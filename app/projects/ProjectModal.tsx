@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react"
 import type { ProjectDetail, ProjectLink } from "./projects-data"
 import { ArchitectureDiagram } from "./ArchitectureDiagram"
 import { Carousel, type Slide } from "./Carousel"
@@ -10,6 +10,14 @@ import { Carousel, type Slide } from "./Carousel"
 // Exit-animation duration; navigation is deferred this long so the card can
 // animate out before the route changes. Keep in sync with the CSS below.
 const EXIT_MS = 240
+
+// Distance the header blur covers. Section jumps land below it, and the
+// scrollspy band starts there, so a section is never "current" while it sits
+// under the blurred band.
+const HEADER_H = 88
+
+const sectionId = (label: string) =>
+  "cs-" + label.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "")
 
 export function ProjectModal({
   detail,
@@ -20,6 +28,10 @@ export function ProjectModal({
 }) {
   const router = useRouter()
   const cardRef = useRef<HTMLDivElement>(null)
+  // The scroll container is the modal's inner pane, not the window, so the
+  // rail's scrollspy observes against it.
+  const scrollRef = useRef<HTMLDivElement>(null)
+  const [activeId, setActiveId] = useState("")
   const [closing, setClosing] = useState(false)
   const closingRef = useRef(false)
   // Enlarged view of the architecture diagram, shown over the card. Only the
@@ -144,6 +156,54 @@ export function ProjectModal({
   const { artifacts, verify } = detail
   const showTodos = process.env.NODE_ENV !== "production"
 
+  const sections = detail.sections ?? []
+  const sectionIds = useMemo(() => sections.map((s) => sectionId(s.label)), [sections])
+
+  // Scrollspy for the rail index. Sections are tracked in a set rather than
+  // reacting to whichever entry fired last: when two sections cross the band
+  // in the same frame, last-entry-wins picks an arbitrary one and the rail
+  // flickers. Taking the first still-visible section in document order is
+  // stable in both scroll directions.
+  const visibleRef = useRef<Set<string>>(new Set())
+  useEffect(() => {
+    const root = scrollRef.current
+    if (!root || sectionIds.length === 0) return
+    const els = sectionIds
+      .map((id) => root.querySelector<HTMLElement>(`#${id}`))
+      .filter((el): el is HTMLElement => el !== null)
+    if (els.length === 0) return
+
+    const seen = visibleRef.current
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) seen.add(e.target.id)
+          else seen.delete(e.target.id)
+        }
+        const first = sectionIds.find((id) => seen.has(id))
+        if (first) setActiveId(first)
+      },
+      // Reading band: from just under the header down to 30% of the card.
+      { root, rootMargin: `-${HEADER_H}px 0px -70% 0px`, threshold: 0 },
+    )
+    els.forEach((el) => io.observe(el))
+    return () => {
+      io.disconnect()
+      seen.clear()
+    }
+  }, [sectionIds])
+
+  const goToSection = useCallback((id: string) => {
+    const root = scrollRef.current
+    const el = root?.querySelector<HTMLElement>(`#${id}`)
+    if (!root || !el) return
+    const top =
+      el.getBoundingClientRect().top - root.getBoundingClientRect().top + root.scrollTop - HEADER_H
+    // "instant", never "auto" — the global scroll-behavior: smooth hijacks it.
+    root.scrollTo({ top, behavior: prefersReduced() ? "instant" : "smooth" })
+    setActiveId(id)
+  }, [])
+
   const diagram = artifacts.diagram
 
   const mail = (to: string, subject: string) =>
@@ -160,8 +220,11 @@ export function ProjectModal({
     ...(verify.contactEmail ? [{ label: "Email", href: mail(verify.contactEmail, `${detail.name}: question`) }] : []),
   ]
 
-  // Build the artifact carousel: architecture diagram first, then result clips
-  // and screenshots. Dev-only placeholders fill empty slots.
+  // The diagram and the result clips/screenshots are two different kinds of
+  // evidence — one explains the system, the other shows it working — so each
+  // renders inline at whichever section's prose actually talks about it (via
+  // CaseSection.figure), instead of being pooled into one hero carousel that
+  // sat above every section regardless of what it held.
   const videoSlide = (key: string, src: string, caption?: string): Slide => ({
     key,
     caption,
@@ -172,38 +235,11 @@ export function ProjectModal({
     ),
   })
 
-  const slides: Slide[] = []
-  // 1. Architecture diagram first
-  if (diagram === "builtin") {
-    slides.push({
-      key: "arch",
-      caption: "System architecture. Tap to enlarge.",
-      node: (
-        <button
-          type="button"
-          onClick={openZoom}
-          aria-label="Enlarge architecture diagram"
-          className="group relative w-full h-full grid place-items-center px-1 sm:px-2 py-1 cursor-zoom-in bg-transparent border-0"
-        >
-          <ArchitectureDiagram slug={detail.slug} />
-          <span
-            aria-hidden
-            className="absolute bottom-2 right-2 mono small-caps faint opacity-0 group-hover:opacity-100 transition-opacity"
-          >
-            ⤢ zoom
-          </span>
-        </button>
-      ),
-    })
-  } else if (showTodos && diagram) {
-    slides.push({ key: "arch-todo", caption: "Architecture diagram (dev placeholder).", node: <PlaceholderSlide todo={diagram.todo} /> })
-  }
-  // 2. Result clips
-  artifacts.clips?.forEach((c, k) => slides.push(videoSlide(`clip-${k}`, c.src, c.caption)))
-  // 3. Screenshots
+  const resultSlides: Slide[] = []
+  artifacts.clips?.forEach((c, k) => resultSlides.push(videoSlide(`clip-${k}`, c.src, c.caption)))
   if (artifacts.screenshots?.items?.length) {
     artifacts.screenshots.items.forEach((s, k) =>
-      slides.push({
+      resultSlides.push({
         key: `shot-${k}`,
         caption: s.caption,
         node: (
@@ -213,8 +249,39 @@ export function ProjectModal({
       }),
     )
   } else if (showTodos && artifacts.screenshots?.todo) {
-    slides.push({ key: "shot-todo", caption: "Screenshots (dev placeholder).", node: <PlaceholderSlide todo={artifacts.screenshots.todo} /> })
+    resultSlides.push({ key: "shot-todo", caption: "Screenshots (dev placeholder).", node: <PlaceholderSlide todo={artifacts.screenshots.todo} /> })
   }
+
+  // The diagram is a single image, not a multi-slide gallery, so it gets its
+  // own plain figure rather than Carousel's arrows-and-dots chrome. Frame
+  // (the drawing kit's svg root) is already `w-full h-auto`, so it renders at
+  // its own natural aspect ratio instead of being boxed into 16:9.
+  const diagramFigure =
+    diagram === "builtin" ? (
+      <figure className="cs-figure">
+        <button
+          type="button"
+          onClick={openZoom}
+          aria-label="Enlarge architecture diagram"
+          className="group relative w-full block cursor-zoom-in bg-transparent border-0 p-0"
+        >
+          <ArchitectureDiagram slug={detail.slug} />
+          <span
+            aria-hidden
+            className="absolute bottom-1 right-1 mono small-caps faint opacity-0 group-hover:opacity-100 transition-opacity"
+          >
+            ⤢ zoom
+          </span>
+        </button>
+        <figcaption className="cs-figure-caption mono">System architecture. Tap to enlarge.</figcaption>
+      </figure>
+    ) : showTodos && diagram ? (
+      <figure className="cs-figure">
+        <div className="cs-figure-todo">
+          <PlaceholderSlide todo={diagram.todo} />
+        </div>
+      </figure>
+    ) : null
 
   return (
     <div
@@ -231,51 +298,6 @@ export function ProjectModal({
       }}
     >
       <style>{TOKENS}</style>
-      <style>{`
-        /* Hero reflow:
-           - below 1024 (phone + compact): single-column mobile stack, so long
-             titles and body copy get full width instead of being cramped beside
-             the image.
-           - widescreen (≥1024): original — text stacked left, image spanning right. */
-        .proj-hero {
-          display: grid;
-          grid-template-columns: 1fr;
-          gap: 2rem 3rem;
-          grid-template-areas: "head" "body" "meta" "media";
-        }
-        .ph-head { grid-area: head; }
-        .ph-body { grid-area: body; }
-        .ph-meta { grid-area: meta; }
-        .ph-media { grid-area: media; }
-        @media (min-width: 1024px) {
-          .proj-hero {
-            grid-template-columns: 1fr minmax(360px, 48%);
-            align-items: center;
-            grid-template-areas:
-              "head  media"
-              "body  media"
-              "meta  media";
-          }
-        }
-        /* md tier (iPad portrait): cap the stacked carousel so it doesn't
-           span the full ~900px card width and then collapse to half that
-           when crossing into the 1024 two-column layout. */
-        @media (min-width: 768px) and (max-width: 1023px) {
-          .ph-media { max-width: min(70%, 640px); margin-inline: auto; }
-        }
-        /* Phones: type rides svh (caps near 850svh = today's tall-phone
-           design) so short viewports fit more of the case study per screen,
-           mirroring the landing page's proportional system. Selectors pair
-           each override with the Tailwind size utility it compresses. */
-        @media (max-width: 639px) {
-          .modal-card .text-\\[26px\\] { font-size: clamp(21px, 3.1svh, 26px); }
-          .modal-card .text-\\[15px\\] { font-size: clamp(12.5px, 1.8svh, 15px); }
-          .modal-card .text-\\[14px\\] { font-size: clamp(12px, 1.7svh, 14px); }
-          .modal-card .text-\\[13px\\] { font-size: clamp(11px, 1.6svh, 13px); }
-          .modal-card .text-\\[12px\\] { font-size: clamp(10.5px, 1.5svh, 12px); }
-          .modal-card .text-\\[11px\\] { font-size: clamp(10px, 1.4svh, 11px); }
-        }
-      `}</style>
 
       <div
         ref={cardRef}
@@ -288,18 +310,30 @@ export function ProjectModal({
         }`}
       >
         {/* Top header: a blur-and-fade gradient so scrolling content dissolves
-            under it, with the nav control on the right. The header itself is
-            click-through (pointer-events-none) except the control.
+            under it, with the project title on the left and the nav control
+            on the right. The title lives here rather than in the rail
+            because the rail only goes sticky at 1024px — below that it
+            scrolls away with the rest of the article, so the one thing that
+            should stay on screen the whole visit (what page this even is)
+            disappeared on every phone. The header itself is click-through
+            (pointer-events-none) except this row.
             Control: internal navigation → "Back to home"; a shared/direct
             link → "Visit my Portfolio!". */}
         <div className="pointer-events-none absolute left-0 right-[11px] top-0 z-20 h-20 sm:h-24">
           <EdgeBlur dir="to bottom" />
-          <div className="pointer-events-auto absolute top-4 right-5 sm:top-6 sm:right-8">
+          <div className="pointer-events-auto absolute inset-x-5 sm:inset-x-8 top-4 sm:top-6 flex items-center justify-between gap-4">
+            {/* Same shape as the Selected Projects listing on the home page
+                (`name @platform`), so the modal reads as that row opened up
+                rather than as a differently-named page. */}
+            <h1 id="proj-title" className="cs-header-title display truncate min-w-0">
+              {detail.name}
+              {detail.place && <span className="muted"> @{detail.place}</span>}
+            </h1>
             {mode === "overlay" ? (
               <button
                 type="button"
                 onClick={close}
-                className="accent-link mono text-[13px] inline-flex items-center gap-1.5 bg-transparent border-0 p-0 cursor-pointer"
+                className="accent-link mono text-[13px] inline-flex items-center gap-1.5 bg-transparent border-0 p-0 cursor-pointer flex-none whitespace-nowrap"
               >
                 <span aria-hidden>←</span> Back to home
               </button>
@@ -310,9 +344,9 @@ export function ProjectModal({
                   e.preventDefault()
                   close()
                 }}
-                className="accent-link mono text-[13px] inline-flex items-center gap-1.5"
+                className="accent-link mono text-[13px] inline-flex items-center gap-1.5 flex-none whitespace-nowrap"
               >
-                Visit my Portfolio! <span aria-hidden>→</span>
+                See the full portfolio <span aria-hidden>→</span>
               </Link>
             )}
           </div>
@@ -325,68 +359,63 @@ export function ProjectModal({
         </div>
 
         {/* Scrollable content — card stays fixed, content scrolls inside */}
-        <div className="grow overflow-y-auto overscroll-contain px-4 sm:px-8 lg:px-10 xl:px-16 py-12 sm:py-16 lg:py-20">
-          {/* Hero: heading + description + links + the artifact carousel.
-              lg: carousel sits to the right of the whole header.
-              md (iPad portrait): text and Links/Stack split 80:20 above a
-              slightly reduced carousel. base (phone): everything stacks. */}
-          <div className="proj-hero pt-2 sm:pt-4 lg:pt-8 pl-1 sm:pl-3 lg:pl-6 pr-1 sm:pr-3 lg:pr-6">
-            <header className="ph-head">
-              <h1
-                id="proj-title"
-                className="modal-reveal display font-light tracking-tight leading-[1.1] text-[26px] xs:text-[clamp(28px,3.2vw,40px)] lg:text-[clamp(30px,2.5vw,40px)]"
-                style={{ animationDelay: "0s" }}
-              >
-                {detail.title ?? detail.name}
-                <span className="accent">.</span>
-              </h1>
-              <p
-                className="modal-reveal display accent text-[clamp(16px,1.7vw,21px)] leading-snug mt-2.5"
-                style={{ animationDelay: "0.06s" }}
-              >
-                {detail.type}
-                {detail.place && ` @${detail.place}`}
-              </p>
-            </header>
-
-            <div className="ph-body">
-              <p
-                className="modal-reveal display font-light text-[15px] xs:text-[17px] lg:text-[18px] leading-relaxed muted"
-                style={{ animationDelay: "0.06s" }}
-              >
-                {detail.tagline}
-              </p>
-
-              {detail.repoNote && (
-                <p
-                  className={`modal-reveal mono text-[12px] leading-relaxed mt-4 ${isPrivate ? "ink" : "muted"}`}
-                  style={{ animationDelay: "0.12s" }}
-                >
-                  {linkifyPlatform(detail.repoNote)}
-                </p>
+        <div
+          ref={scrollRef}
+          className="grow overflow-y-auto overscroll-contain px-4 sm:px-8 lg:px-10 xl:px-16 py-12 sm:py-16 lg:py-20"
+        >
+          <div className="cs pt-2 sm:pt-4 lg:pt-6">
+            {/* ── Rail (20). Identity and wayfinding only: what this is, what
+                it is called, how to move through it, and where to verify it.
+                Nothing in here is part of the argument. ── */}
+            <aside className="cs-rail modal-reveal" style={{ animationDelay: "0s" }}>
+              {sections.length > 0 && (
+                <nav aria-label="Sections">
+                  <ul className="cs-index">
+                    {sections.map((s, k) => (
+                      <li key={s.label} className="cs-index-item">
+                        <button
+                          type="button"
+                          className="cs-index-link"
+                          aria-current={activeId === sectionIds[k] ? "true" : undefined}
+                          onClick={() => goToSection(sectionIds[k])}
+                        >
+                          {s.label}
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </nav>
               )}
-            </div>
 
-            {/* Links + Stack — two columns on the site's rhythm. */}
-            <div
-              className="ph-meta modal-reveal grid grid-cols-2 gap-6 xs:gap-8"
-              style={{ animationDelay: "0.12s" }}
-            >
+              {detail.stack.length > 0 && (
+                <div className="cs-railblock">
+                  <p className="cs-key">Built with</p>
+                  <ul className="cs-stack">
+                    {detail.stack.map((t) => (
+                      <li key={t} className="cs-stack-pill mono">
+                        <StackIcon tech={t} />
+                        {t}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
               {heroLinks.length > 0 && (
-                <div>
-                  <p className="mono small-caps faint mb-2 xs:mb-3">Links</p>
-                  <ul className="flex flex-wrap gap-x-4 gap-y-2 mono text-[11px] xs:text-[13px]">
+                <div className="cs-railblock">
+                  <p className="cs-key">Links</p>
+                  <ul className="cs-fact-links">
                     {heroLinks.map((l) => {
-                      const external = l.href.startsWith("http")
+                      const ext = l.href.startsWith("http")
                       return (
                         <li key={l.href}>
                           <a
                             href={l.href}
-                            {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-                            className="accent-link inline-flex items-center gap-1.5"
+                            {...(ext ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                            className="cs-link-btn mono"
                           >
                             {l.label}
-                            <span aria-hidden className="faint">{external ? "↗" : "→"}</span>
+                            <span aria-hidden>{ext ? "↗" : "→"}</span>
                           </a>
                         </li>
                       )
@@ -394,98 +423,105 @@ export function ProjectModal({
                   </ul>
                 </div>
               )}
-              {detail.stack.length > 0 && (
-                <div>
-                  <p className="mono small-caps faint mb-2 xs:mb-3">Stack</p>
-                  <ul className="flex flex-wrap gap-x-3 gap-y-1.5 mono text-[11px] xs:text-[13px]">
-                    {detail.stack.map((s) => (
-                      <li key={s} className="muted">
-                        {s}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+
+              {/* Access note as an advisory card. It answers "why can't I see
+                  the code?", which is a caveat rather than a fact about the
+                  project, so it reads as an inline notice instead of one more
+                  labelled rail row. */}
+              {detail.repoNote && (
+                <aside className="cs-note-card">
+                  <span className="cs-note-badge" aria-hidden>
+                    <svg viewBox="0 0 16 16" width="13" height="13" fill="none">
+                      <circle cx="8" cy="8" r="7" stroke="currentColor" strokeWidth="1.4" />
+                      <path d="M8 7.1v4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                      <circle cx="8" cy="4.7" r="0.95" fill="currentColor" />
+                    </svg>
+                  </span>
+                  <p className="cs-note-text">{linkifyPlatform(detail.repoNote)}</p>
+                </aside>
               )}
-            </div>
+            </aside>
 
-            <div
-              className="ph-media modal-reveal"
-              style={{ animationDelay: "0s" }}
-            >
-              {/* Frozen while the diagram zoom is up: the zoom-close FLIP
-                  shrinks back into the diagram slide's rect, so the carousel
-                  must not auto-advance out from under it. */}
-              <Carousel slides={slides} frozen={zoomed || zoomClosing} />
-            </div>
-          </div>
+            {/* ── Article (80). Every word of the argument, and every image. ── */}
+            <div className="cs-main">
+              <p className="cs-lead display modal-reveal" style={{ animationDelay: "0.06s" }}>
+                {detail.tagline}
+              </p>
 
-          {/* Case-study detail — faint divider, then the deeper content */}
-          {detail.sections && detail.sections.length > 0 && (
-            <div className="mt-12 lg:mt-14 border-t rule pt-10 lg:pt-12">
-              <div className="pl-1 sm:pl-3 lg:pl-6 pr-1 sm:pr-3 lg:pr-6 space-y-10 lg:space-y-12">
-              {detail.sections.map((s) => (
-                <section
-                  key={s.label}
-                  className="grid grid-cols-1 lg:grid-cols-[160px_1fr] gap-2 lg:gap-12"
-                >
-                  <p className="mono uppercase tracking-[0.15em] text-[13px] xs:text-[14px] faint lg:pt-1">
-                    {s.label}
-                  </p>
-                  <div>
-                    {s.body && (
-                      <p className="display text-[14px] xs:text-[15px] lg:text-[16px] muted leading-relaxed">
-                        {s.body}
-                      </p>
-                    )}
+              {sections.map((s, k) => (
+                <section key={s.label} id={sectionIds[k]} className="cs-section">
+                  <h2 className="cs-section-head display">{s.label}</h2>
+                  <div className="cs-prose display">
+                    {s.body && <p>{s.body}</p>}
                     {s.bullets && s.bullets.length > 0 && (
-                      <ul className={`space-y-3 display text-[14px] xs:text-[15px] lg:text-[16px] ${s.body ? "mt-4" : ""}`}>
+                      <ul className="cs-points">
                         {s.bullets.map((b) => {
                           const m = b.match(/^([^.]+\.)\s*(.*)$/)
                           const lead = m ? m[1] : null
                           const rest = m ? m[2] : b
                           return (
-                            <li key={b} className="pl-4 relative leading-relaxed">
-                              <span className="absolute left-0 top-[0.5em] w-2 h-px accent-line" aria-hidden />
-                              {lead && <span className="ink">{lead} </span>}
-                              <span className="muted">{rest}</span>
+                            <li key={b}>
+                              {lead && <span className="cs-point-lead">{lead} </span>}
+                              {rest}
                             </li>
                           )
                         })}
                       </ul>
                     )}
                     {s.table && (
-                      <div className={`overflow-x-auto ${s.body || s.bullets ? "mt-5" : ""}`}>
-                        <table className="w-full border-collapse mono text-[12px] xs:text-[13px]">
+                      <div className="overflow-x-auto">
+                        <table className="cs-table mono">
                           <thead>
-                            <tr className="border-b rule">
+                            <tr>
                               {s.table.headers.map((h) => (
-                                <th key={h} className="small-caps faint font-normal text-left py-2.5 pr-6">
-                                  {h}
-                                </th>
+                                <th key={h}>{h}</th>
                               ))}
                             </tr>
                           </thead>
                           <tbody>
                             {s.table.rows.map((r, ri) => (
-                              <tr key={ri} className={ri < s.table!.rows.length - 1 ? "border-b rule" : ""}>
+                              <tr key={ri}>
                                 {r.map((cell, ci) => (
-                                  <td key={ci} className={`py-2.5 pr-6 ${ci === 0 ? "ink" : "muted"}`}>
-                                    {cell}
-                                  </td>
+                                  <td key={ci}>{cell}</td>
                                 ))}
                               </tr>
                             ))}
                           </tbody>
                         </table>
-                        {s.table.note && <p className="mono text-[11px] faint mt-3">{s.table.note}</p>}
+                        {s.table.note && <p className="cs-table-note">{s.table.note}</p>}
                       </div>
                     )}
                   </div>
+
+                  {/* Evidence, exactly where the prose above just talked
+                      about it — not pooled above the whole article. */}
+                  {s.figure === "diagram" && diagramFigure}
+                  {s.figure === "results" && resultSlides.length > 0 && (
+                    <div className="cs-media">
+                      <Carousel slides={resultSlides} frozen={zoomed || zoomClosing} />
+                    </div>
+                  )}
+                  {s.showMetrics && detail.metrics && detail.metrics.length > 0 && (
+                    <div className="cs-metrics-inline">
+                      <p className="cs-key">In numbers</p>
+                      <dl className="cs-metrics">
+                        {detail.metrics.map((m) => (
+                          <div key={m.label}>
+                            <dt className="display cs-metric-value">{m.value}</dt>
+                            <dd className="mono cs-metric-label">{m.label}</dd>
+                          </div>
+                        ))}
+                      </dl>
+                    </div>
+                  )}
                 </section>
               ))}
-              </div>
+
+              {/* The article's last beat: what the numbers and decisions
+                  above actually prove, not another status update. */}
+              {detail.closing && <p className="cs-closing display">{detail.closing}</p>}
             </div>
-          )}
+          </div>
         </div>
 
         {/* Enlarged architecture diagram — the full-size diagram grows out of the
@@ -594,6 +630,88 @@ function EdgeBlur({ dir }: { dir: "to bottom" | "to top" }) {
   )
 }
 
+// Stack pill icons. Deliberately monochrome and drawn by CATEGORY rather than
+// per-brand: the stacks span ~30 technologies, so per-brand marks would mean a
+// logo set that is impossible to keep visually even (and half of them, like
+// "Random Fourier Features" or "jose (JWT)", have no mark at all). A category
+// glyph is honest, always available, and stays in the site's ink-on-paper
+// register instead of importing thirty brand palettes.
+type StackKind = "lang" | "ui" | "data" | "cloud" | "ml" | "auth" | "test" | "box"
+
+const STACK_KINDS: [RegExp, StackKind][] = [
+  [/jose|jwt|sign.?in|auth|oauth/i, "auth"],
+  [/vitest|pytest|jest|testing/i, "test"],
+  [/docker|container/i, "box"],
+  [/cloudflare|vercel|workers|r2|cloud|aws|s3/i, "cloud"],
+  [/qdrant|neo4j|supabase|postgres|sqlite|redis|database|\bdb\b/i, "data"],
+  [/jax|flax|numpy|biolord|mlflow|nltk|spark|fourier|pydantic|torch|pandas/i, "ml"],
+  [/next\.js|react|swiftui|tailwind|fastapi|hono|django|vue|svelte/i, "ui"],
+  [/typescript|javascript|python|swift|rust|\bgo\b|java|kotlin|ruby|\bc\+\+/i, "lang"],
+]
+
+const stackKind = (tech: string): StackKind =>
+  STACK_KINDS.find(([re]) => re.test(tech))?.[1] ?? "box"
+
+const STACK_PATHS: Record<StackKind, React.ReactNode> = {
+  // { } — source code
+  lang: <path d="M6 2.5C4.3 2.5 4.6 6 3 7c1.6 1 1.3 4.5 3 4.5M8 2.5c1.7 0 1.4 3.5 3 4.5-1.6 1-1.3 4.5-3 4.5" />,
+  // stacked panes — a rendered interface
+  ui: <path d="M2 4.2h10M2 7h10M2 9.8h10M4.6 4.2v5.6" />,
+  // cylinder — a store
+  data: (
+    <>
+      <ellipse cx="7" cy="3.6" rx="4.6" ry="1.8" />
+      <path d="M2.4 3.6v6.8c0 1 2 1.8 4.6 1.8s4.6-.8 4.6-1.8V3.6" />
+    </>
+  ),
+  // cloud
+  cloud: <path d="M4.3 10.6a2.6 2.6 0 0 1-.2-5.2 3.5 3.5 0 0 1 6.7.7 2.3 2.3 0 0 1-.5 4.5H4.3Z" />,
+  // connected nodes — a model / pipeline
+  ml: (
+    <>
+      <circle cx="3.2" cy="3.4" r="1.5" />
+      <circle cx="3.2" cy="10.6" r="1.5" />
+      <circle cx="10.8" cy="7" r="1.5" />
+      <path d="M4.6 4.2 9.4 6.3M4.6 9.8 9.4 7.7" />
+    </>
+  ),
+  // key — identity
+  auth: (
+    <>
+      <circle cx="4.6" cy="7" r="2.4" />
+      <path d="M7 7h5M10.2 7v2.1M12 7v1.6" />
+    </>
+  ),
+  // check — verification
+  test: <path d="M2.6 7.4 5.6 10.4 11.4 4" />,
+  // box — the generic fallback
+  box: (
+    <>
+      <path d="M7 1.8 12.4 4.6v5.4L7 12.8 1.6 10V4.6L7 1.8Z" />
+      <path d="M1.6 4.6 7 7.4l5.4-2.8M7 7.4v5.4" />
+    </>
+  ),
+}
+
+function StackIcon({ tech }: { tech: string }) {
+  return (
+    <svg
+      className="cs-stack-icon"
+      viewBox="0 0 14 14"
+      width="11"
+      height="11"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.25"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+    >
+      {STACK_PATHS[stackKind(tech)]}
+    </svg>
+  )
+}
+
 function PlaceholderSlide({ todo, icon = "+" }: { todo?: string; icon?: string }) {
   return (
     <div className="text-center px-8">
@@ -677,6 +795,243 @@ const TOKENS = `
   /* While closing, freeze the reveal where it is so a mid-stagger close
      doesn't snap half-faded content to full opacity before the card sinks. */
   .modal-card.is-closing .modal-reveal { animation-play-state: paused; }
+
+  /* ── Reading layout: the margin does the dividing ─────────────────────
+     Every structural label — the facts, the outcome, the section names —
+     lives in a left gutter, and the prose column never contains one. The
+     gutter reads as a continuous spine down the whole document, which is
+     what makes rules unnecessary: a hairline only separates at the points
+     you draw it, the spine separates everywhere at once. Deliberately no
+     dividers, no boxes and no numerals anywhere below.
+
+     The measure stays 56rem and the gutter hangs OUTSIDE it, so adding the
+     spine costs the prose no width. */
+
+  /* 20 / 80. The rail is the fixed thing you navigate by; the article is the
+     thing that moves. Everything in the rail is identity or wayfinding, and
+     everything in the right column is the case study itself. */
+  .cs {
+    display: grid; grid-template-columns: minmax(0, 1fr);
+    width: 100%; max-width: 62rem; margin-inline: auto; row-gap: 40px;
+  }
+  @media (min-width: 1024px) {
+    .cs {
+      max-width: 84rem;
+      grid-template-columns: minmax(200px, 20%) minmax(0, 1fr);
+      column-gap: clamp(40px, 4.5vw, 76px);
+      align-items: start;
+    }
+  }
+
+  /* The rail rides the scroll. Sticks below the header blur so it never sits
+     under a blurred band. max-height keeps a long index scrollable rather
+     than clipped on short viewports. */
+  .cs-rail { min-width: 0; }
+  @media (min-width: 1024px) {
+    /* A fixed height rather than max-height, so the column has a bottom for
+       the access notice to be pinned to (margin-top: auto below). Clears the
+       sticky top offset and the bottom edge-blur band. */
+    .cs-rail {
+      position: sticky; top: 24px;
+      height: calc(90svh - 160px); overflow-y: auto;
+      display: flex; flex-direction: column;
+      scrollbar-width: none;
+    }
+    .cs-rail::-webkit-scrollbar { display: none; }
+    /* Pinned to the foot of the rail: it is a caveat about the whole page,
+       not the next item in the list of facts. Falls back to normal flow
+       below 1024, where the rail is not sticky and has no fixed bottom.
+       Descendant selector on purpose — .cs-note-card sets its own margin-top
+       further down this stylesheet, and at equal specificity that later rule
+       would win. */
+    .cs-rail > .cs-note-card { margin-top: auto; flex: none; }
+  }
+
+  /* The title, in the persistent header chrome rather than the rail — see
+     the comment at its markup. Single line, ellipsis rather than wrap: the
+     header has a fixed height and the nav control on the right needs to
+     never get squeezed, so the title is what gives way on a narrow phone. */
+  .cs-header-title {
+    font-weight: 300; letter-spacing: -0.018em; line-height: 1.2;
+    font-size: clamp(19px, 2vw, 27px); color: #1a1a1a;
+  }
+
+  /* Section index — now the first thing in the rail. Colour alone marks the
+     current section: the weight is held constant at 600 so switching sections
+     cannot reflow the list, and a tick or rule would be the only drawn line
+     on the page. */
+  /* The one drawn line in the rail: it separates wayfinding (the index) from
+     the reference material below it, which is a genuine change of kind. */
+  .cs-index {
+    list-style: none; margin: 0; padding: 0 0 20px;
+    border-bottom: 1px solid rgba(26,26,26,0.12);
+  }
+  @media (max-width: 1023px) { .cs-index { display: none; } }
+  .cs-index-item + .cs-index-item { margin-top: 3px; }
+  .cs-index-link {
+    display: block; width: 100%; text-align: left; padding: 6px 0;
+    background: none; border: 0; cursor: pointer;
+    font-family: "Google Sans", ui-sans-serif, system-ui, sans-serif;
+    font-size: 15.5px; line-height: 1.4; font-weight: 600;
+    color: rgba(26,26,26,0.42);
+    transition: color 200ms ease;
+  }
+  .cs-index-link:hover { color: rgba(26,26,26,0.75); }
+  .cs-index-link[aria-current="true"] { color: #1f3a5f; }
+
+  /* Rail facts and links: little texts, kept quiet. */
+  .cs-railblock { margin-top: 26px; }
+  .cs-key {
+    margin: 0 0 6px;
+    font-family: "Google Sans Code", ui-monospace, monospace;
+    font-variation-settings: "MONO" 1;
+    text-transform: uppercase; letter-spacing: 0.15em; font-weight: 400;
+    font-size: 9.5px; line-height: 1.5; color: rgba(26,26,26,0.4);
+  }
+  .cs-fact {
+    margin: 0;
+    font-family: "Google Sans Code", ui-monospace, monospace;
+    font-variation-settings: "MONO" 1;
+    font-size: 12px; line-height: 1.7; color: rgba(26,26,26,0.7);
+  }
+
+  /* Stack pills. Neutral ink, not accent: the stack is a fact, and the navy
+     is reserved for the things worth clicking. */
+  .cs-stack { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+  .cs-stack-pill {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 3px 8px; border-radius: 6px;
+    font-size: 11px; line-height: 1.5; white-space: nowrap;
+    color: rgba(26,26,26,0.72);
+    background-color: rgba(26,26,26,0.045);
+    border: 1px solid rgba(26,26,26,0.1);
+  }
+  .cs-stack-icon { flex: none; color: rgba(26,26,26,0.5); }
+
+  /* Links as controls, matching the home page's footer CTA recipe: a tinted
+     outline, never a filled pill (the site keeps exactly one filled control,
+     .cta-buy on /playbook). */
+  .cs-fact-links { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 7px; }
+  .cs-link-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 5px 11px; border-radius: 6px;
+    color: #1f3a5f;
+    background-color: rgba(31,58,95,0.07);
+    border: 1px solid rgba(31,58,95,0.28);
+    text-transform: uppercase; letter-spacing: 0.1em; font-size: 10.5px;
+    white-space: nowrap;
+    transition: background-color 200ms ease, border-color 200ms ease;
+  }
+  @media (hover: hover) {
+    .cs-link-btn:hover {
+      background-color: rgba(31,58,95,0.13);
+      border-color: rgba(31,58,95,0.5);
+    }
+  }
+
+  /* Advisory card for the access note. */
+  .cs-note-card {
+    margin-top: 26px; display: flex; gap: 9px; align-items: flex-start;
+    padding: 11px 12px; border-radius: 8px;
+    background-color: rgba(31,58,95,0.055);
+    border: 1px solid rgba(31,58,95,0.16);
+  }
+  .cs-note-badge { flex: none; color: #1f3a5f; line-height: 0; margin-top: 1px; }
+  .cs-note-text {
+    margin: 0;
+    font-family: "Google Sans Code", ui-monospace, monospace;
+    font-variation-settings: "MONO" 1;
+    font-size: 11px; line-height: 1.65; color: rgba(26,26,26,0.72);
+  }
+
+  @media (max-width: 1023px) {
+    .cs-railblock { margin-top: 22px; }
+  }
+
+  /* ── The article column ─────────────────────────────────────────────── */
+  .cs-main { min-width: 0; display: flex; flex-direction: column; }
+  /* The standfirst. Bigger and blacker than body copy so it still reads as
+     the article's opening line, but this is a full descriptive sentence, not
+     a headline — 32px at a 34ch measure turned it into six lines of
+     near-headline text, the exact oversized-hero look the redesign was
+     supposed to get away from. It now sits close to the prose measure and
+     scales like a lede, not a display heading. */
+  .cs-lead {
+    margin: 0; font-weight: 300; line-height: 1.58; max-width: 58ch;
+    font-size: clamp(18px, 1.65vw, 22px); color: #1a1a1a;
+    letter-spacing: -0.012em;
+  }
+  .cs-section { margin-top: 56px; scroll-margin-top: 96px; }
+  .cs-section-head {
+    margin: 0 0 16px; font-weight: 400; letter-spacing: -0.016em;
+    line-height: 1.25; font-size: clamp(19px, 1.7vw, 23px); color: #1a1a1a;
+  }
+
+  /* Evidence, placed at the section whose prose it backs up rather than
+     pooled above the whole article. Same rhythm for a Carousel (results) and
+     a single figure (the diagram) so the two read as one design language. */
+  .cs-media, .cs-figure { margin-top: 28px; }
+  .cs-figure-caption {
+    margin: 12px 0 0; font-size: 11.5px; line-height: 1.6;
+    color: rgba(26,26,26,0.5);
+  }
+  .cs-figure-todo {
+    min-height: 200px; display: flex; align-items: center; justify-content: center;
+    padding: 28px; border-radius: 12px; background: rgba(31,58,95,0.04);
+  }
+
+  /* In-flow metrics: numbers as evidence for the paragraph just above them,
+     not a dashboard slab preceding the whole story. */
+  .cs-metrics-inline { margin-top: 30px; }
+  .cs-metrics {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(146px, 1fr));
+    gap: 22px 34px; margin-top: 12px;
+  }
+  .cs-metric-value {
+    margin: 0; font-weight: 300; letter-spacing: -0.022em; line-height: 1.1;
+    font-size: clamp(22px, 1.9vw, 27px); color: #1f3a5f;
+  }
+  .cs-metric-label {
+    margin: 5px 0 0; font-size: 11.5px; line-height: 1.5;
+    color: rgba(26,26,26,0.55);
+  }
+
+  /* The article's last beat. No rule, no border — just more air and full ink
+     (versus the 0.86-opacity prose) to mark it as the close rather than one
+     more paragraph of "Where it stands". */
+  .cs-closing {
+    margin-top: 64px; max-width: 60ch;
+    font-weight: 300; line-height: 1.65; letter-spacing: -0.006em;
+    font-size: clamp(17px, 1.5vw, 19.5px); color: #1a1a1a;
+  }
+
+  /* Prose. One measure, one weight, one colour: the gutter carries all the
+     structure, so the body has nothing to do but read well. */
+  .cs-prose {
+    font-weight: 300; line-height: 1.78; color: rgba(26,26,26,0.86);
+    font-size: clamp(15.5px, 1.35vw, 17.5px);
+  }
+  .cs-prose p { margin: 0; }
+  /* Bullets without bullets: the bolded opening clause is the marker, and the
+     space between items is the separator. A glyph or a dash here would be one
+     more line on a page that is trying not to have any. */
+  .cs-points { list-style: none; margin: 22px 0 0; padding: 0; }
+  .cs-points li + li { margin-top: 15px; }
+  .cs-point-lead { color: #1a1a1a; font-weight: 500; }
+
+  /* Table: zebra tone instead of row rules. */
+  .cs-table { width: 100%; border-collapse: collapse; margin-top: 24px; font-size: 12.5px; }
+  .cs-table th {
+    text-align: left; font-weight: 400; padding: 0 20px 10px 0;
+    text-transform: uppercase; letter-spacing: 0.14em; font-size: 10px;
+    color: rgba(26,26,26,0.42);
+  }
+  .cs-table td { padding: 9px 20px 9px 0; color: rgba(26,26,26,0.72); }
+  .cs-table td:first-child { color: #1a1a1a; }
+  .cs-table tbody tr:nth-child(odd) { background: rgba(26,26,26,0.028); }
+  .cs-table th:first-child, .cs-table td:first-child { padding-left: 12px; border-radius: 5px 0 0 5px; }
+  .cs-table td:last-child { border-radius: 0 5px 5px 0; }
+  .cs-table-note { margin: 12px 0 0; font-size: 11.5px; color: rgba(26,26,26,0.5); }
 
   .grain::before {
     content: ""; position: fixed; inset: 0; pointer-events: none;
