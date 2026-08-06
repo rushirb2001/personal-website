@@ -828,12 +828,23 @@ const TOKENS = `
      than clipped on short viewports. */
   .cs-rail { min-width: 0; }
   @media (min-width: 1024px) {
+    /* A fixed height rather than max-height, so the column has a bottom for
+       the access notice to be pinned to (margin-top: auto below). Clears the
+       sticky top offset and the bottom edge-blur band. */
     .cs-rail {
       position: sticky; top: 24px;
-      max-height: calc(90svh - 190px); overflow-y: auto;
+      height: calc(90svh - 160px); overflow-y: auto;
+      display: flex; flex-direction: column;
       scrollbar-width: none;
     }
     .cs-rail::-webkit-scrollbar { display: none; }
+    /* Pinned to the foot of the rail: it is a caveat about the whole page,
+       not the next item in the list of facts. Falls back to normal flow
+       below 1024, where the rail is not sticky and has no fixed bottom.
+       Descendant selector on purpose — .cs-note-card sets its own margin-top
+       further down this stylesheet, and at equal specificity that later rule
+       would win. */
+    .cs-rail > .cs-note-card { margin-top: auto; flex: none; }
   }
 
   /* The title, in the persistent header chrome rather than the rail — see
