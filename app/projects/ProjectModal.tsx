@@ -368,10 +368,6 @@ export function ProjectModal({
                 it is called, how to move through it, and where to verify it.
                 Nothing in here is part of the argument. ── */}
             <aside className="cs-rail modal-reveal" style={{ animationDelay: "0s" }}>
-              {/* Just the kind of thing this is — the org now rides the
-                  title in the header, so repeating it here was duplication. */}
-              <p className="cs-eyebrow mono">{detail.type}</p>
-
               {sections.length > 0 && (
                 <nav aria-label="Sections">
                   <ul className="cs-index">
@@ -840,11 +836,6 @@ const TOKENS = `
     .cs-rail::-webkit-scrollbar { display: none; }
   }
 
-  .cs-eyebrow {
-    font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase;
-    color: #1f3a5f; margin: 0 0 14px;
-  }
-
   /* The title, in the persistent header chrome rather than the rail — see
      the comment at its markup. Single line, ellipsis rather than wrap: the
      header has a fixed height and the nav control on the right needs to
@@ -854,21 +845,23 @@ const TOKENS = `
     font-size: clamp(19px, 2vw, 27px); color: #1a1a1a;
   }
 
-  /* Section index. Colour and weight mark the current section; a tick or a
-     rule would be the only drawn line on the page. */
-  .cs-index { list-style: none; margin: 26px 0 0; padding: 0; }
+  /* Section index — now the first thing in the rail. Colour alone marks the
+     current section: the weight is held constant at 600 so switching sections
+     cannot reflow the list, and a tick or rule would be the only drawn line
+     on the page. */
+  .cs-index { list-style: none; margin: 0; padding: 0; }
   @media (max-width: 1023px) { .cs-index { display: none; } }
   .cs-index-item + .cs-index-item { margin-top: 3px; }
   .cs-index-link {
     display: block; width: 100%; text-align: left; padding: 6px 0;
     background: none; border: 0; cursor: pointer;
     font-family: "Google Sans", ui-sans-serif, system-ui, sans-serif;
-    font-size: 15.5px; line-height: 1.4; font-weight: 400;
+    font-size: 15.5px; line-height: 1.4; font-weight: 600;
     color: rgba(26,26,26,0.42);
     transition: color 200ms ease;
   }
-  .cs-index-link:hover { color: rgba(26,26,26,0.72); }
-  .cs-index-link[aria-current="true"] { color: #1f3a5f; font-weight: 500; }
+  .cs-index-link:hover { color: rgba(26,26,26,0.75); }
+  .cs-index-link[aria-current="true"] { color: #1f3a5f; }
 
   /* Rail facts and links: little texts, kept quiet. */
   .cs-railblock { margin-top: 26px; }
