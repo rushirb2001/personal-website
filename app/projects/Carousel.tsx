@@ -10,6 +10,15 @@ export type Slide = {
 
 const AUTO_MS = 5500
 
+// Fallback shape for a slide whose media hasn't reported its size yet (and for
+// the dev-only placeholders, which have no intrinsic size at all).
+const FALLBACK_AR = 16 / 9
+// Ceiling on how tall an artifact may get. A portrait phone screenshot is
+// roughly 0.46:1, which at full column width would run past 1500px; capping
+// the HEIGHT and letting max-width fall out of it keeps the true ratio while
+// stopping one screenshot from owning the whole screen.
+const MAX_H = "68svh"
+
 /** Restrained, hand-rolled carousel. Prev/next live in the caption row at the
     extremes; dots sit beside them.
 
@@ -71,9 +80,53 @@ export function Carousel({ slides, frozen = false }: { slides: Slide[]; frozen?:
     })
   }, [idx, seen])
 
+  // Intrinsic aspect ratio per slide, read off the media itself rather than
+  // declared in the data: the slot used to be a fixed 16/9, so anything shot
+  // at a different shape sat in its own letterbox. Measured on load because
+  // intrinsic size isn't known until then.
+  const [ratios, setRatios] = useState<Record<string, number>>({})
+  useEffect(() => {
+    const strip = stripRef.current
+    if (!strip) return
+
+    const record = (key: string, w: number, h: number) => {
+      if (!w || !h) return
+      const ar = w / h
+      setRatios((prev) => (Math.abs((prev[key] ?? 0) - ar) < 0.001 ? prev : { ...prev, [key]: ar }))
+    }
+
+    const measureAll = () => {
+      strip.querySelectorAll<HTMLElement>("[data-slide-key]").forEach((pane) => {
+        const key = pane.dataset.slideKey
+        if (!key) return
+        const v = pane.querySelector("video")
+        if (v?.videoWidth) return record(key, v.videoWidth, v.videoHeight)
+        const img = pane.querySelector("img")
+        if (img?.naturalWidth) return record(key, img.naturalWidth, img.naturalHeight)
+        // Inline SVG (a diagram) carries its shape in the viewBox.
+        const vb = pane.querySelector("svg")?.getAttribute("viewBox")?.split(/[\s,]+/)
+        if (vb?.length === 4) record(key, Number(vb[2]), Number(vb[3]))
+      })
+    }
+
+    measureAll()
+    const media = strip.querySelectorAll<HTMLElement>("video, img")
+    media.forEach((m) => {
+      m.addEventListener("loadedmetadata", measureAll)
+      m.addEventListener("load", measureAll)
+    })
+    return () => {
+      media.forEach((m) => {
+        m.removeEventListener("loadedmetadata", measureAll)
+        m.removeEventListener("load", measureAll)
+      })
+    }
+  }, [seen, len])
+
   if (len === 0) return null
 
   const cur = slides[idx]
+  const ar = ratios[cur.key] ?? FALLBACK_AR
   const go = (n: number) => {
     setPaused(true)
     setI(((n % len) + len) % len)
@@ -103,10 +156,22 @@ export function Carousel({ slides, frozen = false }: { slides: Slide[]; frozen?:
       aria-roledescription="carousel"
     >
       <figure className="m-0">
-      <div ref={stripRef} className="relative w-full aspect-[16/9] rounded-xl bg-[#eae6df] overflow-hidden">
+      {/* The slot takes the ACTIVE artifact's own aspect ratio. max-width is
+          derived from the height cap so a tall asset narrows instead of
+          being letterboxed or running off the screen; margin-inline keeps it
+          centred once it does. */}
+      <div
+        ref={stripRef}
+        className="relative w-full rounded-xl bg-[#eae6df] overflow-hidden mx-auto transition-[aspect-ratio,max-width] duration-500 ease-out"
+        style={{
+          aspectRatio: String(ar),
+          maxWidth: `calc(${MAX_H} * ${ar})`,
+        }}
+      >
         {slides.map((s, k) => (
           <div
             key={s.key}
+            data-slide-key={s.key}
             aria-hidden={k !== idx}
             data-active={k === idx}
             className="absolute inset-0 flex items-center justify-center transition-opacity duration-500 ease-out"
