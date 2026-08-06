@@ -860,7 +860,12 @@ const TOKENS = `
      current section: the weight is held constant at 600 so switching sections
      cannot reflow the list, and a tick or rule would be the only drawn line
      on the page. */
-  .cs-index { list-style: none; margin: 0; padding: 0; }
+  /* The one drawn line in the rail: it separates wayfinding (the index) from
+     the reference material below it, which is a genuine change of kind. */
+  .cs-index {
+    list-style: none; margin: 0; padding: 0 0 20px;
+    border-bottom: 1px solid rgba(26,26,26,0.12);
+  }
   @media (max-width: 1023px) { .cs-index { display: none; } }
   .cs-index-item + .cs-index-item { margin-top: 3px; }
   .cs-index-link {
