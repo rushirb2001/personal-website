@@ -26,6 +26,14 @@ export type CaseSection = {
   body?: string
   bullets?: string[]
   table?: ResultsTable
+  /** Renders a figure inline in THIS section, in place of the old single
+      hero carousel that sat above all prose regardless of what it showed.
+      "diagram" is the zoomable architecture SVG; "results" is a carousel of
+      clips/screenshots. Put each where the prose actually talks about it. */
+  figure?: "diagram" | "results"
+  /** Renders detail.metrics as compact in-flow evidence at the end of this
+      section, instead of a standalone dashboard before the narrative starts. */
+  showMetrics?: boolean
 }
 
 export type LiveDemo = { url?: string; todo?: string }
@@ -71,6 +79,10 @@ export type ProjectDetail = {
   metrics?: { value: string; label: string }[]
   /** Deeper case-study sections rendered below the hero (Overview, Approach, …). */
   sections?: CaseSection[]
+  /** The article's last beat — what the numbers/decisions above actually
+      prove, distinct from "Where it stands" (which is status, not verdict).
+      Rendered once, after every section. */
+  closing?: string
   stack: string[]
   /** Repo / paper / write-up links. Omit the repo when private. */
   links: ProjectLink[]
@@ -99,7 +111,7 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
     seoDescription:
       "Master's thesis at ASU: coupled ensembles of physics-informed neural networks, benchmarked against traditional solvers. Public repo and thesis.",
     tagline:
-      "Built a physics-informed neural network that solves coupled reaction-diffusion equations, using a dedicated subnetwork per variable, Fourier input features, and self-balancing loss weights. It matches reference solutions within a few percent and cuts error 40 to 60 percent against a standard PINN.",
+      "A physics-informed neural network for coupled reaction-diffusion systems, with a dedicated subnetwork per variable, Fourier input features, and self-balancing loss weights, matching reference solutions within a few percent and cutting error 40 to 60 percent against a standard PINN.",
     type: "Master's thesis",
     place: "Arizona State University",
     repoStatus: "public",
@@ -122,6 +134,7 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
       },
       {
         label: "The design",
+        figure: "diagram",
         body:
           "The answer was one jointly trained block that gives each coupled field its own network instead of splitting one network's capacity between them. The cheaper obvious alternative, a single wider MLP with two output heads, was rejected on purpose: shared weights are where the gradient interference lives, so widening the network buys capacity without removing the actual conflict. Three decisions do the work.",
         bullets: [
@@ -137,8 +150,10 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
       },
       {
         label: "Where it stands",
+        figure: "results",
+        showMetrics: true,
         body:
-          "Across four benchmark variations spanning both systems, relative L2 error against a reference numerical solution landed between 2.3 and 3.5 percent, 40 to 60 percent below single-network PINN baselines on the same problems. The model reproduces the behavior that defeats a standard PINN here, including spot splitting, stripe formation and the chaotic Gray-Scott regime shown in the clips. Everything was implemented from scratch in JAX and Flax, and every run fit on a single GPU in under two and a half hours.",
+          "Across four benchmark variations spanning both systems, relative L2 error against a reference numerical solution landed between 2.3 and 3.5 percent, 40 to 60 percent below single-network PINN baselines on the same problems. The model reproduces the behavior that defeats a standard PINN here, including spot splitting, stripe formation and the chaotic Gray-Scott regime shown below. Everything was implemented from scratch in JAX and Flax, and every run fit on a single GPU in under two and a half hours.",
         table: {
           headers: ["System", "Variation", "Rel. L2", "Train", "Pattern"],
           rows: [
@@ -151,6 +166,8 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
         },
       },
     ],
+    closing:
+      "None of the three pieces here is exotic on its own — separate subnetworks, Fourier features and adaptive weighting are all known moves individually. What the 40 to 60 percent gap actually measures is that on a genuinely coupled system, using all three together is not optional: drop any one of them and the interference that motivated the thesis comes back.",
     metrics: [
       { value: "2.3-3.5%", label: "relative L2 error" },
       { value: "40-60%", label: "lower than a single-network PINN" },
@@ -194,7 +211,7 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
     seoDescription:
       "A Python pipeline turning 220 surgical-textbook chapters into versioned, hash-verified structured data for a graph and vector search stack.",
     tagline:
-      "Built a Python pipeline that turns full-length surgical-textbook PDFs into clean, structured, machine-readable data, processing 220 chapters into a searchable knowledge base of sections, figures, and tables enriched with AI-generated descriptions. It produces a versioned, hash-verified export that the search platform loads into its graph and vector databases.",
+      "A Python pipeline that turns full-length surgical-textbook PDFs into clean, structured, machine-readable data: 220 chapters into a searchable knowledge base of sections, figures and tables, exported as a versioned, hash-verified package the search platform loads directly into its graph and vector databases.",
     type: "Data pipeline",
     place: "sushrutalgs.ai",
     repoStatus: "private",
@@ -213,6 +230,7 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
       },
       {
         label: "The design",
+        figure: "diagram",
         body:
           "Two rules shaped the pipeline: structure is decided only by code that behaves the same way twice, and every stage has to be able to say what it lost.",
         bullets: [
@@ -224,10 +242,13 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
       },
       {
         label: "Where it stands",
+        showMetrics: true,
         body:
           "All 220 chapters and 5,941 pages went through end to end, and all 220 exported chapter packages pass structural validation. The check that mattered most was a clean rebuild from the source PDFs reproducing every count, because that is the only way to know the output does not depend on incremental state left over from earlier runs. The honest limit is that the validation is structural: it shows nothing went missing or landed in the wrong chapter, but a model-written figure description is still a model's description, and those are spot-checked by hand rather than measured. A fourth textbook would still need parser work; the pipeline adapts, it is not publisher-agnostic.",
       },
     ],
+    closing:
+      "The pipeline's job was never speed, it was trust: 5,941 pages a citation product has to be able to stand behind. A parser that fails loudly instead of returning a slightly smaller document, and an export that is hash-verified end to end, is what makes that trust something other than a hope.",
     metrics: [
       { value: "220", label: "chapters ingested" },
       { value: "71,621", label: "knowledge-graph nodes" },
@@ -249,7 +270,7 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
     seoDescription:
       "A search backend combining vector retrieval, a knowledge graph and streaming LLM planning to answer clinical questions with traceable citations.",
     tagline:
-      "Built a search-and-answer backend that lets clinicians and medical students ask questions of major surgical textbooks and get cited, structured answers. It combines semantic vector search, a knowledge graph of how the books are organized, and a streaming service that uses Claude to plan and write each answer.",
+      "A search-and-answer backend that lets clinicians and medical students ask questions of major surgical textbooks and get cited, structured answers back, combining semantic vector search, a knowledge graph of how the books are organized, and a streaming service that uses Claude to plan and write each one.",
     type: "Retrieval backend",
     place: "sushrutalgs.ai",
     repoStatus: "private",
@@ -268,6 +289,7 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
       },
       {
         label: "The design",
+        figure: "diagram",
         bullets: [
           "Vector first, graph second. Semantic search over 53K 768-dim BioLORD vectors finds the entry points, then each hit is expanded through a 73K-node, four-level Neo4j graph to pick up its chapter, its siblings and its cross-references. One ranking decides relevance and structure is attached afterwards, rather than two incomparable scores being merged.",
           "A cheap model narrows before an expensive one writes. Claude Haiku validates the question, selects the chapters worth reading and scores the figures and tables; Sonnet only ever sees the shortlist. The rejected alternative was a single large Sonnet call over everything retrieved: fewer moving parts, but it pays full price for a wide context on every query and gives the writing model no reason to prefer one retrieved passage over another.",
@@ -281,10 +303,13 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
       },
       {
         label: "Where it stands",
+        showMetrics: true,
         body:
           "It runs live behind sushrutalgs.ai, reached through a Cloudflare Worker gateway with two-factor service auth. Under load it sustained 30 concurrent queries with zero errors at about 14.7 times the throughput of a sequential baseline, and it passes the answer-quality suite 20 of 20. Measured on its own, vector retrieval scores success@5 of 0.90 and MRR 0.79 against a frozen gold set, at a p50 search latency around 178 ms. The honest reading of that 0.90 is that roughly one question in ten does not have its best passage in the top five, and the chapter-selection pass and graph expansion are what keep those cases turning into thin answers rather than confident wrong ones.",
       },
     ],
+    closing:
+      "success@5 of 0.90 means one question in ten still needs the graph expansion to save it, and that is the actual argument for a hybrid design over a single vector index: the failures it catches are the ones a cited product cannot afford to have answered confidently and wrong.",
     metrics: [
       { value: "15", label: "agentic tools exposed" },
       { value: "53K", label: "vectors, 768-dim" },
@@ -306,7 +331,7 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
     seoDescription:
       "An edge gateway handling auth, per-user rate limits and secure forwarding for a RAG product's web and iOS clients, at roughly 14ms of overhead.",
     tagline:
-      "Built a Cloudflare Worker gateway that sits between the sushrutalgs.ai web and iOS apps and the AI backend, handling user authentication, per-user daily usage limits, and secure request forwarding so both apps talk to one trusted entry point. It runs live in staging and production and adds only about 14 milliseconds of overhead at the edge.",
+      "A Cloudflare Worker gateway between the sushrutalgs.ai web and iOS apps and the AI backend, handling authentication, per-user daily usage limits and secure request forwarding so both clients talk to one trusted entry point, live in staging and production at roughly 14 milliseconds of added overhead.",
     type: "Backend-for-frontend",
     place: "sushrutalgs.ai",
     repoStatus: "private",
@@ -325,6 +350,7 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
       },
       {
         label: "The design",
+        figure: "diagram",
         body:
           "The worker runs five stages in a fixed order: origin check, token verify, quota debit, body transform, forward. The ordering is the design. Nothing that costs money happens before the debit, and nothing that identifies the user travels past the transform.",
         bullets: [
@@ -341,10 +367,13 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
       },
       {
         label: "Where it stands",
+        showMetrics: true,
         body:
           "It is live in staging and production, serving both clients. Edge overhead sits at about 14 milliseconds p50 with JWT verification at p95 around 0.13 milliseconds, and a load run held 200 concurrent requests with zero errors and the fail-closed mapping verified. Staging deploys on every push while production is gated behind a release, so a web change cannot take the shipped iOS app down with it.",
       },
     ],
+    closing:
+      "The interesting decision in a gateway like this is never the proxying, it is the ordering — what happens before the meter turns and what happens after. Getting that sequence right, and proving it under 200 concurrent requests, is what makes 14 milliseconds a fair price rather than a hidden risk.",
     metrics: [
       { value: "~14 ms", label: "p50 edge overhead" },
       { value: "33 KiB", label: "gzipped worker" },
@@ -366,7 +395,7 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
     seoDescription:
       "The native iOS client for sushrutalgs.ai: streaming answers cited to surgical textbooks, three sign-in options, and history synced across devices.",
     tagline:
-      "Built the native iOS app for sushrutalgs.ai, an AI study companion that answers surgical-exam questions with streaming responses backed by citations, figures, and tables from standard textbooks. It ships three sign-in options, conversation history that syncs across a user's devices, and an iPhone and iPad interface.",
+      "The native iOS app for sushrutalgs.ai, an AI study companion that answers surgical-exam questions with streaming responses backed by citations, figures and tables from standard textbooks, three sign-in options, and conversation history that stays in sync across a user's devices.",
     type: "iOS app",
     place: "sushrutalgs.ai",
     repoStatus: "private",
@@ -385,6 +414,7 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
       },
       {
         label: "The design",
+        figure: "diagram",
         bullets: [
           "Port the tree, do not redesign it. The conversation model is a one-to-one port of the web client's tree, down to how a fork is created and identified, so a thread started on one client opens correctly on the other. A Swift-idiomatic rewrite was the tempting option and was rejected: it would have been better Swift and a second definition of what a conversation is.",
           "No ViewModels. Observable services are injected once at the root and views read them directly, which keeps one source of truth for the tree and the open stream. The conventional MVVM layer would have handed every screen its own copy of state the model already holds, which is the same divergence problem one layer down.",
@@ -395,10 +425,14 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
       },
       {
         label: "Where it stands",
+        figure: "results",
+        showMetrics: true,
         body:
           "It ships on the App Store at 20.8 MB installed, with one SwiftUI shell covering both iPhone and iPad. Answers stream with the same citations, figures and tables as the web client, and a conversation started on either one opens correctly on the other, which is the whole point of porting the tree rather than rewriting it. The honest limits: it targets iOS 26, so the observation model that removes the ViewModel layer also gives up older devices; the iPad runs the phone's shell rather than a layout of its own; and offline gets you your history, not an answer.",
       },
     ],
+    closing:
+      "Porting the web client's conversation model instead of rewriting it in idiomatic Swift is the kind of decision that returns nothing visible in a screenshot, and would have caused the most damage if skipped — a second definition of what a conversation is, discovered months later in a user's stored history.",
     metrics: [
       { value: "7", label: "Observable services" },
       { value: "1:1", label: "chat tree ported from web" },
@@ -428,7 +462,7 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
     seoDescription:
       "Streaming chat with branching conversations, inline textbook figures and tables, and every answer traced back to a source, for surgical exam prep.",
     tagline:
-      "Built the web application for sushrutalgs.ai, an AI study assistant for advanced surgical exam prep that answers questions with citations traced back to standard textbooks. It delivers a streaming chat interface with branching conversations, inline textbook figures and tables, and the marketing, sign-up, and onboarding flows.",
+      "The web application for sushrutalgs.ai, an AI study assistant for advanced surgical exam prep that answers questions with citations traced back to standard textbooks, with a streaming chat interface, branching conversations, inline figures and tables, and the marketing, sign-up and onboarding flows around it.",
     type: "Web app",
     place: "sushrutalgs.ai",
     repoStatus: "private",
@@ -447,6 +481,7 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
       },
       {
         label: "The design",
+        figure: "diagram",
         bullets: [
           "A tree, not a list. Retry and edit fork sibling branches in a tree-structured message model held in a reducer store and mirrored into Postgres, so a conversation resumes anywhere and both answers survive. The cheaper option, an append-only list where regenerate overwrites the previous reply, was rejected because comparing two answers is exactly what a revising resident does.",
           "Parse frames, do not buffer. A dedicated chat service decodes all eight frame types as they arrive, so thinking steps and citations can land before the prose finishes, and error and done are handled as terminal states rather than edge cases.",
@@ -456,10 +491,14 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
       },
       {
         label: "Where it stands",
+        figure: "results",
+        showMetrics: true,
         body:
           "It is live at sushrutalgs.ai as the primary client, carrying the streaming chat, the citation and figure rendering, and the sign-up and onboarding path into the product. Session verification is cheap in practice: the JWKS cache behind it runs above a 99.9 percent hit rate, so a signed-in request almost never pays for a key fetch. The honest cost is weight. The production build ships roughly 2 MB of client JavaScript, which is more than a text-first reading interface should need, and trimming it is the open work; the proxy in front of the asset buckets is the other standing tax, and that one I would pay again.",
       },
     ],
+    closing:
+      "The 2 MB is the one number here I would not defend on principle, only on priority order: getting citations to render correctly while a stream is still arriving came first, and trimming the bundle is next, not skipped.",
     metrics: [
       { value: "8", label: "SSE frame types parsed" },
       { value: "2", label: "R2 buckets, auth-gated" },
@@ -496,7 +535,7 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
     seoDescription:
       "An end-to-end ML platform on 7M Yelp reviews: recommendations and sentiment behind one REST API. ETL at 462K rows/sec, p99 0.11ms serving.",
     tagline:
-      "Built an end-to-end machine learning platform on the full 7-million-review Yelp dataset that powers two services: a business recommendation engine and a sentiment classifier, served through one REST API. The work spans large-scale data processing, model training, API serving, containerization, and automated testing.",
+      "An end-to-end machine learning platform on the full 7-million-review Yelp dataset, powering two services, a business recommendation engine and a sentiment classifier, through one REST API, spanning large-scale data processing, model training, API serving, containerization and automated testing.",
     type: "Personal project",
     repoStatus: "public",
     sections: [
@@ -512,6 +551,7 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
       },
       {
         label: "The design",
+        figure: "diagram",
         body:
           "The shape follows from that split. Everything heavy happens once, offline, and the request path is allowed to know nothing about Spark.",
         bullets: [
@@ -528,10 +568,13 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
       },
       {
         label: "Where it stands",
+        showMetrics: true,
         body:
           "The serving side is the clean result: 0.11 ms at p99 against roughly 290 ms for the in-process Spark path, at full prediction parity. The models are more modest and are worth stating plainly. Recall@10 of 5.5 percent means nothing on its own, but it is 6.2 times the most-popular baseline it was measured against, and 86.3 percent sentiment accuracy sits beside a macro-F1 of 0.70 against a 0.67 baseline, which is the class imbalance showing through. Both are reported against those baselines below rather than in isolation.",
       },
     ],
+    closing:
+      "The headline number here is the parity test, not the latency gap: a fast wrong answer is worse than a slow right one, and this only ships the fast path because it is checked automatically against the trained model on every held-out review, not assumed to match it.",
     metrics: [
       { value: "6.99M", label: "reviews processed" },
       { value: "462K", label: "rows/sec ETL" },

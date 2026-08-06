@@ -83,8 +83,11 @@ export function Carousel({ slides, frozen = false }: { slides: Slide[]; frozen?:
     setI(k)
   }
 
+  // Tonal, not outlined: the case study's whole structure is carried by space
+  // and tone rather than rules, so a ringed control would be the only drawn
+  // line left on the page.
   const arrowCls =
-    "shrink-0 w-7 h-7 grid place-items-center rounded-full ring-1 ring-black/10 mono text-[15px] leading-none muted hover:text-[#1a1a1a] hover:bg-[rgba(31,58,95,0.06)] transition-colors"
+    "shrink-0 w-7 h-7 grid place-items-center rounded-full bg-[rgba(26,26,26,0.05)] mono text-[15px] leading-none muted hover:text-[#1a1a1a] hover:bg-[rgba(31,58,95,0.09)] transition-colors"
 
   return (
     <div
@@ -100,7 +103,7 @@ export function Carousel({ slides, frozen = false }: { slides: Slide[]; frozen?:
       aria-roledescription="carousel"
     >
       <figure className="m-0">
-      <div ref={stripRef} className="relative w-full aspect-[16/9] rounded-lg ring-1 ring-black/10 bg-[#faf8f4] overflow-hidden">
+      <div ref={stripRef} className="relative w-full aspect-[16/9] rounded-xl bg-[#eae6df] overflow-hidden">
         {slides.map((s, k) => (
           <div
             key={s.key}

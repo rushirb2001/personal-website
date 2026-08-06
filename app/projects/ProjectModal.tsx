@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react"
 import type { ProjectDetail, ProjectLink } from "./projects-data"
 import { ArchitectureDiagram } from "./ArchitectureDiagram"
 import { Carousel, type Slide } from "./Carousel"
@@ -10,6 +10,14 @@ import { Carousel, type Slide } from "./Carousel"
 // Exit-animation duration; navigation is deferred this long so the card can
 // animate out before the route changes. Keep in sync with the CSS below.
 const EXIT_MS = 240
+
+// Distance the header blur covers. Section jumps land below it, and the
+// scrollspy band starts there, so a section is never "current" while it sits
+// under the blurred band.
+const HEADER_H = 88
+
+const sectionId = (label: string) =>
+  "cs-" + label.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "")
 
 export function ProjectModal({
   detail,
@@ -20,6 +28,10 @@ export function ProjectModal({
 }) {
   const router = useRouter()
   const cardRef = useRef<HTMLDivElement>(null)
+  // The scroll container is the modal's inner pane, not the window, so the
+  // rail's scrollspy observes against it.
+  const scrollRef = useRef<HTMLDivElement>(null)
+  const [activeId, setActiveId] = useState("")
   const [closing, setClosing] = useState(false)
   const closingRef = useRef(false)
   // Enlarged view of the architecture diagram, shown over the card. Only the
@@ -144,6 +156,54 @@ export function ProjectModal({
   const { artifacts, verify } = detail
   const showTodos = process.env.NODE_ENV !== "production"
 
+  const sections = detail.sections ?? []
+  const sectionIds = useMemo(() => sections.map((s) => sectionId(s.label)), [sections])
+
+  // Scrollspy for the rail index. Sections are tracked in a set rather than
+  // reacting to whichever entry fired last: when two sections cross the band
+  // in the same frame, last-entry-wins picks an arbitrary one and the rail
+  // flickers. Taking the first still-visible section in document order is
+  // stable in both scroll directions.
+  const visibleRef = useRef<Set<string>>(new Set())
+  useEffect(() => {
+    const root = scrollRef.current
+    if (!root || sectionIds.length === 0) return
+    const els = sectionIds
+      .map((id) => root.querySelector<HTMLElement>(`#${id}`))
+      .filter((el): el is HTMLElement => el !== null)
+    if (els.length === 0) return
+
+    const seen = visibleRef.current
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) seen.add(e.target.id)
+          else seen.delete(e.target.id)
+        }
+        const first = sectionIds.find((id) => seen.has(id))
+        if (first) setActiveId(first)
+      },
+      // Reading band: from just under the header down to 30% of the card.
+      { root, rootMargin: `-${HEADER_H}px 0px -70% 0px`, threshold: 0 },
+    )
+    els.forEach((el) => io.observe(el))
+    return () => {
+      io.disconnect()
+      seen.clear()
+    }
+  }, [sectionIds])
+
+  const goToSection = useCallback((id: string) => {
+    const root = scrollRef.current
+    const el = root?.querySelector<HTMLElement>(`#${id}`)
+    if (!root || !el) return
+    const top =
+      el.getBoundingClientRect().top - root.getBoundingClientRect().top + root.scrollTop - HEADER_H
+    // "instant", never "auto" — the global scroll-behavior: smooth hijacks it.
+    root.scrollTo({ top, behavior: prefersReduced() ? "instant" : "smooth" })
+    setActiveId(id)
+  }, [])
+
   const diagram = artifacts.diagram
 
   const mail = (to: string, subject: string) =>
@@ -160,8 +220,11 @@ export function ProjectModal({
     ...(verify.contactEmail ? [{ label: "Email", href: mail(verify.contactEmail, `${detail.name}: question`) }] : []),
   ]
 
-  // Build the artifact carousel: architecture diagram first, then result clips
-  // and screenshots. Dev-only placeholders fill empty slots.
+  // The diagram and the result clips/screenshots are two different kinds of
+  // evidence — one explains the system, the other shows it working — so each
+  // renders inline at whichever section's prose actually talks about it (via
+  // CaseSection.figure), instead of being pooled into one hero carousel that
+  // sat above every section regardless of what it held.
   const videoSlide = (key: string, src: string, caption?: string): Slide => ({
     key,
     caption,
@@ -172,38 +235,11 @@ export function ProjectModal({
     ),
   })
 
-  const slides: Slide[] = []
-  // 1. Architecture diagram first
-  if (diagram === "builtin") {
-    slides.push({
-      key: "arch",
-      caption: "System architecture. Tap to enlarge.",
-      node: (
-        <button
-          type="button"
-          onClick={openZoom}
-          aria-label="Enlarge architecture diagram"
-          className="group relative w-full h-full grid place-items-center px-1 sm:px-2 py-1 cursor-zoom-in bg-transparent border-0"
-        >
-          <ArchitectureDiagram slug={detail.slug} />
-          <span
-            aria-hidden
-            className="absolute bottom-2 right-2 mono small-caps faint opacity-0 group-hover:opacity-100 transition-opacity"
-          >
-            ⤢ zoom
-          </span>
-        </button>
-      ),
-    })
-  } else if (showTodos && diagram) {
-    slides.push({ key: "arch-todo", caption: "Architecture diagram (dev placeholder).", node: <PlaceholderSlide todo={diagram.todo} /> })
-  }
-  // 2. Result clips
-  artifacts.clips?.forEach((c, k) => slides.push(videoSlide(`clip-${k}`, c.src, c.caption)))
-  // 3. Screenshots
+  const resultSlides: Slide[] = []
+  artifacts.clips?.forEach((c, k) => resultSlides.push(videoSlide(`clip-${k}`, c.src, c.caption)))
   if (artifacts.screenshots?.items?.length) {
     artifacts.screenshots.items.forEach((s, k) =>
-      slides.push({
+      resultSlides.push({
         key: `shot-${k}`,
         caption: s.caption,
         node: (
@@ -213,8 +249,39 @@ export function ProjectModal({
       }),
     )
   } else if (showTodos && artifacts.screenshots?.todo) {
-    slides.push({ key: "shot-todo", caption: "Screenshots (dev placeholder).", node: <PlaceholderSlide todo={artifacts.screenshots.todo} /> })
+    resultSlides.push({ key: "shot-todo", caption: "Screenshots (dev placeholder).", node: <PlaceholderSlide todo={artifacts.screenshots.todo} /> })
   }
+
+  // The diagram is a single image, not a multi-slide gallery, so it gets its
+  // own plain figure rather than Carousel's arrows-and-dots chrome. Frame
+  // (the drawing kit's svg root) is already `w-full h-auto`, so it renders at
+  // its own natural aspect ratio instead of being boxed into 16:9.
+  const diagramFigure =
+    diagram === "builtin" ? (
+      <figure className="cs-figure">
+        <button
+          type="button"
+          onClick={openZoom}
+          aria-label="Enlarge architecture diagram"
+          className="group relative w-full block cursor-zoom-in bg-transparent border-0 p-0"
+        >
+          <ArchitectureDiagram slug={detail.slug} />
+          <span
+            aria-hidden
+            className="absolute bottom-1 right-1 mono small-caps faint opacity-0 group-hover:opacity-100 transition-opacity"
+          >
+            ⤢ zoom
+          </span>
+        </button>
+        <figcaption className="cs-figure-caption mono">System architecture. Tap to enlarge.</figcaption>
+      </figure>
+    ) : showTodos && diagram ? (
+      <figure className="cs-figure">
+        <div className="cs-figure-todo">
+          <PlaceholderSlide todo={diagram.todo} />
+        </div>
+      </figure>
+    ) : null
 
   return (
     <div
@@ -231,51 +298,6 @@ export function ProjectModal({
       }}
     >
       <style>{TOKENS}</style>
-      <style>{`
-        /* Hero reflow:
-           - below 1024 (phone + compact): single-column mobile stack, so long
-             titles and body copy get full width instead of being cramped beside
-             the image.
-           - widescreen (≥1024): original — text stacked left, image spanning right. */
-        .proj-hero {
-          display: grid;
-          grid-template-columns: 1fr;
-          gap: 2rem 3rem;
-          grid-template-areas: "head" "body" "meta" "media";
-        }
-        .ph-head { grid-area: head; }
-        .ph-body { grid-area: body; }
-        .ph-meta { grid-area: meta; }
-        .ph-media { grid-area: media; }
-        @media (min-width: 1024px) {
-          .proj-hero {
-            grid-template-columns: 1fr minmax(360px, 48%);
-            align-items: center;
-            grid-template-areas:
-              "head  media"
-              "body  media"
-              "meta  media";
-          }
-        }
-        /* md tier (iPad portrait): cap the stacked carousel so it doesn't
-           span the full ~900px card width and then collapse to half that
-           when crossing into the 1024 two-column layout. */
-        @media (min-width: 768px) and (max-width: 1023px) {
-          .ph-media { max-width: min(70%, 640px); margin-inline: auto; }
-        }
-        /* Phones: type rides svh (caps near 850svh = today's tall-phone
-           design) so short viewports fit more of the case study per screen,
-           mirroring the landing page's proportional system. Selectors pair
-           each override with the Tailwind size utility it compresses. */
-        @media (max-width: 639px) {
-          .modal-card .text-\\[26px\\] { font-size: clamp(21px, 3.1svh, 26px); }
-          .modal-card .text-\\[15px\\] { font-size: clamp(12.5px, 1.8svh, 15px); }
-          .modal-card .text-\\[14px\\] { font-size: clamp(12px, 1.7svh, 14px); }
-          .modal-card .text-\\[13px\\] { font-size: clamp(11px, 1.6svh, 13px); }
-          .modal-card .text-\\[12px\\] { font-size: clamp(10.5px, 1.5svh, 12px); }
-          .modal-card .text-\\[11px\\] { font-size: clamp(10px, 1.4svh, 11px); }
-        }
-      `}</style>
 
       <div
         ref={cardRef}
@@ -312,7 +334,7 @@ export function ProjectModal({
                 }}
                 className="accent-link mono text-[13px] inline-flex items-center gap-1.5"
               >
-                Visit my Portfolio! <span aria-hidden>→</span>
+                See the full portfolio <span aria-hidden>→</span>
               </Link>
             )}
           </div>
@@ -325,51 +347,59 @@ export function ProjectModal({
         </div>
 
         {/* Scrollable content — card stays fixed, content scrolls inside */}
-        <div className="grow overflow-y-auto overscroll-contain px-4 sm:px-8 lg:px-10 xl:px-16 py-12 sm:py-16 lg:py-20">
-          {/* Hero: heading + description + links + the artifact carousel.
-              lg: carousel sits to the right of the whole header.
-              md (iPad portrait): text and Links/Stack split 80:20 above a
-              slightly reduced carousel. base (phone): everything stacks. */}
-          <div className="cs pt-2 sm:pt-4 lg:pt-6 pl-1 sm:pl-3 lg:pl-6 pr-1 sm:pr-3 lg:pr-6">
-            {/* Eyebrow: role, org, and what kind of thing this is. A case study
-                establishes context before it says anything. */}
-            <p className="cs-eyebrow mono modal-reveal" style={{ animationDelay: "0s" }}>
-              {detail.type}
-              {detail.place && <span className="faint"> / {detail.place}</span>}
-            </p>
+        <div
+          ref={scrollRef}
+          className="grow overflow-y-auto overscroll-contain px-4 sm:px-8 lg:px-10 xl:px-16 py-12 sm:py-16 lg:py-20"
+        >
+          <div className="cs pt-2 sm:pt-4 lg:pt-6">
+            {/* ── Rail (20). Identity and wayfinding only: what this is, what
+                it is called, how to move through it, and where to verify it.
+                Nothing in here is part of the argument. ── */}
+            <aside className="cs-rail modal-reveal" style={{ animationDelay: "0s" }}>
+              <p className="cs-eyebrow mono">
+                {detail.type}
+                {detail.place && <span className="faint"> / {detail.place}</span>}
+              </p>
+              <h1 id="proj-title" className="cs-title display">
+                {detail.title ?? detail.name}
+                <span className="accent">.</span>
+              </h1>
 
-            <h1
-              id="proj-title"
-              className="cs-title display modal-reveal"
-              style={{ animationDelay: "0s" }}
-            >
-              {detail.title ?? detail.name}
-              <span className="accent">.</span>
-            </h1>
+              {sections.length > 0 && (
+                <nav aria-label="Sections">
+                  <ul className="cs-index">
+                    {sections.map((s, k) => (
+                      <li key={s.label} className="cs-index-item">
+                        <button
+                          type="button"
+                          className="cs-index-link"
+                          aria-current={activeId === sectionIds[k] ? "true" : undefined}
+                          onClick={() => goToSection(sectionIds[k])}
+                        >
+                          {s.label}
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </nav>
+              )}
 
-            <p className="cs-lead display modal-reveal" style={{ animationDelay: "0.06s" }}>
-              {detail.tagline}
-            </p>
-
-            {/* Metadata bar. Ruled columns, the way a case study states its
-                facts up front, rather than two cramped lists in a side gutter. */}
-            <div className="cs-meta modal-reveal" style={{ animationDelay: "0.12s" }}>
               {detail.stack.length > 0 && (
-                <div className="cs-meta-col">
-                  <p className="mono small-caps faint">Built with</p>
-                  <p className="mono cs-meta-val">{detail.stack.join(" · ")}</p>
+                <div className="cs-railblock">
+                  <p className="cs-key">Built with</p>
+                  <p className="cs-fact">{detail.stack.join(" · ")}</p>
                 </div>
               )}
-              <div className="cs-meta-col">
-                <p className="mono small-caps faint">Source</p>
-                <p className="mono cs-meta-val">
-                  {isPrivate ? "Private repo" : "Public repo"}
-                </p>
+
+              <div className="cs-railblock">
+                <p className="cs-key">Source</p>
+                <p className="cs-fact">{isPrivate ? "Private repo" : "Public repo"}</p>
               </div>
+
               {heroLinks.length > 0 && (
-                <div className="cs-meta-col">
-                  <p className="mono small-caps faint">Links</p>
-                  <ul className="cs-meta-links mono">
+                <div className="cs-railblock">
+                  <p className="cs-key">Links</p>
+                  <ul className="cs-fact cs-fact-links">
                     {heroLinks.map((l) => {
                       const ext = l.href.startsWith("http")
                       return (
@@ -387,100 +417,95 @@ export function ProjectModal({
                   </ul>
                 </div>
               )}
-            </div>
 
-            {/* The artifact, at full card width. It is the evidence on a page
-                about work that mostly cannot be opened, so it stops being a
-                thumbnail in a 48% gutter. */}
-            <div className="cs-media modal-reveal" style={{ animationDelay: "0s" }}>
-              <Carousel slides={slides} frozen={zoomed || zoomClosing} />
-            </div>
+              {detail.repoNote && (
+                <div className="cs-railblock">
+                  <p className="cs-key">Access</p>
+                  <p className="cs-fact">{linkifyPlatform(detail.repoNote)}</p>
+                </div>
+              )}
+            </aside>
 
-            {detail.repoNote && (
-              <p className={`cs-note mono modal-reveal ${isPrivate ? "ink" : "muted"}`} style={{ animationDelay: "0.12s" }}>
-                {linkifyPlatform(detail.repoNote)}
+            {/* ── Article (80). Every word of the argument, and every image. ── */}
+            <div className="cs-main">
+              <p className="cs-lead display modal-reveal" style={{ animationDelay: "0.06s" }}>
+                {detail.tagline}
               </p>
-            )}
 
-            {/* Outcomes. The numbers, large, before any prose. */}
-            {detail.metrics && detail.metrics.length > 0 && (
-              <aside className="cs-callout modal-reveal" style={{ animationDelay: "0.12s" }}>
-                <p className="mono small-caps accent cs-callout-label">What it came out at</p>
-                <dl className="cs-metrics">
-                  {detail.metrics.map((m) => (
-                    <div key={m.label} className="cs-metric">
-                      <dt className="display cs-metric-value">{m.value}</dt>
-                      <dd className="mono cs-metric-label">{m.label}</dd>
-                    </div>
-                  ))}
-                </dl>
-              </aside>
-            )}
-          </div>
-
-
-          {/* Case-study detail — faint divider, then the deeper content */}
-          {detail.sections && detail.sections.length > 0 && (
-            <div className="mt-12 lg:mt-14 border-t rule pt-10 lg:pt-12">
-              <div className="cs-body pl-1 sm:pl-3 lg:pl-6 pr-1 sm:pr-3 lg:pr-6">
-              {detail.sections.map((s) => (
-                <section key={s.label} className="cs-section">
+              {sections.map((s, k) => (
+                <section key={s.label} id={sectionIds[k]} className="cs-section">
                   <h2 className="cs-section-head display">{s.label}</h2>
-                  <div className="cs-section-body">
-                    {s.body && (
-                      <p className="display text-[15px] xs:text-[16px] lg:text-[17px] ink font-light leading-relaxed max-w-[72ch]">
-                        {s.body}
-                      </p>
-                    )}
+                  <div className="cs-prose display">
+                    {s.body && <p>{s.body}</p>}
                     {s.bullets && s.bullets.length > 0 && (
-                      <ul className={`space-y-3 display text-[14px] xs:text-[15px] lg:text-[16px] ${s.body ? "mt-4" : ""}`}>
+                      <ul className="cs-points">
                         {s.bullets.map((b) => {
                           const m = b.match(/^([^.]+\.)\s*(.*)$/)
                           const lead = m ? m[1] : null
                           const rest = m ? m[2] : b
                           return (
-                            <li key={b} className="pl-4 relative leading-relaxed">
-                              <span className="absolute left-0 top-[0.5em] w-2 h-px accent-line" aria-hidden />
-                              {lead && <span className="ink">{lead} </span>}
-                              <span className="ink font-light">{rest}</span>
+                            <li key={b}>
+                              {lead && <span className="cs-point-lead">{lead} </span>}
+                              {rest}
                             </li>
                           )
                         })}
                       </ul>
                     )}
                     {s.table && (
-                      <div className={`overflow-x-auto ${s.body || s.bullets ? "mt-5" : ""}`}>
-                        <table className="w-full border-collapse mono text-[12px] xs:text-[13px]">
+                      <div className="overflow-x-auto">
+                        <table className="cs-table mono">
                           <thead>
-                            <tr style={{ borderBottom: "1px solid rgba(31,58,95,0.35)" }}>
+                            <tr>
                               {s.table.headers.map((h) => (
-                                <th key={h} className="small-caps accent font-normal text-left py-3 pr-6">
-                                  {h}
-                                </th>
+                                <th key={h}>{h}</th>
                               ))}
                             </tr>
                           </thead>
                           <tbody>
                             {s.table.rows.map((r, ri) => (
-                              <tr key={ri} className={ri < s.table!.rows.length - 1 ? "border-b rule" : ""}>
+                              <tr key={ri}>
                                 {r.map((cell, ci) => (
-                                  <td key={ci} className={`py-3 pr-6 ${ci === 0 ? "ink" : "muted"}`}>
-                                    {cell}
-                                  </td>
+                                  <td key={ci}>{cell}</td>
                                 ))}
                               </tr>
                             ))}
                           </tbody>
                         </table>
-                        {s.table.note && <p className="mono text-[12px] muted mt-3">{s.table.note}</p>}
+                        {s.table.note && <p className="cs-table-note">{s.table.note}</p>}
                       </div>
                     )}
                   </div>
+
+                  {/* Evidence, exactly where the prose above just talked
+                      about it — not pooled above the whole article. */}
+                  {s.figure === "diagram" && diagramFigure}
+                  {s.figure === "results" && resultSlides.length > 0 && (
+                    <div className="cs-media">
+                      <Carousel slides={resultSlides} frozen={zoomed || zoomClosing} />
+                    </div>
+                  )}
+                  {s.showMetrics && detail.metrics && detail.metrics.length > 0 && (
+                    <div className="cs-metrics-inline">
+                      <p className="cs-key">In numbers</p>
+                      <dl className="cs-metrics">
+                        {detail.metrics.map((m) => (
+                          <div key={m.label}>
+                            <dt className="display cs-metric-value">{m.value}</dt>
+                            <dd className="mono cs-metric-label">{m.label}</dd>
+                          </div>
+                        ))}
+                      </dl>
+                    </div>
+                  )}
                 </section>
               ))}
-              </div>
+
+              {/* The article's last beat: what the numbers and decisions
+                  above actually prove, not another status update. */}
+              {detail.closing && <p className="cs-closing display">{detail.closing}</p>}
             </div>
-          )}
+          </div>
         </div>
 
         {/* Enlarged architecture diagram — the full-size diagram grows out of the
@@ -673,115 +698,179 @@ const TOKENS = `
      doesn't snap half-faded content to full opacity before the card sinks. */
   .modal-card.is-closing .modal-reveal { animation-play-state: paused; }
 
-  /* ── Reading layout ───────────────────────────────────────────────────
-     Shaped like an article, not a paper. One narrow measure carries every
-     word; only media breaks out of it. No numbered chapters, no ruled bands,
-     no gutter labels — those all read as a formal document, and this is meant
-     to read as someone explaining how a thing was built. */
+  /* ── Reading layout: the margin does the dividing ─────────────────────
+     Every structural label — the facts, the outcome, the section names —
+     lives in a left gutter, and the prose column never contains one. The
+     gutter reads as a continuous spine down the whole document, which is
+     what makes rules unnecessary: a hairline only separates at the points
+     you draw it, the spine separates everywhere at once. Deliberately no
+     dividers, no boxes and no numerals anywhere below.
 
-  .cs, .cs-body { display: flex; flex-direction: column; max-width: 56rem; margin-inline: auto; width: 100%; }
+     The measure stays 56rem and the gutter hangs OUTSIDE it, so adding the
+     spine costs the prose no width. */
+
+  /* 20 / 80. The rail is the fixed thing you navigate by; the article is the
+     thing that moves. Everything in the rail is identity or wayfinding, and
+     everything in the right column is the case study itself. */
+  .cs {
+    display: grid; grid-template-columns: minmax(0, 1fr);
+    width: 100%; max-width: 62rem; margin-inline: auto; row-gap: 40px;
+  }
+  @media (min-width: 1024px) {
+    .cs {
+      max-width: 84rem;
+      grid-template-columns: minmax(200px, 20%) minmax(0, 1fr);
+      column-gap: clamp(40px, 4.5vw, 76px);
+      align-items: start;
+    }
+  }
+
+  /* The rail rides the scroll. Sticks below the header blur so it never sits
+     under a blurred band. max-height keeps a long index scrollable rather
+     than clipped on short viewports. */
+  .cs-rail { min-width: 0; }
+  @media (min-width: 1024px) {
+    .cs-rail {
+      position: sticky; top: 24px;
+      max-height: calc(90svh - 190px); overflow-y: auto;
+      scrollbar-width: none;
+    }
+    .cs-rail::-webkit-scrollbar { display: none; }
+  }
 
   .cs-eyebrow {
-    font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
-    color: #1f3a5f; margin: 0 0 16px;
+    font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: #1f3a5f; margin: 0 0 14px;
   }
-
+  /* Rail-scale title: it is the label on the document, not the hero. The
+     lead paragraph at the top of the article carries the opening weight. */
   .cs-title {
-    margin: 0; font-weight: 300; letter-spacing: -0.022em; line-height: 1.12;
-    font-size: clamp(28px, 3.6vw, 42px); color: #1a1a1a;
+    margin: 0; font-weight: 300; letter-spacing: -0.02em; line-height: 1.18;
+    font-size: clamp(26px, 2.1vw, 30px); color: #1a1a1a;
+  }
+  @media (min-width: 1024px) { .cs-title { font-size: clamp(21px, 1.7vw, 25px); } }
+
+  /* Section index. Colour and weight mark the current section; a tick or a
+     rule would be the only drawn line on the page. */
+  .cs-index { list-style: none; margin: 26px 0 0; padding: 0; }
+  @media (max-width: 1023px) { .cs-index { display: none; } }
+  .cs-index-item + .cs-index-item { margin-top: 2px; }
+  .cs-index-link {
+    display: block; width: 100%; text-align: left; padding: 5px 0;
+    background: none; border: 0; cursor: pointer;
+    font-family: "Google Sans", ui-sans-serif, system-ui, sans-serif;
+    font-size: 13px; line-height: 1.4; font-weight: 400;
+    color: rgba(26,26,26,0.38);
+    transition: color 200ms ease;
+  }
+  .cs-index-link:hover { color: rgba(26,26,26,0.72); }
+  .cs-index-link[aria-current="true"] { color: #1f3a5f; font-weight: 500; }
+
+  /* Rail facts and links: little texts, kept quiet. */
+  .cs-railblock { margin-top: 26px; }
+  .cs-key {
+    margin: 0 0 6px;
+    font-family: "Google Sans Code", ui-monospace, monospace;
+    font-variation-settings: "MONO" 1;
+    text-transform: uppercase; letter-spacing: 0.15em; font-weight: 400;
+    font-size: 9.5px; line-height: 1.5; color: rgba(26,26,26,0.4);
+  }
+  .cs-fact {
+    margin: 0;
+    font-family: "Google Sans Code", ui-monospace, monospace;
+    font-variation-settings: "MONO" 1;
+    font-size: 12px; line-height: 1.7; color: rgba(26,26,26,0.7);
+  }
+  .cs-fact-links { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 5px; }
+  @media (max-width: 1023px) {
+    .cs-railblock { margin-top: 22px; }
+    .cs-fact-links { flex-direction: row; flex-wrap: wrap; gap: 5px 22px; }
   }
 
+  /* ── The article column ─────────────────────────────────────────────── */
+  .cs-main { min-width: 0; display: flex; flex-direction: column; }
+  /* The standfirst. Bigger and blacker than body copy so it still reads as
+     the article's opening line, but this is a full descriptive sentence, not
+     a headline — 32px at a 34ch measure turned it into six lines of
+     near-headline text, the exact oversized-hero look the redesign was
+     supposed to get away from. It now sits close to the prose measure and
+     scales like a lede, not a display heading. */
   .cs-lead {
-    margin: 20px 0 0; font-weight: 300; line-height: 1.62;
-    font-size: clamp(17px, 1.5vw, 20px); color: rgba(26,26,26,0.66);
+    margin: 0; font-weight: 300; line-height: 1.58; max-width: 58ch;
+    font-size: clamp(18px, 1.65vw, 22px); color: #1a1a1a;
+    letter-spacing: -0.012em;
   }
-
-  /* Byline-style facts row, the way an article states its particulars. */
-  .cs-meta {
-    margin-top: 26px; padding: 14px 0;
-    border-top: 1px solid rgba(26,26,26,0.12);
-    border-bottom: 1px solid rgba(26,26,26,0.12);
-    display: flex; flex-wrap: wrap; gap: 6px 26px; align-items: baseline;
-  }
-  .cs-meta-col { display: flex; align-items: baseline; gap: 9px; min-width: 0; }
-  .cs-meta-col .small-caps { flex: none; }
-  .cs-meta-val { margin: 0; font-size: 12.5px; line-height: 1.6; color: rgba(26,26,26,0.7); }
-  .cs-meta-links { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 12.5px; }
-
-  /* The one element that breaks the measure. */
-  /* The one break-out. margin-inline:auto CANNOT centre a flex item that is
-     wider than its container: negative free space resolves both auto margins
-     to zero, so the media hung off the right edge only. An explicit symmetric
-     negative margin is the fix. Only breaks out where there is room for it. */
-  .cs-media { margin-top: 34px; width: 100%; max-width: none; }
-  @media (min-width: 1024px) {
-    .cs-media { width: 116%; margin-inline: -8%; }
-  }
-
-  .cs-note { margin: 22px 0 0; font-size: 12.5px; line-height: 1.7; color: rgba(26,26,26,0.7); }
-
-  /* Notion-style callout: the numbers, sitting inside the flow instead of
-     standing up as a dashboard band. */
-  .cs-callout {
-    margin-top: 34px; padding: 20px 22px; border-radius: 10px;
-    background: rgba(31,58,95,0.05);
-    border-left: 2px solid #1f3a5f;
-  }
-  .cs-callout-label { margin: 0 0 14px; }
-  .cs-metrics { margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 16px 22px; }
-  @media (min-width: 700px) { .cs-metrics { grid-template-columns: repeat(4, 1fr); } }
-  .cs-metric { display: flex; flex-direction: column; gap: 4px; }
-  .cs-metric-value {
-    margin: 0; font-weight: 300; letter-spacing: -0.02em; line-height: 1.05;
-    font-size: 23px; color: #1f3a5f;
-  }
-  .cs-metric-label { margin: 0; font-size: 11px; line-height: 1.4; color: rgba(26,26,26,0.6); }
-
-  /* Chapters: space and weight do the work, no rules and no numerals. */
-  .cs-section { padding: 0; border: 0; }
+  .cs-section { margin-top: 56px; scroll-margin-top: 96px; }
   .cs-section-head {
-    margin: 52px 0 14px; font-weight: 400; letter-spacing: -0.015em;
-    line-height: 1.25; font-size: clamp(20px, 2vw, 25px); color: #1a1a1a;
+    margin: 0 0 16px; font-weight: 400; letter-spacing: -0.016em;
+    line-height: 1.25; font-size: clamp(19px, 1.7vw, 23px); color: #1a1a1a;
   }
-  .cs-section-body { max-width: 100%; }
-  .cs-section:first-child .cs-section-head { margin-top: 0; }
-  .cs-section-body p { line-height: 1.72; }
 
+  /* Evidence, placed at the section whose prose it backs up rather than
+     pooled above the whole article. Same rhythm for a Carousel (results) and
+     a single figure (the diagram) so the two read as one design language. */
+  .cs-media, .cs-figure { margin-top: 28px; }
+  .cs-figure-caption {
+    margin: 12px 0 0; font-size: 11.5px; line-height: 1.6;
+    color: rgba(26,26,26,0.5);
+  }
+  .cs-figure-todo {
+    min-height: 200px; display: flex; align-items: center; justify-content: center;
+    padding: 28px; border-radius: 12px; background: rgba(31,58,95,0.04);
+  }
 
-  /* Evidence strip: the measurements, pulled out of the prose and given the
-     first screenful. Drawn as ruled columns rather than boxed cards so it stays
-     in the site's editorial register instead of turning into a dashboard. */
-  .ev-strip {
-    list-style: none; margin: 0; padding: 18px 0 0;
-    border-top: 1px solid rgba(31,58,95,0.35);
-    display: grid; grid-template-columns: 1fr; gap: 18px 32px;
+  /* In-flow metrics: numbers as evidence for the paragraph just above them,
+     not a dashboard slab preceding the whole story. */
+  .cs-metrics-inline { margin-top: 30px; }
+  .cs-metrics {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(146px, 1fr));
+    gap: 22px 34px; margin-top: 12px;
   }
-  @media (min-width: 640px) { .ev-strip { grid-template-columns: 1fr 1fr; } }
-  @media (min-width: 1024px) { .ev-strip { grid-template-columns: repeat(4, 1fr); gap: 0 28px; } }
-  .ev-item { display: flex; flex-direction: column; gap: 6px; position: relative; }
-  @media (min-width: 1024px) {
-    .ev-item { padding-left: 20px; }
-    /* Hairline between columns, not around them: a rule reads as a table of
-       facts, a border reads as a card. */
-    .ev-item + .ev-item::before {
-      content: ""; position: absolute; left: 0; top: 2px; bottom: 2px;
-      width: 1px; background: rgba(26,26,26,0.12);
-    }
-    .ev-item:first-child { padding-left: 0; }
+  .cs-metric-value {
+    margin: 0; font-weight: 300; letter-spacing: -0.022em; line-height: 1.1;
+    font-size: clamp(22px, 1.9vw, 27px); color: #1f3a5f;
   }
-  .ev-key {
-    font-size: 17px; font-weight: 300; letter-spacing: -0.01em;
-    line-height: 1.25; color: #1f3a5f;
+  .cs-metric-label {
+    margin: 5px 0 0; font-size: 11.5px; line-height: 1.5;
+    color: rgba(26,26,26,0.55);
   }
-  @media (min-width: 1024px) { .ev-key { font-size: 18px; } }
-  .ev-note { font-size: 12.5px; line-height: 1.6; color: #1a1a1a; }
-  /* Accent tick above each fact, so a column without a heading still reads as
-     its own item rather than as a runover of the one before it. */
-  .ev-item::after {
-    content: ""; position: absolute; top: -19px; left: 0; width: 22px; height: 2px;
-    background: #1f3a5f;
+
+  /* The article's last beat. No rule, no border — just more air and full ink
+     (versus the 0.86-opacity prose) to mark it as the close rather than one
+     more paragraph of "Where it stands". */
+  .cs-closing {
+    margin-top: 64px; max-width: 60ch;
+    font-weight: 300; line-height: 1.65; letter-spacing: -0.006em;
+    font-size: clamp(17px, 1.5vw, 19.5px); color: #1a1a1a;
   }
-  @media (min-width: 1024px) { .ev-item { padding-left: 0; margin-right: 28px; } .ev-item + .ev-item::before { display: none; } }
+
+  /* Prose. One measure, one weight, one colour: the gutter carries all the
+     structure, so the body has nothing to do but read well. */
+  .cs-prose {
+    font-weight: 300; line-height: 1.78; color: rgba(26,26,26,0.86);
+    font-size: clamp(15.5px, 1.35vw, 17.5px);
+  }
+  .cs-prose p { margin: 0; }
+  /* Bullets without bullets: the bolded opening clause is the marker, and the
+     space between items is the separator. A glyph or a dash here would be one
+     more line on a page that is trying not to have any. */
+  .cs-points { list-style: none; margin: 22px 0 0; padding: 0; }
+  .cs-points li + li { margin-top: 15px; }
+  .cs-point-lead { color: #1a1a1a; font-weight: 500; }
+
+  /* Table: zebra tone instead of row rules. */
+  .cs-table { width: 100%; border-collapse: collapse; margin-top: 24px; font-size: 12.5px; }
+  .cs-table th {
+    text-align: left; font-weight: 400; padding: 0 20px 10px 0;
+    text-transform: uppercase; letter-spacing: 0.14em; font-size: 10px;
+    color: rgba(26,26,26,0.42);
+  }
+  .cs-table td { padding: 9px 20px 9px 0; color: rgba(26,26,26,0.72); }
+  .cs-table td:first-child { color: #1a1a1a; }
+  .cs-table tbody tr:nth-child(odd) { background: rgba(26,26,26,0.028); }
+  .cs-table th:first-child, .cs-table td:first-child { padding-left: 12px; border-radius: 5px 0 0 5px; }
+  .cs-table td:last-child { border-radius: 0 5px 5px 0; }
+  .cs-table-note { margin: 12px 0 0; font-size: 11.5px; color: rgba(26,26,26,0.5); }
 
   .grain::before {
     content: ""; position: fixed; inset: 0; pointer-events: none;
