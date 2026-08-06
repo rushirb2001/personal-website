@@ -326,7 +326,7 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
 
   "sushrutalgs-bff": {
     slug: "sushrutalgs-bff",
-    name: "BFF",
+    name: "backend-for-frontend",
     seoTitle: "Cloudflare Worker BFF gateway for an AI product",
     seoDescription:
       "An edge gateway handling auth, per-user rate limits and secure forwarding for a RAG product's web and iOS clients, at roughly 14ms of overhead.",
@@ -390,7 +390,7 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
 
   "sushrutalgs-ios": {
     slug: "sushrutalgs-ios",
-    name: "iOS",
+    name: "ios-app-client",
     seoTitle: "sushrutalgs.ai iOS app: streaming cited answers",
     seoDescription:
       "The native iOS client for sushrutalgs.ai: streaming answers cited to surgical textbooks, three sign-in options, and history synced across devices.",
@@ -457,7 +457,7 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
 
   "sushrutalgs-web": {
     slug: "sushrutalgs-web",
-    name: "Web",
+    name: "website-client",
     seoTitle: "sushrutalgs.ai web app: a cited RAG study assistant",
     seoDescription:
       "Streaming chat with branching conversations, inline textbook figures and tables, and every answer traced back to a source, for surgical exam prep.",

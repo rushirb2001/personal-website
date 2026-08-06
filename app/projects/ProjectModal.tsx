@@ -310,18 +310,30 @@ export function ProjectModal({
         }`}
       >
         {/* Top header: a blur-and-fade gradient so scrolling content dissolves
-            under it, with the nav control on the right. The header itself is
-            click-through (pointer-events-none) except the control.
+            under it, with the project title on the left and the nav control
+            on the right. The title lives here rather than in the rail
+            because the rail only goes sticky at 1024px — below that it
+            scrolls away with the rest of the article, so the one thing that
+            should stay on screen the whole visit (what page this even is)
+            disappeared on every phone. The header itself is click-through
+            (pointer-events-none) except this row.
             Control: internal navigation → "Back to home"; a shared/direct
             link → "Visit my Portfolio!". */}
         <div className="pointer-events-none absolute left-0 right-[11px] top-0 z-20 h-20 sm:h-24">
           <EdgeBlur dir="to bottom" />
-          <div className="pointer-events-auto absolute top-4 right-5 sm:top-6 sm:right-8">
+          <div className="pointer-events-auto absolute inset-x-5 sm:inset-x-8 top-4 sm:top-6 flex items-center justify-between gap-4">
+            {/* Same shape as the Selected Projects listing on the home page
+                (`name @platform`), so the modal reads as that row opened up
+                rather than as a differently-named page. */}
+            <h1 id="proj-title" className="cs-header-title display truncate min-w-0">
+              {detail.name}
+              {detail.place && <span className="muted"> @{detail.place}</span>}
+            </h1>
             {mode === "overlay" ? (
               <button
                 type="button"
                 onClick={close}
-                className="accent-link mono text-[13px] inline-flex items-center gap-1.5 bg-transparent border-0 p-0 cursor-pointer"
+                className="accent-link mono text-[13px] inline-flex items-center gap-1.5 bg-transparent border-0 p-0 cursor-pointer flex-none whitespace-nowrap"
               >
                 <span aria-hidden>←</span> Back to home
               </button>
@@ -332,7 +344,7 @@ export function ProjectModal({
                   e.preventDefault()
                   close()
                 }}
-                className="accent-link mono text-[13px] inline-flex items-center gap-1.5"
+                className="accent-link mono text-[13px] inline-flex items-center gap-1.5 flex-none whitespace-nowrap"
               >
                 See the full portfolio <span aria-hidden>→</span>
               </Link>
@@ -356,14 +368,9 @@ export function ProjectModal({
                 it is called, how to move through it, and where to verify it.
                 Nothing in here is part of the argument. ── */}
             <aside className="cs-rail modal-reveal" style={{ animationDelay: "0s" }}>
-              <p className="cs-eyebrow mono">
-                {detail.type}
-                {detail.place && <span className="faint"> / {detail.place}</span>}
-              </p>
-              <h1 id="proj-title" className="cs-title display">
-                {detail.title ?? detail.name}
-                <span className="accent">.</span>
-              </h1>
+              {/* Just the kind of thing this is — the org now rides the
+                  title in the header, so repeating it here was duplication. */}
+              <p className="cs-eyebrow mono">{detail.type}</p>
 
               {sections.length > 0 && (
                 <nav aria-label="Sections">
@@ -387,19 +394,21 @@ export function ProjectModal({
               {detail.stack.length > 0 && (
                 <div className="cs-railblock">
                   <p className="cs-key">Built with</p>
-                  <p className="cs-fact">{detail.stack.join(" · ")}</p>
+                  <ul className="cs-stack">
+                    {detail.stack.map((t) => (
+                      <li key={t} className="cs-stack-pill mono">
+                        <StackIcon tech={t} />
+                        {t}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               )}
-
-              <div className="cs-railblock">
-                <p className="cs-key">Source</p>
-                <p className="cs-fact">{isPrivate ? "Private repo" : "Public repo"}</p>
-              </div>
 
               {heroLinks.length > 0 && (
                 <div className="cs-railblock">
                   <p className="cs-key">Links</p>
-                  <ul className="cs-fact cs-fact-links">
+                  <ul className="cs-fact-links">
                     {heroLinks.map((l) => {
                       const ext = l.href.startsWith("http")
                       return (
@@ -407,9 +416,10 @@ export function ProjectModal({
                           <a
                             href={l.href}
                             {...(ext ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-                            className="accent-link accent"
+                            className="cs-link-btn mono"
                           >
                             {l.label}
+                            <span aria-hidden>{ext ? "↗" : "→"}</span>
                           </a>
                         </li>
                       )
@@ -418,11 +428,21 @@ export function ProjectModal({
                 </div>
               )}
 
+              {/* Access note as an advisory card. It answers "why can't I see
+                  the code?", which is a caveat rather than a fact about the
+                  project, so it reads as an inline notice instead of one more
+                  labelled rail row. */}
               {detail.repoNote && (
-                <div className="cs-railblock">
-                  <p className="cs-key">Access</p>
-                  <p className="cs-fact">{linkifyPlatform(detail.repoNote)}</p>
-                </div>
+                <aside className="cs-note-card">
+                  <span className="cs-note-badge" aria-hidden>
+                    <svg viewBox="0 0 16 16" width="13" height="13" fill="none">
+                      <circle cx="8" cy="8" r="7" stroke="currentColor" strokeWidth="1.4" />
+                      <path d="M8 7.1v4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                      <circle cx="8" cy="4.7" r="0.95" fill="currentColor" />
+                    </svg>
+                  </span>
+                  <p className="cs-note-text">{linkifyPlatform(detail.repoNote)}</p>
+                </aside>
               )}
             </aside>
 
@@ -614,6 +634,88 @@ function EdgeBlur({ dir }: { dir: "to bottom" | "to top" }) {
   )
 }
 
+// Stack pill icons. Deliberately monochrome and drawn by CATEGORY rather than
+// per-brand: the stacks span ~30 technologies, so per-brand marks would mean a
+// logo set that is impossible to keep visually even (and half of them, like
+// "Random Fourier Features" or "jose (JWT)", have no mark at all). A category
+// glyph is honest, always available, and stays in the site's ink-on-paper
+// register instead of importing thirty brand palettes.
+type StackKind = "lang" | "ui" | "data" | "cloud" | "ml" | "auth" | "test" | "box"
+
+const STACK_KINDS: [RegExp, StackKind][] = [
+  [/jose|jwt|sign.?in|auth|oauth/i, "auth"],
+  [/vitest|pytest|jest|testing/i, "test"],
+  [/docker|container/i, "box"],
+  [/cloudflare|vercel|workers|r2|cloud|aws|s3/i, "cloud"],
+  [/qdrant|neo4j|supabase|postgres|sqlite|redis|database|\bdb\b/i, "data"],
+  [/jax|flax|numpy|biolord|mlflow|nltk|spark|fourier|pydantic|torch|pandas/i, "ml"],
+  [/next\.js|react|swiftui|tailwind|fastapi|hono|django|vue|svelte/i, "ui"],
+  [/typescript|javascript|python|swift|rust|\bgo\b|java|kotlin|ruby|\bc\+\+/i, "lang"],
+]
+
+const stackKind = (tech: string): StackKind =>
+  STACK_KINDS.find(([re]) => re.test(tech))?.[1] ?? "box"
+
+const STACK_PATHS: Record<StackKind, React.ReactNode> = {
+  // { } — source code
+  lang: <path d="M6 2.5C4.3 2.5 4.6 6 3 7c1.6 1 1.3 4.5 3 4.5M8 2.5c1.7 0 1.4 3.5 3 4.5-1.6 1-1.3 4.5-3 4.5" />,
+  // stacked panes — a rendered interface
+  ui: <path d="M2 4.2h10M2 7h10M2 9.8h10M4.6 4.2v5.6" />,
+  // cylinder — a store
+  data: (
+    <>
+      <ellipse cx="7" cy="3.6" rx="4.6" ry="1.8" />
+      <path d="M2.4 3.6v6.8c0 1 2 1.8 4.6 1.8s4.6-.8 4.6-1.8V3.6" />
+    </>
+  ),
+  // cloud
+  cloud: <path d="M4.3 10.6a2.6 2.6 0 0 1-.2-5.2 3.5 3.5 0 0 1 6.7.7 2.3 2.3 0 0 1-.5 4.5H4.3Z" />,
+  // connected nodes — a model / pipeline
+  ml: (
+    <>
+      <circle cx="3.2" cy="3.4" r="1.5" />
+      <circle cx="3.2" cy="10.6" r="1.5" />
+      <circle cx="10.8" cy="7" r="1.5" />
+      <path d="M4.6 4.2 9.4 6.3M4.6 9.8 9.4 7.7" />
+    </>
+  ),
+  // key — identity
+  auth: (
+    <>
+      <circle cx="4.6" cy="7" r="2.4" />
+      <path d="M7 7h5M10.2 7v2.1M12 7v1.6" />
+    </>
+  ),
+  // check — verification
+  test: <path d="M2.6 7.4 5.6 10.4 11.4 4" />,
+  // box — the generic fallback
+  box: (
+    <>
+      <path d="M7 1.8 12.4 4.6v5.4L7 12.8 1.6 10V4.6L7 1.8Z" />
+      <path d="M1.6 4.6 7 7.4l5.4-2.8M7 7.4v5.4" />
+    </>
+  ),
+}
+
+function StackIcon({ tech }: { tech: string }) {
+  return (
+    <svg
+      className="cs-stack-icon"
+      viewBox="0 0 14 14"
+      width="11"
+      height="11"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.25"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+    >
+      {STACK_PATHS[stackKind(tech)]}
+    </svg>
+  )
+}
+
 function PlaceholderSlide({ todo, icon = "+" }: { todo?: string; icon?: string }) {
   return (
     <div className="text-center px-8">
@@ -742,25 +844,27 @@ const TOKENS = `
     font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase;
     color: #1f3a5f; margin: 0 0 14px;
   }
-  /* Rail-scale title: it is the label on the document, not the hero. The
-     lead paragraph at the top of the article carries the opening weight. */
-  .cs-title {
-    margin: 0; font-weight: 300; letter-spacing: -0.02em; line-height: 1.18;
-    font-size: clamp(26px, 2.1vw, 30px); color: #1a1a1a;
+
+  /* The title, in the persistent header chrome rather than the rail — see
+     the comment at its markup. Single line, ellipsis rather than wrap: the
+     header has a fixed height and the nav control on the right needs to
+     never get squeezed, so the title is what gives way on a narrow phone. */
+  .cs-header-title {
+    font-weight: 300; letter-spacing: -0.018em; line-height: 1.2;
+    font-size: clamp(19px, 2vw, 27px); color: #1a1a1a;
   }
-  @media (min-width: 1024px) { .cs-title { font-size: clamp(21px, 1.7vw, 25px); } }
 
   /* Section index. Colour and weight mark the current section; a tick or a
      rule would be the only drawn line on the page. */
   .cs-index { list-style: none; margin: 26px 0 0; padding: 0; }
   @media (max-width: 1023px) { .cs-index { display: none; } }
-  .cs-index-item + .cs-index-item { margin-top: 2px; }
+  .cs-index-item + .cs-index-item { margin-top: 3px; }
   .cs-index-link {
-    display: block; width: 100%; text-align: left; padding: 5px 0;
+    display: block; width: 100%; text-align: left; padding: 6px 0;
     background: none; border: 0; cursor: pointer;
     font-family: "Google Sans", ui-sans-serif, system-ui, sans-serif;
-    font-size: 13px; line-height: 1.4; font-weight: 400;
-    color: rgba(26,26,26,0.38);
+    font-size: 15.5px; line-height: 1.4; font-weight: 400;
+    color: rgba(26,26,26,0.42);
     transition: color 200ms ease;
   }
   .cs-index-link:hover { color: rgba(26,26,26,0.72); }
@@ -781,10 +885,58 @@ const TOKENS = `
     font-variation-settings: "MONO" 1;
     font-size: 12px; line-height: 1.7; color: rgba(26,26,26,0.7);
   }
-  .cs-fact-links { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 5px; }
+
+  /* Stack pills. Neutral ink, not accent: the stack is a fact, and the navy
+     is reserved for the things worth clicking. */
+  .cs-stack { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+  .cs-stack-pill {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 3px 8px; border-radius: 6px;
+    font-size: 11px; line-height: 1.5; white-space: nowrap;
+    color: rgba(26,26,26,0.72);
+    background-color: rgba(26,26,26,0.045);
+    border: 1px solid rgba(26,26,26,0.1);
+  }
+  .cs-stack-icon { flex: none; color: rgba(26,26,26,0.5); }
+
+  /* Links as controls, matching the home page's footer CTA recipe: a tinted
+     outline, never a filled pill (the site keeps exactly one filled control,
+     .cta-buy on /playbook). */
+  .cs-fact-links { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 7px; }
+  .cs-link-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 5px 11px; border-radius: 6px;
+    color: #1f3a5f;
+    background-color: rgba(31,58,95,0.07);
+    border: 1px solid rgba(31,58,95,0.28);
+    text-transform: uppercase; letter-spacing: 0.1em; font-size: 10.5px;
+    white-space: nowrap;
+    transition: background-color 200ms ease, border-color 200ms ease;
+  }
+  @media (hover: hover) {
+    .cs-link-btn:hover {
+      background-color: rgba(31,58,95,0.13);
+      border-color: rgba(31,58,95,0.5);
+    }
+  }
+
+  /* Advisory card for the access note. */
+  .cs-note-card {
+    margin-top: 26px; display: flex; gap: 9px; align-items: flex-start;
+    padding: 11px 12px; border-radius: 8px;
+    background-color: rgba(31,58,95,0.055);
+    border: 1px solid rgba(31,58,95,0.16);
+  }
+  .cs-note-badge { flex: none; color: #1f3a5f; line-height: 0; margin-top: 1px; }
+  .cs-note-text {
+    margin: 0;
+    font-family: "Google Sans Code", ui-monospace, monospace;
+    font-variation-settings: "MONO" 1;
+    font-size: 11px; line-height: 1.65; color: rgba(26,26,26,0.72);
+  }
+
   @media (max-width: 1023px) {
     .cs-railblock { margin-top: 22px; }
-    .cs-fact-links { flex-direction: row; flex-wrap: wrap; gap: 5px 22px; }
   }
 
   /* ── The article column ─────────────────────────────────────────────── */
