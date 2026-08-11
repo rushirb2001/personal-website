@@ -6,6 +6,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react"
 import { motion, MotionConfig, type Variants } from "motion/react"
 import { TocNav } from "./TocNav"
 import { hasProjectDetail } from "./projects/projects-data"
+import { DOCUMENT_ICON, GITHUB_ICON, LINKEDIN_ICON, STACK_ICONS, StackIcon } from "./stack-icons"
 
 // Shared easing across every motion.dev-driven entrance on this page — the
 // same curve the hand-rolled accordion transitions already use, so the two
@@ -203,12 +204,26 @@ const EDUCATION = [
   },
 ]
 
+// EDUCATION highlight text embeds its publication venue/year after a " · "
+// separator (e.g. "... machine learning · IEEE Access, 2023"). Split it out
+// so the venue/year can render as its own pill instead of trailing prose.
+function splitHighlight(text: string): [string, string | null] {
+  const i = text.indexOf(" · ")
+  return i === -1 ? [text, null] : [text.slice(0, i), text.slice(i + 3)]
+}
+
 const LINKS = [
   { label: "Email", value: "bhavsarrushir@gmail.com", href: "mailto:bhavsarrushir@gmail.com" },
   { label: "LinkedIn", value: "rushir-bhavsar", href: "https://linkedin.com/in/rushir-bhavsar/" },
   { label: "GitHub", value: "rushirb2001", href: "https://github.com/rushirb2001" },
   { label: "Resume", value: "PDF", href: "https://v9fl0vq2qbxv8yrh.public.blob.vercel-storage.com/RUSHIR_BHAVSAR_RESUME.pdf" },
 ]
+
+const LINK_ICONS: Record<string, { path: string; viewBox?: string }> = {
+  LinkedIn: LINKEDIN_ICON,
+  GitHub: GITHUB_ICON,
+  Resume: DOCUMENT_ICON,
+}
 
 export default function HomePage() {
   const [openSection, setOpenSection] = useState<string | null>(null)
@@ -811,7 +826,11 @@ export default function HomePage() {
                 sushrutalgs.ai <span aria-hidden className="mono text-[0.85em] align-middle">↗</span>
               </a>
               , a medical AI platform for India&rsquo;s students, residents,
-              and surgeons. Previously at ASU and Cadence.
+              and surgeons. Previously at ASU and Cadence. I also wrote{" "}
+              <Link href="/playbook" className="accent-link accent whitespace-nowrap">
+                Zero to Hired
+              </Link>
+              , a playbook for the AI job search.
               <span className="hidden sm:block mt-4 muted">
                 Looking for Product Manager, AI Engineer, and
                 Forward-Deployed Engineer roles.
@@ -859,10 +878,13 @@ export default function HomePage() {
                   <p className="hidden xs:block xs:mt-5 leading-relaxed xs:text-[15px] max-w-[58ch] mono">{w.desc}</p>
                 </div>
                 <div className="xs:pt-2 lg:pt-[10px]">
-                  <p className="mono small-caps faint mb-2 xs:mb-3">Stack</p>
-                  <ul className="flex flex-wrap gap-x-3 gap-y-1.5 mono text-[12px] xs:text-[13px]">
+                  <ul className="flex flex-wrap gap-1.5 mono text-[12px] xs:text-[13px]">
                     {w.stack.map((s) => (
-                      <li key={s} className="muted">
+                      <li
+                        key={s}
+                        className="muted inline-flex items-center gap-1.5 rounded-full border rule px-2.5 py-1"
+                      >
+                        {STACK_ICONS[s] && <StackIcon icon={STACK_ICONS[s]} className="w-3 h-3 shrink-0" />}
                         {s}
                       </li>
                     ))}
@@ -953,11 +975,13 @@ export default function HomePage() {
                 </div>
                 <div className="xs:space-y-6 xs:pt-2 lg:pt-[10px]">
                   <div>
-                    <p className="mono small-caps faint mb-1 xs:mb-1.5">Stack</p>
-                    <p className="xs:hidden mono text-[12px] muted leading-relaxed">{p.stack.join(", ")}</p>
-                    <ul className="hidden xs:flex xs:flex-wrap xs:gap-x-3 xs:gap-y-1.5 mono xs:text-[13px]">
+                    <ul className="flex flex-wrap gap-1.5 mono text-[12px] xs:text-[13px]">
                       {p.stack.map((s) => (
-                        <li key={s} className="muted">
+                        <li
+                          key={s}
+                          className="muted inline-flex items-center gap-1.5 rounded-full border rule px-2.5 py-1"
+                        >
+                          {STACK_ICONS[s] && <StackIcon icon={STACK_ICONS[s]} className="w-3 h-3 shrink-0" />}
                           {s}
                         </li>
                       ))}
@@ -965,29 +989,19 @@ export default function HomePage() {
                   </div>
                   {/* Links live inline next to the title on phones. */}
                   <div className="hidden xs:block">
-                    <p className="mono small-caps faint mb-1 xs:mb-1.5">Links</p>
-                    <ul className="flex flex-col gap-2 mono text-[12px] xs:text-[13px]">
+                    <div className="border-t rule mb-3 xs:mb-4" />
+                    <ul className="flex flex-col gap-2">
                       {hasProjectDetail(p.slug) && (
                         <li>
-                          <Link
-                            href={`/projects/${p.slug}`}
-                            className="accent-link inline-flex items-center gap-1.5"
-                          >
-                            case study
-                            <span aria-hidden>→</span>
+                          <Link href={`/projects/${p.slug}`} className="footer-cta mono">
+                            case study <span aria-hidden>→</span>
                           </Link>
                         </li>
                       )}
                       {p.links.map((l) => (
                         <li key={l.label} className={l.label === "paper" || l.label === "github" ? "hidden xs:block" : undefined}>
-                          <a
-                            href={l.href}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="accent-link inline-flex items-center gap-1.5"
-                          >
-                            {l.label}
-                            <span aria-hidden>↗</span>
+                          <a href={l.href} target="_blank" rel="noopener noreferrer" className="footer-cta mono">
+                            {l.label} <span aria-hidden>↗</span>
                           </a>
                         </li>
                       ))}
@@ -1032,43 +1046,59 @@ export default function HomePage() {
                     {e.focus}
                     {"gpa" in e && <span className="xs:hidden"> · GPA {e.gpa}</span>}
                   </p>
-                  <div className="mt-3 xs:mt-6 space-y-4 max-w-[58ch]">
-                    <div>
-                      <p className="mono small-caps faint mb-2">Coursework</p>
-                      <p className="xs:hidden mono text-[12px] muted leading-relaxed">
-                        {e.coursework.slice(0, 3).join(", ")}
-                      </p>
-                      <p className="hidden xs:block mono xs:text-[13px] muted leading-relaxed">
-                        {e.coursework.join("  ·  ")}
-                      </p>
-                    </div>
+                  <div className="mt-3 xs:mt-6 max-w-[58ch]">
+                    <ul className="flex flex-wrap gap-1.5 mono text-[12px] xs:text-[13px]">
+                      {e.coursework.map((c) => (
+                        <li key={c} className="muted inline-flex items-center rounded-full border rule px-2.5 py-1">
+                          {c}
+                        </li>
+                      ))}
+                    </ul>
                   </div>
                 </div>
                 <div className="xs:pt-2 lg:pt-[10px]">
-                  <p className="mono small-caps faint mb-2 xs:mb-3">Highlights</p>
-                  <ul className="space-y-2 mono text-[12px] xs:text-[13px]">
-                    {e.highlights.map((h) => (
-                      <li
-                        key={h.text}
-                        className={`muted leading-relaxed pl-4 relative ${h.text.startsWith("GPA") ? "hidden xs:block" : ""}`}
-                      >
-                        <span className="absolute left-0 top-[0.55em] w-2 h-px accent-line" aria-hidden />
-                        {"href" in h ? (
+                  <ul className="flex flex-col gap-3 mono text-[12px] xs:text-[13px]">
+                    {e.highlights.map((h) => {
+                      if (!("href" in h)) {
+                        return (
+                          <li key={h.text} className={h.text.startsWith("GPA") ? "hidden xs:block" : undefined}>
+                            <span className="inline-flex items-center rounded-full border rule px-2.5 py-1 muted">
+                              {h.text}
+                            </span>
+                          </li>
+                        )
+                      }
+                      const [title, venue] = splitHighlight(h.text)
+                      const [titleShort] = splitHighlight("textShort" in h && h.textShort ? h.textShort : h.text)
+                      return (
+                        <li key={h.text}>
                           <a
                             href={h.href}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="accent-link inline"
+                            className="group block rounded-lg border rule px-3 py-2.5 transition-[background-color,border-color] duration-200 hover:bg-[rgba(31,58,95,0.05)] hover:border-[rgba(31,58,95,0.3)]"
                           >
-                            <span className="xs:hidden">{"textShort" in h ? h.textShort : h.text}</span>
-                            <span className="hidden xs:inline">{h.text}</span>
-                            <span aria-hidden className="faint"> ↗</span>
+                            <span className="ink leading-relaxed block">
+                              <span className="xs:hidden">{titleShort}</span>
+                              <span className="hidden xs:inline">{title}</span>
+                              <span
+                                aria-hidden
+                                className="accent inline-block ml-1 transition-transform duration-200 group-hover:translate-x-0.5"
+                              >
+                                ↗
+                              </span>
+                            </span>
+                            {venue && (
+                              <span className="mt-2 block">
+                                <span className="inline-flex items-center rounded-full border rule px-2 py-0.5 text-[11px] faint">
+                                  {venue}
+                                </span>
+                              </span>
+                            )}
                           </a>
-                        ) : (
-                          h.text
-                        )}
-                      </li>
-                    ))}
+                        </li>
+                      )
+                    })}
                   </ul>
                 </div>
               </motion.li>
@@ -1120,9 +1150,8 @@ export default function HomePage() {
               </p>
             </div>
             <div className="xs:pt-2 lg:pt-[10px]">
-              <p className="mono small-caps faint mb-2 xs:mb-3">Links</p>
               <motion.ul
-                className="flex flex-col gap-2 mono text-[12px] xs:text-[13px]"
+                className="flex flex-col gap-2"
                 variants={rowListVariants}
                 initial="hidden"
                 animate={openSection === "contact" ? "visible" : "hidden"}
@@ -1133,10 +1162,10 @@ export default function HomePage() {
                       href={l.href}
                       target={l.href.startsWith("http") || l.href.endsWith(".pdf") ? "_blank" : undefined}
                       rel="noopener noreferrer"
-                      className="accent-link inline-flex items-center gap-1.5"
+                      className="footer-cta mono"
                     >
-                      {l.label.toLowerCase()}
-                      <span aria-hidden className="faint">↗</span>
+                      <StackIcon icon={LINK_ICONS[l.label]} className="w-3 h-3 shrink-0" />
+                      {l.label.toLowerCase()} <span aria-hidden>↗</span>
                     </a>
                   </motion.li>
                 ))}
