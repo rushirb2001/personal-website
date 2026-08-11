@@ -3,8 +3,46 @@
 import Image from "next/image"
 import Link from "next/link"
 import { useEffect, useRef, useState, type ReactNode } from "react"
+import { motion, MotionConfig, type Variants } from "motion/react"
 import { TocNav } from "./TocNav"
 import { hasProjectDetail } from "./projects/projects-data"
+
+// Shared easing across every motion.dev-driven entrance on this page — the
+// same curve the hand-rolled accordion transitions already use, so the two
+// animation systems read as one language.
+const EASE_OUT: [number, number, number, number] = [0.22, 1, 0.36, 1]
+
+// Hero — orchestrated via staggerChildren so the LCP element (the h1,
+// verified with PerformanceObserver) gets delayChildren: 0 and therefore
+// animation delay 0; Chrome holds an element out of LCP contention while its
+// opacity is 0, so any delay on it is added straight to the LCP metric.
+const heroContainerVariants: Variants = {
+  hidden: {},
+  visible: { transition: { delayChildren: 0, staggerChildren: 0.12 } },
+}
+const heroItemVariants: Variants = {
+  hidden: { opacity: 0, y: 12 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: EASE_OUT } },
+}
+
+// Section heads — whileInView fade-up, fired once via Motion's pooled
+// IntersectionObserver the first time each head crosses into the viewport.
+const sectionHeadVariants: Variants = {
+  hidden: { opacity: 0, y: 16 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: EASE_OUT } },
+}
+
+// Accordion row lists — orchestrated the same way as the hero, but re-armed
+// every time a section's `open` boolean flips back to true so reopening a
+// section replays the cascade.
+const rowListVariants: Variants = {
+  hidden: {},
+  visible: { transition: { delayChildren: 0.15, staggerChildren: 0.06 } },
+}
+const rowItemVariants: Variants = {
+  hidden: { opacity: 0, y: 10 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.42, ease: EASE_OUT } },
+}
 
 const WORK = [
   {
@@ -403,6 +441,7 @@ export default function HomePage() {
   const goHome = () => closeToTop()
 
   return (
+    <MotionConfig reducedMotion="user">
     <main className="min-h-screen bg-[#f4f1ec] text-[#1a1a1a]">
       <style>{`
         .ink { color: #1a1a1a; }
@@ -515,19 +554,9 @@ export default function HomePage() {
           transition-delay: 120ms;
         }
 
-        /* Hero entrance — runs once on initial mount */
-        @keyframes hero-fade-up {
-          from { opacity: 0; transform: translateY(12px); }
-          to   { opacity: 1; transform: translateY(0); }
-        }
-        .hero-anim > div > * {
-          animation: hero-fade-up 700ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
-        }
-        .hero-anim > div > *:nth-child(1) { animation-delay: 100ms; }
-        .hero-anim > div > *:nth-child(2) { animation-delay: 280ms; }
-        .hero-anim > div > *:nth-child(3),
-        .hero-anim > div > *:nth-child(4),
-        .hero-anim > div > *:nth-child(5) { animation-delay: 200ms; }
+        /* Hero entrance, section-head scroll reveal, accordion row stagger,
+           and the footer's mount fade-up are all driven by Motion
+           (motion/react) now — see the variants near the top of this file. */
 
         /* Hero layout — one set of elements recomposed by grid areas. Phones:
            Notion-page read — the photo runs full-bleed as a cover banner, an
@@ -658,7 +687,6 @@ export default function HomePage() {
         }
 
         @media (prefers-reduced-motion: reduce) {
-          .hero-anim > div > * { animation: none; }
           .section-collapsible,
           .section-content,
           .accent-link,
@@ -690,22 +718,33 @@ export default function HomePage() {
         {/* Phones flow the Notion-style hero from the very top (the -mt swallows
             the hidden sticky nav's flow slot); sm+ keeps the centered hero. */}
         <div ref={heroWrapRef} className="sm:flex-1 flex flex-col sm:justify-center -mt-14 sm:mt-0">
-        <section ref={heroSectionRef} className="hero-anim hero-section max-w-[1100px] mx-auto px-6 lg:px-12 pt-6 xs:pt-8 lg:pt-12 pb-8 xs:pb-10 lg:pb-14">
+        <section ref={heroSectionRef} className="hero-section max-w-[1100px] mx-auto px-6 lg:px-12 pt-6 xs:pt-8 lg:pt-12 pb-8 xs:pb-10 lg:pb-14">
           {/* One proportional system from sm up: photo column (24vw, cap 280),
               gap (5.4vw, cap 64) and display size (10vw, cap 120) all ride the
               same viewport scale and hit their caps together near the 1100px
               container max, so any squeezed width renders as a scaled-down
               desktop instead of a different composition. */}
           {/* One photo, one name, one copy block — recomposed per breakpoint by
-              the .hero-grid grid-template-areas in the style block above. */}
-          <div className="hero-grid">
-            <h1 className="hero-name display font-light leading-[0.95] sm:leading-[0.92] tracking-tight text-[clamp(34px,11vw,48px)] sm:text-[clamp(52px,10vw,120px)]">
+              the .hero-grid grid-template-areas in the style block above.
+              Orchestrated with staggerChildren: the h1 (the measured LCP
+              element) lands at delayChildren: 0, everything else cascades
+              after it. */}
+          <motion.div
+            className="hero-grid"
+            variants={heroContainerVariants}
+            initial="hidden"
+            animate="visible"
+          >
+            <motion.h1
+              variants={heroItemVariants}
+              className="hero-name display font-light leading-[0.95] sm:leading-[0.92] tracking-tight text-[clamp(34px,11vw,48px)] sm:text-[clamp(52px,10vw,120px)]"
+            >
               Hi! I&rsquo;m Rushir{" "}
               <br />
               Bhavsar<span className="accent">.</span>
-            </h1>
+            </motion.h1>
 
-            <div className="hero-photo-block pt-1 sm:pt-3 lg:pt-4">
+            <motion.div variants={heroItemVariants} className="hero-photo-block pt-1 sm:pt-3 lg:pt-4">
               <div className="hero-photo relative w-full max-w-[280px] aspect-[3/4] overflow-hidden grayscale rounded-2xl">
                 <Image
                   src="/images/design-mode/new_personal_photo(1).png"
@@ -740,22 +779,28 @@ export default function HomePage() {
                   <span className="accent">+</span> Ahmedabad, India
                 </p>
               </div>
-            </div>
+            </motion.div>
 
             {/* Two-column hanging layout: the + keeps its own column so
                 wrapped lines align with the text, not under the marker. The
                 marker is a small square tile matching the rb. cover tile. */}
-            <p className="hero-open sm:hidden display font-light text-[16px] leading-[1.5] muted mt-1 flex items-center gap-3">
+            <motion.p
+              variants={heroItemVariants}
+              className="hero-open sm:hidden display font-light text-[16px] leading-[1.5] muted mt-1 flex items-center gap-3"
+            >
               {/* pb-[2px]: the + glyph's ink sits ~1px below its line box's
                   center (measured), so bias the box to optically center it. */}
               <span className="accent shrink-0 w-9 h-9 pb-[2px] rounded-xl bg-[#f4f1ec] ring-1 ring-black/10 shadow-[0_2px_12px_-4px_rgba(0,0,0,0.2)] grid place-items-center text-[20px] leading-none">+</span>
               <span>Open to Product Manager, AI Engineer &amp; Forward-Deployed Engineer roles.</span>
-            </p>
+            </motion.p>
 
             {/* Full description on every breakpoint (the phone's Notion-style
                 page body); the roles sentence is sm+ only — phones carry it
                 in the hero-open line instead. */}
-            <div className="hero-desc display font-light text-[16px] sm:text-[clamp(16px,1.7vw,20px)] mt-0 sm:mt-7 lg:mt-8 leading-[1.5] max-w-[44ch]">
+            <motion.div
+              variants={heroItemVariants}
+              className="hero-desc display font-light text-[16px] sm:text-[clamp(16px,1.7vw,20px)] mt-0 sm:mt-7 lg:mt-8 leading-[1.5] max-w-[44ch]"
+            >
               Currently building{" "}
               <a
                 href="https://sushrutalgs.ai/welcome"
@@ -771,8 +816,8 @@ export default function HomePage() {
                 Looking for Product Manager, AI Engineer, and
                 Forward-Deployed Engineer roles.
               </span>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         </section>
         </div>
 
@@ -787,10 +832,16 @@ export default function HomePage() {
           soft={softOpen}
           onToggle={() => toggleSection("experience")}
         >
-          <ol className="mt-2 lg:mt-3">
+          <motion.ol
+            className="mt-2 lg:mt-3"
+            variants={rowListVariants}
+            initial="hidden"
+            animate={openSection === "experience" ? "visible" : "hidden"}
+          >
             {WORK.map((w, i) => (
-              <li
+              <motion.li
                 key={w.company}
+                variants={rowItemVariants}
                 className={`grid grid-cols-1 xs:grid-cols-[clamp(80px,14vw,140px)_1fr_clamp(140px,22vw,240px)] lg:grid-cols-[140px_1fr_240px] gap-3 xs:gap-6 lg:gap-12 py-5 xs:py-8 lg:py-10 first:pt-2 xs:first:pt-4 lg:first:pt-6 ${
                   i !== WORK.length - 1 ? "border-b rule" : ""
                 }`}
@@ -817,9 +868,9 @@ export default function HomePage() {
                     ))}
                   </ul>
                 </div>
-              </li>
+              </motion.li>
             ))}
-          </ol>
+          </motion.ol>
         </Section>
 
         <Section
@@ -830,10 +881,16 @@ export default function HomePage() {
           soft={softOpen}
           onToggle={() => toggleSection("projects")}
         >
-          <ol className="mt-2 lg:mt-3">
+          <motion.ol
+            className="mt-2 lg:mt-3"
+            variants={rowListVariants}
+            initial="hidden"
+            animate={openSection === "projects" ? "visible" : "hidden"}
+          >
             {PROJECTS.map((p, i) => (
-              <li
+              <motion.li
                 key={p.name}
+                variants={rowItemVariants}
                 id={`project-${p.slug}`}
                 className={`scroll-mt-20 grid grid-cols-1 xs:grid-cols-[clamp(80px,14vw,140px)_1fr_clamp(140px,22vw,240px)] lg:grid-cols-[140px_1fr_240px] gap-3 xs:gap-6 lg:gap-12 py-4 xs:py-6 lg:py-8 first:pt-2 xs:first:pt-3 lg:first:pt-4 ${
                   i !== PROJECTS.length - 1 ? "border-b rule" : ""
@@ -937,9 +994,9 @@ export default function HomePage() {
                     </ul>
                   </div>
                 </div>
-              </li>
+              </motion.li>
             ))}
-          </ol>
+          </motion.ol>
         </Section>
 
         <Section
@@ -950,10 +1007,16 @@ export default function HomePage() {
           soft={softOpen}
           onToggle={() => toggleSection("education")}
         >
-          <ol className="mt-2 lg:mt-3">
+          <motion.ol
+            className="mt-2 lg:mt-3"
+            variants={rowListVariants}
+            initial="hidden"
+            animate={openSection === "education" ? "visible" : "hidden"}
+          >
             {EDUCATION.map((e, i) => (
-              <li
+              <motion.li
                 key={e.degree}
+                variants={rowItemVariants}
                 className={`grid grid-cols-1 xs:grid-cols-[clamp(80px,14vw,140px)_1fr_clamp(160px,26vw,280px)] lg:grid-cols-[140px_1fr_280px] gap-3 xs:gap-6 lg:gap-12 py-5 xs:py-8 lg:py-10 first:pt-2 xs:first:pt-4 lg:first:pt-6 ${
                   i !== EDUCATION.length - 1 ? "border-b rule" : ""
                 }`}
@@ -1008,9 +1071,9 @@ export default function HomePage() {
                     ))}
                   </ul>
                 </div>
-              </li>
+              </motion.li>
             ))}
-          </ol>
+          </motion.ol>
         </Section>
 
         <Section
@@ -1058,9 +1121,14 @@ export default function HomePage() {
             </div>
             <div className="xs:pt-2 lg:pt-[10px]">
               <p className="mono small-caps faint mb-2 xs:mb-3">Links</p>
-              <ul className="flex flex-col gap-2 mono text-[12px] xs:text-[13px]">
+              <motion.ul
+                className="flex flex-col gap-2 mono text-[12px] xs:text-[13px]"
+                variants={rowListVariants}
+                initial="hidden"
+                animate={openSection === "contact" ? "visible" : "hidden"}
+              >
                 {LINKS.filter((l) => l.label !== "Email").map((l) => (
-                  <li key={l.label}>
+                  <motion.li key={l.label} variants={rowItemVariants}>
                     <a
                       href={l.href}
                       target={l.href.startsWith("http") || l.href.endsWith(".pdf") ? "_blank" : undefined}
@@ -1070,9 +1138,9 @@ export default function HomePage() {
                       {l.label.toLowerCase()}
                       <span aria-hidden className="faint">↗</span>
                     </a>
-                  </li>
+                  </motion.li>
                 ))}
-              </ul>
+              </motion.ul>
             </div>
           </div>
         </Section>
@@ -1088,7 +1156,12 @@ export default function HomePage() {
             below it. */}
         <footer className="sticky bottom-0 z-50 mt-10 xs:mt-14">
           <div className="border-t rule" style={{ backgroundColor: "#f4f1ec" }}>
-            <div className="max-w-[1100px] mx-auto px-6 lg:px-12 py-5 xs:py-6 mono text-[11px] flex items-center justify-between gap-4">
+            <motion.div
+              className="max-w-[1100px] mx-auto px-6 lg:px-12 py-5 xs:py-6 mono text-[11px] flex items-center justify-between gap-4"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.42, ease: EASE_OUT }}
+            >
               <p className="muted whitespace-nowrap">
                 <span className="faint">© 2026 </span>Rushir Bhavsar
               </p>
@@ -1104,11 +1177,12 @@ export default function HomePage() {
               <p className="small-caps faint whitespace-nowrap hidden xs:block">
                 <span className="accent">+</span> Ahmedabad, India
               </p>
-            </div>
+            </motion.div>
           </div>
         </footer>
       </div>
     </main>
+    </MotionConfig>
   )
 }
 
@@ -1186,7 +1260,13 @@ function SectionHead({
       className="sticky top-14 z-30 -mx-6 lg:-mx-12 px-6 lg:px-12 py-3 border-b rule w-[calc(100%+3rem)] lg:w-[calc(100%+6rem)] text-left transition-[background-color,scale] duration-200 ease-out hover:bg-[rgba(31,58,95,0.05)] active:scale-[0.997] active:duration-100 cursor-pointer"
       style={{ backgroundColor: "#f4f1ec" }}
     >
-      <div className="grid grid-cols-[auto_1fr_auto] xs:grid-cols-[clamp(80px,14vw,140px)_1fr_clamp(140px,22vw,240px)] lg:grid-cols-[140px_1fr_240px] gap-3 xs:gap-6 lg:gap-12 items-baseline">
+      <motion.div
+        className="grid grid-cols-[auto_1fr_auto] xs:grid-cols-[clamp(80px,14vw,140px)_1fr_clamp(140px,22vw,240px)] lg:grid-cols-[140px_1fr_240px] gap-3 xs:gap-6 lg:gap-12 items-baseline"
+        variants={sectionHeadVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.2, margin: "0px 0px -8% 0px" }}
+      >
         <span className="display accent text-[22px] xs:text-[clamp(20px,4.5vw,26px)] lg:text-3xl font-light leading-none">+</span>
         <h2 className="display text-[22px] xs:text-[clamp(20px,4.5vw,26px)] lg:text-3xl font-light tracking-tight leading-none">
           {title}
@@ -1199,7 +1279,7 @@ function SectionHead({
         ) : (
           <span aria-hidden />
         )}
-      </div>
+      </motion.div>
     </button>
   )
 }
