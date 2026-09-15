@@ -3,6 +3,7 @@
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react"
+import { css, waapi } from "../motion"
 import type { ProjectDetail, ProjectLink } from "./projects-data"
 import { ArchitectureDiagram } from "./ArchitectureDiagram"
 import { Carousel, type Slide } from "./Carousel"
@@ -52,18 +53,20 @@ export function ProjectModal({
     window.matchMedia?.("(prefers-reduced-motion: reduce)").matches
 
   // Translate+scale that maps the full-size stage back onto the source rect,
-  // anchored at the stage's top-left (transform-origin: 0 0).
+  // anchored at the stage's top-left (transform-origin: 0 0). One uniform
+  // scale: thumbnail and stage draw the same viewBox, so a separate y scale
+  // could only ever add sub-pixel rounding error as distortion to the
+  // strokes and labels mid-morph.
   const flipFromSource = (stage: HTMLElement): string | null => {
     const src = sourceRectRef.current
     if (!src) return null
     const svg = stage.querySelector("svg") ?? stage
     const tgt = svg.getBoundingClientRect()
     if (!tgt.width || !tgt.height) return null
-    const sx = src.width / tgt.width
-    const sy = src.height / tgt.height
+    const s = src.width / tgt.width
     const dx = src.left - tgt.left
     const dy = src.top - tgt.top
-    return `translate(${dx}px, ${dy}px) scale(${sx}, ${sy})`
+    return `translate(${dx}px, ${dy}px) scale(${s})`
   }
 
   const openZoom = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
@@ -86,10 +89,9 @@ export function ProjectModal({
     zoomBusyRef.current = true
     setZoomClosing(true)
     stage.style.transformOrigin = "0 0"
-    const anim = stage.animate(
-      [{ transform: "none" }, { transform: from }],
-      { duration: 240, easing: "cubic-bezier(0.4, 0, 0.2, 1)", fill: "forwards" },
-    )
+    // Settling back INTO a thumbnail must not overshoot it, so the return
+    // morph rides the bounce-free reveal spring rather than the surface one.
+    const anim = stage.animate([{ transform: "none" }, { transform: from }], { ...waapi.reveal, fill: "forwards" })
     anim.onfinish = () => {
       zoomBusyRef.current = false
       setZoomed(false)
@@ -105,10 +107,7 @@ export function ProjectModal({
     const from = flipFromSource(stage)
     if (!from) return
     stage.style.transformOrigin = "0 0"
-    const anim = stage.animate(
-      [{ transform: from }, { transform: "none" }],
-      { duration: 320, easing: "cubic-bezier(0.22, 1, 0.36, 1)" },
-    )
+    const anim = stage.animate([{ transform: from }, { transform: "none" }], waapi.surface)
     return () => anim.cancel()
   }, [zoomed])
 
@@ -756,7 +755,7 @@ const TOKENS = `
     background-color: rgba(20,18,14,0.34);
     animation: modal-fade 220ms ease both;
   }
-  .modal-card { animation: modal-rise 300ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+  .modal-card { animation: modal-rise ${css.surface} both; }
   .modal-zoom { animation: modal-fade 180ms ease both; }
 
   /* Exit: backdrop fades and card sinks before the route changes. */
@@ -787,7 +786,7 @@ const TOKENS = `
      so nothing can add more than that even if the candidate is misjudged.
      Previously the carousel carried the LONGEST delay (0.3s) of anything on the
      page, which is the worst possible assignment. */
-  .modal-reveal { animation: modal-content-in 520ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+  .modal-reveal { animation: modal-content-in ${css.reveal} both; }
   @keyframes modal-content-in {
     from { opacity: 0; transform: translateY(8px); }
     to   { opacity: 1; transform: translateY(0); }

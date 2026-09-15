@@ -1,6 +1,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import ReactDOM from "react-dom"
+import { css } from "../motion"
 import type { ReactNode } from "react"
 import { PlaybookBar } from "./PlaybookBar"
 import { PlaybookRail } from "./PlaybookRail"
@@ -1592,15 +1593,19 @@ function PlaybookStyle() {
         position: relative; display: flex; align-items: center;
         background: none; border: 0; padding: 4px 0; cursor: pointer;
       }
+      /* Tick length is a scaleX of one fixed 28px line, not a width: the probe
+         measured the width transition re-laying out the rail on ~210 frames of
+         a single scroll. A 1px radius on a 2px bar shows no scale distortion. */
       .pb-rail-line {
-        width: 22px; height: 2px; border-radius: 1px; flex: none;
+        width: 28px; height: 2px; border-radius: 1px; flex: none;
+        transform-origin: left center; transform: scaleX(0.786);
         background-color: rgba(26,26,26,0.18);
-        transition: background-color 200ms ease, width 240ms cubic-bezier(0.22,1,0.36,1);
+        transition: background-color 200ms ease, transform ${css.ui};
       }
-      .pb-rail-item.is-sub .pb-rail-line { width: 12px; }
+      .pb-rail-item.is-sub .pb-rail-line { transform: scaleX(0.429); }
       .pb-rail-item.is-passed .pb-rail-line { background-color: rgba(31,58,95,0.55); }
-      .pb-rail-item.is-current .pb-rail-line { background-color: #1f3a5f; width: 28px; }
-      .pb-rail-item.is-current.is-sub .pb-rail-line { width: 18px; }
+      .pb-rail-item.is-current .pb-rail-line { background-color: #1f3a5f; transform: scaleX(1); }
+      .pb-rail-item.is-current.is-sub .pb-rail-line { transform: scaleX(0.643); }
       .pb-rail-item:focus-visible { outline: 2px solid #1f3a5f; outline-offset: 2px; }
 
       @media (prefers-reduced-motion: reduce) {
