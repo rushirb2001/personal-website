@@ -5,44 +5,46 @@ import Link from "next/link"
 import { useEffect, useRef, useState, type ReactNode } from "react"
 import { motion, MotionConfig, type Variants } from "motion/react"
 import { TocNav } from "./TocNav"
+import { cssEase, rise, springs, stagger } from "./motion"
 import { hasProjectDetail } from "./projects/projects-data"
 import { DOCUMENT_ICON, GITHUB_ICON, LINKEDIN_ICON, STACK_ICONS, StackIcon } from "./stack-icons"
 
-// Shared easing across every motion.dev-driven entrance on this page — the
-// same curve the hand-rolled accordion transitions already use, so the two
-// animation systems read as one language.
-const EASE_OUT: [number, number, number, number] = [0.22, 1, 0.36, 1]
+// Every Motion entrance on this page animates a transform STRING and opacity
+// (app/motion.ts), which Motion hands to WAAPI and the compositor. The previous
+// `y` shorthand was written from JS on every frame: the probe counted ~40
+// style writes per hero element during load, stalling exactly while hydration
+// held the main thread.
 
 // Hero — orchestrated via staggerChildren so the LCP element (the h1,
 // verified with PerformanceObserver) gets delayChildren: 0 and therefore
 // animation delay 0; Chrome holds an element out of LCP contention while its
 // opacity is 0, so any delay on it is added straight to the LCP metric.
-const heroContainerVariants: Variants = {
-  hidden: {},
-  visible: { transition: { delayChildren: 0, staggerChildren: 0.12 } },
-}
-const heroItemVariants: Variants = {
-  hidden: { opacity: 0, y: 12 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: EASE_OUT } },
-}
+const heroContainerVariants = stagger(0.09, 0)
+const heroItemVariants = rise(12)
 
-// Section heads — whileInView fade-up, fired once via Motion's pooled
-// IntersectionObserver the first time each head crosses into the viewport.
+// Section heads — a deterministic cascade that picks up where the hero leaves
+// off. It used to be whileInView, but every head is inside the closed
+// landing's first viewport by design, so the IntersectionObserver only added
+// latency and an order that depended on when each observer fired.
+const SECTION_ORDER = ["experience", "projects", "education", "contact"]
 const sectionHeadVariants: Variants = {
-  hidden: { opacity: 0, y: 16 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: EASE_OUT } },
+  hidden: { opacity: 0, transform: "translateY(14px)" },
+  visible: (i: number) => ({
+    opacity: 1,
+    transform: "translateY(0px)",
+    transition: { ...springs.reveal, delay: 0.22 + i * 0.05 },
+  }),
 }
 
-// Accordion row lists — orchestrated the same way as the hero, but re-armed
-// every time a section's `open` boolean flips back to true so reopening a
-// section replays the cascade.
-const rowListVariants: Variants = {
-  hidden: {},
-  visible: { transition: { delayChildren: 0.15, staggerChildren: 0.06 } },
-}
+// Accordion row lists — re-armed every time a section's `open` boolean flips
+// back to true so reopening a section replays the cascade. The hidden state is
+// applied instantly and only AFTER the collapse has finished: animating rows
+// out while their container is already collapsing is two exits for one
+// action, and the rows were clipped before they finished anyway.
+const rowListVariants = stagger(0.05, 0.12)
 const rowItemVariants: Variants = {
-  hidden: { opacity: 0, y: 10 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.42, ease: EASE_OUT } },
+  hidden: { opacity: 0, transform: "translateY(10px)", transition: { duration: 0, delay: 0.55 } },
+  visible: { opacity: 1, transform: "translateY(0px)", transition: springs.reveal },
 }
 
 const WORK = [
@@ -553,19 +555,19 @@ export default function HomePage() {
           grid-template-rows: 1fr;
         }
 
-        /* Section content reveal — fade-up after expansion */
+        /* Section content reveal: opacity only. The spatial motion belongs to
+           the Motion row cascade; this wrapper used to slide up 8px as well,
+           so every row travelled on two overlapping curves at once. Opacity
+           stays here because non-row content (the Contact copy) has no
+           cascade of its own. */
         .section-content {
           min-height: 0;
           overflow: hidden;
           opacity: 0;
-          transform: translateY(8px);
-          transition:
-            opacity 400ms cubic-bezier(0.22, 1, 0.36, 1),
-            transform 400ms cubic-bezier(0.22, 1, 0.36, 1);
+          transition: opacity 400ms ${cssEase.reveal};
         }
         .section-collapsible[data-open="true"] .section-content {
           opacity: 1;
-          transform: translateY(0);
           transition-delay: 120ms;
         }
 
@@ -1187,9 +1189,9 @@ export default function HomePage() {
           <div className="border-t rule" style={{ backgroundColor: "#f4f1ec" }}>
             <motion.div
               className="max-w-[1100px] mx-auto px-6 lg:px-12 py-5 xs:py-6 mono text-[11px] flex items-center justify-between gap-4"
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.42, ease: EASE_OUT }}
+              initial={{ opacity: 0, transform: "translateY(12px)" }}
+              animate={{ opacity: 1, transform: "translateY(0px)" }}
+              transition={{ ...springs.reveal, delay: 0.42 }}
             >
               <p className="muted whitespace-nowrap">
                 <span className="faint">© 2026 </span>Rushir Bhavsar
@@ -1292,9 +1294,9 @@ function SectionHead({
       <motion.div
         className="grid grid-cols-[auto_1fr_auto] xs:grid-cols-[clamp(80px,14vw,140px)_1fr_clamp(140px,22vw,240px)] lg:grid-cols-[140px_1fr_240px] gap-3 xs:gap-6 lg:gap-12 items-baseline"
         variants={sectionHeadVariants}
+        custom={Math.max(0, SECTION_ORDER.indexOf(id))}
         initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.2, margin: "0px 0px -8% 0px" }}
+        animate="visible"
       >
         <span className="display accent text-[22px] xs:text-[clamp(20px,4.5vw,26px)] lg:text-3xl font-light leading-none">+</span>
         <h2 className="display text-[22px] xs:text-[clamp(20px,4.5vw,26px)] lg:text-3xl font-light tracking-tight leading-none">
