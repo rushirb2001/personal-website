@@ -7,6 +7,7 @@ Guidance for Claude Code (claude.ai/code) when working in this repository.
 - **Dev server:** `pnpm dev` (Next.js dev on http://localhost:3000)
 - **Build:** `pnpm build`
 - **Start prod:** `pnpm start`
+- **Motion probe:** `pnpm motion` (animation/scroll smoothness on real flows, graded and diffable against a saved baseline; see `docs/profiling.md` §4). Any animation, transition, or scroll-choreography change is measured with it: `--save-baseline` before, `--compare` after. Never judge motion by eye in the preview browser.
 
 Package manager is **pnpm** (`pnpm@10.31.0`, `pnpm-lock.yaml`).
 
