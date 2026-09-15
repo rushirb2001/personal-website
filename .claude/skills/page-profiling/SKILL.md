@@ -22,7 +22,10 @@ Skip only for changes that cannot affect delivery or motion (copy edits, data-on
    document size (§5), and — if the change touches layout/media/fonts — a Lighthouse mobile pass
    (§2). The cookbook's baseline table is the reference point; if your fresh numbers disagree with
    it, resolve that before building on top.
-2. If the work is motivated by a red field metric, do the §0 triage arithmetic FIRST: attribute
+2. If the change touches animation, transitions, or scroll choreography, save a motion baseline
+   first: `pnpm motion --build --save-baseline <name>` (§4). Without it, "smoother" after the change
+   is an opinion, and the next session has nothing to compare against.
+3. If the work is motivated by a red field metric, do the §0 triage arithmetic FIRST: attribute
    the time to server/render/asset via the TTFB → FCP → LCP gaps, and cross-check the panel's
    window against deploy dates (§6). Do not start optimizing an asset when the gap analysis says
    the time is elsewhere — that's how the "is it the blob image?" wild-goose chase happens.
@@ -61,9 +64,11 @@ Match the verification to what the change could break:
 - **Any page change**: build-table check — route types unchanged, First Load JS didn't jump (§5).
 - **Layout / media / fonts / render path**: Lighthouse mobile pass, compare FCP/LCP/TBT to
   baseline; confirm the LCP element is still the intended one (§2, §3).
-- **Animation / transition / scroll work**: run the scroll sampler through every affected flow and
-  read the trajectory for snaps, clamp-yanks, and disjoint motions; check frame pacing where work
-  happens during scroll (§4). Test at 375px, 768px, and 1280px+ — jank is viewport-specific.
+- **Animation / transition / scroll work**: `pnpm motion --build --compare <baseline>` over every
+  affected flow (baseline saved in Phase 1 with `--save-baseline`). Read the trajectory section for
+  main-thread animations, per-frame JS style writes, snaps, clamps and reversals before changing
+  anything else; add a scenario to `scripts/motion/scenarios.mjs` if the flow is not covered yet.
+  Test phone, tablet and desktop (`-v phone,tablet,desktop`): jank is viewport-specific (§4).
 - **After deploy**: the §7 two-minute spot-check. If numbers legitimately improved or the page
   legitimately grew, update the cookbook's baseline table in the same PR — stale baselines make
   the next regression invisible.

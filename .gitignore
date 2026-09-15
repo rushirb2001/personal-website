@@ -47,3 +47,9 @@ next-env.d.ts
 
 # Local-only LinkedIn banner font lab (not part of the site)
 /app/banner/
+
+# graft's local graph cache — regenerable, not committed (run `graft build`).
+graft/
+
+# Motion probe output (runs, baselines, filmstrips): machine-specific, not committed
+.motion/

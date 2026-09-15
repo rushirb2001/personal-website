@@ -250,6 +250,74 @@ into bad INP in field data:
 new PerformanceObserver(l => l.getEntries().forEach(e => console.log("longtask", Math.round(e.startTime), Math.round(e.duration) + "ms"))).observe({ type: "longtask", buffered: true });
 ```
 
+### The motion probe (`pnpm motion`): use this before any hand-rolled sampler
+
+Every snippet above is automated, extended, and made repeatable in `scripts/motion/`. It drives
+real interaction flows in headless Chrome (real CDP input events, not `element.click()`), grades
+them against budgets, explains what caused any jank, and diffs against a saved baseline. Reach for
+it before pasting samplers into a console: a console measurement dies with the session, a probe
+baseline does not.
+
+```bash
+pnpm motion --list                                   # the named flows (home.*, case.*, playbook.*)
+pnpm motion --build --save-baseline before           # 1. baseline BEFORE touching code
+pnpm motion --build --compare before                 # 2. after the change: same flows, diffed
+pnpm motion -s home.open,home.close -v phone         # iterate on one flow while fixing it
+pnpm motion -s case.zoom-open --filmstrip --runs 1   # see it: .motion/film/<flow>@<viewport>/sheet.png
+```
+
+What a run does, and why each part exists:
+
+- **Timing pass** (`--runs`, default 3; medians graded): rAF deltas, dropped frames, long animation
+  frames with script attribution, CLS, scroll speed. It records nothing that forces layout, so the
+  numbers describe the page and not the probe. `±p90` in the table is the spread across runs; if it
+  is larger than the change you are judging, the comparison is noise, so raise `--runs`.
+- **Trajectory pass** (skip with `--no-trajectory`): the diagnosis. Lists every animation that ran
+  on the main thread (`[layout]` / `[paint]`, e.g. `min-height`, `grid-template-rows`), every
+  element JS wrote styles to per frame (Motion's independent `x`/`y` are JS-driven; a `transform`
+  string runs on the compositor), and per tracked element: largest one-frame jump net of scroll,
+  direction reversals, and settle time. Scroll clamp frames (the document shrinking under the
+  viewport) are counted here. These reads force layout, so this pass explains but never grades.
+- **Guards that each once burned a retry**: it refuses `next dev` (on-demand compilation makes
+  frames fiction), refuses a production build older than the source (you would be grading the code
+  from before your fix; `--build` rebuilds), and every flow verifies its end state after recording,
+  so a click that never landed fails loudly instead of reporting "no change". `--compare` warns when
+  CPU throttle, run count or Chrome version differ from the baseline.
+- **Output**: `.motion/runs/<timestamp>-<sha>.json` (every run), `.motion/latest.json`,
+  `.motion/baselines/<name>.json` (`--save-baseline`). `.motion/` is git-ignored because the numbers
+  are machine-specific; the summary table below is the committed record. Exit code 1 on any FAIL,
+  2 on a scenario error.
+
+**Investigate from disk, not by re-running.** Each run saves the per-frame path of every tracked
+element. When the report flags a jump, read that frame before touching code:
+
+```bash
+pnpm motion:inspect                                        # flows + tracked selectors in the latest run
+pnpm motion:inspect before home.switch-down@desktop        # auto-centres on the first snap
+pnpm motion:inspect latest case.zoom-open@phone ".modal-zoom svg" --around 120
+```
+
+Columns: `dTop` is movement in the viewport, `dDoc` the same net of page scroll; a real snap is
+large in BOTH (a smooth scroll moves in-flow content in `dTop` only, a sticky element moves in
+`dDoc` only).
+
+Budgets live in `BUDGET` in `scripts/motion/report.mjs` (p90 frame, 2+-interval frames, drop rate,
+LoAF, scroll snap, tracked-element snap). Change them there, never per run.
+
+Defaults: `--cpu 4` (a mid-range phone; an unthrottled M-series laptop hides almost everything) and
+headless compositing. Headless composites in software, so use `--headed` when a question is about
+GPU raster or compositor cost rather than main-thread work.
+
+Adding a flow: add an entry to `SCENARIOS` in `scripts/motion/scenarios.mjs`. Setup must be
+deterministic (instant scrolls, explicit waits), `act()` is the one measured interaction, and
+`verify()` must prove the interaction happened. A flow without `verify()` can silently measure a
+page that did nothing.
+
+**Retry discipline.** One hypothesis, one change, one `--compare`. If the numbers did not move, read
+the trajectory section before editing again: it names the property or element responsible. Do not
+iterate on feel in the preview browser; its tabs starve rAF (below) and a starved tab makes correct
+code look broken.
+
 **Environment traps** (learned the hard way): browsers throttle `requestAnimationFrame`, timers,
 and main-thread CSS transitions in occluded/background tabs and in emulated viewports larger than
 the real window — compositor animations keep running, main-thread ones freeze, so a starved test
