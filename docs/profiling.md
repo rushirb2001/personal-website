@@ -288,6 +288,19 @@ What a run does, and why each part exists:
   are machine-specific; the summary table below is the committed record. Exit code 1 on any FAIL,
   2 on a scenario error.
 
+**Investigate from disk, not by re-running.** Each run saves the per-frame path of every tracked
+element. When the report flags a jump, read that frame before touching code:
+
+```bash
+pnpm motion:inspect                                        # flows + tracked selectors in the latest run
+pnpm motion:inspect before home.switch-down@desktop        # auto-centres on the first snap
+pnpm motion:inspect latest case.zoom-open@phone ".modal-zoom svg" --around 120
+```
+
+Columns: `dTop` is movement in the viewport, `dDoc` the same net of page scroll; a real snap is
+large in BOTH (a smooth scroll moves in-flow content in `dTop` only, a sticky element moves in
+`dDoc` only).
+
 Budgets live in `BUDGET` in `scripts/motion/report.mjs` (p90 frame, 2+-interval frames, drop rate,
 LoAF, scroll snap, tracked-element snap). Change them there, never per run.
 
