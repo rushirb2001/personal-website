@@ -12,6 +12,20 @@ Package manager is **pnpm** (`pnpm@10.31.0`, `pnpm-lock.yaml`).
 
 No test runner or linter is configured. **TypeScript IS type-checked during `next build`** and `next.config.mjs` does **not** ignore errors — a type error fails the build (and the Vercel deploy). Keep types clean; `pnpm exec tsc --noEmit` is a fast local gate.
 
+## Reading code: graft only (STRICT)
+
+This repo is indexed by graft (`graft/`, a git-ignored local cache; run `graft build` if it is missing). **Graft is the only way to locate, read, or understand source code here.** This is a hard rule, not a preference.
+
+- **Use graft.** Prefer the MCP tools (`graft_find_code`, `graft_find_all`, `graft_file_api`, `graft_trace_calls`, `graft_repo_map`). If the MCP server is not loaded in the session, use the CLI equivalents: `graft ask "<question>" --source`, `graft grep "<symbol>"`, `graft skeleton <file>`, `graft callers <symbol>`, `graft map`.
+- **Never use `grep`, `rg`, `sed`, `awk`, `cat`, `head`, `tail`, `find`, or the Read tool to locate or understand source code.** That includes "just checking one line" and "confirming what graft said". Graft spans are generated from source and are authoritative.
+- **Read is allowed in exactly three cases:**
+  1. Graft returned a truncated span ("+N more lines"): Read that exact `file:line` range with `offset`/`limit`, nothing wider.
+  2. Right before an Edit, because the Edit tool requires it: Read only the range you are about to change.
+  3. Files graft does not index: Markdown, CSS, JSON, configs, lockfiles, and brand-new untracked files.
+- **If graft misses, loosen the query** (`graft grep` on the bare symbol name) before anything else. If the symbol genuinely is not in the graph, say so explicitly and name the fallback you used. Never silently drop to shell tools.
+- **Before any rename, deletion, signature change, or multi-file edit**, run `graft callers <symbol> --depth all` (or `graft_trace_calls` with `depth: "all"`) first.
+- **Never pipe graft output** through `head`, `tail`, or `sed -n`; every graft tool is already capped.
+
 ## Architecture
 
 Next.js **16** App Router personal portfolio with a quiet, editorial design (cream paper, ink text, a single navy accent). Deployed on Vercel.
