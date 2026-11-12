@@ -163,6 +163,14 @@ Do not use `chrome --headless --window-size=390,...` for a phone layout: Chrome 
 about 500px wide, so the page lays out at 500 and the PNG is a 390px crop of it. That looks
 exactly like an overflow bug and is not one.
 
+A full-page capture lays sticky bars out as if the page were never scrolled (the footer lands 800px
+down, the grain covers only the first screen), so it cannot show what a visitor sees mid-page. Use
+`--fold` for the first viewport, `--scroll 900` for a scrolled one, and
+`--click '#projects > button' /` to open a home section first; each captures one viewport as it
+stands. `--media print /resume` renders with the print stylesheet. When an inner page is meant to
+match the home page, shoot the open home section and the inner page at the same viewport and
+compare them side by side.
+
 ## 3. In-page inspection (DevTools console or browser eval)
 
 **Why:** Lighthouse is a simulation; the Performance API is the browser's *own accounting* of the

@@ -1,10 +1,20 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import { JsonLd, breadcrumbList } from "../JsonLd"
-import { GridRow, PageHeader, SiteFooter, SiteNav } from "../SiteChrome"
+import { PageShell } from "../PageShell"
+import {
+  ChipList,
+  ContactSection,
+  ENTRY_TITLE,
+  EntryRow,
+  HeroFacts,
+  PageHero,
+  PageSection,
+  Pills,
+  RailLinks,
+  type ChipLink,
+} from "../SiteChrome"
 import { AUTHOR, RESUME_PDF, SITE_URL, absoluteUrl } from "../site"
-import { Head } from "../writing/Prose"
-import { WritingStyle } from "../writing/WritingStyle"
 import { EDUCATION, EXPERIENCE, PROJECTS, PUBLICATIONS, SKILLS, SUMMARY, type ResumeLink } from "./resume-data"
 
 // The resume as a page, not only as a PDF. A PDF is what a recruiter forwards;
@@ -12,6 +22,11 @@ import { EDUCATION, EXPERIENCE, PROJECTS, PUBLICATIONS, SKILLS, SUMMARY, type Re
 // pinch-zooming, and what can link each claim to the case study behind it.
 // Both are served from this origin and built from the same facts
 // (./resume-data.ts mirrors the PDF).
+//
+// Laid out as the home page's Experience and Education sections, opened: the
+// same rows, with dates in the margin, "Role @Company" as the h3, and the
+// stack and links in the rail. The one thing a resume needs that the home page
+// does not is bullets, which use the site's "+" as their marker.
 const TITLE = "Resume: founding engineer, AI systems and APIs"
 const DESCRIPTION =
   "Resume of Rushir Bhavsar: founding software engineer at sushrutalgs.ai, previously OpenEye (Cadence) and Talin Labs. Production RAG, API gateways, ML pipelines. PDF included."
@@ -57,245 +72,192 @@ const GRAPH = [
   },
 ]
 
-function ResumeLinks({ links }: { links: ResumeLink[] }) {
-  if (links.length === 0) return null
-  return (
-    <ul className="mt-3 flex flex-wrap gap-x-5 gap-y-1.5 mono text-[12px] xs:text-[13px]">
-      {links.map((l) => {
-        const external = l.href.startsWith("http")
-        return (
-          <li key={l.href}>
-            {external ? (
-              <a
-                href={l.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="accent-link accent"
-                data-lead={l.href.includes("github.com") ? "github" : undefined}
-              >
-                {l.label} <span aria-hidden>↗</span>
-              </a>
-            ) : (
-              <Link href={l.href} className="accent-link accent">
-                {l.label} <span aria-hidden>&rarr;</span>
-              </Link>
-            )}
-          </li>
-        )
-      })}
-    </ul>
-  )
-}
+// A chip marks where it goes by its arrow; the lead name is for GA4.
+const chips = (links: ResumeLink[]): ChipLink[] =>
+  links.map((l) => ({ ...l, lead: l.href.includes("github.com") ? "github" : undefined }))
 
-const BULLETS = "plus-list mono text-[13px] xs:text-[14px] leading-relaxed max-w-[70ch]"
-const ENTRY_TITLE = "display text-[19px] xs:text-[23px] font-light tracking-tight leading-tight"
+const BULLETS = "plus-list mono text-[14px] xs:text-[15px] leading-relaxed max-w-[58ch] mt-3 xs:mt-5"
+// The accent line the home page sets under a degree (its focus area).
+const SUBLINE = "display accent font-light tracking-tight text-[16px] lg:text-lg mt-1.5 xs:mt-2"
 
 export default function ResumePage() {
   return (
-    <main className="paper grain min-h-[100svh]">
-      <WritingStyle />
+    <PageShell current="/resume">
       <JsonLd data={GRAPH} />
 
-      <div className="max-w-[1100px] mx-auto px-6 lg:px-12">
-        <div className="no-print">
-          <SiteNav current="/resume" />
-        </div>
+      <PageHero
+        title={AUTHOR.name}
+        aside={
+          <>
+            <HeroFacts items={[EXPERIENCE[0].title, "Updated Sep 2026"]} />
+            <ChipList
+              stackFrom="lg"
+              className="mt-4 no-print"
+              links={[
+                { label: "download pdf", href: RESUME_PDF, lead: "resume_pdf", download: true },
+                { label: "email", href: `mailto:${AUTHOR.email}`, lead: "email" },
+                { label: "linkedin", href: AUTHOR.linkedin, lead: "linkedin" },
+                { label: "github", href: AUTHOR.github, lead: "github" },
+              ]}
+            />
+          </>
+        }
+      >
+        {SUMMARY}
+      </PageHero>
 
-        <PageHeader label="Resume" title={AUTHOR.name}>
-          <p className="display font-light text-[16px] xs:text-[18px] leading-[1.55] muted max-w-[64ch] mt-5">
-            {SUMMARY}
-          </p>
-          <div className="mt-6 flex flex-wrap gap-2.5 mono no-print">
-            <a href={RESUME_PDF} className="cta-solid" data-lead="resume_pdf" download>
-              Download PDF <span aria-hidden>&darr;</span>
-            </a>
-            <a href={`mailto:${AUTHOR.email}`} className="footer-cta" data-lead="email">
-              Email
-            </a>
-            <a
-              href={AUTHOR.linkedin}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="footer-cta"
-              data-lead="linkedin"
-            >
-              LinkedIn <span aria-hidden>↗</span>
-            </a>
-            <a
-              href={AUTHOR.github}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="footer-cta"
-              data-lead="github"
-            >
-              GitHub <span aria-hidden>↗</span>
-            </a>
-          </div>
-        </PageHeader>
-
-        <section>
-          <Head title="Experience" />
+      <PageSection title="Experience" count={EXPERIENCE.length}>
+        <ol className="mt-2 lg:mt-3">
           {EXPERIENCE.map((role, i) => (
-            <GridRow
+            <EntryRow
               key={role.org}
-              divider={i !== EXPERIENCE.length - 1}
-              label={
+              meta={
                 <>
-                  <span className="ink block">{role.period}</span>
-                  <span className="block mt-1">{role.place}</span>
+                  <span className={i === 0 ? "accent" : undefined}>{role.period}</span>
+                  <span className="muted">{role.place}</span>
+                </>
+              }
+              rail={
+                <>
+                  <Pills items={role.stack} />
+                  {role.related && (
+                    <div className="no-print">
+                      <RailLinks links={chips(role.related)} />
+                    </div>
+                  )}
                 </>
               }
             >
-              <h3 className={ENTRY_TITLE}>{role.title}</h3>
-              <p className="mono text-[13px] xs:text-[14px] mt-1.5">
-                {role.orgHref ? (
-                  <a
-                    href={role.orgHref}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="accent-link accent"
-                  >
-                    {role.org}
-                  </a>
-                ) : (
-                  <span className="accent">{role.org}</span>
-                )}
-                {role.orgNote && <span className="muted">, {role.orgNote}</span>}
-              </p>
-              <ul className={`${BULLETS} mt-4`}>
+              <h3 className={ENTRY_TITLE}>
+                {role.title}
+                <span className="muted">
+                  {" "}
+                  @
+                  {role.orgHref ? (
+                    <a href={role.orgHref} target="_blank" rel="noopener noreferrer" className="accent-link">
+                      {role.org}
+                    </a>
+                  ) : (
+                    role.org
+                  )}
+                </span>
+              </h3>
+              {role.orgNote && <p className={SUBLINE}>{role.orgNote}</p>}
+              <ul className={BULLETS}>
                 {role.bullets.map((b) => (
                   <li key={b}>{b}</li>
                 ))}
               </ul>
-              {role.related && (
-                <div className="mt-5 no-print">
-                  <p className="mono small-caps faint">Case studies</p>
-                  <ResumeLinks links={role.related} />
-                </div>
-              )}
-            </GridRow>
+            </EntryRow>
           ))}
-          <div aria-hidden className="h-10 xs:h-14" />
-        </section>
+        </ol>
+      </PageSection>
 
-        <section>
-          <Head title="Projects" />
-          {PROJECTS.map((p, i) => (
-            <GridRow
+      <PageSection title="Projects" count={PROJECTS.length}>
+        <ol className="mt-2 lg:mt-3">
+          {PROJECTS.map((p) => (
+            <EntryRow
               key={p.name}
-              divider={i !== PROJECTS.length - 1}
-              label={
-                <ul className="flex flex-wrap gap-1.5">
-                  {p.stack.map((t) => (
-                    <li key={t} className="pill">
-                      {t}
-                    </li>
-                  ))}
-                </ul>
+              meta={<span>{p.what}</span>}
+              rail={
+                <>
+                  <Pills items={p.stack} />
+                  <div className="no-print">
+                    <RailLinks links={chips(p.links)} />
+                  </div>
+                </>
               }
             >
-              <h3 className={ENTRY_TITLE}>
-                {p.name}
-                <span className="muted">, {p.what.toLowerCase()}</span>
-              </h3>
-              <ul className={`${BULLETS} mt-4`}>
+              <h3 className={ENTRY_TITLE}>{p.name}</h3>
+              <ul className={BULLETS}>
                 {p.bullets.map((b) => (
                   <li key={b}>{b}</li>
                 ))}
               </ul>
-              <ResumeLinks links={p.links} />
-            </GridRow>
+            </EntryRow>
           ))}
-          <p className="mono text-[13px] xs:text-[14px] pt-2 no-print">
-            <Link href="/projects" className="accent-link accent">
-              All seven case studies <span aria-hidden>&rarr;</span>
-            </Link>
-          </p>
-          <div aria-hidden className="h-10 xs:h-14" />
-        </section>
+        </ol>
+        <p className="mono text-[14px] xs:text-[15px] pt-6 no-print">
+          <Link href="/projects" className="accent-link accent">
+            All seven case studies <span aria-hidden>&rarr;</span>
+          </Link>
+        </p>
+      </PageSection>
 
-        <section>
-          <Head title="Education" />
-          {EDUCATION.map((e, i) => (
-            <GridRow
+      <PageSection title="Education" count={EDUCATION.length}>
+        <ol className="mt-2 lg:mt-3">
+          {EDUCATION.map((e) => (
+            <EntryRow
               key={e.school}
-              divider={i !== EDUCATION.length - 1}
-              label={
+              meta={
                 <>
-                  <span className="ink block">{e.period}</span>
-                  <span className="block mt-1">{e.place}</span>
+                  <span>{e.period}</span>
+                  <span className="muted">{e.place}</span>
                 </>
               }
             >
-              <h3 className={ENTRY_TITLE}>{e.degree}</h3>
-              <p className="mono text-[13px] xs:text-[14px] mt-1.5">
-                <span className="accent">{e.school}</span>
-                {e.note && <span className="muted">, {e.note}</span>}
-              </p>
-            </GridRow>
-          ))}
-          <div aria-hidden className="h-10 xs:h-14" />
-        </section>
-
-        <section>
-          <Head title="Publications" />
-          {PUBLICATIONS.map((p, i) => (
-            <GridRow
-              key={p.href}
-              divider={i !== PUBLICATIONS.length - 1}
-              label={<span className="ink">{p.venue}</span>}
-            >
-              <h3 className="display text-[17px] xs:text-[19px] font-light tracking-tight leading-snug max-w-[60ch]">
-                <a href={p.href} target="_blank" rel="noopener noreferrer" className="accent-link">
-                  {p.title}
-                </a>
+              <h3 className={ENTRY_TITLE}>
+                {e.degree}
+                <span className="muted"> @{e.school}</span>
               </h3>
-              {p.caseStudy && (
-                <ResumeLinks links={[{ label: "Case study", href: p.caseStudy }]} />
-              )}
-            </GridRow>
+              {e.note && <p className={SUBLINE}>{e.note}</p>}
+            </EntryRow>
           ))}
-          <div aria-hidden className="h-10 xs:h-14" />
-        </section>
+        </ol>
+      </PageSection>
 
-        <section>
-          <Head title="Skills" />
-          {SKILLS.map((s, i) => (
-            <GridRow
-              key={s.group}
-              divider={i !== SKILLS.length - 1}
-              label={<span className="ink">{s.group}</span>}
-            >
-              <ul className="flex flex-wrap gap-1.5 mono">
-                {s.items.map((t) => (
-                  <li key={t} className="pill">
-                    {t}
-                  </li>
-                ))}
-              </ul>
-            </GridRow>
+      <PageSection title="Publications" count={PUBLICATIONS.length}>
+        <ol className="mt-2 lg:mt-3">
+          {PUBLICATIONS.map((p) => {
+            const links: ChipLink[] = [{ label: "paper", href: p.href }]
+            if (p.caseStudy) links.push({ label: "case study", href: p.caseStudy })
+            return (
+              <EntryRow
+                key={p.href}
+                spacing="dense"
+                meta={<span>{p.venue}</span>}
+                rail={
+                  <div className="no-print">
+                    <ChipList links={links} />
+                  </div>
+                }
+              >
+                {/* A paper title runs three times the length of a role or a
+                    project name, so it sits one step down the same scale. */}
+                <h3 className="display text-[18px] xs:text-[21px] lg:text-[23px] font-light tracking-tight leading-snug">
+                  <a href={p.href} target="_blank" rel="noopener noreferrer" className="accent-link">
+                    {p.title}
+                  </a>
+                </h3>
+              </EntryRow>
+            )
+          })}
+        </ol>
+      </PageSection>
+
+      <PageSection title="Skills" count={SKILLS.length}>
+        <ul className="mt-2 lg:mt-3">
+          {SKILLS.map((s) => (
+            <EntryRow key={s.group} spacing="compact" meta={<span>{s.group}</span>}>
+              <Pills items={s.items} />
+            </EntryRow>
           ))}
-          <div aria-hidden className="h-10 xs:h-14" />
-        </section>
+        </ul>
+      </PageSection>
 
-        <div className="next-step no-print">
-          <p className="display font-light text-[16px] xs:text-[18px] leading-[1.55] ink">
-            Want the short version of how I can help, or to start a conversation?
-          </p>
-          <div className="mt-4 flex flex-wrap gap-2.5 mono">
-            <Link href="/hire" className="footer-cta">
-              Work with me <span aria-hidden>&rarr;</span>
-            </Link>
-            <a href={`mailto:${AUTHOR.email}`} className="footer-cta" data-lead="email">
-              Email me
-            </a>
-          </div>
-        </div>
-
-        <div className="no-print">
-          <SiteFooter />
-        </div>
+      <div className="no-print">
+        <ContactSection heading="Want the short version, or to start a conversation">
+          Here is{" "}
+          <Link href="/hire" className="accent-link accent">
+            how I can help, for a role or a project
+          </Link>
+          , and every{" "}
+          <Link href="/projects" className="accent-link accent">
+            case study
+          </Link>{" "}
+          behind the lines above.
+        </ContactSection>
       </div>
-    </main>
+    </PageShell>
   )
 }

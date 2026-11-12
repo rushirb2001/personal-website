@@ -1,10 +1,21 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import { JsonLd, breadcrumbList } from "../JsonLd"
-import { SiteFooter, SiteNav, PageHeader } from "../SiteChrome"
+import { PageShell } from "../PageShell"
+import {
+  ChipList,
+  ContactSection,
+  ENTRY_BODY,
+  ENTRY_TITLE,
+  EntryRow,
+  HeroFacts,
+  PageHero,
+  PageSection,
+  Pills,
+  RailLinks,
+  type ChipLink,
+} from "../SiteChrome"
 import { AUTHOR, SITE_URL, absoluteUrl } from "../site"
-import { Head } from "../writing/Prose"
-import { WritingStyle } from "../writing/WritingStyle"
 import { PROJECT_LIST, projectLabel } from "./projects-data"
 
 // The index the case studies never had. Until this route existed the only
@@ -13,6 +24,10 @@ import { PROJECT_LIST, projectLabel } from "./projects-data"
 // indexed the home page and the writing cluster but none of the seven case
 // studies. This page gives each one a second inbound link with descriptive
 // anchor text, and gives the breadcrumb trail a real middle step.
+//
+// It is laid out as the home page's Selected Projects section, opened: the
+// same rows (type in the margin, title and blurb, stack pills and link chips
+// in the rail) under the same section head.
 const TITLE = "Case studies: RAG, ML systems and AI products"
 const DESCRIPTION =
   "Seven case studies by Rushir Bhavsar: a production RAG backend, an edge API gateway, web and iOS clients, a data pipeline, a thesis on physics-informed neural networks, and an ML platform."
@@ -78,149 +93,124 @@ const GRAPH = [
   },
 ]
 
-const ROW =
-  "grid grid-cols-1 xs:grid-cols-[clamp(80px,14vw,140px)_1fr_clamp(140px,22vw,240px)] lg:grid-cols-[140px_1fr_240px] gap-3 xs:gap-6 lg:gap-12 py-4 xs:py-6 lg:py-8 first:pt-2 xs:first:pt-3 lg:first:pt-4"
-
 export default function ProjectsIndex() {
   return (
-    <main className="paper grain min-h-[100svh]">
-      <WritingStyle />
+    <PageShell current="/projects">
       <JsonLd data={GRAPH} />
 
-      <div className="max-w-[1100px] mx-auto px-6 lg:px-12">
-        <SiteNav current="/projects" />
+      <PageHero
+        title="Systems I designed, built and shipped"
+        aside={
+          <>
+            <HeroFacts
+              items={[`${PROJECT_LIST.length} case studies`, `${OPEN_SOURCE.length} open source repositories`]}
+            />
+            <ChipList
+              stackFrom="lg"
+              className="mt-4"
+              links={[
+                { label: "work with me", href: "/hire" },
+                { label: "resume", href: "/resume" },
+              ]}
+            />
+          </>
+        }
+      >
+        Each case study covers the problem, why it is hard, the design, what it cost and where it
+        stands.
+        <span className="block mt-4 muted">
+          Five of them are parts of one product,{" "}
+          <a
+            href="https://sushrutalgs.ai/welcome"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="accent-link accent whitespace-nowrap"
+          >
+            sushrutalgs.ai <span aria-hidden className="mono text-[0.85em] align-middle">↗</span>
+          </a>
+          , which is live in production.
+        </span>
+      </PageHero>
 
-        <PageHeader label="Work" title="Systems I designed, built and shipped">
-          <p className="mt-5 leading-relaxed text-[14px] xs:text-[15px] max-w-[62ch] mono">
-            Each case study covers the problem, why it is hard, the design, what it cost and where it
-            stands. Five of them are parts of one product,{" "}
-            <a
-              href="https://sushrutalgs.ai/welcome"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="accent-link accent"
-            >
-              sushrutalgs.ai
-            </a>
-            , which is live in production.
-          </p>
-        </PageHeader>
-
-        <section>
-          <Head title="Case studies" />
-          <ol className="mt-2 lg:mt-3">
-            {PROJECT_LIST.map((d, i) => (
-              <li
+      <PageSection title="Case studies" count={PROJECT_LIST.length}>
+        <ol className="mt-2 lg:mt-3">
+          {PROJECT_LIST.map((d) => {
+            const repo = d.repoStatus === "public" ? d.links.find((l) => l.href.includes("github.com")) : undefined
+            const links: ChipLink[] = [{ label: "case study", href: `/projects/${d.slug}` }]
+            if (repo) links.push({ label: "github", href: repo.href, lead: "github" })
+            return (
+              <EntryRow
                 key={d.slug}
-                className={`${ROW} ${i !== PROJECT_LIST.length - 1 ? "border-b rule" : ""}`}
+                spacing="dense"
+                meta={
+                  <>
+                    <span>{d.type}</span>
+                    {d.place && <span className="muted">{d.place}</span>}
+                  </>
+                }
+                rail={
+                  <>
+                    <Pills items={d.stack.slice(0, 5)} />
+                    <RailLinks links={links} />
+                    {!repo && <p className="mono text-[12px] muted">Private repo, walkthrough on request</p>}
+                  </>
+                }
               >
-                <div className="mono text-[12px] xs:text-[13px] leading-snug ink xs:pt-2 lg:pt-[10px] flex xs:flex-col items-baseline gap-3 xs:gap-1.5">
-                  <span>{d.type}</span>
-                  {d.place && <span className="muted">{d.place}</span>}
-                </div>
+                <h3 className={ENTRY_TITLE}>
+                  <Link href={`/projects/${d.slug}`} className="accent-link">
+                    {projectLabel(d)}
+                  </Link>
+                </h3>
+                <p className={`${ENTRY_BODY} mt-2 xs:mt-5`}>{d.seoDescription ?? d.tagline}</p>
+              </EntryRow>
+            )
+          })}
+        </ol>
+      </PageSection>
 
-                <div>
-                  <h3 className="display text-[21px] xs:text-[26px] lg:text-3xl font-light tracking-tight leading-tight">
-                    <Link href={`/projects/${d.slug}`} className="accent-link">
-                      {projectLabel(d)}
-                    </Link>
-                  </h3>
-                  <p className="mt-2 xs:mt-4 leading-relaxed text-[14px] xs:text-[15px] max-w-[58ch] mono">
-                    {d.seoDescription ?? d.tagline}
-                  </p>
-                  <p className="xs:hidden mt-3">
-                    <Link
-                      href={`/projects/${d.slug}`}
-                      className="accent-link accent mono text-[12px] font-light whitespace-nowrap"
-                    >
-                      read the case study <span aria-hidden>&rarr;</span>
-                    </Link>
-                  </p>
-                </div>
+      <PageSection title="Open source" count={OPEN_SOURCE.length}>
+        <ol className="mt-2 lg:mt-3">
+          {OPEN_SOURCE.map((p) => (
+            <EntryRow
+              key={p.name}
+              spacing="dense"
+              meta={<span>{p.meta}</span>}
+              rail={
+                <>
+                  <Pills items={p.stack} />
+                  <RailLinks links={[{ label: "github", href: p.href, lead: "github" }]} />
+                </>
+              }
+            >
+              <h3 className={ENTRY_TITLE}>
+                <a
+                  href={p.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="accent-link"
+                  data-lead="github"
+                >
+                  {p.title}
+                </a>
+              </h3>
+              <p className={`${ENTRY_BODY} mt-2 xs:mt-5`}>{p.blurb}</p>
+            </EntryRow>
+          ))}
+        </ol>
+      </PageSection>
 
-                <div className="hidden xs:block xs:pt-2 lg:pt-[10px] xs:space-y-5">
-                  <div>
-                    <p className="mono small-caps faint mb-1.5">Built with</p>
-                    <ul className="flex flex-wrap gap-1.5 mono">
-                      {d.stack.slice(0, 5).map((t) => (
-                        <li key={t} className="pill">
-                          {t}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                  <div>
-                    <p className="mono small-caps faint mb-1.5">Code</p>
-                    <p className="mono text-[13px] muted">
-                      {d.repoStatus === "public" ? "Public repository" : "Private, walkthrough on request"}
-                    </p>
-                  </div>
-                </div>
-              </li>
-            ))}
-          </ol>
-          <div aria-hidden className="h-14 xs:h-20" />
-        </section>
-
-        <section>
-          <Head title="Open source" />
-          <ol className="mt-2 lg:mt-3">
-            {OPEN_SOURCE.map((p, i) => (
-              <li
-                key={p.name}
-                className={`${ROW} ${i !== OPEN_SOURCE.length - 1 ? "border-b rule" : ""}`}
-              >
-                <div className="mono text-[12px] xs:text-[13px] leading-snug ink xs:pt-2 lg:pt-[10px]">
-                  {p.meta}
-                </div>
-                <div>
-                  <h3 className="display text-[21px] xs:text-[26px] lg:text-3xl font-light tracking-tight leading-tight">
-                    <a
-                      href={p.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="accent-link"
-                      data-lead="github"
-                    >
-                      {p.title}
-                    </a>
-                  </h3>
-                  <p className="mt-2 xs:mt-4 leading-relaxed text-[14px] xs:text-[15px] max-w-[58ch] mono">
-                    {p.blurb}
-                  </p>
-                </div>
-                <div className="hidden xs:block xs:pt-2 lg:pt-[10px]">
-                  <p className="mono small-caps faint mb-1.5">Built with</p>
-                  <ul className="flex flex-wrap gap-1.5 mono">
-                    {p.stack.map((t) => (
-                      <li key={t} className="pill">
-                        {t}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </li>
-            ))}
-          </ol>
-          <div aria-hidden className="h-10 xs:h-14" />
-        </section>
-
-        <div className="next-step">
-          <p className="display font-light text-[16px] xs:text-[18px] leading-[1.55] ink">
-            Hiring for an AI engineering role, or have a system like one of these to build?
-          </p>
-          <div className="mt-4 flex flex-wrap gap-2.5 mono">
-            <Link href="/hire" className="cta-solid">
-              Work with me <span aria-hidden>&rarr;</span>
-            </Link>
-            <Link href="/resume" className="footer-cta">
-              Resume
-            </Link>
-          </div>
-        </div>
-
-        <SiteFooter />
-      </div>
-    </main>
+      <ContactSection heading="Have a system like one of these to build">
+        I am open to AI Engineer, Forward-Deployed Engineer and Product Manager roles, and to contract
+        builds. Here is{" "}
+        <Link href="/hire" className="accent-link accent">
+          how I can help
+        </Link>{" "}
+        and my{" "}
+        <Link href="/resume" className="accent-link accent">
+          full resume
+        </Link>
+        .
+      </ContactSection>
+    </PageShell>
   )
 }

@@ -62,11 +62,13 @@ export const RESUME_PDF = "/rushir-bhavsar-resume.pdf"
 
 // The site's top-level routes, in nav order. SiteChrome renders this on every
 // inner page and the home footer reads it too, so a new section is one entry.
+// `short` is the tab's label on phones, where four full words do not fit
+// beside the name (the home page's section tabs shorten the same way).
 export const SITE_NAV = [
-  { href: "/projects", label: "Projects" },
-  { href: "/writing", label: "Writing" },
-  { href: "/resume", label: "Resume" },
-  { href: "/hire", label: "Hire me" },
+  { href: "/projects", label: "Projects", short: "Work" },
+  { href: "/writing", label: "Writing", short: "Notes" },
+  { href: "/resume", label: "Resume", short: "CV" },
+  { href: "/hire", label: "Hire me", short: "Hire" },
 ] as const
 
 export function absoluteUrl(path: string): string {

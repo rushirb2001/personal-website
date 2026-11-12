@@ -5,6 +5,9 @@
 //   pnpm shot -v phone /projects             one viewport
 //   pnpm shot -o http://localhost:3111 /     another origin
 //   pnpm shot --out /tmp/shots /             where the PNGs go (default .shots/)
+//   pnpm shot --click '#projects > button' / click first (open a home section)
+//   pnpm shot --scroll 900 --fold /resume    one viewport, scrolled: sticky bars
+//   pnpm shot --media print /resume          the print stylesheet
 //
 // Why this exists: `chrome --headless --window-size=390,...` cannot produce a
 // phone layout. Chrome clamps a window to about 500px wide, so the page lays
@@ -28,12 +31,25 @@ const VIEWPORTS = {
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
 
 function parseArgs(argv) {
-  const opts = { routes: [], viewports: ["phone", "desktop"], origin: "http://localhost:3000", out: ".shots" }
+  const opts = {
+    routes: [],
+    viewports: ["phone", "desktop"],
+    origin: "http://localhost:3000",
+    out: ".shots",
+    click: null,
+    scroll: 0,
+    fold: false,
+    media: null,
+  }
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i]
     if (a === "-v" || a === "--viewport") opts.viewports = argv[++i].split(",")
     else if (a === "-o" || a === "--origin") opts.origin = argv[++i].replace(/\/$/, "")
     else if (a === "--out") opts.out = argv[++i]
+    else if (a === "--click") opts.click = argv[++i]
+    else if (a === "--scroll") opts.scroll = Number(argv[++i])
+    else if (a === "--fold") opts.fold = true
+    else if (a === "--media") opts.media = argv[++i]
     else opts.routes.push(a)
   }
   if (opts.routes.length === 0) opts.routes.push("/")
@@ -62,12 +78,30 @@ async function main() {
           urls: ["*googletagmanager.com*", "*google-analytics.com*", "*/_vercel/insights/*", "*/_vercel/speed-insights/*", "*va.vercel-scripts.com*"],
         })
         await s.send("Emulation.setDeviceMetricsOverride", viewport)
+        if (opts.media) await s.send("Emulation.setEmulatedMedia", { media: opts.media })
         const loaded = s.once("Page.loadEventFired", 30000)
         await s.send("Page.navigate", { url: opts.origin + route })
         await loaded
         // Let fonts land and entrance animations finish before the capture.
         await s.send("Runtime.evaluate", { expression: "document.fonts.ready.then(() => 1)", awaitPromise: true })
         await sleep(1500)
+        // --click: a state the URL cannot reach (an open accordion section).
+        // Selectors come from this command line, never from a page.
+        if (opts.click) {
+          const { result: hit } = await s.send("Runtime.evaluate", {
+            returnByValue: true,
+            expression: `(() => { const el = document.querySelector(${JSON.stringify(opts.click)}); if (!el) return false; el.click(); return true })()`,
+          })
+          if (!hit.value) throw new Error(`--click: nothing matches ${opts.click} on ${route}`)
+          await sleep(1800)
+        }
+        // --scroll: instant, so the capture is not taken mid-glide.
+        if (opts.scroll) {
+          await s.send("Runtime.evaluate", {
+            expression: `window.scrollTo({ top: ${opts.scroll}, behavior: "instant" })`,
+          })
+          await sleep(400)
+        }
         const { result } = await s.send("Runtime.evaluate", {
           returnByValue: true,
           expression: `({
@@ -77,11 +111,20 @@ async function main() {
           })`,
         })
         const { w, h, vw } = result.value
-        const { data } = await s.send("Page.captureScreenshot", {
-          format: "png",
-          captureBeyondViewport: true,
-          clip: { x: 0, y: 0, width: viewport.width, height: Math.min(h, 12000), scale: 1 },
-        })
+        // --fold (and any click or scroll) captures the viewport as it stands,
+        // which is the only way to see sticky bars where a visitor sees them:
+        // a full-page capture lays them out as if the page were never scrolled.
+        const viewportOnly = opts.fold || opts.click || opts.scroll
+        const { data } = await s.send(
+          "Page.captureScreenshot",
+          viewportOnly
+            ? { format: "png" }
+            : {
+                format: "png",
+                captureBeyondViewport: true,
+                clip: { x: 0, y: 0, width: viewport.width, height: Math.min(h, 12000), scale: 1 },
+              },
+        )
         const slug = route === "/" ? "home" : route.replace(/^\//, "").replace(/[^a-z0-9]+/gi, "-")
         const file = path.join(opts.out, `${slug}.${name}.png`)
         await writeFile(file, Buffer.from(data, "base64"))

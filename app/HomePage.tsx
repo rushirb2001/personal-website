@@ -6,7 +6,8 @@ import { useEffect, useRef, useState, type ReactNode } from "react"
 import { motion, MotionConfig, type Variants } from "motion/react"
 import { TocNav } from "./TocNav"
 import { cssEase, rise, springs, stagger } from "./motion"
-import { RESUME_PDF, SITE_NAV } from "./site"
+import { SiteFooterBar } from "./SiteChrome"
+import { RESUME_PDF } from "./site"
 import { DOCUMENT_ICON, GITHUB_ICON, LINKEDIN_ICON, STACK_ICONS, StackIcon } from "./stack-icons"
 
 // Every Motion entrance on this page animates a transform STRING and opacity
@@ -1204,40 +1205,11 @@ export default function HomePage({ caseStudySlugs }: { caseStudySlugs: string[] 
               animate={{ opacity: 1, transform: "translateY(0px)" }}
               transition={{ ...springs.reveal, delay: 0.42 }}
             >
-              <p className="muted whitespace-nowrap">
-                <span className="faint">© 2026 </span>Rushir Bhavsar
-              </p>
-              {/* The site's other routes. This footer is sticky, so these are
-                  on screen for the whole visit, and they are the landing
-                  page's only persistent links to /projects, /resume and
-                  /hire. "Hire me" is the chip because it is the action; the
-                  rest are plain links. Phones keep just the last two: the
-                  first two are already reachable from the sections above. */}
-              <nav aria-label="Site">
-                <ul className="flex items-center gap-x-4 small-caps">
-                  {SITE_NAV.map((item) =>
-                    item.href === "/hire" ? (
-                      <li key={item.href}>
-                        <Link href={item.href} className="footer-cta mono">
-                          {item.label}
-                        </Link>
-                      </li>
-                    ) : (
-                      <li
-                        key={item.href}
-                        className={item.href === "/resume" ? undefined : "hidden xs:block"}
-                      >
-                        <Link href={item.href} className="accent-link muted">
-                          {item.label}
-                        </Link>
-                      </li>
-                    ),
-                  )}
-                </ul>
-              </nav>
-              <p className="small-caps faint whitespace-nowrap hidden md:block">
-                <span className="accent">+</span> Ahmedabad, India
-              </p>
+              {/* The site's other routes, shared with every inner page's
+                  footer (SiteChrome). This bar is sticky, so they are on
+                  screen for the whole visit, and they are the landing page's
+                  only persistent links to /projects, /resume and /hire. */}
+              <SiteFooterBar />
             </motion.div>
           </div>
         </footer>

@@ -4,6 +4,8 @@
 // its proof points. When the PDF changes, change this file with it: two
 // documents that disagree about a date or a number are worse than one.
 
+// Labels are short: they render as chips in a row's rail, and a chip never
+// wraps. The descriptive anchors for the case studies live on /projects.
 export type ResumeLink = { label: string; href: string }
 
 export type ResumeRole = {
@@ -17,6 +19,8 @@ export type ResumeRole = {
       does not cover every dash, and a missing glyph swaps to a system font. */
   period: string
   bullets: string[]
+  /** Pills in the row's rail. Only technologies the bullets name. */
+  stack: string[]
   /** Case studies on this site that expand on the role. */
   related?: ResumeLink[]
 }
@@ -40,12 +44,13 @@ export const EXPERIENCE: ResumeRole[] = [
       "Shipped three client apps on one SSE contract in Next.js, SwiftUI and Jetpack Compose, live on the App Store and Google Play, with three sign-in flows (email OTP, Google, Apple) and row-level security on Postgres.",
       "Automated quality checks in CI with an 8-gate regression suite (citation integrity, hallucination, format), catching quality regressions on every change.",
     ],
+    stack: ["TypeScript", "Cloudflare Workers", "FastAPI", "Neo4j", "Qdrant", "SwiftUI"],
     related: [
-      { label: "HybridFlow, the retrieval backend", href: "/projects/hybridflow" },
-      { label: "The edge gateway", href: "/projects/sushrutalgs-bff" },
-      { label: "The web app", href: "/projects/sushrutalgs-web" },
-      { label: "The iOS app", href: "/projects/sushrutalgs-ios" },
-      { label: "Samhita, the ingestion pipeline", href: "/projects/samhita" },
+      { label: "hybridflow", href: "/projects/hybridflow" },
+      { label: "edge gateway", href: "/projects/sushrutalgs-bff" },
+      { label: "web app", href: "/projects/sushrutalgs-web" },
+      { label: "ios app", href: "/projects/sushrutalgs-ios" },
+      { label: "samhita", href: "/projects/samhita" },
     ],
   },
   {
@@ -58,6 +63,7 @@ export const EXPERIENCE: ResumeRole[] = [
       "Scaled contrastive training batches 333x, from 150 to 50K+, for antibody thermostability across five protein language models by swapping in GPU-accelerated cuML/RAFT components.",
       "Created a type-safe config framework with OmegaConf and Pydantic, catching configuration errors before runtime and making GPU hyperparameter sweeps reproducible.",
     ],
+    stack: ["PyTorch Lightning", "ESM2", "cuDF", "cuML", "OmegaConf", "Pydantic"],
   },
   {
     title: "Software Engineer Intern, GenAI",
@@ -69,6 +75,7 @@ export const EXPERIENCE: ResumeRole[] = [
       "Automated compliant supplier matching with a multi-agent LangChain pipeline pairing FAISS semantic retrieval with NAICS, SIC and ISO compliance filters.",
       "Fine-tuned Mistral-7B with QLoRA on a 4-GPU A100 cluster for procurement-aware query generation, reaching 88% accuracy on a 10K-query RAG evaluation harness.",
     ],
+    stack: ["PySpark", "Kubernetes", "LangChain", "FAISS", "pgvector", "QLoRA"],
   },
 ]
 
@@ -89,7 +96,7 @@ export const PROJECTS: ResumeProject[] = [
       "Architected a Rust control plane for git repositories as a 9-crate workspace, with one core serving a CLI, terminal UI, web UI and MCP server over a fleet-wide search index, released through v0.6.0 with CI.",
       "Designed a governed MCP API for coding agents with read-only defaults, dry-run previews for every bulk action, confirm gates on destructive operations and fast-forward-only pulls.",
     ],
-    links: [{ label: "github.com/rushirb2001/cohors", href: "https://github.com/rushirb2001/cohors" }],
+    links: [{ label: "github", href: "https://github.com/rushirb2001/cohors" }],
   },
   {
     name: "principia",
@@ -110,8 +117,8 @@ export const PROJECTS: ResumeProject[] = [
       "Cut sentiment inference latency from 276 ms to 0.11 ms by exporting the model to a NumPy-only serving path with 100% prediction parity.",
     ],
     links: [
-      { label: "Case study", href: "/projects/yelp-ml-platform" },
-      { label: "github.com/rushirb2001/yelp-ml-platform", href: "https://github.com/rushirb2001/yelp-ml-platform" },
+      { label: "case study", href: "/projects/yelp-ml-platform" },
+      { label: "github", href: "https://github.com/rushirb2001/yelp-ml-platform" },
     ],
   },
 ]

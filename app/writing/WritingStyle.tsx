@@ -3,8 +3,12 @@
 // app/HomePage.tsx and TOKENS in ProjectModal). The name is historical: it
 // started as the writing section's stylesheet and the other pages adopted it.
 //
-// The token block below matches the landing page's, so the two routes cannot
-// drift. Everything after the divider is the only genuinely new thing here: a
+// The token block below matches the landing page's (grain, link chip, accent
+// link), with one deliberate difference: .muted and .faint are a shade darker
+// here, because these pages run small text at those shades in places the
+// landing page does not and it has to clear 4.5:1 on the paper. The markup
+// that uses the tokens is in app/SiteChrome.tsx.
+// Everything after the divider is the only genuinely new thing here: a
 // prose scale, because no other route runs long-form body copy. That scale is
 // built out of the site's existing idioms rather than a generic article
 // stylesheet: paragraphs use the display face at reading size, and subheads
@@ -13,9 +17,10 @@
 export function WritingStyle() {
   return (
     <style>{`
-      /* scroll-padding-top clears the sticky section heads when a link or the
-         keyboard jumps into the middle of an article. */
-      html { scrollbar-gutter: stable; scroll-padding-top: 64px; }
+      /* scroll-padding-top clears the sticky top bar (56px) and the sticky
+         section head under it when a link or the keyboard jumps into the
+         middle of a page. */
+      html { scrollbar-gutter: stable; scroll-padding-top: 120px; }
       .paper { background-color: #f4f1ec; color: #1a1a1a; }
       .ink { color: #1a1a1a; }
       .muted { color: rgba(26,26,26,0.62); }
@@ -38,34 +43,32 @@ export function WritingStyle() {
         .accent-link:hover::after { transform: scaleX(1); }
       }
 
-      .grain {
-        background-image: radial-gradient(rgba(26,26,26,0.055) 1px, transparent 1px);
-        background-size: 22px 22px;
+      /* The home page's paper: a fine 3px dot grain laid over the whole
+         viewport, not a sparse dotted grid. Fixed and multiplied, so it reads
+         as texture in the paper rather than a pattern on it. The sticky bars
+         sit above it (z-30, z-50) on their own solid paper. */
+      .grain::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        background-image: radial-gradient(rgba(26,26,26,0.035) 1px, transparent 1px);
+        background-size: 3px 3px;
+        mix-blend-mode: multiply;
+        z-index: 1;
       }
 
-      /* ---- Shared controls (every inner page: /projects, /resume, /hire) --- */
+      /* ---- Shared controls ------------------------------------------- */
 
-      /* Outline chip, the same recipe as the landing page's .footer-cta: a
-         tinted outline for secondary actions. */
+      /* The home page's link chip, value for value: a tinted outline and
+         never a filled pill. A solid navy button would be the loudest object
+         on an otherwise quiet sheet, so no page has one. */
       .footer-cta {
         display: inline-flex; align-items: center; gap: 6px;
-        padding: 6px 12px; border-radius: 6px;
+        padding: 4px 10px; border-radius: 6px;
         color: #1f3a5f;
         background-color: rgba(31,58,95,0.07);
         border: 1px solid rgba(31,58,95,0.28);
-        text-transform: uppercase; letter-spacing: 0.12em; font-size: 11px;
-        white-space: nowrap;
-        transition: background-color 200ms ease, border-color 200ms ease;
-      }
-      /* The one filled control a page gets: its primary action (email on
-         /hire, the PDF on /resume). Never more than one per page, so it stays
-         the loudest thing on an otherwise quiet sheet. */
-      .cta-solid {
-        display: inline-flex; align-items: center; gap: 6px;
-        padding: 6px 14px; border-radius: 6px;
-        color: #f4f1ec;
-        background-color: #1f3a5f;
-        border: 1px solid #1f3a5f;
         text-transform: uppercase; letter-spacing: 0.12em; font-size: 11px;
         white-space: nowrap;
         transition: background-color 200ms ease, border-color 200ms ease;
@@ -75,9 +78,8 @@ export function WritingStyle() {
           background-color: rgba(31,58,95,0.13);
           border-color: rgba(31,58,95,0.5);
         }
-        .cta-solid:hover { background-color: #16314f; border-color: #16314f; }
       }
-      .footer-cta:focus-visible, .cta-solid:focus-visible {
+      .footer-cta:focus-visible {
         outline: 2px solid #1f3a5f; outline-offset: 2px;
       }
 
@@ -91,33 +93,13 @@ export function WritingStyle() {
         content: "+"; position: absolute; left: 0; top: 0; color: #1f3a5f;
       }
 
-      /* Technology pill, matching the case study rail's stack pills. */
-      .pill {
-        display: inline-flex; align-items: center;
-        padding: 2px 8px; border-radius: 5px;
-        font-size: 11px; line-height: 1.6; white-space: nowrap;
-        color: rgba(26,26,26,0.72);
-        background-color: rgba(26,26,26,0.045);
-        border: 1px solid rgba(26,26,26,0.1);
-      }
-
-      /* Closing card under an article or a page: where to go next. Reads as a
-         card, never as a paragraph. */
-      .next-step {
-        border: 1px solid rgba(26,26,26,0.12);
-        border-radius: 10px;
-        padding: 20px 22px;
-        background: rgba(31,58,95,0.04);
-        max-width: 70ch;
-      }
-
       @media (prefers-reduced-motion: reduce) {
-        .accent-link, .accent-link::after, .footer-cta, .cta-solid { transition: none; }
+        .accent-link, .accent-link::after, .footer-cta { transition: none; }
       }
 
       /* Printing /resume gives a clean sheet: no nav, no grain, no sticky bars. */
       @media print {
-        .grain { background-image: none; }
+        .grain::before { display: none; }
         .no-print { display: none !important; }
         .sticky { position: static !important; }
       }
