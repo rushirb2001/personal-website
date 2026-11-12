@@ -549,22 +549,34 @@ export function ProjectModal({
                       </li>
                     ))}
                   </ul>
+                  {/* In the overlay these are plain anchors, not <Link>. The
+                      overlay lives in the @modal parallel-route slot, and a
+                      slot keeps rendering its last match across a soft
+                      navigation: a <Link> to /hire would swap the page
+                      underneath and leave this modal open on top of it. The
+                      documented cure is a catch-all page in the slot, but
+                      that turns every unknown URL into a server-rendered
+                      route (the build table grows a "ƒ /[...catchAll]") and
+                      the static 404 into a function call. A full navigation
+                      closes the overlay for free. */}
                   <ul className="cs-fact-links cs-more-actions">
-                    <li>
-                      <Link href="/projects" className="cs-link-btn mono">
-                        All projects <span aria-hidden>→</span>
-                      </Link>
-                    </li>
-                    <li>
-                      <Link href="/hire" className="cs-link-btn mono">
-                        Work with me <span aria-hidden>→</span>
-                      </Link>
-                    </li>
-                    <li>
-                      <Link href="/resume" className="cs-link-btn mono">
-                        Resume <span aria-hidden>→</span>
-                      </Link>
-                    </li>
+                    {[
+                      { href: "/projects", label: "All projects" },
+                      { href: "/hire", label: "Work with me" },
+                      { href: "/resume", label: "Resume" },
+                    ].map((l) => (
+                      <li key={l.href}>
+                        {mode === "overlay" ? (
+                          <a href={l.href} className="cs-link-btn mono">
+                            {l.label} <span aria-hidden>→</span>
+                          </a>
+                        ) : (
+                          <Link href={l.href} className="cs-link-btn mono">
+                            {l.label} <span aria-hidden>→</span>
+                          </Link>
+                        )}
+                      </li>
+                    ))}
                   </ul>
                 </nav>
               )}
