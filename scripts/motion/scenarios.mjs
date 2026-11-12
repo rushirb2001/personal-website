@@ -66,7 +66,7 @@ export const SCENARIOS = [
       await p.goto("/")
       await openSection(p, "experience")
     },
-    act: (p) => p.click(`${NAV} a[href="#projects"]`),
+    act: (p) => p.click(`${NAV} a[href="/projects"]`),
     windowMs: 1800,
     verify: (p) => sectionOpen(p, "projects"),
     track: ["#projects > button", "#experience-content", "#projects-content"],
@@ -78,7 +78,7 @@ export const SCENARIOS = [
       await p.goto("/")
       await openSection(p, "projects")
     },
-    act: (p) => p.click(`${NAV} a[href="#experience"]`),
+    act: (p) => p.click(`${NAV} a[href="/experience"]`),
     windowMs: 2400,
     verify: (p) => sectionOpen(p, "experience"),
     track: ["#experience > button", "#experience-content", "#projects-content"],
@@ -111,66 +111,56 @@ export const SCENARIOS = [
     track: ["#projects > button"],
   },
 
-  // ── Inner pages ─────────────────────────────────────────────────────────
-  // /projects, /writing, /resume and /hire run the landing page's accordion
-  // (app/accordion.tsx) around server-rendered rows. /resume stands in for
-  // all four: it has the most sections and the longest one.
+  // ── Section paths ───────────────────────────────────────────────────────
+  // Every section has a real path that serves the home page with it open
+  // (/projects). Arriving on one glides from the hero down to the section's
+  // head; switching sections moves the address without a navigation.
   {
-    name: "page.load",
-    description: "Inner page entrance: hero cascade, section heads, footer",
+    name: "home.arrive",
+    description: "Land on /projects: Projects open in the HTML, glide to its head",
     load: true,
-    route: "/resume",
-    windowMs: 1600,
-    track: ["main h1", "#experience > button", "main footer"],
-  },
-  {
-    name: "page.open",
-    description: "Open Experience on /resume from the closed page",
-    setup: (p) => p.goto("/resume"),
-    act: (p) => p.click("#experience > button"),
-    windowMs: 1600,
-    verify: (p) => sectionOpen(p, "experience"),
-    track: ["main h1", "#experience > button", "#experience-content", "main footer"],
-  },
-  {
-    name: "page.switch-down",
-    description: "Education open on /resume, open Skills from its head below",
-    setup: async (p) => {
-      await p.goto("/resume")
-      await openSection(p, "education")
-      await p.reveal("#skills > button")
-    },
-    act: (p) => p.click("#skills > button"),
-    windowMs: 1800,
-    verify: (p) => sectionOpen(p, "skills"),
-    track: ["#skills > button", "#education-content", "#skills-content"],
-  },
-  {
-    name: "page.close",
-    description: "Experience open on /resume, close it from its sticky head",
-    setup: async (p) => {
-      await p.goto("/resume")
-      await openSection(p, "experience")
-    },
-    act: (p) => p.click("#experience > button"),
-    windowMs: 2400,
+    route: "/projects",
+    windowMs: 2200,
     verify: (p) =>
-      p.waitFor(() => ![...document.querySelectorAll("[data-open]")].some((el) => el.dataset.open === "true") && scrollY < 5, {
-        label: "all sections closed at top",
+      p.waitFor(
+        () =>
+          document.getElementById("projects-content")?.dataset.open === "true" &&
+          Math.abs(document.getElementById("projects").getBoundingClientRect().top - 56) < 4,
+        { label: "projects open and parked under the top bar", timeout: 4000 },
+      ),
+    track: ["main h1", "#projects > button", "main footer"],
+  },
+  {
+    name: "home.address",
+    description: "Open Writing from /: the address becomes /writing, no navigation",
+    setup: (p) => p.goto("/"),
+    act: (p) => p.click("#writing > button"),
+    windowMs: 1600,
+    verify: (p) =>
+      p.waitFor(() => location.pathname === "/writing" && document.getElementById("writing-content")?.dataset.open === "true", {
+        label: "writing open at /writing",
         timeout: 3000,
       }),
-    track: ["main h1", "#experience-content", "main footer"],
+    track: ["#writing > button", "#writing-content"],
   },
   {
-    name: "page.scroll-open",
-    description: "Scroll through the open Experience list on /resume",
+    name: "home.back",
+    description: "Writing open at /writing, browser Back: closes, address returns to /",
     setup: async (p) => {
-      await p.goto("/resume")
-      await openSection(p, "experience")
+      await p.goto("/")
+      await openSection(p, "writing")
     },
-    act: (p) => p.scrollGesture({ distance: 1400 }),
-    windowMs: 400,
-    track: ["#experience > button"],
+    act: (p) => p.evaluate(() => history.back()),
+    windowMs: 2400,
+    verify: (p) =>
+      p.waitFor(
+        () =>
+          location.pathname === "/" &&
+          ![...document.querySelectorAll("[data-open]")].some((el) => el.dataset.open === "true") &&
+          scrollY < 5,
+        { label: "closed at / after Back", timeout: 3000 },
+      ),
+    track: ["main h1", "#writing-content", "main footer"],
   },
 
   // ── Case study ──────────────────────────────────────────────────────────
@@ -197,7 +187,11 @@ export const SCENARIOS = [
     act: (p) => p.key("Escape"),
     windowMs: 1000,
     verify: (p) =>
-      p.waitFor(() => location.pathname === "/" && !document.querySelector(".modal-card"), { label: "back on home" }),
+      // Back to /projects, not /: the case study was opened from the Projects
+      // section, and an open section is its own address.
+      p.waitFor(() => location.pathname === "/projects" && !document.querySelector(".modal-card"), {
+        label: "back on the home page at /projects",
+      }),
     track: [".modal-backdrop", ".modal-card"],
   },
   {

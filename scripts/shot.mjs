@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 // Full-page screenshots at a real emulated viewport.
 //
-//   pnpm shot /hire /resume                  phone + desktop, against :3000
+//   pnpm shot / /writing                     phone + desktop, against :3000
 //   pnpm shot -v phone /projects             one viewport
+//   pnpm shot -v 360x640,1280x720 --fold /   any size: does the closed page fit?
 //   pnpm shot -o http://localhost:3111 /     another origin
 //   pnpm shot --out /tmp/shots /             where the PNGs go (default .shots/)
 //   pnpm shot --click '#projects > button' / click first (open a home section)
@@ -54,7 +55,14 @@ function parseArgs(argv) {
   }
   if (opts.routes.length === 0) opts.routes.push("/")
   for (const v of opts.viewports) {
-    if (!VIEWPORTS[v]) throw new Error(`Unknown viewport "${v}". Use: ${Object.keys(VIEWPORTS).join(", ")}`)
+    // "360x640" is a one-off size: the closed home page has to fit small
+    // phones and short laptop windows, and the three presets are neither.
+    const m = /^(\d+)x(\d+)$/.exec(v)
+    if (m) {
+      const width = Number(m[1])
+      VIEWPORTS[v] = { width, height: Number(m[2]), deviceScaleFactor: width < 700 ? 2 : 1, mobile: width < 700 }
+    }
+    if (!VIEWPORTS[v]) throw new Error(`Unknown viewport "${v}". Use: ${Object.keys(VIEWPORTS).join(", ")} or WxH`)
   }
   return opts
 }

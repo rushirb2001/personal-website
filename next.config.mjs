@@ -63,14 +63,6 @@ const nextConfig = {
       // instead of landing on a 404. `:path*` also matches /playbook itself.
       { source: "/playbook/:path*", destination: "/", permanent: true },
       { source: "/buy", destination: "/", permanent: true },
-      // The addresses people guess. Each lands on the page that answers it
-      // instead of the 404.
-      { source: "/contact", destination: "/hire", permanent: true },
-      { source: "/about", destination: "/", permanent: true },
-      { source: "/cv", destination: "/resume", permanent: true },
-      { source: "/resume.pdf", destination: "/rushir-bhavsar-resume.pdf", permanent: true },
-      { source: "/work", destination: "/projects", permanent: true },
-      { source: "/blog", destination: "/writing", permanent: true },
     ]
   },
 }

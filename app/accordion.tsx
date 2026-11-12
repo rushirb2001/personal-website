@@ -1,27 +1,25 @@
 "use client"
 
-import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from "react"
+import { useEffect, useRef, useState, type ReactNode } from "react"
 import { motion, MotionConfig, type Variants } from "motion/react"
 import { cssEase, rise, springs, stagger } from "./motion"
 
-// The accordion every page on the site is built on: a hero, a list of section
-// heads, and one section open at a time, with the scroll choreographed around
-// each open, switch and close. It was written inside app/HomePage.tsx and
-// lives here so the inner pages (/projects, /writing, /resume, /hire) run the
-// SAME code as the landing page rather than an imitation of it.
+// The home page's accordion: a hero, a list of section heads, and one section
+// open at a time, with the scroll choreographed around each open, switch and
+// close. It was written inside app/HomePage.tsx and lives here so that file
+// is content and this one is behaviour.
 //
-// Three layers:
 //   useAccordion()            the state and the scroll choreography
-//   Section / SectionHead     one collapsible section
-//   AccordionPage             the whole page frame, for inner pages
-// plus the Motion variants and the small wrappers (RowList, RowItem,
-// HeroStagger, HeroItem) that give server-rendered content the landing page's
-// entrances. HomePage composes the first two itself, around its own hero.
+//   Section                   one collapsible section and its head
+//   the variants              hero, section-head and row entrances
+//   HeroStagger / HeroItem / FooterRise / MotionRoot
+//                             the same entrances for an article page, whose
+//                             content is rendered on the server
 //
 // The choreography is deliberately asymmetric and sequenced. The invariants
 // are documented in CLAUDE.md ("Routes & key files", app/HomePage.tsx); read
 // them before changing anything in useAccordion, and measure with
-// `pnpm motion` (home.* and page.* flows), never by eye.
+// `pnpm motion`, never by eye.
 
 // ---- Variants ---------------------------------------------------------------
 
@@ -174,8 +172,10 @@ export const ACCORDION_CSS = `
 const prefersReduced = () =>
   typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches
 
-export function useAccordion() {
-  const [openSection, setOpenSection] = useState<string | null>(null)
+// `initialSection` is the section the route addresses (/projects), open from
+// the first render, so the server HTML for that path has it expanded.
+export function useAccordion(initialSection: string | null = null) {
+  const [openSection, setOpenSection] = useState<string | null>(initialSection)
   // True when the open section should GROW in (upward section switch, where
   // the scroll has already landed) instead of snapping its height open (fresh
   // open, where the scroll still needs the room to exist).
@@ -400,14 +400,30 @@ export function useAccordion() {
 
   const goHome = () => closeToTop()
 
+  // Arriving on a section's path: the section is already open in the HTML,
+  // under the hero. Give the hero a beat, then glide down to the section's
+  // head, which is where a click on that head would have left the viewport.
+  // Nothing changes size during this glide (the section opened before first
+  // paint), so the target is a plain offsetTop read. A scroll position that
+  // is already past the top is one the browser restored on Back: leave it.
+  useEffect(() => {
+    if (!initialSection) return
+    const timer = setTimeout(() => {
+      if (window.scrollY > 40) return
+      const el = document.getElementById(initialSection)
+      if (!el) return
+      lockScroll(1400)
+      window.scrollTo({ top: Math.max(0, el.offsetTop - 56), behavior: prefersReduced() ? "instant" : "smooth" })
+    }, 500)
+    return () => clearTimeout(timer)
+    // Mount only: this is about how the page was entered.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   return { openSection, softOpen, homeClosing, toggleSection, goHome, heroWrapRef, heroSectionRef }
 }
 
 // ---- Section ----------------------------------------------------------------
-
-// Whether the enclosing section is open. `null` means "not inside an
-// accordion" (an article page), where rows render in place with no cascade.
-const SectionOpenContext = createContext<boolean | null>(null)
 
 export function Section({
   id,
@@ -457,7 +473,7 @@ export function Section({
       >
         <div className="section-content">
           <div className="pt-4 xs:pt-6 pb-14 xs:pb-20 min-h-[calc(100vh-9rem)] flex flex-col justify-center">
-            <SectionOpenContext.Provider value={open}>{children}</SectionOpenContext.Provider>
+            {children}
           </div>
         </div>
       </div>
@@ -516,50 +532,7 @@ function SectionHead({
   )
 }
 
-// ---- Entrance wrappers for server-rendered content --------------------------
-
-// A section's list of rows. Inside an accordion it re-arms the row cascade
-// each time the section opens; outside one it is a plain list.
-export function RowList({
-  as = "ol",
-  className = "mt-2 lg:mt-3",
-  children,
-}: {
-  as?: "ol" | "ul" | "div"
-  className?: string
-  children: ReactNode
-}) {
-  const open = useContext(SectionOpenContext)
-  if (open === null) {
-    const Tag = as
-    return <Tag className={className}>{children}</Tag>
-  }
-  const Tag = motion[as]
-  return (
-    <Tag className={className} variants={rowListVariants} initial="hidden" animate={open ? "visible" : "hidden"}>
-      {children}
-    </Tag>
-  )
-}
-
-// One row. Takes its cue from the RowList above it; with no RowList (or none
-// inside an accordion) it has nothing to inherit and simply renders.
-export function RowItem({
-  as = "li",
-  className,
-  children,
-}: {
-  as?: "li" | "div"
-  className?: string
-  children: ReactNode
-}) {
-  const Tag = motion[as]
-  return (
-    <Tag data-reveal className={className} variants={rowItemVariants}>
-      {children}
-    </Tag>
-  )
-}
+// ---- Entrances for an article page ------------------------------------------
 
 // The hero cascade: the first HeroItem lands at delay 0, the rest follow.
 export function HeroStagger({ className, children }: { className?: string; children: ReactNode }) {
@@ -607,83 +580,4 @@ export function FooterRise({ className, children }: { className?: string; childr
 // it (see PageShell).
 export function MotionRoot({ children }: { children: ReactNode }) {
   return <MotionConfig reducedMotion="user">{children}</MotionConfig>
-}
-
-// ---- The page frame, for inner pages ----------------------------------------
-
-export type AccordionSection = {
-  id: string
-  title: string
-  count?: number
-  content: ReactNode
-}
-
-// The landing page's frame around server-rendered parts: the closed page is a
-// full-height column with the hero centred in the space above the section
-// heads; opening a section gives that space up and glides the head to the top
-// bar. `nav`, `hero`, `footer` and each section's `content` arrive already
-// rendered from the server route, so the only client code here is the
-// accordion itself.
-export function AccordionPage({
-  nav,
-  hero,
-  sections,
-  footer,
-}: {
-  nav: ReactNode
-  hero: ReactNode
-  sections: AccordionSection[]
-  footer: ReactNode
-}) {
-  const { openSection, softOpen, homeClosing, toggleSection, heroWrapRef, heroSectionRef } = useAccordion()
-
-  return (
-    <MotionConfig reducedMotion="user">
-      <main className="paper min-h-screen">
-        <style>{ACCORDION_CSS}</style>
-        <div
-          // Asymmetric like the sections, in reverse: min-height ANIMATES away
-          // on open (the centering glide) but SNAPS back to 100svh on close.
-          // If it animated on close too, the collapsing content outruns the
-          // growing min-height and the document dips below the viewport for a
-          // few frames: the footer visibly rides up and drops back.
-          className={`grain relative z-0 flex flex-col motion-safe:transition-[min-height] motion-safe:duration-[350ms] motion-safe:ease-[cubic-bezier(0.22,1,0.36,1)] ${
-            openSection === null ? "min-h-[100svh]" : "min-h-0"
-          }`}
-          style={openSection === null ? { transitionProperty: "none" } : undefined}
-          data-home-close={homeClosing ? "" : undefined}
-        >
-          {nav}
-
-          {/* Centred in the leftover space while closed (sm+). Phones flow
-              from the top and collect the leftover under the section list,
-              as the landing page does. */}
-          <div ref={heroWrapRef} className="sm:flex-1 flex flex-col sm:justify-center">
-            <section ref={heroSectionRef} className="w-full max-w-[1100px] mx-auto px-6 lg:px-12">
-              {hero}
-            </section>
-          </div>
-
-          <div className="mb-auto sm:mb-0">
-            {sections.map((s, i) => (
-              <Section
-                key={s.id}
-                id={s.id}
-                title={s.title}
-                count={s.count}
-                index={i}
-                open={openSection === s.id}
-                soft={softOpen}
-                onToggle={() => toggleSection(s.id)}
-              >
-                {s.content}
-              </Section>
-            ))}
-          </div>
-
-          {footer}
-        </div>
-      </main>
-    </MotionConfig>
-  )
 }

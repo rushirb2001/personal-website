@@ -60,16 +60,31 @@ export const AUTHOR = {
 // Replace the file in place to update it; the URL is the stable part.
 export const RESUME_PDF = "/rushir-bhavsar-resume.pdf"
 
-// The site's top-level routes, in nav order. SiteChrome renders this on every
-// inner page and the home footer reads it too, so a new section is one entry.
-// `short` is the tab's label on phones, where four full words do not fit
-// beside the name (the home page's section tabs shorten the same way).
-export const SITE_NAV = [
-  { href: "/projects", label: "Projects", short: "Work" },
-  { href: "/writing", label: "Writing", short: "Notes" },
-  { href: "/resume", label: "Resume", short: "CV" },
-  { href: "/hire", label: "Hire me", short: "Hire" },
+// The home page's sections, in order. This is the whole of the site's
+// navigation, and each section has a real path: /projects is the home page
+// with Projects open, served as its own static route (app/projects/page.tsx)
+// with its own title. The top bar's tabs are links to those paths, on the
+// home page and on an article alike.
+//
+// There is one page of content and five ways into it, on purpose. /resume and
+// /hire existed briefly as separate pages and each restated a section, so the
+// same roles, projects and contact details lived in two or three places. A
+// new kind of information gets a section here, or a row in one, not a page.
+// `short` is the tab's label on phones.
+export const HOME_SECTIONS = [
+  { id: "experience", label: "Experience", short: "Exp" },
+  { id: "projects", label: "Projects", short: "Proj" },
+  { id: "writing", label: "Writing", short: "Notes" },
+  { id: "education", label: "Education", short: "Edu" },
+  { id: "contact", label: "Contact", short: "Hi" },
 ] as const
+
+export type HomeSectionId = (typeof HOME_SECTIONS)[number]["id"]
+
+/** The section a path addresses: "/projects" is "projects", "/" is null. */
+export function sectionFromPath(pathname: string | null): HomeSectionId | null {
+  return HOME_SECTIONS.find((s) => `/${s.id}` === pathname)?.id ?? null
+}
 
 export function absoluteUrl(path: string): string {
   return new URL(path, SITE_URL).toString()

@@ -29,6 +29,7 @@ function xml(s: string): string {
 
 export function GET(): Response {
   const feedUrl = absoluteUrl("/writing/rss.xml")
+  // The posts are listed in the home page's Writing section, at /writing.
   const indexUrl = absoluteUrl("/writing")
 
   // Newest first, which is what every reader expects regardless of the order

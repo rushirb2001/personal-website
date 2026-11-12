@@ -2,6 +2,8 @@
 
 import Image from "next/image"
 import Link from "next/link"
+import { usePathname } from "next/navigation"
+import { useEffect, useRef, useState } from "react"
 import { motion, MotionConfig } from "motion/react"
 import {
   ACCORDION_CSS,
@@ -15,7 +17,7 @@ import {
 import { TocNav } from "./TocNav"
 import { springs } from "./motion"
 import { CHROME_CSS, SiteFooterBar } from "./SiteChrome"
-import { RESUME_PDF } from "./site"
+import { HOME_SECTIONS, RESUME_PDF, sectionFromPath } from "./site"
 import { DOCUMENT_ICON, GITHUB_ICON, LINKEDIN_ICON, STACK_ICONS, StackIcon } from "./stack-icons"
 
 // Every Motion entrance on this page animates a transform STRING and opacity
@@ -25,9 +27,16 @@ import { DOCUMENT_ICON, GITHUB_ICON, LINKEDIN_ICON, STACK_ICONS, StackIcon } fro
 // held the main thread.
 
 // The hero, section-head and row variants, the accordion's state and scroll
-// choreography, and the Section component all live in ./accordion, which the
-// inner pages share. This file is the landing page's content and its hero.
-const SECTION_ORDER = ["experience", "projects", "education", "contact"]
+// choreography, and the Section component all live in ./accordion. This file
+// is the page's content and its hero.
+//
+// This page is the whole site. Every fact about the work is stated once,
+// here, in one of five sections, and each section has its own path
+// (/projects is this page with Projects open; see HOME_SECTIONS in site.ts
+// and the route files that render HomeRoute). The only other pages are the
+// long reads the rows link to: a case study per project, an article per post.
+// Do not add a page that restates a section.
+const SECTION_ORDER: readonly string[] = HOME_SECTIONS.map((x) => x.id)
 
 const WORK = [
   {
@@ -146,6 +155,17 @@ const PROJECTS = [
     stack: ["PySpark", "FastAPI", "MLflow", "Docker", "NumPy"],
     links: [{ label: "github", href: "https://github.com/rushirb2001/yelp-ml-platform" }],
   },
+  {
+    name: "cohors",
+    platform: "",
+    slug: "cohors",
+    descShort: "One Rust core behind a CLI, TUI, web UI and MCP server for running a fleet of git repositories.",
+    type: "Open source",
+    year: "2026",
+    desc: "A control plane for a fleet of git repositories: one Rust core behind a CLI, a terminal UI, a web UI and an MCP server, so a coding agent can run bulk actions with dry-run previews and confirm gates instead of unbounded writes.",
+    stack: ["Rust", "MCP", "TUI"],
+    links: [{ label: "github", href: "https://github.com/rushirb2001/cohors" }],
+  },
 ]
 
 const EDUCATION = [
@@ -213,10 +233,74 @@ const LINK_ICONS: Record<string, { path: string; viewBox?: string }> = {
 // used to import hasProjectDetail from projects-data to gate the case-study
 // links, which pulled every case study's full text (about 50KB of source) into
 // the landing page's client bundle to answer a yes/no question.
-export default function HomePage({ caseStudySlugs }: { caseStudySlugs: string[] }) {
+//
+// `posts` arrives the same way and for the same reason: the registry in
+// writing/posts-data imports every article's body, so the Writing section is
+// handed the six fields it shows and nothing else.
+export type HomePost = {
+  slug: string
+  title: string
+  standfirst: string
+  /** ISO, for <time dateTime>. */
+  published: string
+  /** Already formatted on the server ("Aug 2026"), so no locale can disagree. */
+  date: string
+  readingTime: string
+  topics: string[]
+}
+
+export default function HomePage({ caseStudySlugs, posts }: { caseStudySlugs: string[]; posts: HomePost[] }) {
   const hasProjectDetail = (slug: string) => caseStudySlugs.includes(slug)
+
+  // The URL is the open section: / is the closed page, /projects is Projects
+  // open. `mountSection` is the one this render entered on. It is open in the
+  // server HTML, and its rows skip their cascade (they are already on screen).
+  const pathname = usePathname()
+  const routeSection = sectionFromPath(pathname)
+  const [mountSection] = useState(routeSection)
   const { openSection, softOpen, homeClosing, toggleSection, goHome, heroWrapRef, heroSectionRef } =
-    useAccordion()
+    useAccordion(mountSection)
+  const rowsInitial = (id: string) => (mountSection === id ? false : "hidden")
+
+  // Opening, switching and closing a section moves the address with it, by
+  // history.pushState, which Next's router folds into usePathname without a
+  // navigation: the page never remounts, so the choreography is undisturbed.
+  // `intent` is the section the address is already heading for, which is how
+  // the effect below tells a Back or Forward (the address moved first) from
+  // an echo of our own push.
+  const intentRef = useRef<string | null>(mountSection)
+  const setAddress = (id: string | null, replace = false) => {
+    intentRef.current = id
+    const url = id ? `/${id}` : "/"
+    if (window.location.pathname === url) return
+    window.history[replace ? "replaceState" : "pushState"](null, "", url)
+  }
+  const selectSection = (id: string) => {
+    setAddress(openSection === id ? null : id)
+    toggleSection(id)
+  }
+  const selectHome = () => {
+    setAddress(null)
+    goHome()
+  }
+  // Back and Forward: the address changed under us, so follow it.
+  useEffect(() => {
+    if (routeSection === intentRef.current) return
+    intentRef.current = routeSection
+    if (routeSection) {
+      if (openSection !== routeSection) toggleSection(routeSection)
+    } else if (openSection) {
+      goHome()
+    }
+    // Follows the address only; openSection is read, not watched.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [routeSection])
+  // Scrolling back up to the hero closes the open section (see useAccordion).
+  // Nobody clicked, so the address is corrected in place, not pushed.
+  useEffect(() => {
+    if (openSection === null && intentRef.current !== null) setAddress(null, true)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [openSection])
 
   return (
     <MotionConfig reducedMotion="user">
@@ -343,6 +427,26 @@ export default function HomePage({ caseStudySlugs }: { caseStudySlugs: string[] 
           }
         }
 
+        /* Short phones (360x640, 375x667). The svh curve above was tuned for
+           four section heads; the fifth (Writing) cost about 36px there. The
+           cover photo and the footer's margin give it back, so the closed
+           page still needs no scroll. Taller phones are untouched. */
+        @media (max-width: 639px) and (max-height: 700px) {
+          .hero-photo { height: clamp(84px, 17svh, 200px); }
+          main footer { margin-top: 10px; }
+        }
+
+        /* Very short, wide windows (a 720px or 768px-tall laptop). Same reason, same
+           trade one step further than the max-height: 960px block below: a
+           smaller headline and photo, less air around the description. */
+        @media (min-width: 768px) and (max-height: 780px) {
+          .hero-section h1 { font-size: clamp(44px, 8vw, 72px) !important; }
+          .hero-grid { grid-template-columns: 1fr clamp(150px, min(24vw, 28vh), 200px) !important; }
+          .hero-section .hero-photo { max-width: min(200px, 28vh) !important; }
+          .hero-section .hero-desc { margin-top: 1rem; }
+          main footer { margin-top: 0.75rem !important; }
+        }
+
         .grain::before {
           content: "";
           position: fixed;
@@ -378,6 +482,9 @@ export default function HomePage({ caseStudySlugs }: { caseStudySlugs: string[] 
           .hero-section .hero-photo-block { padding-top: 0; }
           .hero-section .hero-photo-block .mono { margin-top: 1rem; }
           main footer { margin-top: 1.5rem; }
+          /* Five section heads, not four: at their full padding the fifth
+             pushed the closed page 20px past an 800px-tall window. */
+          main section > button { padding-block: 0.5rem; }
         }
       `}</style>
 
@@ -395,7 +502,7 @@ export default function HomePage({ caseStudySlugs }: { caseStudySlugs: string[] 
         style={openSection === null ? { transitionProperty: "none" } : undefined}
         data-home-close={homeClosing ? "" : undefined}
       >
-        <TocNav active={openSection} onSelect={toggleSection} onHome={goHome} />
+        <TocNav active={openSection} onSelect={selectSection} onHome={selectHome} />
 
         {/* Hero — centered in the leftover space above the section list while
             closed. The centering stays mounted; opening a section animates the
@@ -524,12 +631,12 @@ export default function HomePage({ caseStudySlugs }: { caseStudySlugs: string[] 
           count={WORK.length}
           open={openSection === "experience"}
           soft={softOpen}
-          onToggle={() => toggleSection("experience")}
+          onToggle={() => selectSection("experience")}
         >
           <motion.ol
             className="mt-2 lg:mt-3"
             variants={rowListVariants}
-            initial="hidden"
+            initial={rowsInitial("experience")}
             animate={openSection === "experience" ? "visible" : "hidden"}
           >
             {WORK.map((w, i) => (
@@ -577,12 +684,12 @@ export default function HomePage({ caseStudySlugs }: { caseStudySlugs: string[] 
           count={PROJECTS.length}
           open={openSection === "projects"}
           soft={softOpen}
-          onToggle={() => toggleSection("projects")}
+          onToggle={() => selectSection("projects")}
         >
           <motion.ol
             className="mt-2 lg:mt-3"
             variants={rowListVariants}
-            initial="hidden"
+            initial={rowsInitial("projects")}
             animate={openSection === "projects" ? "visible" : "hidden"}
           >
             {PROJECTS.map((p, i) => (
@@ -690,18 +797,79 @@ export default function HomePage({ caseStudySlugs }: { caseStudySlugs: string[] 
         </Section>
 
         <Section
+          id="writing"
+          index={SECTION_ORDER.indexOf("writing")}
+          title="Writing"
+          count={posts.length}
+          open={openSection === "writing"}
+          soft={softOpen}
+          onToggle={() => selectSection("writing")}
+        >
+          {/* The project rows' shape: date and reading time in the margin,
+              title and standfirst in the middle, topics and the read chip in
+              the rail. The title is the link, so the anchor a post is known
+              by on this page is its own headline. */}
+          <motion.ol
+            className="mt-2 lg:mt-3"
+            variants={rowListVariants}
+            initial={rowsInitial("writing")}
+            animate={openSection === "writing" ? "visible" : "hidden"}
+          >
+            {posts.map((post, i) => (
+              <motion.li
+                key={post.slug}
+                variants={rowItemVariants}
+                className={`grid grid-cols-1 xs:grid-cols-[clamp(80px,14vw,140px)_1fr_clamp(140px,22vw,240px)] lg:grid-cols-[140px_1fr_240px] gap-3 xs:gap-6 lg:gap-12 py-4 xs:py-6 lg:py-8 first:pt-2 xs:first:pt-3 lg:first:pt-4 ${
+                  i !== posts.length - 1 ? "border-b rule" : ""
+                }`}
+              >
+                <div className="mono text-[12px] xs:text-[13px] leading-none ink flex xs:flex-col items-start gap-3 xs:gap-2 xs:pt-2 lg:pt-[10px]">
+                  <time dateTime={post.published}>{post.date}</time>
+                  <span className="muted">{post.readingTime}</span>
+                </div>
+                <div>
+                  <h3 className="display text-[21px] xs:text-[26px] lg:text-3xl font-light tracking-tight leading-tight">
+                    <Link href={`/writing/${post.slug}`} className="accent-link">
+                      {post.title}
+                    </Link>
+                  </h3>
+                  <p className="mt-2 xs:mt-5 leading-relaxed text-[14px] xs:text-[15px] max-w-[58ch] mono">
+                    {post.standfirst}
+                  </p>
+                </div>
+                <div className="xs:space-y-6 xs:pt-2 lg:pt-[10px]">
+                  <ul className="flex flex-wrap gap-1.5 mono text-[12px] xs:text-[13px]">
+                    {post.topics.map((t) => (
+                      <li key={t} className="muted inline-flex items-center rounded-full border rule px-2.5 py-1">
+                        {t}
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="hidden xs:block">
+                    <div className="border-t rule mb-3 xs:mb-4" />
+                    <Link href={`/writing/${post.slug}`} className="footer-cta mono">
+                      read <span aria-hidden>→</span>
+                    </Link>
+                  </div>
+                </div>
+              </motion.li>
+            ))}
+          </motion.ol>
+        </Section>
+
+        <Section
           id="education"
           index={SECTION_ORDER.indexOf("education")}
           title="Education"
           count={EDUCATION.length}
           open={openSection === "education"}
           soft={softOpen}
-          onToggle={() => toggleSection("education")}
+          onToggle={() => selectSection("education")}
         >
           <motion.ol
             className="mt-2 lg:mt-3"
             variants={rowListVariants}
-            initial="hidden"
+            initial={rowsInitial("education")}
             animate={openSection === "education" ? "visible" : "hidden"}
           >
             {EDUCATION.map((e, i) => (
@@ -789,7 +957,7 @@ export default function HomePage({ caseStudySlugs }: { caseStudySlugs: string[] 
           title="Contact"
           open={openSection === "contact"}
           soft={softOpen}
-          onToggle={() => toggleSection("contact")}
+          onToggle={() => selectSection("contact")}
         >
           {/* Three-column row matching the Experience / Projects / Education
               rhythm: status meta · heading + copy · Links. */}
@@ -816,7 +984,7 @@ export default function HomePage({ caseStudySlugs }: { caseStudySlugs: string[] 
               <motion.ul
                 className="flex flex-col gap-2"
                 variants={rowListVariants}
-                initial="hidden"
+                initial={rowsInitial("contact")}
                 animate={openSection === "contact" ? "visible" : "hidden"}
               >
                 {LINKS.filter((l) => l.label !== "Email").map((l) => (
@@ -855,11 +1023,8 @@ export default function HomePage({ caseStudySlugs }: { caseStudySlugs: string[] 
               animate={{ opacity: 1, transform: "translateY(0px)" }}
               transition={{ ...springs.reveal, delay: 0.42 }}
             >
-              {/* The site's other routes, shared with every inner page's
-                  footer (SiteChrome). This bar is sticky, so they are on
-                  screen for the whole visit, and they are the landing page's
-                  only persistent links to /projects, /resume and /hire. */}
-              <SiteFooterBar nav />
+              {/* Shared with the article pages' footer (SiteChrome). */}
+              <SiteFooterBar />
             </motion.div>
           </div>
         </footer>

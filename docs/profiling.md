@@ -157,7 +157,7 @@ you think it is — a background texture instead of the hero, a cookie banner, a
 headline — you'll optimize the wrong asset. On this site it should be the hero heading (desktop)
 or hero photo (mobile).
 
-**Screenshots at a real viewport: `pnpm shot`.** `pnpm shot /hire /resume` writes full-page PNGs
+**Screenshots at a real viewport: `pnpm shot`.** `pnpm shot / /writing` writes full-page PNGs
 at an emulated 390px phone and a 1280px desktop into `.shots/` and prints any horizontal overflow.
 Do not use `chrome --headless --window-size=390,...` for a phone layout: Chrome clamps a window to
 about 500px wide, so the page lays out at 500 and the PNG is a 390px crop of it. That looks
@@ -167,9 +167,11 @@ A full-page capture lays sticky bars out as if the page were never scrolled (the
 down, the grain covers only the first screen), so it cannot show what a visitor sees mid-page. Use
 `--fold` for the first viewport, `--scroll 900` for a scrolled one, and
 `--click '#projects > button' /` to open a home section first; each captures one viewport as it
-stands. `--media print /resume` renders with the print stylesheet. When an inner page is meant to
-match the home page, shoot the open home section and the inner page at the same viewport and
-compare them side by side.
+stands. `--media print` renders with the print stylesheet, and `-v 360x640,1366x768` takes any
+viewport size. The closed home page has to fit one screen with no scroll, so after touching the
+hero, the section heads or the footer run
+`pnpm shot --fold -v 360x640,375x667,390x844,1280x720,1366x768,1280x800 /` and check each line
+reports exactly the viewport height.
 
 ## 3. In-page inspection (DevTools console or browser eval)
 
@@ -424,10 +426,14 @@ browsers):
 
 | Route                    | Before  | After   | Why                                              |
 | ------------------------ | ------- | ------- | ------------------------------------------------ |
-| `/`                      | 220.6KB | 207.2KB | `projects-data.ts` no longer in the client bundle |
-| `/projects/[slug]`       | 157.8KB | 158.1KB | related-links markup                             |
-| `/writing`, `/writing/*` | 135.2KB | 135.2KB | unchanged (framework baseline)                   |
-| `/projects`, `/resume`, `/hire` | new | 135.2KB | server components only: no page-specific JS    |
+| `/` and the five section paths | 220.6KB | 206.1KB | `projects-data.ts` no longer in the client bundle |
+| `/projects/[slug]`       | 157.8KB | 158.0KB | related-links markup                             |
+| `/writing/[slug]`        | 135.2KB | 178.4KB | Motion, for the header entrance and footer rise  |
+
+The section paths (`/experience`, `/projects`, `/writing`, `/education`, `/contact`) are the home
+page served with one section open, so they cost exactly what `/` costs: 206.1KB of JS and about
+29.7KB of HTML (gzip) each. The articles pay 43KB for Motion; it is the same chunk the home page
+loads, so a visitor who has seen either already has it.
 
 Same date, same change set:
 
@@ -448,8 +454,20 @@ Same date, same change set:
   absolute grades are pessimistic): `home.load` FAIL / FAIL (14% vs 15% frames dropped),
   `home.open` warn / warn, `case.open` warn / warn. No verdict changed. `home.load` failing on
   both is the machine, or a pre-existing cost worth a quiet-machine run.
-- **Lighthouse mobile on the new pages** (same loaded machine, one run each): `/hire` 100,
-  `/resume` 99, `/projects` 98; FCP = LCP = 0.9s on all three; SEO 100; accessibility 100.
+- **Motion probe after the consolidation, phone and desktop, 3 runs, against a baseline taken the
+  same hour** (load average about 10): every `home.*` flow kept its verdict (`home.open`,
+  `switch-down`, `switch-up`, `close` warn for layout-animating, by design, with 0 to 2% frames
+  dropped; `home.load` FAIL on phone for a 121 to 166ms hydration frame, before and after). The
+  three new flows pass their end-state checks: `home.arrive` (land on `/projects`, glide to the
+  head), `home.address` (open Writing, the address becomes `/writing` with no navigation) and
+  `home.back` (browser Back closes the section and returns to `/`).
+- **Lighthouse mobile, same loaded machine, one run each**: an article 100 performance and 100
+  accessibility, FCP = LCP = 0.9s; `/` and `/contact` 91 performance with LCP 3.4s and 96
+  accessibility. The home LCP is the pre-existing number (3.3s measured before any of this): the
+  hero is rendered at opacity 0 and revealed by Motion after hydration, so its paint waits for the
+  JavaScript. The one accessibility failure left on the home page is `color-contrast` on `.muted`
+  (0.55) and `.faint` (0.38); `aria-hidden-focus` is gone (collapsed sections and the hidden top
+  bar are `inert` now).
 
 Measured 2026-07-04 (post Notion-mobile-hero deploy), warm edge cache, home US connection:
 

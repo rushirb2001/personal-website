@@ -1,7 +1,6 @@
-// Design tokens for every inner page (/writing, /projects, /resume, /hire),
-// injected per the repo's established pattern (see the <style> block in
-// app/HomePage.tsx and TOKENS in ProjectModal). The name is historical: it
-// started as the writing section's stylesheet and the other pages adopted it.
+// Design tokens for the article pages (/writing/[slug]), injected per the
+// repo's established pattern (see the <style> block in app/HomePage.tsx and
+// TOKENS in ProjectModal).
 //
 // The token block below matches the landing page's (grain, link chip, accent
 // link), with one deliberate difference: .muted and .faint are a shade darker
@@ -62,15 +61,6 @@ export function WritingStyle() {
         z-index: 1;
       }
 
-      /* Short, wide viewports (a laptop window, a tablet on its side): the
-         closed page is the hero over every section head, and it should fit
-         one screen, as the landing page's does. Give back the hero's padding
-         and the footer's margin, the same trade the landing page makes. */
-      @media (min-width: 768px) and (max-height: 960px) {
-        .page-hero { padding-top: 1.5rem; padding-bottom: 1.5rem; }
-        main footer { margin-top: 1.5rem; }
-      }
-
       /* ---- Shared controls ------------------------------------------- */
 
       /* The home page's link chip, value for value: a tinted outline and
@@ -96,21 +86,11 @@ export function WritingStyle() {
         outline: 2px solid #1f3a5f; outline-offset: 2px;
       }
 
-      /* A list whose marker is the site's "+" motif (section heads, hero
-         facts) instead of a bullet. Hanging indent, so wrapped lines align
-         with the text, not the marker. */
-      .plus-list { list-style: none; padding: 0; }
-      .plus-list > li { position: relative; padding-left: 1.5em; }
-      .plus-list > li + li { margin-top: 0.6em; }
-      .plus-list > li::before {
-        content: "+"; position: absolute; left: 0; top: 0; color: #1f3a5f;
-      }
-
       @media (prefers-reduced-motion: reduce) {
         .accent-link, .accent-link::after, .footer-cta { transition: none; }
       }
 
-      /* Printing /resume gives a clean sheet: no nav, no grain, no sticky bars. */
+      /* Printing an article gives a clean sheet: no nav, no grain, no sticky bars. */
       @media print {
         .grain::before { display: none; }
         .no-print { display: none !important; }
@@ -189,7 +169,14 @@ export function WritingStyle() {
 
       .prose strong { font-weight: 700; }
       .prose em { font-style: italic; }
-      .prose a { color: #1f3a5f; }
+      /* Underlined, not only navy: the accent is too close to the ink for
+         colour alone to mark a link inside a paragraph. */
+      .prose a {
+        color: #1f3a5f;
+        text-decoration: underline;
+        text-decoration-thickness: 1px;
+        text-underline-offset: 3px;
+      }
       .prose code {
         font-family: "Google Sans Code", ui-monospace, monospace;
         font-size: 0.88em;

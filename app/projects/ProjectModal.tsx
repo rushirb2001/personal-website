@@ -552,7 +552,7 @@ export function ProjectModal({
                   {/* In the overlay these are plain anchors, not <Link>. The
                       overlay lives in the @modal parallel-route slot, and a
                       slot keeps rendering its last match across a soft
-                      navigation: a <Link> to /hire would swap the page
+                      navigation: a <Link> to /contact would swap the page
                       underneath and leave this modal open on top of it. The
                       documented cure is a catch-all page in the slot, but
                       that turns every unknown URL into a server-rendered
@@ -562,8 +562,7 @@ export function ProjectModal({
                   <ul className="cs-fact-links cs-more-actions">
                     {[
                       { href: "/projects", label: "All projects" },
-                      { href: "/hire", label: "Work with me" },
-                      { href: "/resume", label: "Resume" },
+                      { href: "/contact", label: "Contact" },
                     ].map((l) => (
                       <li key={l.href}>
                         {mode === "overlay" ? (

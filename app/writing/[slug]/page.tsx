@@ -94,7 +94,7 @@ export default async function PostPage({
   ]
 
   return (
-    <PageShell current="/writing">
+    <PageShell current="writing">
       <JsonLd data={graph} />
 
       <article>
