@@ -1,10 +1,10 @@
 import Link from "next/link"
-import { ChipList, ENTRY_BODY, ENTRY_TITLE, EntryRow, PageSection } from "../SiteChrome"
+import { ENTRY_BODY, ENTRY_TITLE, EntryRow, PageSection } from "../SiteChrome"
 
 // How every post ends: one line tying the article to work that actually
-// shipped, a link to the case study that proves it, and the way to get in
-// touch. It closes the article as a row on the same grid as everything above
-// it, in the shape of the home page's Contact row.
+// shipped and a link to the case study that proves it. It closes the article
+// as a row on the same grid as everything above it. It carries no "hire me"
+// or "resume" links of its own: those are in the top bar on every page.
 //
 // The `line` and the case study are per-post on purpose. A generic block at the
 // foot of four different articles is the thing readers learn to skip, and a
@@ -22,14 +22,6 @@ export function FromTheWork({
       <EntryRow
         as="div"
         meta={<span className="accent">Open to work</span>}
-        rail={
-          <ChipList
-            links={[
-              { label: "work with me", href: "/hire" },
-              { label: "resume", href: "/resume" },
-            ]}
-          />
-        }
       >
         <h3 className={ENTRY_TITLE}>
           I build the systems these posts are about<span className="accent">.</span>

@@ -82,7 +82,9 @@ export function TocNav({ active, onSelect, onHome }: Props) {
   return (
     <nav
       aria-label="Page sections"
-      aria-hidden={!visible}
+      // inert, not aria-hidden: while the bar is slid away its links would
+      // otherwise stay in the tab order, focusable and invisible.
+      inert={!visible}
       // Tailwind v4 translate utilities set the standalone `translate`
       // property (not `transform`), so it must be named in the transition
       // list or the show/hide snaps instead of sliding.
@@ -109,7 +111,7 @@ export function TocNav({ active, onSelect, onHome }: Props) {
         <a
           href="/"
           onClick={handleHome}
-          className="mono uppercase tracking-[0.15em] muted hover:text-[#1a1a1a] transition-colors flex items-center gap-2 sm:gap-2.5 shrink-0 text-[13px] sm:text-[16px]"
+          className="nav-link mono uppercase tracking-[0.15em] flex items-center gap-2 sm:gap-2.5 shrink-0 text-[13px] sm:text-[16px]"
         >
           <span
             aria-hidden
@@ -145,9 +147,10 @@ export function TocNav({ active, onSelect, onHome }: Props) {
                   onClick={(e) => handleSelect(e, s.id)}
                   aria-current={isActive ? "true" : undefined}
                   aria-label={s.label}
-                  className={`group relative flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1.5 rounded-sm transition-colors duration-200 ${
-                    isActive ? "ink" : "muted hover:text-[#1a1a1a]"
-                  }`}
+                  // .nav-link (CHROME_CSS), not `muted hover:text-*`: the
+                  // unlayered .muted beat the layered hover utility, so the
+                  // tabs never changed colour under the pointer.
+                  className="nav-link group relative flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1.5 rounded-sm"
                 >
                   {/* Always in the layout so activating a tab never shifts its
                       neighbors — only the opacity animates. */}

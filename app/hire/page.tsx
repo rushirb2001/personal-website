@@ -1,20 +1,20 @@
 import type { Metadata } from "next"
 import { JsonLd, breadcrumbList } from "../JsonLd"
-import { PageShell } from "../PageShell"
+import { AccordionShell } from "../PageShell"
 import {
   ChipList,
-  ContactSection,
   ENTRY_BODY,
   ENTRY_TITLE,
   EntryRow,
   HeroFacts,
   PROFILE_CHIPS,
   PageHero,
-  PageSection,
   Pills,
   RailLinks,
+  contactSection,
   type ChipLink,
 } from "../SiteChrome"
+import { RowList } from "../accordion"
 import { AUTHOR, SITE_URL, absoluteUrl } from "../site"
 
 // The page a recruiter or a prospective client is actually looking for: what
@@ -23,9 +23,9 @@ import { AUTHOR, SITE_URL, absoluteUrl } from "../site"
 // help me, and how do I reach you" in under a minute, and every claim on it
 // links to the case study or the resume line that backs it.
 //
-// Built from the home page's rows (SiteChrome): each role and each kind of
-// project is a row with its stack as pills and its proof as chips in the rail,
-// and the page ends on the same Contact section the home page ends on.
+// The home page's accordion (AccordionShell) and rows (SiteChrome): each role
+// and each kind of project is a row with its stack as pills and its proof as
+// chips in the rail, and the last section is the home page's Contact.
 const TITLE = "Hire me: AI engineer and forward-deployed engineer"
 const DESCRIPTION =
   "Work with Rushir Bhavsar: open to AI engineer, forward-deployed engineer and product roles, and to contract builds. Production RAG, LLM systems, API gateways, ML pipelines."
@@ -142,18 +142,9 @@ const BUILDS: Offer[] = [
   },
 ]
 
-const FACTS: { label: string; value: string }[] = [
-  { label: "Now", value: "Founding Software Engineer at sushrutalgs.ai, a medical AI product live on web, iOS and Android." },
-  { label: "Before", value: "OpenEye (Cadence Design Systems) and Talin Labs, both in the United States." },
-  { label: "Based in", value: "Gujarat, India. Open to remote roles and to relocation, in India or abroad." },
-  { label: "Open to", value: "Full-time roles and contract projects." },
-  { label: "Education", value: "M.S. Data Science, Arizona State University. B.Tech. Computer Science, Nirma University." },
-  { label: "Research", value: "Two peer-reviewed papers (IEEE Access, Wiley Security and Privacy) and a thesis on physics-informed neural networks." },
-]
-
 function Offers({ items }: { items: Offer[] }) {
   return (
-    <ol className="mt-2 lg:mt-3">
+    <RowList>
       {items.map((o, i) => (
         <EntryRow
           key={o.title}
@@ -169,64 +160,50 @@ function Offers({ items }: { items: Offer[] }) {
           <p className={`${ENTRY_BODY} mt-2 xs:mt-5`}>{o.pitch}</p>
         </EntryRow>
       ))}
-    </ol>
+    </RowList>
   )
 }
 
 export default function HirePage() {
   return (
-    <PageShell current="/hire">
+    <AccordionShell
+      current="/hire"
+      hero={
+        <PageHero
+          title="Work with me"
+          aside={
+            <>
+              <HeroFacts items={["Open to work", "Full-time or contract", "Gujarat, India", "Remote, or relocation"]} />
+              <ChipList
+                layout="row"
+                className="mt-4"
+                links={[
+                  { label: "email about a role", href: MAIL_ROLE, lead: "email_role" },
+                  { label: "email about a project", href: MAIL_PROJECT, lead: "email_project" },
+                ]}
+              />
+            </>
+          }
+        >
+          I build AI products end to end: the retrieval and model layer, the API in front of it, and
+          the apps people use.
+          <span className="block mt-4 muted">
+            Open to full-time roles and to contract work. The fastest way to reach me is email.
+          </span>
+        </PageHero>
+      }
+      sections={[
+        { id: "roles", title: "For a role", count: ROLES.length, content: <Offers items={ROLES} /> },
+        { id: "projects", title: "For a project", count: BUILDS.length, content: <Offers items={BUILDS} /> },
+        contactSection({
+          heading: "Tell me what you are building",
+          links: [...PROFILE_CHIPS, { label: "scholar", href: AUTHOR.scholar, lead: "scholar" }],
+          children:
+            "Say what the role or the project is and where it stands. A link to the job description or a few lines on the problem is enough to start.",
+        }),
+      ]}
+    >
       <JsonLd data={GRAPH} />
-
-      <PageHero
-        title="Work with me"
-        aside={
-          <>
-            <HeroFacts items={["Open to work", "Full-time or contract"]} />
-            <ChipList
-              stackFrom="lg"
-              className="mt-4"
-              links={[
-                { label: "email about a role", href: MAIL_ROLE, lead: "email_role" },
-                { label: "email about a project", href: MAIL_PROJECT, lead: "email_project" },
-                { label: "resume", href: "/resume" },
-              ]}
-            />
-          </>
-        }
-      >
-        I build AI products end to end: the retrieval and model layer, the API in front of it, and the
-        apps people use.
-        <span className="block mt-4 muted">
-          Open to full-time roles and to contract work. The fastest way to reach me is email.
-        </span>
-      </PageHero>
-
-      <PageSection title="For a role" count={ROLES.length}>
-        <Offers items={ROLES} />
-      </PageSection>
-
-      <PageSection title="For a project" count={BUILDS.length}>
-        <Offers items={BUILDS} />
-      </PageSection>
-
-      <PageSection title="The short version" count={FACTS.length}>
-        <ul className="mt-2 lg:mt-3">
-          {FACTS.map((f) => (
-            <EntryRow key={f.label} spacing="compact" meta={<span>{f.label}</span>}>
-              <p className={ENTRY_BODY}>{f.value}</p>
-            </EntryRow>
-          ))}
-        </ul>
-      </PageSection>
-
-      <ContactSection
-        heading="Tell me what you are building"
-        links={[...PROFILE_CHIPS, { label: "scholar", href: AUTHOR.scholar, lead: "scholar" }]}
-      >
-        Say what the role or the project is and where it stands. A link to the job description or a few
-        lines on the problem is enough to start.
-      </ContactSection>
-    </PageShell>
+    </AccordionShell>
   )
 }

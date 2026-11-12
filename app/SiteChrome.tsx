@@ -1,5 +1,6 @@
 import Link from "next/link"
 import type { ReactNode } from "react"
+import { FooterRise, HeroItem, HeroStagger, RowItem, RowList, type AccordionSection } from "./accordion"
 import { AUTHOR, RESUME_PDF, SITE_NAV } from "./site"
 import { DOCUMENT_ICON, GITHUB_ICON, LINKEDIN_ICON, STACK_ICONS, StackIcon } from "./stack-icons"
 
@@ -11,10 +12,13 @@ import { DOCUMENT_ICON, GITHUB_ICON, LINKEDIN_ICON, STACK_ICONS, StackIcon } fro
 // an open section of the home page, which is the point. When the home page's
 // row or head changes, change it here too.
 //
-// No state and no client JS: these render on the server. The one client
-// consumer is HomePage, which imports SiteFooterBar so the two footers are
-// the same code. Tokens (.mono, .muted, .accent-link, .footer-cta, ...) come
-// from WritingStyle on inner pages and from HomePage's own <style> at home.
+// These render on the server. What moves is delegated to the small client
+// wrappers in ./accordion (the hero cascade, the row cascade, the footer's
+// rise), which are the landing page's own variants; the accordion itself is
+// AccordionPage there, mounted by PageShell's AccordionShell. HomePage imports
+// SiteFooterBar so the two footers are the same code. Tokens (.mono, .muted,
+// .accent-link, .footer-cta, ...) come from WritingStyle on inner pages and
+// from HomePage's own <style> at home.
 
 type NavHref = (typeof SITE_NAV)[number]["href"]
 type IconLike = { path: string; viewBox?: string }
@@ -22,6 +26,28 @@ type IconLike = { path: string; viewBox?: string }
 // The home page's three-column grid: meta, content, rail.
 const GRID =
   "grid grid-cols-1 xs:grid-cols-[clamp(80px,14vw,140px)_1fr_clamp(140px,22vw,240px)] lg:grid-cols-[140px_1fr_240px] gap-3 xs:gap-6 lg:gap-12"
+
+// Rules the chrome needs on every page, interpolated into HomePage's <style>
+// and into WritingStyle. They are here, unlayered, for a reason that already
+// bit twice: Tailwind v4 emits its utilities inside `@layer utilities`, and
+// any unlayered rule beats any layered one. So `muted hover:text-[#1a1a1a]`
+// never changed colour (the unlayered .muted won), and an inline
+// `backgroundColor` on a section head silenced its `hover:bg-*`. A hover
+// state on something a token class colours has to be written here.
+export const CHROME_CSS = `
+  /* Top bar tabs and footer links: quiet until pointed at or current. */
+  .nav-link { color: rgba(26,26,26,0.62); transition: color 200ms ease; }
+  .nav-link[aria-current] { color: #1a1a1a; }
+  /* A hairline that warms to the accent under the pointer. */
+  .rule-hover { transition: background-color 200ms ease, border-color 200ms ease; }
+  @media (hover: hover) {
+    .nav-link:hover { color: #1a1a1a; }
+    .rule-hover:hover { border-color: rgba(31,58,95,0.3); background-color: rgba(31,58,95,0.05); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .nav-link, .rule-hover { transition: none; }
+  }
+`
 
 /** A row's h3, at the size every home page row uses. */
 export const ENTRY_TITLE = "display text-[21px] xs:text-[26px] lg:text-3xl font-light tracking-tight leading-tight"
@@ -44,7 +70,7 @@ export function SiteNav({ current }: { current?: NavHref }) {
       <div className="max-w-[1100px] mx-auto px-4 sm:px-6 lg:px-12 h-14 flex items-center justify-between gap-2 sm:gap-4">
         <Link
           href="/"
-          className="mono uppercase tracking-[0.15em] muted hover:text-[#1a1a1a] transition-colors flex items-center gap-2 sm:gap-2.5 shrink-0 text-[13px] sm:text-[16px]"
+          className="nav-link mono uppercase tracking-[0.15em] flex items-center gap-2 sm:gap-2.5 shrink-0 text-[13px] sm:text-[16px]"
         >
           <span aria-hidden className="inline-block text-lg leading-none">
             &larr;
@@ -60,9 +86,7 @@ export function SiteNav({ current }: { current?: NavHref }) {
                 <Link
                   href={item.href}
                   aria-current={here ? "page" : undefined}
-                  className={`flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1.5 rounded-sm transition-colors duration-200 ${
-                    here ? "ink" : "muted hover:text-[#1a1a1a]"
-                  }`}
+                  className="nav-link flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1.5 rounded-sm"
                   style={here ? { backgroundColor: "rgba(31,58,95,0.10)" } : undefined}
                 >
                   {/* Always in the layout, as on the home page, so the tabs sit
@@ -84,40 +108,51 @@ export function SiteNav({ current }: { current?: NavHref }) {
 
 // ---- Footer ----------------------------------------------------------------
 
-// The three things in the footer bar. Shared with HomePage, which wraps them
-// in its own animated container. "Hire me" is the chip because it is the
-// action; the rest are plain links. Phones keep just the last two: the others
-// are in the top bar (or, at home, in the sections above).
-export function SiteFooterBar() {
+// The footer bar: the name on the left, the city on the right, and, on the
+// home page only, the site's routes between them. The home page has no other
+// persistent link to /projects, /writing, /resume or /hire, so its footer
+// carries them. Every inner page already has those four in its top bar, and
+// repeating them here put the same nav at both edges of the screen.
+//
+// A three-column grid, not justify-between: the middle stays on the page's
+// centre line whatever the two sides measure.
+export function SiteFooterBar({ nav = false }: { nav?: boolean }) {
   return (
-    <>
+    <div className="grid grid-cols-[1fr_auto] md:grid-cols-[1fr_auto_1fr] items-center gap-4">
       <p className="muted whitespace-nowrap">
         <span className="faint">&copy; 2026 </span>
         {AUTHOR.name}
       </p>
-      <nav aria-label="Footer">
-        <ul className="flex items-center gap-x-4 small-caps">
-          {SITE_NAV.map((item) =>
-            item.href === "/hire" ? (
-              <li key={item.href}>
-                <Link href={item.href} className="footer-cta mono">
-                  {item.label}
-                </Link>
-              </li>
-            ) : (
-              <li key={item.href} className={item.href === "/resume" ? undefined : "hidden xs:block"}>
-                <Link href={item.href} className="accent-link muted">
-                  {item.label}
-                </Link>
-              </li>
-            ),
-          )}
-        </ul>
-      </nav>
-      <p className="small-caps faint whitespace-nowrap hidden md:block">
+      {nav ? (
+        <nav aria-label="Site">
+          {/* One type for the whole group: the chip's 11px caps. The links
+              carry no rule of their own; the chip is the only outlined thing,
+              because "Hire me" is the action. Phones keep the last two. */}
+          <ul className="flex items-center gap-x-5 mono text-[11px] uppercase tracking-[0.12em]">
+            {SITE_NAV.map((item) =>
+              item.href === "/hire" ? (
+                <li key={item.href}>
+                  <Link href={item.href} className="footer-cta mono">
+                    {item.label}
+                  </Link>
+                </li>
+              ) : (
+                <li key={item.href} className={item.href === "/resume" ? undefined : "hidden xs:block"}>
+                  <Link href={item.href} className="nav-link">
+                    {item.label}
+                  </Link>
+                </li>
+              ),
+            )}
+          </ul>
+        </nav>
+      ) : (
+        <span aria-hidden className="hidden md:block" />
+      )}
+      <p className={`small-caps faint whitespace-nowrap justify-self-end ${nav ? "hidden md:block" : ""}`}>
         <span className="accent">+</span> {AUTHOR.location}
       </p>
-    </>
+    </div>
   )
 }
 
@@ -126,9 +161,9 @@ export function SiteFooter() {
   return (
     <footer className="no-print sticky bottom-0 z-50 mt-10 xs:mt-14">
       <div className="border-t rule" style={{ backgroundColor: "#f4f1ec" }}>
-        <div className="max-w-[1100px] mx-auto px-6 lg:px-12 py-5 xs:py-6 mono text-[11px] flex items-center justify-between gap-4">
+        <FooterRise className="max-w-[1100px] mx-auto px-6 lg:px-12 py-5 xs:py-6 mono text-[11px]">
           <SiteFooterBar />
-        </div>
+        </FooterRise>
       </div>
     </footer>
   )
@@ -149,19 +184,24 @@ export function PageHero({
   children: ReactNode
   aside?: ReactNode
 }) {
+  // The landing page's hero cascade: the h1 lands first with no delay (it is
+  // the LCP element), the deck and the right column follow.
   return (
-    <header className="pt-8 xs:pt-10 lg:pt-14 pb-8 xs:pb-10 lg:pb-14">
-      <h1 className="display font-light tracking-tight text-balance leading-[1.02] sm:leading-[0.98] text-[clamp(30px,9.4vw,40px)] sm:text-[clamp(40px,6vw,64px)] max-w-[22ch]">
+    <HeroStagger className="page-hero pt-8 xs:pt-10 lg:pt-14 pb-8 xs:pb-10 lg:pb-14">
+      <HeroItem
+        as="h1"
+        className="display font-light tracking-tight text-balance leading-[1.02] sm:leading-[0.98] text-[clamp(30px,9.4vw,40px)] sm:text-[clamp(40px,6vw,64px)] max-w-[22ch]"
+      >
         {title}
         <span className="accent">.</span>
-      </h1>
+      </HeroItem>
       <div className="mt-5 sm:mt-7 lg:mt-8 grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_240px] gap-6 lg:gap-12 items-start">
-        <div className="display font-light text-[16px] sm:text-[clamp(16px,1.7vw,20px)] leading-[1.5] max-w-[52ch]">
+        <HeroItem className="display font-light text-[16px] sm:text-[clamp(16px,1.7vw,20px)] leading-[1.5] max-w-[52ch]">
           {children}
-        </div>
-        {aside && <div>{aside}</div>}
+        </HeroItem>
+        {aside && <HeroItem>{aside}</HeroItem>}
       </div>
-    </header>
+    </HeroStagger>
   )
 }
 
@@ -182,9 +222,11 @@ export function HeroFacts({ items }: { items: ReactNode[] }) {
 
 // ---- Sections and rows -----------------------------------------------------
 
-// The home page's section head: full-bleed rule, "+" in the meta column, the
-// title with its accent period, an optional count in the rail column. Sticks
-// under the top bar, and the next section's head pushes it out.
+// The home page's section head as a static bar, for article pages: full-bleed
+// rule, "+" in the meta column, the title with its accent period, an optional
+// count in the rail column. Sticks under the top bar, and the next section's
+// head pushes it out. On the index pages the head is the accordion's button
+// (Section in ./accordion), which is this same markup.
 export function SectionHead({ title, count }: { title: string; count?: number }) {
   return (
     <div
@@ -247,12 +289,14 @@ const ROW_SPACING = {
 // One row of the home page's lists: meta in the left margin, the h3 and copy
 // in the middle, pills and link chips in the right rail. Without a rail the
 // content takes both columns. Rows rule themselves off from the next one.
+// Put rows in a <RowList> (./accordion): inside an accordion section it
+// replays the row cascade each time the section opens.
 export function EntryRow({
   meta,
   children,
   rail,
   spacing = "roomy",
-  as: Tag = "li",
+  as = "li",
 }: {
   meta: ReactNode
   children: ReactNode
@@ -261,13 +305,13 @@ export function EntryRow({
   as?: "li" | "div"
 }) {
   return (
-    <Tag className={`${GRID} ${ROW_SPACING[spacing]} border-b rule last:border-b-0`}>
+    <RowItem as={as} className={`${GRID} ${ROW_SPACING[spacing]} border-b rule last:border-b-0`}>
       <div className="mono text-[12px] xs:text-[13px] leading-snug ink flex xs:flex-col items-baseline xs:items-start gap-x-3 gap-y-1.5 xs:pt-[6px] lg:pt-[8px]">
         {meta}
       </div>
       <div className={rail ? "min-w-0" : "min-w-0 xs:col-span-2"}>{children}</div>
       {rail && <div className="space-y-3 xs:space-y-6 xs:pt-2 lg:pt-[10px]">{rail}</div>}
-    </Tag>
+    </RowItem>
   )
 }
 
@@ -328,22 +372,24 @@ function Chip({ link }: { link: ChipLink }) {
 const CHIP_STACK = {
   // In a row's rail: a wrapping line on phones, a column from 475px up.
   xs: "flex flex-row flex-wrap xs:flex-col xs:items-start gap-2",
-  // In the hero's right column, which only exists from 1024px up.
-  lg: "flex flex-row flex-wrap lg:flex-col lg:items-start gap-2",
+  // In the hero: always a wrapping line. Stacked, four chips made the hero's
+  // right column taller than its deck and pushed the last section head off a
+  // laptop screen.
+  row: "flex flex-row flex-wrap gap-2",
 } as const
 
 export function ChipList({
   links,
-  stackFrom = "xs",
+  layout = "xs",
   className = "",
 }: {
   links: ChipLink[]
-  stackFrom?: keyof typeof CHIP_STACK
+  layout?: keyof typeof CHIP_STACK
   className?: string
 }) {
   if (links.length === 0) return null
   return (
-    <ul className={`${CHIP_STACK[stackFrom]} ${className}`}>
+    <ul className={`${CHIP_STACK[layout]} ${className}`}>
       {links.map((l) => (
         <li key={l.href + l.label}>
           <Chip link={l} />
@@ -373,10 +419,10 @@ export const PROFILE_CHIPS: ChipLink[] = [
   { label: "resume", href: RESUME_PDF, lead: "resume_pdf", icon: DOCUMENT_ICON },
 ]
 
-// The home page's Contact section, which is how that page ends, so it is how
+// The home page's Contact row, which is how that page ends, so it is how
 // every inner page ends too: status in the margin, a line and the address in
 // the middle, the profile chips in the rail.
-export function ContactSection({
+export function ContactRow({
   heading,
   children,
   links = PROFILE_CHIPS,
@@ -386,7 +432,7 @@ export function ContactSection({
   links?: ChipLink[]
 }) {
   return (
-    <PageSection title="Contact">
+    <RowList as="div" className="">
       <EntryRow
         as="div"
         meta={
@@ -409,6 +455,11 @@ export function ContactSection({
           </a>
         </p>
       </EntryRow>
-    </PageSection>
+    </RowList>
   )
+}
+
+// The Contact row as the last entry of a page's `sections`.
+export function contactSection(props: Parameters<typeof ContactRow>[0]): AccordionSection {
+  return { id: "contact", title: "Contact", content: <ContactRow {...props} /> }
 }

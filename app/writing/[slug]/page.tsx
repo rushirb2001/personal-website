@@ -4,6 +4,7 @@ import { notFound } from "next/navigation"
 import { JsonLd, breadcrumbList } from "../../JsonLd"
 import { PageShell } from "../../PageShell"
 import { ChipList, ENTRY_BODY, ENTRY_TITLE, EntryRow, PageSection } from "../../SiteChrome"
+import { HeroItem, HeroStagger } from "../../accordion"
 import { SITE_URL, absoluteUrl } from "../../site"
 import { getPost, POSTS, POST_SLUGS } from "../posts-data"
 
@@ -102,7 +103,7 @@ export default async function PostPage({
             matches every section head below it. An article keeps this
             narrower headline rather than the index pages' hero: its title is
             a sentence, and it is the first line of a column of reading. */}
-        <header className="grid grid-cols-1 xs:grid-cols-[clamp(80px,14vw,140px)_1fr] lg:grid-cols-[140px_1fr] gap-2 xs:gap-6 lg:gap-12 pt-8 xs:pt-10 lg:pt-14 pb-12 xs:pb-16">
+        <HeroStagger className="grid grid-cols-1 xs:grid-cols-[clamp(80px,14vw,140px)_1fr] lg:grid-cols-[140px_1fr] gap-2 xs:gap-6 lg:gap-12 pt-8 xs:pt-10 lg:pt-14 pb-12 xs:pb-16">
           <div className="mono text-[12px] xs:text-[13px] leading-none ink xs:pt-3 flex xs:flex-col items-baseline gap-3 xs:gap-2">
             <time dateTime={post.published}>
               {new Date(post.published).toLocaleDateString("en-US", {
@@ -115,15 +116,22 @@ export default async function PostPage({
           </div>
 
           <div>
-            <h1 className="display font-light tracking-tight leading-[1.08] text-[30px] xs:text-[clamp(34px,5vw,52px)] lg:text-[clamp(30px,3.6vw,44px)] max-w-[30ch]">
+            {/* The h1 leads the cascade with no delay: it is the LCP element. */}
+            <HeroItem
+              as="h1"
+              className="display font-light tracking-tight leading-[1.08] text-[30px] xs:text-[clamp(34px,5vw,52px)] lg:text-[clamp(30px,3.6vw,44px)] max-w-[30ch]"
+            >
               {post.title}
               <span className="accent">.</span>
-            </h1>
-            <p className="display font-light text-[16px] xs:text-[18px] leading-[1.55] muted max-w-[64ch] mt-5">
+            </HeroItem>
+            <HeroItem
+              as="p"
+              className="display font-light text-[16px] xs:text-[18px] leading-[1.55] muted max-w-[64ch] mt-5"
+            >
               {post.standfirst}
-            </p>
+            </HeroItem>
           </div>
-        </header>
+        </HeroStagger>
 
         {/* The body owns its own section heads and rows (see ../Prose). */}
         <Body />

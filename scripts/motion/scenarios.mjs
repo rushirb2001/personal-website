@@ -111,6 +111,68 @@ export const SCENARIOS = [
     track: ["#projects > button"],
   },
 
+  // ── Inner pages ─────────────────────────────────────────────────────────
+  // /projects, /writing, /resume and /hire run the landing page's accordion
+  // (app/accordion.tsx) around server-rendered rows. /resume stands in for
+  // all four: it has the most sections and the longest one.
+  {
+    name: "page.load",
+    description: "Inner page entrance: hero cascade, section heads, footer",
+    load: true,
+    route: "/resume",
+    windowMs: 1600,
+    track: ["main h1", "#experience > button", "main footer"],
+  },
+  {
+    name: "page.open",
+    description: "Open Experience on /resume from the closed page",
+    setup: (p) => p.goto("/resume"),
+    act: (p) => p.click("#experience > button"),
+    windowMs: 1600,
+    verify: (p) => sectionOpen(p, "experience"),
+    track: ["main h1", "#experience > button", "#experience-content", "main footer"],
+  },
+  {
+    name: "page.switch-down",
+    description: "Education open on /resume, open Skills from its head below",
+    setup: async (p) => {
+      await p.goto("/resume")
+      await openSection(p, "education")
+      await p.reveal("#skills > button")
+    },
+    act: (p) => p.click("#skills > button"),
+    windowMs: 1800,
+    verify: (p) => sectionOpen(p, "skills"),
+    track: ["#skills > button", "#education-content", "#skills-content"],
+  },
+  {
+    name: "page.close",
+    description: "Experience open on /resume, close it from its sticky head",
+    setup: async (p) => {
+      await p.goto("/resume")
+      await openSection(p, "experience")
+    },
+    act: (p) => p.click("#experience > button"),
+    windowMs: 2400,
+    verify: (p) =>
+      p.waitFor(() => ![...document.querySelectorAll("[data-open]")].some((el) => el.dataset.open === "true") && scrollY < 5, {
+        label: "all sections closed at top",
+        timeout: 3000,
+      }),
+    track: ["main h1", "#experience-content", "main footer"],
+  },
+  {
+    name: "page.scroll-open",
+    description: "Scroll through the open Experience list on /resume",
+    setup: async (p) => {
+      await p.goto("/resume")
+      await openSection(p, "experience")
+    },
+    act: (p) => p.scrollGesture({ distance: 1400 }),
+    windowMs: 400,
+    track: ["#experience > button"],
+  },
+
   // ── Case study ──────────────────────────────────────────────────────────
   {
     name: "case.open",

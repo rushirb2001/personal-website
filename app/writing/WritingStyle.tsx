@@ -14,6 +14,8 @@
 // stylesheet: paragraphs use the display face at reading size, and subheads
 // open with the hairline accent rule the landing page uses for education
 // highlights.
+import { CHROME_CSS } from "../SiteChrome"
+
 export function WritingStyle() {
   return (
     <style>{`
@@ -43,6 +45,8 @@ export function WritingStyle() {
         .accent-link:hover::after { transform: scaleX(1); }
       }
 
+      ${CHROME_CSS}
+
       /* The home page's paper: a fine 3px dot grain laid over the whole
          viewport, not a sparse dotted grid. Fixed and multiplied, so it reads
          as texture in the paper rather than a pattern on it. The sticky bars
@@ -56,6 +60,15 @@ export function WritingStyle() {
         background-size: 3px 3px;
         mix-blend-mode: multiply;
         z-index: 1;
+      }
+
+      /* Short, wide viewports (a laptop window, a tablet on its side): the
+         closed page is the hero over every section head, and it should fit
+         one screen, as the landing page's does. Give back the hero's padding
+         and the footer's margin, the same trade the landing page makes. */
+      @media (min-width: 768px) and (max-height: 960px) {
+        .page-hero { padding-top: 1.5rem; padding-bottom: 1.5rem; }
+        main footer { margin-top: 1.5rem; }
       }
 
       /* ---- Shared controls ------------------------------------------- */
@@ -102,6 +115,7 @@ export function WritingStyle() {
         .grain::before { display: none; }
         .no-print { display: none !important; }
         .sticky { position: static !important; }
+        [data-reveal] { opacity: 1 !important; transform: none !important; }
       }
 
       /* ---- Prose ------------------------------------------------------ */

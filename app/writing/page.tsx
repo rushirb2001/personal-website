@@ -1,19 +1,18 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import { JsonLd, breadcrumbList } from "../JsonLd"
-import { PageShell } from "../PageShell"
+import { AccordionShell } from "../PageShell"
 import {
   ChipList,
-  ContactSection,
   ENTRY_BODY,
   ENTRY_TITLE,
   EntryRow,
   HeroFacts,
   PageHero,
-  PageSection,
   Pills,
   RailLinks,
 } from "../SiteChrome"
+import { RowList } from "../accordion"
 import { SITE_URL, absoluteUrl } from "../site"
 import { POSTS } from "./posts-data"
 
@@ -71,72 +70,63 @@ function shortDate(iso: string) {
   })
 }
 
+// The home page's project rows: date and reading time in the margin, title
+// and standfirst in the middle, topics as pills and the read chip in the rail.
+function Posts() {
+  return (
+    <RowList>
+      {POSTS.map((post) => (
+        <EntryRow
+          key={post.slug}
+          spacing="dense"
+          meta={
+            <>
+              <time dateTime={post.published}>{shortDate(post.published)}</time>
+              <span className="muted">{post.readingTime}</span>
+            </>
+          }
+          rail={
+            <>
+              <Pills items={post.topics} />
+              <RailLinks links={[{ label: "read", href: `/writing/${post.slug}` }]} />
+            </>
+          }
+        >
+          <h3 className={ENTRY_TITLE}>
+            <Link href={`/writing/${post.slug}`} className="accent-link">
+              {post.title}
+            </Link>
+          </h3>
+          <p className={`${ENTRY_BODY} mt-2 xs:mt-5`}>{post.standfirst}</p>
+        </EntryRow>
+      ))}
+    </RowList>
+  )
+}
+
 export default function WritingIndex() {
   return (
-    <PageShell current="/writing">
+    <AccordionShell
+      current="/writing"
+      hero={
+        <PageHero
+          title="What I learned making my own work checkable"
+          aside={
+            <>
+              <HeroFacts items={[`${POSTS.length} posts`, "AI engineering portfolios"]} />
+              <ChipList layout="row" className="mt-4" links={[{ label: "rss feed", href: "/writing/rss.xml" }]} />
+            </>
+          }
+        >
+          Which projects carry hiring signal, how to prove a system actually works, what to do when
+          the repo has to stay private, and how to run all of it on nothing.
+        </PageHero>
+      }
+      sections={[
+        { id: "posts", title: "All posts", count: POSTS.length, content: <Posts /> },
+      ]}
+    >
       <JsonLd data={GRAPH} />
-
-      <PageHero
-        title="What I learned making my own work checkable"
-        aside={
-          <>
-            <HeroFacts items={[`${POSTS.length} posts`, "AI engineering portfolios"]} />
-            <ChipList stackFrom="lg" className="mt-4" links={[{ label: "rss feed", href: "/writing/rss.xml" }]} />
-          </>
-        }
-      >
-        Which projects carry hiring signal, how to prove a system actually works, what to do when the
-        repo has to stay private, and how to run all of it on nothing.
-      </PageHero>
-
-      {/* The home page's project rows: date and reading time in the margin,
-          title and standfirst in the middle, topics as pills and the read
-          chip in the rail. */}
-      <PageSection title="All posts" count={POSTS.length}>
-        <ol className="mt-2 lg:mt-3">
-          {POSTS.map((post) => (
-            <EntryRow
-              key={post.slug}
-              spacing="dense"
-              meta={
-                <>
-                  <time dateTime={post.published}>{shortDate(post.published)}</time>
-                  <span className="muted">{post.readingTime}</span>
-                </>
-              }
-              rail={
-                <>
-                  <Pills items={post.topics} />
-                  <RailLinks links={[{ label: "read", href: `/writing/${post.slug}` }]} />
-                </>
-              }
-            >
-              <h3 className={ENTRY_TITLE}>
-                <Link href={`/writing/${post.slug}`} className="accent-link">
-                  {post.title}
-                </Link>
-              </h3>
-              <p className={`${ENTRY_BODY} mt-2 xs:mt-5`}>{post.standfirst}</p>
-            </EntryRow>
-          ))}
-        </ol>
-      </PageSection>
-
-      <ContactSection heading="I build the systems these posts are about">
-        The posts come out of shipped work. Here is{" "}
-        <Link href="/projects" className="accent-link accent">
-          every case study
-        </Link>
-        ,{" "}
-        <Link href="/hire" className="accent-link accent">
-          how I can help
-        </Link>{" "}
-        and my{" "}
-        <Link href="/resume" className="accent-link accent">
-          full resume
-        </Link>
-        .
-      </ContactSection>
-    </PageShell>
+    </AccordionShell>
   )
 }

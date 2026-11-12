@@ -1,20 +1,18 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import { JsonLd, breadcrumbList } from "../JsonLd"
-import { PageShell } from "../PageShell"
+import { AccordionShell } from "../PageShell"
 import {
-  ChipList,
-  ContactSection,
   ENTRY_BODY,
   ENTRY_TITLE,
   EntryRow,
   HeroFacts,
   PageHero,
-  PageSection,
   Pills,
   RailLinks,
   type ChipLink,
 } from "../SiteChrome"
+import { RowList } from "../accordion"
 import { AUTHOR, SITE_URL, absoluteUrl } from "../site"
 import { PROJECT_LIST, projectLabel } from "./projects-data"
 
@@ -25,9 +23,9 @@ import { PROJECT_LIST, projectLabel } from "./projects-data"
 // studies. This page gives each one a second inbound link with descriptive
 // anchor text, and gives the breadcrumb trail a real middle step.
 //
-// It is laid out as the home page's Selected Projects section, opened: the
-// same rows (type in the margin, title and blurb, stack pills and link chips
-// in the rail) under the same section head.
+// It is the home page's accordion (AccordionShell) with the Selected Projects
+// rows: type in the margin, title and blurb, stack pills and link chips in the
+// rail. The closed page lists the sections; a head opens its section.
 const TITLE = "Case studies: RAG, ML systems and AI products"
 const DESCRIPTION =
   "Seven case studies by Rushir Bhavsar: a production RAG backend, an edge API gateway, web and iOS clients, a data pipeline, a thesis on physics-informed neural networks, and an ML platform."
@@ -93,124 +91,106 @@ const GRAPH = [
   },
 ]
 
+function CaseStudies() {
+  return (
+    <RowList>
+      {PROJECT_LIST.map((d) => {
+        const repo = d.repoStatus === "public" ? d.links.find((l) => l.href.includes("github.com")) : undefined
+        const links: ChipLink[] = [{ label: "case study", href: `/projects/${d.slug}` }]
+        if (repo) links.push({ label: "github", href: repo.href, lead: "github" })
+        return (
+          <EntryRow
+            key={d.slug}
+            spacing="dense"
+            meta={
+              <>
+                <span>{d.type}</span>
+                {d.place && <span className="muted">{d.place}</span>}
+              </>
+            }
+            rail={
+              <>
+                <Pills items={d.stack.slice(0, 5)} />
+                <RailLinks links={links} />
+                {!repo && <p className="mono text-[12px] muted">Private repo, walkthrough on request</p>}
+              </>
+            }
+          >
+            <h3 className={ENTRY_TITLE}>
+              <Link href={`/projects/${d.slug}`} className="accent-link">
+                {projectLabel(d)}
+              </Link>
+            </h3>
+            <p className={`${ENTRY_BODY} mt-2 xs:mt-5`}>{d.seoDescription ?? d.tagline}</p>
+          </EntryRow>
+        )
+      })}
+    </RowList>
+  )
+}
+
+function OpenSource() {
+  return (
+    <RowList>
+      {OPEN_SOURCE.map((p) => (
+        <EntryRow
+          key={p.name}
+          spacing="dense"
+          meta={<span>{p.meta}</span>}
+          rail={
+            <>
+              <Pills items={p.stack} />
+              <RailLinks links={[{ label: "github", href: p.href, lead: "github" }]} />
+            </>
+          }
+        >
+          <h3 className={ENTRY_TITLE}>
+            <a href={p.href} target="_blank" rel="noopener noreferrer" className="accent-link" data-lead="github">
+              {p.title}
+            </a>
+          </h3>
+          <p className={`${ENTRY_BODY} mt-2 xs:mt-5`}>{p.blurb}</p>
+        </EntryRow>
+      ))}
+    </RowList>
+  )
+}
+
 export default function ProjectsIndex() {
   return (
-    <PageShell current="/projects">
-      <JsonLd data={GRAPH} />
-
-      <PageHero
-        title="Systems I designed, built and shipped"
-        aside={
-          <>
+    <AccordionShell
+      current="/projects"
+      hero={
+        <PageHero
+          title="Systems I designed, built and shipped"
+          aside={
             <HeroFacts
               items={[`${PROJECT_LIST.length} case studies`, `${OPEN_SOURCE.length} open source repositories`]}
             />
-            <ChipList
-              stackFrom="lg"
-              className="mt-4"
-              links={[
-                { label: "work with me", href: "/hire" },
-                { label: "resume", href: "/resume" },
-              ]}
-            />
-          </>
-        }
-      >
-        Each case study covers the problem, why it is hard, the design, what it cost and where it
-        stands.
-        <span className="block mt-4 muted">
-          Five of them are parts of one product,{" "}
-          <a
-            href="https://sushrutalgs.ai/welcome"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="accent-link accent whitespace-nowrap"
-          >
-            sushrutalgs.ai <span aria-hidden className="mono text-[0.85em] align-middle">↗</span>
-          </a>
-          , which is live in production.
-        </span>
-      </PageHero>
-
-      <PageSection title="Case studies" count={PROJECT_LIST.length}>
-        <ol className="mt-2 lg:mt-3">
-          {PROJECT_LIST.map((d) => {
-            const repo = d.repoStatus === "public" ? d.links.find((l) => l.href.includes("github.com")) : undefined
-            const links: ChipLink[] = [{ label: "case study", href: `/projects/${d.slug}` }]
-            if (repo) links.push({ label: "github", href: repo.href, lead: "github" })
-            return (
-              <EntryRow
-                key={d.slug}
-                spacing="dense"
-                meta={
-                  <>
-                    <span>{d.type}</span>
-                    {d.place && <span className="muted">{d.place}</span>}
-                  </>
-                }
-                rail={
-                  <>
-                    <Pills items={d.stack.slice(0, 5)} />
-                    <RailLinks links={links} />
-                    {!repo && <p className="mono text-[12px] muted">Private repo, walkthrough on request</p>}
-                  </>
-                }
-              >
-                <h3 className={ENTRY_TITLE}>
-                  <Link href={`/projects/${d.slug}`} className="accent-link">
-                    {projectLabel(d)}
-                  </Link>
-                </h3>
-                <p className={`${ENTRY_BODY} mt-2 xs:mt-5`}>{d.seoDescription ?? d.tagline}</p>
-              </EntryRow>
-            )
-          })}
-        </ol>
-      </PageSection>
-
-      <PageSection title="Open source" count={OPEN_SOURCE.length}>
-        <ol className="mt-2 lg:mt-3">
-          {OPEN_SOURCE.map((p) => (
-            <EntryRow
-              key={p.name}
-              spacing="dense"
-              meta={<span>{p.meta}</span>}
-              rail={
-                <>
-                  <Pills items={p.stack} />
-                  <RailLinks links={[{ label: "github", href: p.href, lead: "github" }]} />
-                </>
-              }
+          }
+        >
+          Each case study covers the problem, why it is hard, the design, what it cost and where it
+          stands.
+          <span className="block mt-4 muted">
+            Five of them are parts of one product,{" "}
+            <a
+              href="https://sushrutalgs.ai/welcome"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="accent-link accent whitespace-nowrap"
             >
-              <h3 className={ENTRY_TITLE}>
-                <a
-                  href={p.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="accent-link"
-                  data-lead="github"
-                >
-                  {p.title}
-                </a>
-              </h3>
-              <p className={`${ENTRY_BODY} mt-2 xs:mt-5`}>{p.blurb}</p>
-            </EntryRow>
-          ))}
-        </ol>
-      </PageSection>
-
-      <ContactSection heading="Have a system like one of these to build">
-        I am open to AI Engineer, Forward-Deployed Engineer and Product Manager roles, and to contract
-        builds. Here is{" "}
-        <Link href="/hire" className="accent-link accent">
-          how I can help
-        </Link>{" "}
-        and my{" "}
-        <Link href="/resume" className="accent-link accent">
-          full resume
-        </Link>
-        .
-      </ContactSection>
-    </PageShell>
+              sushrutalgs.ai <span aria-hidden className="mono text-[0.85em] align-middle">↗</span>
+            </a>
+            , which is live in production.
+          </span>
+        </PageHero>
+      }
+      sections={[
+        { id: "case-studies", title: "Case studies", count: PROJECT_LIST.length, content: <CaseStudies /> },
+        { id: "open-source", title: "Open source", count: OPEN_SOURCE.length, content: <OpenSource /> },
+      ]}
+    >
+      <JsonLd data={GRAPH} />
+    </AccordionShell>
   )
 }
