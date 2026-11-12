@@ -192,24 +192,6 @@ export const SCENARIOS = [
       ),
     track: ['[aria-roledescription="carousel"] figure > div', '[aria-roledescription="carousel"] figcaption'],
   },
-
-  // ── Playbook ────────────────────────────────────────────────────────────
-  {
-    name: "playbook.load",
-    description: "Playbook entrance and hero shimmer",
-    load: true,
-    route: "/playbook",
-    windowMs: 1600,
-    track: ["main h1"],
-  },
-  {
-    name: "playbook.scroll",
-    description: "Scroll the playbook sales page",
-    setup: (p) => p.goto("/playbook"),
-    act: (p) => p.scrollGesture({ distance: 3000 }),
-    windowMs: 400,
-    track: [".pb-bar"],
-  },
 ]
 
 export function selectScenarios(filter) {

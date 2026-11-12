@@ -56,11 +56,6 @@ export default function NotFound() {
               writing
             </Link>
           </li>
-          <li>
-            <Link href="/playbook" className="nf-link">
-              the playbook
-            </Link>
-          </li>
         </ul>
       </div>
     </main>

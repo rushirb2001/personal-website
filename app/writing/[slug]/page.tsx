@@ -98,7 +98,7 @@ export default async function PostPage({
 
       <div className="max-w-[1100px] mx-auto px-6 lg:px-12">
         {/* Top bar doubles as the visible breadcrumb the BreadcrumbList above
-            describes. Same row as the playbook's and the index's. */}
+            describes. Same row as the index's. */}
         <nav aria-label="Breadcrumb" className="flex items-center justify-between py-5 xs:py-6">
           <ol className="mono small-caps accent flex flex-wrap items-center gap-x-2.5 gap-y-1">
             <li>
@@ -195,11 +195,6 @@ export default async function PostPage({
             <span className="faint">&copy; 2026 </span>
             {AUTHOR.name}
           </Link>
-          <Link href="/playbook" className="footer-cta mono">
-            The Playbook <span aria-hidden>↗</span>
-          </Link>
-          {/* Dropped on the narrowest phones: three items do not fit, and the
-              location is the least useful of them. */}
           <span className="small-caps faint hidden xs:inline">{AUTHOR.location}</span>
         </footer>
       </div>

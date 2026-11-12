@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og"
 
-// Shared 1200x630 link card. One design for every route, so a link to a post,
-// a case study and the playbook all read as the same site in a feed.
+// Shared 1200x630 link card. One design for every route, so a link to a post or
+// a case study reads as the same site in a feed.
 //
 // Typeface note: this renders through Satori, which cannot read WOFF2, and
 // every face in public/fonts is WOFF2. Rather than commit a second copy of the

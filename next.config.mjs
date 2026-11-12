@@ -18,6 +18,12 @@ const nextConfig = {
         destination: "https://www.rushirbhavsar.dev/:path*",
         permanent: true,
       },
+      // The playbook is retired. Its URLs, the /playbook/in India variant and
+      // the /buy checkout hop all 308 to the home page, so inbound links and
+      // anything already indexed hand their weight to the canonical page
+      // instead of landing on a 404. `:path*` also matches /playbook itself.
+      { source: "/playbook/:path*", destination: "/", permanent: true },
+      { source: "/buy", destination: "/", permanent: true },
     ]
   },
 }

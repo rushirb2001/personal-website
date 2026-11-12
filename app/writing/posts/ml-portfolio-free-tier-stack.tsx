@@ -2,7 +2,6 @@ import Link from "next/link"
 import type { PostMeta } from "../posts-data"
 import { Lede, Section } from "../Prose"
 import { Figure, FreeTierStack } from "../Figure"
-import { NextStep } from "../NextStep"
 
 export const meta: PostMeta = {
   slug: "ml-portfolio-free-tier-stack",
@@ -208,8 +207,6 @@ export default function Post() {
           are a separate problem worth solving early.
         </p>
       </Section>
-
-      <NextStep line="The playbook's stack guide goes tier by tier with the current limits and the workaround for each one, and every one of its sixteen project specs is scoped to run inside them." />
     </>
   )
 }

@@ -494,14 +494,9 @@ export default function HomePage() {
           font-size: 10px;
         }
 
-        /* The one commercial link on the portfolio, and the only thing in the
-           sticky footer that is an offer rather than a fact. It used to render
-           at .faint 10px between two other .faint items, which made the single
-           thing worth clicking the least visible element in its own row.
-           Deliberately a tinted outline and NOT a filled pill: the site keeps
-           exactly one filled control (.cta-buy, on /playbook itself), and a
-           solid navy button here would be the loudest object on an otherwise
-           quiet landing page. */
+        /* Outbound and case-study links. Deliberately a tinted outline and NOT
+           a filled pill: a solid navy button here would be the loudest object
+           on an otherwise quiet landing page. */
         .footer-cta {
           display: inline-flex; align-items: center; gap: 6px;
           padding: 4px 10px; border-radius: 6px;
@@ -828,11 +823,7 @@ export default function HomePage() {
                 sushrutalgs.ai <span aria-hidden className="mono text-[0.85em] align-middle">↗</span>
               </a>
               , a medical AI platform for India&rsquo;s students, residents,
-              and surgeons. Previously at ASU and Cadence. I also wrote{" "}
-              <Link href="/playbook" className="accent-link accent whitespace-nowrap">
-                Zero to Hired
-              </Link>
-              , a playbook for the AI job search.
+              and surgeons. Previously at ASU and Cadence.
               <span className="hidden sm:block mt-4 muted">
                 Looking for Product Manager, AI Engineer, and
                 Forward-Deployed Engineer roles.
@@ -1135,18 +1126,14 @@ export default function HomePage() {
                   @bhavsarrushir@gmail.com
                 </a>
               </p>
-              {/* The only in-content links off this page. Descriptive anchors
-                  on purpose: this is the highest-authority page on the site, so
-                  what it says about /writing and /playbook is what those two
-                  routes get judged on. */}
+              {/* The only in-content link off this page. Descriptive anchor on
+                  purpose: this is the highest-authority page on the site, so
+                  what it says about /writing is what that route gets judged
+                  on. */}
               <p className="mt-3 xs:mt-4 leading-relaxed text-[14px] xs:text-[15px] mono muted">
                 I also write about{" "}
                 <Link href="/writing" className="accent-link accent">
                   building an AI engineering portfolio
-                </Link>
-                , and packaged the whole method as{" "}
-                <Link href="/playbook" className="accent-link accent">
-                  Zero to Hired
                 </Link>
                 .
               </p>
@@ -1196,15 +1183,6 @@ export default function HomePage() {
               <p className="muted whitespace-nowrap">
                 <span className="faint">© 2026 </span>Rushir Bhavsar
               </p>
-              {/* Storefront link. Still separate from the hire-me story, but no
-                  longer whispered: this footer is sticky, so it is the one
-                  offer that is on screen the entire visit. */}
-              <Link href="/playbook" className="footer-cta mono">
-                The Playbook <span aria-hidden>↗</span>
-              </Link>
-              {/* The row only fits two items on the narrowest phones. It used
-                  to be the playbook that got dropped there; the location is the
-                  least useful of the three, so it is the one that goes now. */}
               <p className="small-caps faint whitespace-nowrap hidden xs:block">
                 <span className="accent">+</span> Ahmedabad, India
               </p>

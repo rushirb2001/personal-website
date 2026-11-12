@@ -1,13 +1,13 @@
 // Design tokens for /writing, injected per the repo's established pattern (see
 // the <style> block in app/HomePage.tsx and TOKENS in ProjectModal).
 //
-// The token block below is the same one PlaybookStyle ships, verbatim, so the
-// two routes cannot drift. Everything after the divider is the only genuinely
-// new thing here: a prose scale, because no other route runs long-form body
-// copy. That scale is built out of the site's existing idioms rather than a
-// generic article stylesheet: paragraphs use the playbook's argument-paragraph
-// treatment, lists use its .proof-list marker, and subheads open with the
-// hairline accent rule the landing page uses for education highlights.
+// The token block below matches the landing page's, so the two routes cannot
+// drift. Everything after the divider is the only genuinely new thing here: a
+// prose scale, because no other route runs long-form body copy. That scale is
+// built out of the site's existing idioms rather than a generic article
+// stylesheet: paragraphs use the display face at reading size, and subheads
+// open with the hairline accent rule the landing page uses for education
+// highlights.
 export function WritingStyle() {
   return (
     <style>{`
@@ -41,32 +41,10 @@ export function WritingStyle() {
         background-size: 22px 22px;
       }
 
-      /* Cross-link out of the cluster, same chip as the landing page's footer
-         (see .footer-cta in app/HomePage.tsx) so the one commercial link on the
-         site looks identical wherever it appears. A tinted outline rather than
-         a filled pill: the site keeps exactly one filled control, .cta-buy on
-         /playbook itself. */
-      .footer-cta {
-        display: inline-flex; align-items: center; gap: 6px;
-        padding: 4px 10px; border-radius: 6px;
-        color: #1f3a5f;
-        background-color: rgba(31,58,95,0.07);
-        border: 1px solid rgba(31,58,95,0.28);
-        text-transform: uppercase; letter-spacing: 0.12em; font-size: 11px;
-        white-space: nowrap;
-        transition: background-color 200ms ease, border-color 200ms ease;
-      }
-      @media (hover: hover) {
-        .footer-cta:hover {
-          background-color: rgba(31,58,95,0.13);
-          border-color: rgba(31,58,95,0.5);
-        }
-      }
-
       /* ---- Prose ------------------------------------------------------ */
 
-      /* Paragraphs are the playbook's argument-paragraph treatment: display
-         font at 16/18px on a 70ch measure, not a 1.7-leaded blog column. */
+      /* Paragraphs: display font at 16/18px on a 70ch measure, not a
+         1.7-leaded blog column. */
       .prose > * + * { margin-top: 1.15em; }
       .prose p {
         font-family: "Google Sans", ui-sans-serif, system-ui, sans-serif;
@@ -143,8 +121,7 @@ export function WritingStyle() {
         border-radius: 3px;
       }
 
-      /* The one pulled-out claim per section. Same left accent bar as the
-         playbook's emphasis blocks. */
+      /* The one pulled-out claim per section, marked by a left accent bar. */
       .prose .callout {
         border-left: 2px solid #1f3a5f;
         padding: 0.1rem 0 0.1rem 1.1rem;
@@ -154,7 +131,7 @@ export function WritingStyle() {
       }
       @media (min-width: 475px) { .prose .callout { font-size: 20px; } }
 
-      /* Terminal block, matched to the playbook's .repo-tree window. */
+      /* Terminal block: a light window with a soft shadow. */
       .prose .snippet {
         max-width: 620px; border-radius: 8px; overflow: hidden;
         border: 1px solid rgba(26,26,26,0.12); background: #fff;
@@ -175,9 +152,8 @@ export function WritingStyle() {
       .prose .fig { margin: 26px 0 0; }
       /* Below ~640px the 720-unit viewBox would scale the diagram's 11px
          lettering down to about 6px. Rather than shrink it into illegibility,
-         the figure scrolls sideways inside its own wrapper, the same treatment
-         the playbook gives its wide pricing table. The min-width is the point
-         where the smallest label still reads at ~10px. */
+         the figure scrolls sideways inside its own wrapper. The min-width is
+         the point where the smallest label still reads at ~10px. */
       .prose .fig .fig-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
       .prose .fig svg { display: block; min-width: 600px; }
       @media (min-width: 700px) { .prose .fig svg { min-width: 0; } }
@@ -189,15 +165,6 @@ export function WritingStyle() {
         font-size: 11.5px; line-height: 1.55;
         color: rgba(26,26,26,0.62);
         max-width: 64ch;
-      }
-
-      /* Closing card into /playbook. Reads as a card, never as a paragraph. */
-      .next-step {
-        border: 1px solid rgba(26,26,26,0.12);
-        border-radius: 10px;
-        padding: 20px 22px;
-        background: rgba(31,58,95,0.04);
-        max-width: 70ch;
       }
     `}</style>
   )

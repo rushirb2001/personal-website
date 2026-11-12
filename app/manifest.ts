@@ -8,7 +8,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: "Rushir Bhavsar",
     short_name: "Rushir Bhavsar",
     description:
-      "ML engineer and researcher at ASU. Case studies, research, and the AI-engineer portfolio playbook.",
+      "ML engineer and researcher at ASU. Case studies, research, and writing on building an AI engineering portfolio.",
     start_url: "/",
     display: "standalone",
     // The site's paper and ink, not the black placeholder the old file carried.

@@ -2,7 +2,6 @@ import Link from "next/link"
 import type { PostMeta } from "../posts-data"
 import { Lede, Section } from "../Prose"
 import { Figure, NdaWall } from "../Figure"
-import { NextStep } from "../NextStep"
 
 export const meta: PostMeta = {
   slug: "private-repo-credible-to-recruiters",
@@ -169,8 +168,6 @@ export default function Post() {
           , start there instead.
         </p>
       </Section>
-
-      <NextStep line="The playbook covers this end to end: the case-study template, the design-doc skeleton, and a repo skeleton with the README and CI already written, so a private project still has something to point at." />
     </>
   )
 }

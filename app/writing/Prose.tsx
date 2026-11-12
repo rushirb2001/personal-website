@@ -1,10 +1,9 @@
 import type { ReactNode } from "react"
 
-// The article's structural vocabulary, deliberately identical to the playbook's
-// Head + Row pair (see app/playbook/PlaybookPage.tsx). Same grid template, same
-// sticky head, same "+" marker and trailing accent period, same left-margin
-// label column. A post laid out with these reads as the same document family as
-// every other page on the site.
+// The article's structural vocabulary: a Head + Row pair on the landing page's
+// grid template, with the same sticky head, "+" marker and trailing accent
+// period, and a left-margin label column. A post laid out with these reads as
+// the same document family as every other page on the site.
 
 // Sticky section head: anchors at the top of its own section while the content
 // scrolls, and the next section's head pushes it out natively. Sections carry
@@ -59,7 +58,7 @@ export function Section({
 }: {
   /** Short, for the sticky head. Long phrasing belongs in the body. */
   title: string
-  /** Left-margin keyword, the playbook's Row label. */
+  /** Left-margin keyword, the Row label. */
   label: string
   children: ReactNode
 }) {

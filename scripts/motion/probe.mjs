@@ -78,7 +78,7 @@ function parseArgs(argv) {
 
 const HELP = `motion probe: animation/scroll smoothness on real flows
 
-  --scenario, -s <names>   comma list; a prefix selects a group (home, case, playbook)
+  --scenario, -s <names>   comma list; a prefix selects a group (home, case)
   --viewport, -v <names>   phone,tablet,desktop (default phone,desktop)
   --cpu <n>                CPU throttle multiplier (default 4, a mid-range phone)
   --runs <n>               timing runs per scenario; medians are graded (default 3)

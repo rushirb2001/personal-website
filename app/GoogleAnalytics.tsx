@@ -15,7 +15,7 @@ import { GA_MEASUREMENT_ID } from "./site"
 // the font preloads this page's LCP text waits on. afterInteractive does emit
 // that preload, at High priority.
 //
-// What was actually measured (local prod build, /playbook):
+// What was actually measured (local prod build, a static route):
 //   - TBT rises from ~25ms to ~90ms once gtag is on the page, on either
 //     strategy. That is real and mechanistic (gtag.js is ~90KB to parse and
 //     run) and still well inside Google's "good" band of <200ms.

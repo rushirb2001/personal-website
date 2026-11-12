@@ -2,7 +2,6 @@ import Link from "next/link"
 import type { PostMeta } from "../posts-data"
 import { Lede, Section } from "../Prose"
 import { DepthVsBreadth, Figure, RoleMap } from "../Figure"
-import { NextStep } from "../NextStep"
 
 export const meta: PostMeta = {
   slug: "ai-engineer-portfolio-projects",
@@ -216,8 +215,6 @@ export default function Post() {
           <Link href="/writing/private-repo-credible-to-recruiters">its own problem</Link>.
         </p>
       </Section>
-
-      <NextStep line="Sixteen project specs, chosen by target role, each with a week-by-week build plan, the interview questions it prepares you to answer, and the resume bullets it produces when it ships." />
     </>
   )
 }

@@ -66,8 +66,8 @@ export default function WritingIndex() {
       <JsonLd data={GRAPH} />
 
       <div className="max-w-[1100px] mx-auto px-6 lg:px-12">
-        {/* Same top bar as the playbook: descriptor left, a discreet way back
-            to the portfolio right. */}
+        {/* Top bar: descriptor left, a discreet way back to the portfolio
+            right. */}
         <nav className="flex items-center justify-between py-5 xs:py-6">
           <span className="mono small-caps accent">Writing</span>
           <Link href="/" className="accent-link mono text-[13px] inline-flex items-center gap-1.5">
@@ -180,11 +180,6 @@ export default function WritingIndex() {
           <Link href="/" className="accent-link muted">
             <span className="faint">&copy; 2026 </span>Rushir Bhavsar
           </Link>
-          <Link href="/playbook" className="footer-cta mono">
-            The Playbook <span aria-hidden>↗</span>
-          </Link>
-          {/* Dropped on the narrowest phones: three items do not fit, and the
-              location is the least useful of them. */}
           <span className="small-caps faint hidden xs:inline">Ahmedabad, India</span>
         </footer>
       </div>

@@ -2,7 +2,6 @@ import Link from "next/link"
 import type { PostMeta } from "../posts-data"
 import { Lede, Section } from "../Prose"
 import { EvalHarness, Figure } from "../Figure"
-import { NextStep } from "../NextStep"
 
 export const meta: PostMeta = {
   slug: "rag-eval-harness-interview",
@@ -197,8 +196,6 @@ PASS  no regression beyond -0.02 threshold`}</pre>
           is here.
         </p>
       </Section>
-
-      <NextStep line="This is one of sixteen project specs in the playbook. Each one is scoped to six weeks, on a free stack, and comes with the interview questions it prepares you for." />
     </>
   )
 }

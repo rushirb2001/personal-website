@@ -908,8 +908,7 @@ const TOKENS = `
   .cs-stack-icon { flex: none; color: rgba(26,26,26,0.5); }
 
   /* Links as controls, matching the home page's footer CTA recipe: a tinted
-     outline, never a filled pill (the site keeps exactly one filled control,
-     .cta-buy on /playbook). */
+     outline, never a filled pill. */
   .cs-fact-links { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 7px; }
   .cs-link-btn {
     display: inline-flex; align-items: center; gap: 6px;
