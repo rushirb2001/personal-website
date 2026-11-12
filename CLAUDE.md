@@ -8,6 +8,8 @@ Guidance for Claude Code (claude.ai/code) when working in this repository.
 - **Build:** `pnpm build`
 - **Start prod:** `pnpm start`
 - **Motion probe:** `pnpm motion` (animation/scroll smoothness on real flows, graded and diffable against a saved baseline; see `docs/profiling.md` §4). Any animation, transition, or scroll-choreography change is measured with it: `--save-baseline` before, `--compare` after. Never judge motion by eye in the preview browser.
+- **Payload:** `pnpm payload` after `pnpm build` (first-load JS and HTML per route, gzipped). Next 16's build table no longer prints First Load JS; this replaces it. Run it before and after any change that touches a client component.
+- **Screenshots:** `pnpm shot /hire /resume` (full-page PNGs at a real emulated phone and desktop viewport, into `.shots/`; reports horizontal overflow). Use this, not `chrome --headless --window-size=390`: Chrome clamps a window to about 500px, so that produces a cropped 500px layout that looks like an overflow bug.
 
 Package manager is **pnpm** (`pnpm@10.31.0`, `pnpm-lock.yaml`).
 
@@ -56,10 +58,18 @@ Next.js **16** App Router personal portfolio with a quiet, editorial design (cre
 - `app/projects/projects-data.ts` — `ProjectDetail` type + `PROJECT_DETAILS` map keyed by slug. `repoStatus: "public" | "private"` toggles the access treatment; artifact fields are optional. A `{ todo: "..." }` value renders a labelled placeholder **in dev only** (hidden in production builds, so a half-filled live page never shows placeholders to visitors); a real value renders everywhere; omit the field to drop the block entirely. Includes a copy-paste `TEMPLATE` comment for new (esp. private) projects.
 - `app/projects/ProjectModal.tsx` — the case study. Reads as an **article**, not a dialog: one centred reading column (`.cs`, 56rem) carries every word, and only `.cs-media` breaks out of it. Sections are narrative (`The problem` / `Why it is hard` / `The design` / `What it cost` / `Where it stands`), never a spec sheet, and **never** cite vanity metrics (lines of code, component/route/file counts) — they measure typing and cost credibility with the reader this page exists for. `ProjectDetail.metrics` feeds the outcomes callout. Also holds the diagram zoom (FLIP out of the clicked thumbnail) and the verify CTA.
 - `app/projects/ArchitectureDiagram.tsx` — inline SVG diagrams keyed by slug, composed from `app/projects/diagram-kit.tsx`. **Never hand-type connector coordinates**: the kit derives edge geometry from node rectangles (`box`/`column`/`Link`), so a connector cannot drift off its target. Every floating label goes through `K.Tag`, which knocks a paper halo out behind the glyphs — a label sits on a connector by definition, and without the halo the line reads straight through it.
-- `app/HomePage.tsx` links into the modal via a "View case study →" link, gated on `hasProjectDetail(slug)`.
+- `app/HomePage.tsx` links into the modal via a "View case study →" link, gated on the `caseStudySlugs` prop that `app/page.tsx` passes in. **Do not import `projects-data.ts` into `HomePage.tsx` or any other client component**: it pulls every case study's full text into that route's client bundle (it cost the landing page about 13KB gzip). Client components get what they need as props (`related` on `ProjectModal`, `caseStudySlugs` on `HomePage`).
+- `app/SiteChrome.tsx` — the chrome every inner page shares: `SiteNav` (top bar), `SiteFooter`, `PageHeader`, `GridRow`. Server components. The nav entries live in `SITE_NAV` in `app/site.ts`; the landing page's sticky footer reads the same list.
+- `app/projects/page.tsx` — the case-study index (`/projects`): every case study with a descriptive title (`projectLabel`), plus open-source repos. `PROJECT_LIST` in `projects-data.ts` sets the order.
+- `app/resume/` — the resume as an HTML page. `resume-data.ts` mirrors the PDF served at `RESUME_PDF` (`public/rushir-bhavsar-resume.pdf`); change both together.
+- `app/hire/page.tsx` — the page for recruiters and clients: roles, contract work, facts, contact. Every claim links to a case study.
+- `app/writing/FromTheWork.tsx` — the closing section of every post: one line tying the article to shipped work, a link to a case study, then `/hire` and `/resume`.
+- **Links out of the case-study overlay are plain `<a>` tags, not `<Link>`** (the three action links under "More case studies" in `ProjectModal`). The overlay lives in the `@modal` slot, which keeps its last match across a soft navigation, so a `<Link>` to `/hire` would leave the modal open over the new page. Do not fix that with a catch-all page in the slot: it makes every unknown URL a server-rendered route and the static 404 a function call.
+- **Internal links are a feature, not decoration.** Google indexed the landing page and the writing cluster but none of the case studies while their only inbound links were rows in a collapsed accordion. Every case study now gets links from `/projects`, `/resume`, `/hire`, its sibling case studies and a post. Keep that when adding a page: link to it from at least two others, with descriptive anchor text.
+- **Lead tracking:** any element with `data-lead="<type>"` reports a GA4 `lead_click` event (one delegated listener in `app/GoogleAnalytics.tsx`). Put it on every email, resume, LinkedIn and GitHub link.
+- **Caching (`next.config.mjs` `headers()`):** `/fonts/*` is `immutable` for a year, so a font file must never change in place: a new subset gets a new filename. The hero portrait is `public/images/rushir-bhavsar.jpg` with a 31-day optimizer TTL: rename it when replacing it.
+- **Redirects (`next.config.mjs`):** the retired `/playbook` and `/buy` go to `/`; guessable addresses (`/contact`, `/cv`, `/resume.pdf`, `/work`, `/blog`, `/about`) go to the page that answers them. There is no `middleware.ts`; do not add one.
 - `app/error.tsx`, `app/global-error.tsx`, `app/not-found.tsx` — error boundaries.
-
-**Note:** `components.json` (shadcn config) is a vestigial leftover — there is no `components/` directory and shadcn/ui is not in use.
 
 ## Conventions
 
