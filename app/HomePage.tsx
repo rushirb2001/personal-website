@@ -6,7 +6,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react"
 import { motion, MotionConfig, type Variants } from "motion/react"
 import { TocNav } from "./TocNav"
 import { cssEase, rise, springs, stagger } from "./motion"
-import { hasProjectDetail } from "./projects/projects-data"
+import { RESUME_PDF, SITE_NAV } from "./site"
 import { DOCUMENT_ICON, GITHUB_ICON, LINKEDIN_ICON, STACK_ICONS, StackIcon } from "./stack-icons"
 
 // Every Motion entrance on this page animates a transform STRING and opacity
@@ -171,7 +171,7 @@ const EDUCATION = [
     degree: "MS, Data Science",
     school: "Arizona State University",
     schoolShort: "ASU",
-    gpa: "3.71",
+    gpa: "3.72",
     focus: "High Performance Computing and Decision Analytics",
     year: "2025",
     coursework: ["Statistical ML", "Distributed Systems", "GPU Computing", "Deep Learning Theory", "Numerical Methods", "Optimization"],
@@ -181,7 +181,7 @@ const EDUCATION = [
         textShort: "Thesis: Coupled Ensemble Physics-Informed Neural Networks",
         href: "https://keep.lib.asu.edu/items/201211",
       },
-      { text: "GPA 3.71" },
+      { text: "GPA 3.72" },
     ],
   },
   {
@@ -218,7 +218,7 @@ const LINKS = [
   { label: "Email", value: "bhavsarrushir@gmail.com", href: "mailto:bhavsarrushir@gmail.com" },
   { label: "LinkedIn", value: "rushir-bhavsar", href: "https://linkedin.com/in/rushir-bhavsar/" },
   { label: "GitHub", value: "rushirb2001", href: "https://github.com/rushirb2001" },
-  { label: "Resume", value: "PDF", href: "https://v9fl0vq2qbxv8yrh.public.blob.vercel-storage.com/RUSHIR_BHAVSAR_RESUME.pdf" },
+  { label: "Resume", value: "PDF", href: RESUME_PDF },
 ]
 
 const LINK_ICONS: Record<string, { path: string; viewBox?: string }> = {
@@ -227,7 +227,12 @@ const LINK_ICONS: Record<string, { path: string; viewBox?: string }> = {
   Resume: DOCUMENT_ICON,
 }
 
-export default function HomePage() {
+// `caseStudySlugs` comes from the server route (app/page.tsx). This component
+// used to import hasProjectDetail from projects-data to gate the case-study
+// links, which pulled every case study's full text (about 50KB of source) into
+// the landing page's client bundle to answer a yes/no question.
+export default function HomePage({ caseStudySlugs }: { caseStudySlugs: string[] }) {
+  const hasProjectDetail = (slug: string) => caseStudySlugs.includes(slug)
   const [openSection, setOpenSection] = useState<string | null>(null)
   // True when the open section should GROW in (upward section switch, where
   // the scroll has already landed) instead of snapping its height open (fresh
@@ -759,12 +764,18 @@ export default function HomePage() {
             <motion.div variants={heroItemVariants} className="hero-photo-block pt-1 sm:pt-3 lg:pt-4">
               <div className="hero-photo relative w-full max-w-[280px] aspect-[3/4] overflow-hidden grayscale rounded-2xl">
                 <Image
-                  src="/images/design-mode/new_personal_photo(1).png"
+                  src="/images/rushir-bhavsar.jpg"
                   alt="Rushir Bhavsar"
                   fill
                   sizes="(max-width: 639px) 100vw, (max-width: 1167px) 24vw, 280px"
                   className="object-cover object-[60%_30%]"
-                  priority
+                  // The phone layout's LCP element. `preload` (Next 16's name
+                  // for the old `priority`) emits the <link rel="preload">, but
+                  // no longer raises the fetch priority, and an image preload
+                  // defaults to Low: it queued behind every script on a slow
+                  // connection. fetchPriority="high" puts it back in front.
+                  preload
+                  fetchPriority="high"
                 />
                 <div className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-black/10" />
               </div>
@@ -1122,16 +1133,28 @@ export default function HomePage() {
               </p>
               <p className="mt-3 xs:mt-4 leading-relaxed text-[14px] xs:text-[15px] mono">
                 Please reach out to{" "}
-                <a href="mailto:bhavsarrushir@gmail.com" className="accent-link accent">
-                  @bhavsarrushir@gmail.com
+                <a href="mailto:bhavsarrushir@gmail.com" className="accent-link accent" data-lead="email">
+                  bhavsarrushir@gmail.com
                 </a>
               </p>
-              {/* The only in-content link off this page. Descriptive anchor on
+              {/* The in-content links off this page. Descriptive anchors on
                   purpose: this is the highest-authority page on the site, so
-                  what it says about /writing is what that route gets judged
+                  what it says about each route is what that route gets judged
                   on. */}
               <p className="mt-3 xs:mt-4 leading-relaxed text-[14px] xs:text-[15px] mono muted">
-                I also write about{" "}
+                Here is{" "}
+                <Link href="/hire" className="accent-link accent">
+                  how I can help, for a role or a project
+                </Link>
+                , my{" "}
+                <Link href="/resume" className="accent-link accent">
+                  full resume
+                </Link>
+                , and every{" "}
+                <Link href="/projects" className="accent-link accent">
+                  case study
+                </Link>
+                . I also write about{" "}
                 <Link href="/writing" className="accent-link accent">
                   building an AI engineering portfolio
                 </Link>
@@ -1152,6 +1175,7 @@ export default function HomePage() {
                       target={l.href.startsWith("http") || l.href.endsWith(".pdf") ? "_blank" : undefined}
                       rel="noopener noreferrer"
                       className="footer-cta mono"
+                      data-lead={l.label === "Resume" ? "resume_pdf" : l.label.toLowerCase()}
                     >
                       <StackIcon icon={LINK_ICONS[l.label]} className="w-3 h-3 shrink-0" />
                       {l.label.toLowerCase()} <span aria-hidden>↗</span>
@@ -1183,7 +1207,35 @@ export default function HomePage() {
               <p className="muted whitespace-nowrap">
                 <span className="faint">© 2026 </span>Rushir Bhavsar
               </p>
-              <p className="small-caps faint whitespace-nowrap hidden xs:block">
+              {/* The site's other routes. This footer is sticky, so these are
+                  on screen for the whole visit, and they are the landing
+                  page's only persistent links to /projects, /resume and
+                  /hire. "Hire me" is the chip because it is the action; the
+                  rest are plain links. Phones keep just the last two: the
+                  first two are already reachable from the sections above. */}
+              <nav aria-label="Site">
+                <ul className="flex items-center gap-x-4 small-caps">
+                  {SITE_NAV.map((item) =>
+                    item.href === "/hire" ? (
+                      <li key={item.href}>
+                        <Link href={item.href} className="footer-cta mono">
+                          {item.label}
+                        </Link>
+                      </li>
+                    ) : (
+                      <li
+                        key={item.href}
+                        className={item.href === "/resume" ? undefined : "hidden xs:block"}
+                      >
+                        <Link href={item.href} className="accent-link muted">
+                          {item.label}
+                        </Link>
+                      </li>
+                    ),
+                  )}
+                </ul>
+              </nav>
+              <p className="small-caps faint whitespace-nowrap hidden md:block">
                 <span className="accent">+</span> Ahmedabad, India
               </p>
             </motion.div>

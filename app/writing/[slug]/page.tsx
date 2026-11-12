@@ -2,7 +2,8 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { JsonLd, breadcrumbList } from "../../JsonLd"
-import { AUTHOR, SITE_URL, absoluteUrl } from "../../site"
+import { SiteFooter, SiteNav } from "../../SiteChrome"
+import { SITE_URL, absoluteUrl } from "../../site"
 import { getPost, POSTS, POST_SLUGS } from "../posts-data"
 import { WritingStyle } from "../WritingStyle"
 
@@ -97,20 +98,9 @@ export default async function PostPage({
       <JsonLd data={graph} />
 
       <div className="max-w-[1100px] mx-auto px-6 lg:px-12">
-        {/* Top bar doubles as the visible breadcrumb the BreadcrumbList above
-            describes. Same row as the index's. */}
-        <nav aria-label="Breadcrumb" className="flex items-center justify-between py-5 xs:py-6">
-          <ol className="mono small-caps accent flex flex-wrap items-center gap-x-2.5 gap-y-1">
-            <li>
-              <Link href="/writing" className="accent-link">
-                Writing
-              </Link>
-            </li>
-          </ol>
-          <Link href="/" className="accent-link mono text-[13px] inline-flex items-center gap-1.5">
-            <span aria-hidden>&larr;</span> Rushir Bhavsar
-          </Link>
-        </nav>
+        {/* The same top bar as every inner page; "Writing" is marked current,
+            which is the visible half of the BreadcrumbList above. */}
+        <SiteNav current="/writing" />
 
         <article>
           {/* Header on the page grid: publication meta in the left margin,
@@ -190,13 +180,7 @@ export default async function PostPage({
           </ol>
         </section>
 
-        <footer className="border-t rule mt-12 xs:mt-16 py-6 xs:py-8 mono text-[11px] flex items-center justify-between gap-4">
-          <Link href="/" className="accent-link muted">
-            <span className="faint">&copy; 2026 </span>
-            {AUTHOR.name}
-          </Link>
-          <span className="small-caps faint hidden xs:inline">{AUTHOR.location}</span>
-        </footer>
+        <SiteFooter />
       </div>
     </main>
   )

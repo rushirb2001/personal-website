@@ -1,5 +1,6 @@
 import Link from "next/link"
 import type { PostMeta } from "../posts-data"
+import { FromTheWork } from "../FromTheWork"
 import { Lede, Section } from "../Prose"
 import { DepthVsBreadth, Figure, RoleMap } from "../Figure"
 
@@ -215,6 +216,11 @@ export default function Post() {
           <Link href="/writing/private-repo-credible-to-recruiters">its own problem</Link>.
         </p>
       </Section>
+
+      <FromTheWork
+        line="I hold my own work to this standard. Each case study on this site is one project I can defend for ten minutes: the problem, why it is hard, the design, what it cost and where it stands."
+        caseStudy={{ label: "Read the case studies", href: "/projects" }}
+      />
     </>
   )
 }

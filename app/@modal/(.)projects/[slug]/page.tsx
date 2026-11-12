@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation"
-import { getProjectDetail } from "@/app/projects/projects-data"
+import { getProjectDetail, relatedProjects } from "@/app/projects/projects-data"
 import { ProjectModal } from "@/app/projects/ProjectModal"
 
 // Intercepted route: when a project case study is opened via in-app navigation
@@ -15,5 +15,5 @@ export default async function InterceptedProjectModal({
   const detail = getProjectDetail(slug)
   if (!detail) notFound()
 
-  return <ProjectModal detail={detail} mode="overlay" />
+  return <ProjectModal detail={detail} mode="overlay" related={relatedProjects(detail.slug)} />
 }

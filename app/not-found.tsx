@@ -52,8 +52,23 @@ export default function NotFound() {
             </Link>
           </li>
           <li>
+            <Link href="/projects" className="nf-link">
+              projects
+            </Link>
+          </li>
+          <li>
             <Link href="/writing" className="nf-link">
               writing
+            </Link>
+          </li>
+          <li>
+            <Link href="/resume" className="nf-link">
+              resume
+            </Link>
+          </li>
+          <li>
+            <Link href="/hire" className="nf-link">
+              hire me
             </Link>
           </li>
         </ul>

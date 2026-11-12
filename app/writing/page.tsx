@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import { JsonLd, breadcrumbList } from "../JsonLd"
+import { SiteFooter, SiteNav } from "../SiteChrome"
 import { SITE_URL, absoluteUrl } from "../site"
 import { POSTS } from "./posts-data"
 import { WritingStyle } from "./WritingStyle"
@@ -66,14 +67,7 @@ export default function WritingIndex() {
       <JsonLd data={GRAPH} />
 
       <div className="max-w-[1100px] mx-auto px-6 lg:px-12">
-        {/* Top bar: descriptor left, a discreet way back to the portfolio
-            right. */}
-        <nav className="flex items-center justify-between py-5 xs:py-6">
-          <span className="mono small-caps accent">Writing</span>
-          <Link href="/" className="accent-link mono text-[13px] inline-flex items-center gap-1.5">
-            <span aria-hidden>&larr;</span> Rushir Bhavsar
-          </Link>
-        </nav>
+        <SiteNav current="/writing" />
 
         {/* Hero on the page grid rather than as a free-floating block, so the
             headline's left edge is the same one every row below it uses. */}
@@ -176,12 +170,7 @@ export default function WritingIndex() {
           ))}
         </ol>
 
-        <footer className="border-t rule mt-12 xs:mt-16 py-6 xs:py-8 mono text-[11px] flex items-center justify-between gap-4">
-          <Link href="/" className="accent-link muted">
-            <span className="faint">&copy; 2026 </span>Rushir Bhavsar
-          </Link>
-          <span className="small-caps faint hidden xs:inline">Ahmedabad, India</span>
-        </footer>
+        <SiteFooter />
       </div>
     </main>
   )

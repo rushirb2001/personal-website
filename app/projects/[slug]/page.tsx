@@ -2,7 +2,13 @@ import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 import { JsonLd, breadcrumbList } from "../../JsonLd"
 import { SITE_URL, absoluteUrl } from "../../site"
-import { getProjectDetail, PROJECT_DETAIL_SLUGS, type ProjectDetail } from "../projects-data"
+import {
+  getProjectDetail,
+  PROJECT_DETAIL_SLUGS,
+  projectLabel,
+  relatedProjects,
+  type ProjectDetail,
+} from "../projects-data"
 import { ProjectModal } from "../ProjectModal"
 
 // Pre-render the known project pages at build time.
@@ -47,7 +53,8 @@ function projectJsonLd(detail: ProjectDetail) {
   return [
     breadcrumbList([
       { name: "Home", url: SITE_URL },
-      { name: detail.title ?? detail.name, url },
+      { name: "Projects", url: absoluteUrl("/projects") },
+      { name: projectLabel(detail), url },
     ]),
     {
       "@context": "https://schema.org",
@@ -80,7 +87,7 @@ export default async function ProjectPage({
   return (
     <>
       <JsonLd data={projectJsonLd(detail)} />
-      <ProjectModal detail={detail} mode="standalone" />
+      <ProjectModal detail={detail} mode="standalone" related={relatedProjects(detail.slug)} />
     </>
   )
 }

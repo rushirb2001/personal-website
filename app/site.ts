@@ -35,7 +35,14 @@ export const AUTHOR = {
   name: "Rushir Bhavsar",
   email: "bhavsarrushir@gmail.com",
   location: "Ahmedabad, India",
-  jobTitle: "Machine Learning Engineer",
+  // The title actually held at the current employer (worksFor in app/page.tsx),
+  // not a generic discipline label: a jobTitle that matches LinkedIn and the
+  // resume is one more thing an indexer can corroborate.
+  jobTitle: "Founding Engineer",
+  employer: { name: "sushrutalgs.ai", url: "https://sushrutalgs.ai" },
+  linkedin: "https://www.linkedin.com/in/rushir-bhavsar/",
+  github: "https://github.com/rushirb2001",
+  scholar: "https://scholar.google.com/citations?user=bAlVSk8AAAAJ",
   sameAs: [
     "https://www.linkedin.com/in/rushir-bhavsar/",
     "https://github.com/rushirb2001",
@@ -46,6 +53,21 @@ export const AUTHOR = {
     "https://sushrutalgs.ai",
   ],
 } as const
+
+// The resume PDF, served from this origin (public/). It used to live on a
+// Vercel Blob hostname, which sent the one document a recruiter is most likely
+// to forward to a domain with no name on it, and gave the link equity away.
+// Replace the file in place to update it; the URL is the stable part.
+export const RESUME_PDF = "/rushir-bhavsar-resume.pdf"
+
+// The site's top-level routes, in nav order. SiteChrome renders this on every
+// inner page and the home footer reads it too, so a new section is one entry.
+export const SITE_NAV = [
+  { href: "/projects", label: "Projects" },
+  { href: "/writing", label: "Writing" },
+  { href: "/resume", label: "Resume" },
+  { href: "/hire", label: "Hire me" },
+] as const
 
 export function absoluteUrl(path: string): string {
   return new URL(path, SITE_URL).toString()

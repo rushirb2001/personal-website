@@ -1,5 +1,7 @@
-// Design tokens for /writing, injected per the repo's established pattern (see
-// the <style> block in app/HomePage.tsx and TOKENS in ProjectModal).
+// Design tokens for every inner page (/writing, /projects, /resume, /hire),
+// injected per the repo's established pattern (see the <style> block in
+// app/HomePage.tsx and TOKENS in ProjectModal). The name is historical: it
+// started as the writing section's stylesheet and the other pages adopted it.
 //
 // The token block below matches the landing page's, so the two routes cannot
 // drift. Everything after the divider is the only genuinely new thing here: a
@@ -39,6 +41,85 @@ export function WritingStyle() {
       .grain {
         background-image: radial-gradient(rgba(26,26,26,0.055) 1px, transparent 1px);
         background-size: 22px 22px;
+      }
+
+      /* ---- Shared controls (every inner page: /projects, /resume, /hire) --- */
+
+      /* Outline chip, the same recipe as the landing page's .footer-cta: a
+         tinted outline for secondary actions. */
+      .footer-cta {
+        display: inline-flex; align-items: center; gap: 6px;
+        padding: 6px 12px; border-radius: 6px;
+        color: #1f3a5f;
+        background-color: rgba(31,58,95,0.07);
+        border: 1px solid rgba(31,58,95,0.28);
+        text-transform: uppercase; letter-spacing: 0.12em; font-size: 11px;
+        white-space: nowrap;
+        transition: background-color 200ms ease, border-color 200ms ease;
+      }
+      /* The one filled control a page gets: its primary action (email on
+         /hire, the PDF on /resume). Never more than one per page, so it stays
+         the loudest thing on an otherwise quiet sheet. */
+      .cta-solid {
+        display: inline-flex; align-items: center; gap: 6px;
+        padding: 6px 14px; border-radius: 6px;
+        color: #f4f1ec;
+        background-color: #1f3a5f;
+        border: 1px solid #1f3a5f;
+        text-transform: uppercase; letter-spacing: 0.12em; font-size: 11px;
+        white-space: nowrap;
+        transition: background-color 200ms ease, border-color 200ms ease;
+      }
+      @media (hover: hover) {
+        .footer-cta:hover {
+          background-color: rgba(31,58,95,0.13);
+          border-color: rgba(31,58,95,0.5);
+        }
+        .cta-solid:hover { background-color: #16314f; border-color: #16314f; }
+      }
+      .footer-cta:focus-visible, .cta-solid:focus-visible {
+        outline: 2px solid #1f3a5f; outline-offset: 2px;
+      }
+
+      /* A list whose marker is the site's "+" motif (section heads, hero
+         facts) instead of a bullet. Hanging indent, so wrapped lines align
+         with the text, not the marker. */
+      .plus-list { list-style: none; padding: 0; }
+      .plus-list > li { position: relative; padding-left: 1.5em; }
+      .plus-list > li + li { margin-top: 0.6em; }
+      .plus-list > li::before {
+        content: "+"; position: absolute; left: 0; top: 0; color: #1f3a5f;
+      }
+
+      /* Technology pill, matching the case study rail's stack pills. */
+      .pill {
+        display: inline-flex; align-items: center;
+        padding: 2px 8px; border-radius: 5px;
+        font-size: 11px; line-height: 1.6; white-space: nowrap;
+        color: rgba(26,26,26,0.72);
+        background-color: rgba(26,26,26,0.045);
+        border: 1px solid rgba(26,26,26,0.1);
+      }
+
+      /* Closing card under an article or a page: where to go next. Reads as a
+         card, never as a paragraph. */
+      .next-step {
+        border: 1px solid rgba(26,26,26,0.12);
+        border-radius: 10px;
+        padding: 20px 22px;
+        background: rgba(31,58,95,0.04);
+        max-width: 70ch;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .accent-link, .accent-link::after, .footer-cta, .cta-solid { transition: none; }
+      }
+
+      /* Printing /resume gives a clean sheet: no nav, no grain, no sticky bars. */
+      @media print {
+        .grain { background-image: none; }
+        .no-print { display: none !important; }
+        .sticky { position: static !important; }
       }
 
       /* ---- Prose ------------------------------------------------------ */

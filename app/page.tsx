@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import HomePage from "./HomePage"
 import { JsonLd } from "./JsonLd"
+import { PROJECT_DETAIL_SLUGS } from "./projects/projects-data"
 import { AUTHOR, ORCID_URL, SITE_URL, absoluteUrl } from "./site"
 
 // The landing page itself is a client component (the accordion owns scroll and
@@ -20,7 +21,10 @@ const PERSON = {
   "@id": `${SITE_URL}/#person`,
   name: AUTHOR.name,
   url: SITE_URL,
-  image: absoluteUrl("/images/design-mode/new_personal_photo(1).png"),
+  image: absoluteUrl("/images/rushir-bhavsar.jpg"),
+  // One sentence an indexer can quote. Everything in it is visible on the page.
+  description:
+    "Founding engineer at sushrutalgs.ai building production RAG and LLM systems, API gateways and ML pipelines. Previously at OpenEye (Cadence Design Systems) and Talin Labs; M.S. in Data Science from Arizona State University.",
   jobTitle: AUTHOR.jobTitle,
   email: `mailto:${AUTHOR.email}`,
   sameAs: [...AUTHOR.sameAs],
@@ -133,7 +137,7 @@ export default function Page() {
   return (
     <>
       <JsonLd data={GRAPH} />
-      <HomePage />
+      <HomePage caseStudySlugs={PROJECT_DETAIL_SLUGS} />
     </>
   )
 }

@@ -1,5 +1,6 @@
 import Link from "next/link"
 import type { PostMeta } from "../posts-data"
+import { FromTheWork } from "../FromTheWork"
 import { Lede, Section } from "../Prose"
 import { Figure, NdaWall } from "../Figure"
 
@@ -168,6 +169,11 @@ export default function Post() {
           , start there instead.
         </p>
       </Section>
+
+      <FromTheWork
+        line="Five of my own case studies describe private repositories, so they are written from exactly these artefacts. The edge gateway is the clearest example."
+        caseStudy={{ label: "A private-repo case study: the edge API gateway", href: "/projects/sushrutalgs-bff" }}
+      />
     </>
   )
 }

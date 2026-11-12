@@ -1,5 +1,6 @@
 import Link from "next/link"
 import type { PostMeta } from "../posts-data"
+import { FromTheWork } from "../FromTheWork"
 import { Lede, Section } from "../Prose"
 import { EvalHarness, Figure } from "../Figure"
 
@@ -196,6 +197,11 @@ PASS  no regression beyond -0.02 threshold`}</pre>
           is here.
         </p>
       </Section>
+
+      <FromTheWork
+        line="I run this kind of harness in production: an 8-gate regression suite, covering citation integrity and hallucination, over a graph and vector retrieval backend that holds 30 concurrent queries with zero errors."
+        caseStudy={{ label: "HybridFlow: hybrid RAG over surgical textbooks", href: "/projects/hybridflow" }}
+      />
     </>
   )
 }
