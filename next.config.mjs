@@ -1,6 +1,14 @@
+import { dirname } from "node:path"
+import { fileURLToPath } from "node:url"
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  // Pin the Turbopack root to this directory. Git worktrees live under
+  // .claude/worktrees/ inside the main checkout, so two pnpm-lock.yaml files
+  // sit on the path and Next infers the OUTER one as the root, then compiles
+  // the outer checkout's middleware.ts and friends instead of this tree's.
+  turbopack: { root: dirname(fileURLToPath(import.meta.url)) },
   images: {
     formats: ["image/avif", "image/webp"],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048],
