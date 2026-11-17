@@ -1,8 +1,8 @@
 import Link from "next/link"
 import type { PostMeta } from "../posts-data"
+import { FromTheWork } from "../FromTheWork"
 import { Lede, Section } from "../Prose"
 import { Figure, FreeTierStack } from "../Figure"
-import { NextStep } from "../NextStep"
 
 export const meta: PostMeta = {
   slug: "ml-portfolio-free-tier-stack",
@@ -209,7 +209,10 @@ export default function Post() {
         </p>
       </Section>
 
-      <NextStep line="The playbook's stack guide goes tier by tier with the current limits and the workaround for each one, and every one of its sixteen project specs is scoped to run inside them." />
+      <FromTheWork
+        line="For what a finished project looks like once it is written up, numbers included, here is an end-to-end ML system on 6.99M reviews: a recommender and a sentiment API behind one service."
+        caseStudy={{ label: "Yelp ML platform: recommender and sentiment API", href: "/projects/yelp-ml-platform" }}
+      />
     </>
   )
 }

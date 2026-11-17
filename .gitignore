@@ -53,3 +53,6 @@ graft/
 
 # Motion probe output (runs, baselines, filmstrips): machine-specific, not committed
 .motion/
+
+# Screenshot tool output (pnpm shot): machine-specific, not committed
+.shots/

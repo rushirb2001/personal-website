@@ -2,11 +2,22 @@
 
 import Image from "next/image"
 import Link from "next/link"
-import { useEffect, useRef, useState, type ReactNode } from "react"
-import { motion, MotionConfig, type Variants } from "motion/react"
+import { usePathname } from "next/navigation"
+import { useEffect, useRef, useState } from "react"
+import { motion, MotionConfig } from "motion/react"
+import {
+  ACCORDION_CSS,
+  Section,
+  heroContainerVariants,
+  heroItemVariants,
+  rowItemVariants,
+  rowListVariants,
+  useAccordion,
+} from "./accordion"
 import { TocNav } from "./TocNav"
-import { cssEase, rise, springs, stagger } from "./motion"
-import { hasProjectDetail } from "./projects/projects-data"
+import { springs } from "./motion"
+import { CHROME_CSS, SiteFooterBar } from "./SiteChrome"
+import { HOME_SECTIONS, RESUME_PDF, sectionFromPath } from "./site"
 import { DOCUMENT_ICON, GITHUB_ICON, LINKEDIN_ICON, STACK_ICONS, StackIcon } from "./stack-icons"
 
 // Every Motion entrance on this page animates a transform STRING and opacity
@@ -15,37 +26,17 @@ import { DOCUMENT_ICON, GITHUB_ICON, LINKEDIN_ICON, STACK_ICONS, StackIcon } fro
 // style writes per hero element during load, stalling exactly while hydration
 // held the main thread.
 
-// Hero — orchestrated via staggerChildren so the LCP element (the h1,
-// verified with PerformanceObserver) gets delayChildren: 0 and therefore
-// animation delay 0; Chrome holds an element out of LCP contention while its
-// opacity is 0, so any delay on it is added straight to the LCP metric.
-const heroContainerVariants = stagger(0.09, 0)
-const heroItemVariants = rise(12)
-
-// Section heads — a deterministic cascade that picks up where the hero leaves
-// off. It used to be whileInView, but every head is inside the closed
-// landing's first viewport by design, so the IntersectionObserver only added
-// latency and an order that depended on when each observer fired.
-const SECTION_ORDER = ["experience", "projects", "education", "contact"]
-const sectionHeadVariants: Variants = {
-  hidden: { opacity: 0, transform: "translateY(14px)" },
-  visible: (i: number) => ({
-    opacity: 1,
-    transform: "translateY(0px)",
-    transition: { ...springs.reveal, delay: 0.22 + i * 0.05 },
-  }),
-}
-
-// Accordion row lists — re-armed every time a section's `open` boolean flips
-// back to true so reopening a section replays the cascade. The hidden state is
-// applied instantly and only AFTER the collapse has finished: animating rows
-// out while their container is already collapsing is two exits for one
-// action, and the rows were clipped before they finished anyway.
-const rowListVariants = stagger(0.05, 0.12)
-const rowItemVariants: Variants = {
-  hidden: { opacity: 0, transform: "translateY(10px)", transition: { duration: 0, delay: 0.55 } },
-  visible: { opacity: 1, transform: "translateY(0px)", transition: springs.reveal },
-}
+// The hero, section-head and row variants, the accordion's state and scroll
+// choreography, and the Section component all live in ./accordion. This file
+// is the page's content and its hero.
+//
+// This page is the whole site. Every fact about the work is stated once,
+// here, in one of five sections, and each section has its own path
+// (/projects is this page with Projects open; see HOME_SECTIONS in site.ts
+// and the route files that render HomeRoute). The only other pages are the
+// long reads the rows link to: a case study per project, an article per post.
+// Do not add a page that restates a section.
+const SECTION_ORDER: readonly string[] = HOME_SECTIONS.map((x) => x.id)
 
 const WORK = [
   {
@@ -164,6 +155,17 @@ const PROJECTS = [
     stack: ["PySpark", "FastAPI", "MLflow", "Docker", "NumPy"],
     links: [{ label: "github", href: "https://github.com/rushirb2001/yelp-ml-platform" }],
   },
+  {
+    name: "cohors",
+    platform: "",
+    slug: "cohors",
+    descShort: "One Rust core behind a CLI, TUI, web UI and MCP server for running a fleet of git repositories.",
+    type: "Open source",
+    year: "2026",
+    desc: "A control plane for a fleet of git repositories: one Rust core behind a CLI, a terminal UI, a web UI and an MCP server, so a coding agent can run bulk actions with dry-run previews and confirm gates instead of unbounded writes.",
+    stack: ["Rust", "MCP", "TUI"],
+    links: [{ label: "github", href: "https://github.com/rushirb2001/cohors" }],
+  },
 ]
 
 const EDUCATION = [
@@ -171,7 +173,7 @@ const EDUCATION = [
     degree: "MS, Data Science",
     school: "Arizona State University",
     schoolShort: "ASU",
-    gpa: "3.71",
+    gpa: "3.72",
     focus: "High Performance Computing and Decision Analytics",
     year: "2025",
     coursework: ["Statistical ML", "Distributed Systems", "GPU Computing", "Deep Learning Theory", "Numerical Methods", "Optimization"],
@@ -181,7 +183,7 @@ const EDUCATION = [
         textShort: "Thesis: Coupled Ensemble Physics-Informed Neural Networks",
         href: "https://keep.lib.asu.edu/items/201211",
       },
-      { text: "GPA 3.71" },
+      { text: "GPA 3.72" },
     ],
   },
   {
@@ -218,7 +220,7 @@ const LINKS = [
   { label: "Email", value: "bhavsarrushir@gmail.com", href: "mailto:bhavsarrushir@gmail.com" },
   { label: "LinkedIn", value: "rushir-bhavsar", href: "https://linkedin.com/in/rushir-bhavsar/" },
   { label: "GitHub", value: "rushirb2001", href: "https://github.com/rushirb2001" },
-  { label: "Resume", value: "PDF", href: "https://v9fl0vq2qbxv8yrh.public.blob.vercel-storage.com/RUSHIR_BHAVSAR_RESUME.pdf" },
+  { label: "Resume", value: "PDF", href: RESUME_PDF },
 ]
 
 const LINK_ICONS: Record<string, { path: string; viewBox?: string }> = {
@@ -227,235 +229,78 @@ const LINK_ICONS: Record<string, { path: string; viewBox?: string }> = {
   Resume: DOCUMENT_ICON,
 }
 
-export default function HomePage() {
-  const [openSection, setOpenSection] = useState<string | null>(null)
-  // True when the open section should GROW in (upward section switch, where
-  // the scroll has already landed) instead of snapping its height open (fresh
-  // open, where the scroll still needs the room to exist).
-  const [softOpen, setSoftOpen] = useState(false)
-  // True while a close-to-home collapse plays: sections get the soft 500ms
-  // close (mirror of softOpen) instead of the brisk 350ms that the section-
-  // switch choreography's 380ms scroll timing depends on.
-  const [homeClosing, setHomeClosing] = useState(false)
-  const homeCloseTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const programmaticScrollRef = useRef(false)
-  const lockTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const heroWrapRef = useRef<HTMLDivElement>(null)
-  const heroSectionRef = useRef<HTMLElement>(null)
+// `caseStudySlugs` comes from the server route (app/page.tsx). This component
+// used to import hasProjectDetail from projects-data to gate the case-study
+// links, which pulled every case study's full text (about 50KB of source) into
+// the landing page's client bundle to answer a yes/no question.
+//
+// `posts` arrives the same way and for the same reason: the registry in
+// writing/posts-data imports every article's body, so the Writing section is
+// handed the six fields it shows and nothing else.
+export type HomePost = {
+  slug: string
+  title: string
+  standfirst: string
+  /** ISO, for <time dateTime>. */
+  published: string
+  /** Already formatted on the server ("Aug 2026"), so no locale can disagree. */
+  date: string
+  readingTime: string
+  topics: string[]
+}
 
+export default function HomePage({ caseStudySlugs, posts }: { caseStudySlugs: string[]; posts: HomePost[] }) {
+  const hasProjectDetail = (slug: string) => caseStudySlugs.includes(slug)
+
+  // The URL is the open section: / is the closed page, /projects is Projects
+  // open. `mountSection` is the one this render entered on. It is open in the
+  // server HTML, and its rows skip their cascade (they are already on screen).
+  const pathname = usePathname()
+  const routeSection = sectionFromPath(pathname)
+  const [mountSection] = useState(routeSection)
+  const { openSection, softOpen, homeClosing, toggleSection, goHome, heroWrapRef, heroSectionRef } =
+    useAccordion(mountSection)
+  const rowsInitial = (id: string) => (mountSection === id ? false : "hidden")
+
+  // Opening, switching and closing a section moves the address with it, by
+  // history.pushState, which Next's router folds into usePathname without a
+  // navigation: the page never remounts, so the choreography is undisturbed.
+  // `intent` is the section the address is already heading for, which is how
+  // the effect below tells a Back or Forward (the address moved first) from
+  // an echo of our own push.
+  const intentRef = useRef<string | null>(mountSection)
+  const setAddress = (id: string | null, replace = false) => {
+    intentRef.current = id
+    const url = id ? `/${id}` : "/"
+    if (window.location.pathname === url) return
+    window.history[replace ? "replaceState" : "pushState"](null, "", url)
+  }
+  const selectSection = (id: string) => {
+    setAddress(openSection === id ? null : id)
+    toggleSection(id)
+  }
+  const selectHome = () => {
+    setAddress(null)
+    goHome()
+  }
+  // Back and Forward: the address changed under us, so follow it.
   useEffect(() => {
-    let prevY = window.scrollY
-    const onScroll = () => {
-      const y = window.scrollY
-      const goingUp = y < prevY
-      prevY = y
-      if (programmaticScrollRef.current) return
-      // Direction-gated: only an upward glide past the section head closes
-      // the accordion. Without the gate, parking at the top while a scroll
-      // lock is active and then scrolling DOWN to read would collapse the
-      // section underfoot on the first scroll event.
-      if (goingUp && y < 40) {
-        setOpenSection((prev) => (prev === null ? prev : null))
-      }
+    if (routeSection === intentRef.current) return
+    intentRef.current = routeSection
+    if (routeSection) {
+      if (openSection !== routeSection) toggleSection(routeSection)
+    } else if (openSection) {
+      goHome()
     }
-    window.addEventListener("scroll", onScroll, { passive: true })
-    return () => window.removeEventListener("scroll", onScroll)
-  }, [])
-
-  const lockScroll = (ms = 1200) => {
-    programmaticScrollRef.current = true
-    if (lockTimerRef.current) clearTimeout(lockTimerRef.current)
-    lockTimerRef.current = setTimeout(() => {
-      programmaticScrollRef.current = false
-    }, ms)
-  }
-
-  const prefersReduced = () =>
-    typeof window !== "undefined" &&
-    window.matchMedia?.("(prefers-reduced-motion: reduce)").matches
-
-  const pendingCloseRef = useRef<(() => void) | null>(null)
-
-  const softClose = () => {
-    setHomeClosing(true)
-    if (homeCloseTimerRef.current) clearTimeout(homeCloseTimerRef.current)
-    homeCloseTimerRef.current = setTimeout(() => setHomeClosing(false), 700)
-  }
-
-  // Closing mirrors opening, sequenced: glide back to the top FIRST while the
-  // page still has its expanded height (collapsing while scrolled lets the
-  // document shrink faster than the smooth scroll, so the browser clamp-jumps
-  // the position). Only on arrival collapse the section, below the fold, while
-  // the hero glides back to center.
-  const closeToTop = () => {
-    pendingCloseRef.current?.()
-    if (prefersReduced() || window.scrollY < 40) {
-      lockScroll()
-      softClose()
-      setOpenSection(null)
-      // "instant", not "auto": with html { scroll-behavior: smooth } an
-      // "auto" scroll resolves to smooth, animating for the very users who
-      // asked for no motion.
-      window.scrollTo({ top: 0, behavior: "instant" })
-      return
-    }
-    lockScroll(1600)
-    window.scrollTo({ top: 0, behavior: "smooth" })
-    let done = false
-    const finish = () => {
-      if (done) return
-      done = true
-      window.removeEventListener("scrollend", finish)
-      pendingCloseRef.current = null
-      softClose()
-      setOpenSection(null)
-    }
-    pendingCloseRef.current = () => {
-      done = true
-      window.removeEventListener("scrollend", finish)
-      pendingCloseRef.current = null
-    }
-    window.addEventListener("scrollend", finish, { once: true })
-    // Safari has no scrollend: watch for arrival each frame so the collapse
-    // fires the moment the glide lands. The timeout is a last resort only —
-    // a short fixed timer would cut long glides early and clamp-jump.
-    const settle = () => {
-      if (done) return
-      if (window.scrollY < 2) return finish()
-      requestAnimationFrame(settle)
-    }
-    requestAnimationFrame(settle)
-    setTimeout(finish, 2000)
-  }
-
-  const toggleSection = (id: string) => {
-    if (openSection === id) {
-      closeToTop()
-      return
-    }
-    pendingCloseRef.current?.()
-    // A lingering soft-close flag would slow the switch collapse past the
-    // 380ms scroll timing; switches always use the standard durations.
-    if (homeCloseTimerRef.current) clearTimeout(homeCloseTimerRef.current)
-    setHomeClosing(false)
-    const switching = openSection !== null
-    const reduced = prefersReduced()
-
-    // Switching to a section ABOVE the open one: expanding it right away
-    // would grow the page above the viewport and shove the visible content
-    // down a full frame. Reverse the order instead: glide up to the target's
-    // header first (its position is stable while the old section stays open),
-    // and swap the sections on arrival — the old one then collapses below the
-    // viewport while the new one expands downward under its header, same as
-    // the downward direction.
-    const el = document.getElementById(id)
-    const openEl = switching ? document.getElementById(openSection!) : null
-    if (!reduced && el && openEl && el.offsetTop < openEl.offsetTop) {
-      const targetTop = Math.max(0, el.offsetTop - 56)
-      lockScroll(1800)
-      let done = false
-      const finish = () => {
-        if (done) return
-        done = true
-        window.removeEventListener("scrollend", finish)
-        pendingCloseRef.current = null
-        setSoftOpen(true)
-        setOpenSection(id)
-      }
-      pendingCloseRef.current = () => {
-        done = true
-        window.removeEventListener("scrollend", finish)
-        pendingCloseRef.current = null
-      }
-      if (Math.abs(window.scrollY - targetTop) < 2) {
-        finish()
-        return
-      }
-      window.scrollTo({ top: targetTop, behavior: "smooth" })
-      window.addEventListener("scrollend", finish, { once: true })
-      // Arrival watcher for browsers without scrollend (Safari), so short
-      // glides don't dead-stall on a fixed timer; long timeout as last resort.
-      const settle = () => {
-        if (done) return
-        if (Math.abs(window.scrollY - targetTop) < 2) return finish()
-        requestAnimationFrame(settle)
-      }
-      requestAnimationFrame(settle)
-      setTimeout(finish, 2000)
-      return
-    }
-
-    // A previous glide may still be in flight (rapid tab clicks); freeze it
-    // so the choreography below starts from a stationary viewport instead of
-    // letting the old scroll keep travelling the wrong way during the wait.
-    if (programmaticScrollRef.current) {
-      window.scrollTo({ top: window.scrollY, behavior: "instant" })
-    }
-    lockScroll(1400)
-
-    // Opening from the closed landing: the hero gives up its centering space
-    // over 350ms, so a live offsetTop read mid-transition would overshoot.
-    // Measure the still-stable closed layout now and pre-compute where the
-    // section head lands once the leftover space is gone, then scroll to that
-    // fixed target concurrently with the collapse.
-    let target: number | null = null
-    if (!switching && !reduced) {
-      const el = document.getElementById(id)
-      const wrap = heroWrapRef.current
-      const hero = heroSectionRef.current
-      if (el && wrap && hero) {
-        const leftover = Math.max(0, wrap.offsetHeight - hero.offsetHeight)
-        target = Math.max(0, el.offsetTop - leftover - 56)
-      }
-    }
-
-    // Switching below while scrolled deeper than the old section's collapse
-    // will leave room for: the browser would clamp-yank the viewport frame by
-    // frame during the 380ms wait, then glide — two disjoint motions. Project
-    // the post-collapse layout (stable arithmetic, same idiom as the fresh-
-    // open pre-compute) and, only when that clamp is inevitable, launch the
-    // glide immediately so the descent reads as one intentional motion.
-    let immediateTarget: number | null = null
-    if (switching && !reduced && el && openEl) {
-      const headH = openEl.querySelector("button")?.offsetHeight ?? 57
-      const collapsing = Math.max(0, openEl.offsetHeight - headH)
-      const opening = Math.max(0, window.innerHeight - 56 - headH)
-      const projectedMax =
-        document.documentElement.scrollHeight - collapsing + opening - window.innerHeight
-      if (window.scrollY > projectedMax) {
-        immediateTarget = Math.max(0, el.offsetTop - collapsing - 56)
-      }
-    }
-
-    setSoftOpen(false)
-    setOpenSection(id)
-    const scrollToSection = () => {
-      if (target !== null) {
-        window.scrollTo({ top: target, behavior: "smooth" })
-        return
-      }
-      const el = document.getElementById(id)
-      if (el) {
-        window.scrollTo({ top: el.offsetTop - 56, behavior: reduced ? "instant" : "smooth" })
-      }
-    }
-    if (switching && !reduced) {
-      if (immediateTarget !== null) {
-        const top = immediateTarget
-        requestAnimationFrame(() =>
-          requestAnimationFrame(() => window.scrollTo({ top, behavior: "smooth" })),
-        )
-      } else {
-        // Wait for the previous section's height transition (350ms) to finish
-        // so the target's offsetTop is stable before we commit a smooth scroll.
-        setTimeout(scrollToSection, 380)
-      }
-    } else {
-      requestAnimationFrame(() => requestAnimationFrame(scrollToSection))
-    }
-  }
-
-  const goHome = () => closeToTop()
+    // Follows the address only; openSection is read, not watched.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [routeSection])
+  // Scrolling back up to the hero closes the open section (see useAccordion).
+  // Nobody clicked, so the address is corrected in place, not pushed.
+  useEffect(() => {
+    if (openSection === null && intentRef.current !== null) setAddress(null, true)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [openSection])
 
   return (
     <MotionConfig reducedMotion="user">
@@ -494,14 +339,9 @@ export default function HomePage() {
           font-size: 10px;
         }
 
-        /* The one commercial link on the portfolio, and the only thing in the
-           sticky footer that is an offer rather than a fact. It used to render
-           at .faint 10px between two other .faint items, which made the single
-           thing worth clicking the least visible element in its own row.
-           Deliberately a tinted outline and NOT a filled pill: the site keeps
-           exactly one filled control (.cta-buy, on /playbook itself), and a
-           solid navy button here would be the loudest object on an otherwise
-           quiet landing page. */
+        /* Outbound and case-study links. Deliberately a tinted outline and NOT
+           a filled pill: a solid navy button here would be the loudest object
+           on an otherwise quiet landing page. */
         .footer-cta {
           display: inline-flex; align-items: center; gap: 6px;
           padding: 4px 10px; border-radius: 6px;
@@ -519,57 +359,8 @@ export default function HomePage() {
           }
         }
 
-        /* All scrolling on this page is choreographed manually (pre-computed
-           targets, scroll-then-flip sequencing). Browser scroll anchoring
-           fights that: when a section's min-height snaps open while the
-           viewport is scrolled, Chrome/Firefox re-anchor and teleport the
-           scroll position mid-choreography.
-           scrollbar-gutter keeps the scrollbar's lane reserved while the
-           accordion flips the page between fitting the viewport and
-           overflowing it — without it the centered layout (footer most
-           visibly) shifts ~5px on every open/close. Declared here, not in
-           globals.css, because the Tailwind/Lightning pipeline strips it
-           there. */
-        html { overflow-anchor: none; scrollbar-gutter: stable; }
-
-        /* The last section head's bottom rule would run parallel to the
-           footer's top rule with only blank slack between them — reading as
-           an empty duplicate footer row. Rules belong BETWEEN items; the
-           footer's own rule closes the list. The border returns while the
-           section is open, where it separates the sticky head from content
-           scrolling beneath it. */
-        main section:last-of-type > button[aria-expanded="false"] {
-          border-bottom-color: transparent;
-        }
-
-        /* Section open/close — animated grid row, so height-to-auto tweens in
-           every engine (interpolate-size is still Chromium-only and the old
-           height transition snapped open on Safari/Firefox). */
-        .section-collapsible {
-          display: grid;
-          grid-template-rows: 0fr;
-          overflow: hidden;
-          transition: grid-template-rows 350ms cubic-bezier(0.22, 1, 0.36, 1);
-        }
-        .section-collapsible[data-open="true"] {
-          grid-template-rows: 1fr;
-        }
-
-        /* Section content reveal: opacity only. The spatial motion belongs to
-           the Motion row cascade; this wrapper used to slide up 8px as well,
-           so every row travelled on two overlapping curves at once. Opacity
-           stays here because non-row content (the Contact copy) has no
-           cascade of its own. */
-        .section-content {
-          min-height: 0;
-          overflow: hidden;
-          opacity: 0;
-          transition: opacity 400ms ${cssEase.reveal};
-        }
-        .section-collapsible[data-open="true"] .section-content {
-          opacity: 1;
-          transition-delay: 120ms;
-        }
+        ${CHROME_CSS}
+        ${ACCORDION_CSS}
 
         /* Hero entrance, section-head scroll reveal, accordion row stagger,
            and the footer's mount fade-up are all driven by Motion
@@ -616,22 +407,8 @@ export default function HomePage() {
             height: clamp(28px, 5.2svh, 36px);
             font-size: clamp(15px, 2.9svh, 20px);
           }
-          /* Section heads ride the same curve (all clamps hit their caps
-             together near 850svh) so the hero/heads hierarchy keeps the same
-             ratio at every height instead of the heads looming over a
-             compressed hero. */
-          main section > button { padding-block: clamp(8px, 1.6svh, 12px); }
-          main section > button .display { font-size: clamp(16px, 2.75svh, 22px); }
-          main section > button .mono { font-size: clamp(10px, 1.5svh, 12px); }
-          main footer { margin-top: clamp(12px, 4.5svh, 40px); }
-          /* Open-section content rides the same curve (caps hit near 850svh
-             = today's tall-phone design), so short viewports fit more rows
-             per screen with the hierarchy ratios intact. Selectors pair each
-             override with the Tailwind size utility it compresses. */
-          main .section-content .text-\\[21px\\] { font-size: clamp(17px, 2.6svh, 19px); }
-          main .section-content .text-\\[16px\\] { font-size: clamp(13px, 2svh, 14px); }
-          main .section-content .text-\\[14px\\] { font-size: clamp(12px, 1.8svh, 13px); }
-          main .section-content .text-\\[12px\\] { font-size: clamp(10.5px, 1.5svh, 11px); }
+          /* The section heads and open-section content ride the same svh
+             curve; those rules are in ACCORDION_CSS. */
         }
         .hero-name { grid-area: name; }
         .hero-photo-block { grid-area: photo; }
@@ -648,6 +425,26 @@ export default function HomePage() {
             column-gap: clamp(24px, 5.4vw, 64px);
             row-gap: 0;
           }
+        }
+
+        /* Short phones (360x640, 375x667). The svh curve above was tuned for
+           four section heads; the fifth (Writing) cost about 36px there. The
+           cover photo and the footer's margin give it back, so the closed
+           page still needs no scroll. Taller phones are untouched. */
+        @media (max-width: 639px) and (max-height: 700px) {
+          .hero-photo { height: clamp(84px, 17svh, 200px); }
+          main footer { margin-top: 10px; }
+        }
+
+        /* Very short, wide windows (a 720px or 768px-tall laptop). Same reason, same
+           trade one step further than the max-height: 960px block below: a
+           smaller headline and photo, less air around the description. */
+        @media (min-width: 768px) and (max-height: 780px) {
+          .hero-section h1 { font-size: clamp(44px, 8vw, 72px) !important; }
+          .hero-grid { grid-template-columns: 1fr clamp(150px, min(24vw, 28vh), 200px) !important; }
+          .hero-section .hero-photo { max-width: min(200px, 28vh) !important; }
+          .hero-section .hero-desc { margin-top: 1rem; }
+          main footer { margin-top: 0.75rem !important; }
         }
 
         .grain::before {
@@ -685,29 +482,9 @@ export default function HomePage() {
           .hero-section .hero-photo-block { padding-top: 0; }
           .hero-section .hero-photo-block .mono { margin-top: 1rem; }
           main footer { margin-top: 1.5rem; }
-        }
-
-        /* Soft open (upward section switch): the freshly opened section grows
-           in slowly instead of snapping its height open. */
-        @media (prefers-reduced-motion: no-preference) {
-          section[data-soft] { transition: min-height 500ms cubic-bezier(0.22, 1, 0.36, 1); }
-          section[data-soft] .section-collapsible { transition-duration: 500ms; }
-        }
-
-        /* Soft close (returning home): the collapse eases over 500ms — the
-           mirror of the soft open — instead of the brisk 350ms that section
-           SWITCHES must keep (their 380ms scroll timing depends on it). */
-        @media (prefers-reduced-motion: no-preference) {
-          [data-home-close] section,
-          [data-home-close] .section-collapsible,
-          [data-home-close] .section-content { transition-duration: 500ms; }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-          .section-collapsible,
-          .section-content,
-          .accent-link,
-          .accent-link::after { transition: none; }
+          /* Five section heads, not four: at their full padding the fifth
+             pushed the closed page 20px past an 800px-tall window. */
+          main section > button { padding-block: 0.5rem; }
         }
       `}</style>
 
@@ -725,7 +502,7 @@ export default function HomePage() {
         style={openSection === null ? { transitionProperty: "none" } : undefined}
         data-home-close={homeClosing ? "" : undefined}
       >
-        <TocNav active={openSection} onSelect={toggleSection} onHome={goHome} />
+        <TocNav active={openSection} onSelect={selectSection} onHome={selectHome} />
 
         {/* Hero — centered in the leftover space above the section list while
             closed. The centering stays mounted; opening a section animates the
@@ -764,12 +541,18 @@ export default function HomePage() {
             <motion.div variants={heroItemVariants} className="hero-photo-block pt-1 sm:pt-3 lg:pt-4">
               <div className="hero-photo relative w-full max-w-[280px] aspect-[3/4] overflow-hidden grayscale rounded-2xl">
                 <Image
-                  src="/images/design-mode/new_personal_photo(1).png"
+                  src="/images/rushir-bhavsar.jpg"
                   alt="Rushir Bhavsar"
                   fill
                   sizes="(max-width: 639px) 100vw, (max-width: 1167px) 24vw, 280px"
                   className="object-cover object-[60%_30%]"
-                  priority
+                  // The phone layout's LCP element. `preload` (Next 16's name
+                  // for the old `priority`) emits the <link rel="preload">, but
+                  // no longer raises the fetch priority, and an image preload
+                  // defaults to Low: it queued behind every script on a slow
+                  // connection. fetchPriority="high" puts it back in front.
+                  preload
+                  fetchPriority="high"
                 />
                 <div className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-black/10" />
               </div>
@@ -828,11 +611,7 @@ export default function HomePage() {
                 sushrutalgs.ai <span aria-hidden className="mono text-[0.85em] align-middle">↗</span>
               </a>
               , a medical AI platform for India&rsquo;s students, residents,
-              and surgeons. Previously at ASU and Cadence. I also wrote{" "}
-              <Link href="/playbook" className="accent-link accent whitespace-nowrap">
-                Zero to Hired
-              </Link>
-              , a playbook for the AI job search.
+              and surgeons. Previously at ASU and Cadence.
               <span className="hidden sm:block mt-4 muted">
                 Looking for Product Manager, AI Engineer, and
                 Forward-Deployed Engineer roles.
@@ -847,16 +626,17 @@ export default function HomePage() {
         <div className="mb-auto sm:mb-0">
         <Section
           id="experience"
+          index={SECTION_ORDER.indexOf("experience")}
           title="Experience"
           count={WORK.length}
           open={openSection === "experience"}
           soft={softOpen}
-          onToggle={() => toggleSection("experience")}
+          onToggle={() => selectSection("experience")}
         >
           <motion.ol
             className="mt-2 lg:mt-3"
             variants={rowListVariants}
-            initial="hidden"
+            initial={rowsInitial("experience")}
             animate={openSection === "experience" ? "visible" : "hidden"}
           >
             {WORK.map((w, i) => (
@@ -899,16 +679,17 @@ export default function HomePage() {
 
         <Section
           id="projects"
+          index={SECTION_ORDER.indexOf("projects")}
           title="Selected Projects"
           count={PROJECTS.length}
           open={openSection === "projects"}
           soft={softOpen}
-          onToggle={() => toggleSection("projects")}
+          onToggle={() => selectSection("projects")}
         >
           <motion.ol
             className="mt-2 lg:mt-3"
             variants={rowListVariants}
-            initial="hidden"
+            initial={rowsInitial("projects")}
             animate={openSection === "projects" ? "visible" : "hidden"}
           >
             {PROJECTS.map((p, i) => (
@@ -1016,17 +797,79 @@ export default function HomePage() {
         </Section>
 
         <Section
+          id="writing"
+          index={SECTION_ORDER.indexOf("writing")}
+          title="Writing"
+          count={posts.length}
+          open={openSection === "writing"}
+          soft={softOpen}
+          onToggle={() => selectSection("writing")}
+        >
+          {/* The project rows' shape: date and reading time in the margin,
+              title and standfirst in the middle, topics and the read chip in
+              the rail. The title is the link, so the anchor a post is known
+              by on this page is its own headline. */}
+          <motion.ol
+            className="mt-2 lg:mt-3"
+            variants={rowListVariants}
+            initial={rowsInitial("writing")}
+            animate={openSection === "writing" ? "visible" : "hidden"}
+          >
+            {posts.map((post, i) => (
+              <motion.li
+                key={post.slug}
+                variants={rowItemVariants}
+                className={`grid grid-cols-1 xs:grid-cols-[clamp(80px,14vw,140px)_1fr_clamp(140px,22vw,240px)] lg:grid-cols-[140px_1fr_240px] gap-3 xs:gap-6 lg:gap-12 py-4 xs:py-6 lg:py-8 first:pt-2 xs:first:pt-3 lg:first:pt-4 ${
+                  i !== posts.length - 1 ? "border-b rule" : ""
+                }`}
+              >
+                <div className="mono text-[12px] xs:text-[13px] leading-none ink flex xs:flex-col items-start gap-3 xs:gap-2 xs:pt-2 lg:pt-[10px]">
+                  <time dateTime={post.published}>{post.date}</time>
+                  <span className="muted">{post.readingTime}</span>
+                </div>
+                <div>
+                  <h3 className="display text-[21px] xs:text-[26px] lg:text-3xl font-light tracking-tight leading-tight">
+                    <Link href={`/writing/${post.slug}`} className="accent-link">
+                      {post.title}
+                    </Link>
+                  </h3>
+                  <p className="mt-2 xs:mt-5 leading-relaxed text-[14px] xs:text-[15px] max-w-[58ch] mono">
+                    {post.standfirst}
+                  </p>
+                </div>
+                <div className="xs:space-y-6 xs:pt-2 lg:pt-[10px]">
+                  <ul className="flex flex-wrap gap-1.5 mono text-[12px] xs:text-[13px]">
+                    {post.topics.map((t) => (
+                      <li key={t} className="muted inline-flex items-center rounded-full border rule px-2.5 py-1">
+                        {t}
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="hidden xs:block">
+                    <div className="border-t rule mb-3 xs:mb-4" />
+                    <Link href={`/writing/${post.slug}`} className="footer-cta mono">
+                      read <span aria-hidden>→</span>
+                    </Link>
+                  </div>
+                </div>
+              </motion.li>
+            ))}
+          </motion.ol>
+        </Section>
+
+        <Section
           id="education"
+          index={SECTION_ORDER.indexOf("education")}
           title="Education"
           count={EDUCATION.length}
           open={openSection === "education"}
           soft={softOpen}
-          onToggle={() => toggleSection("education")}
+          onToggle={() => selectSection("education")}
         >
           <motion.ol
             className="mt-2 lg:mt-3"
             variants={rowListVariants}
-            initial="hidden"
+            initial={rowsInitial("education")}
             animate={openSection === "education" ? "visible" : "hidden"}
           >
             {EDUCATION.map((e, i) => (
@@ -1078,7 +921,7 @@ export default function HomePage() {
                             href={h.href}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="group block rounded-lg border rule px-3 py-2.5 transition-[background-color,border-color] duration-200 hover:bg-[rgba(31,58,95,0.05)] hover:border-[rgba(31,58,95,0.3)]"
+                            className="group block rounded-lg border rule rule-hover px-3 py-2.5"
                           >
                             <span className="ink leading-relaxed block">
                               <span className="xs:hidden">{titleShort}</span>
@@ -1110,10 +953,11 @@ export default function HomePage() {
 
         <Section
           id="contact"
+          index={SECTION_ORDER.indexOf("contact")}
           title="Contact"
           open={openSection === "contact"}
           soft={softOpen}
-          onToggle={() => toggleSection("contact")}
+          onToggle={() => selectSection("contact")}
         >
           {/* Three-column row matching the Experience / Projects / Education
               rhythm: status meta · heading + copy · Links. */}
@@ -1131,31 +975,16 @@ export default function HomePage() {
               </p>
               <p className="mt-3 xs:mt-4 leading-relaxed text-[14px] xs:text-[15px] mono">
                 Please reach out to{" "}
-                <a href="mailto:bhavsarrushir@gmail.com" className="accent-link accent">
-                  @bhavsarrushir@gmail.com
+                <a href="mailto:bhavsarrushir@gmail.com" className="accent-link accent" data-lead="email">
+                  bhavsarrushir@gmail.com
                 </a>
-              </p>
-              {/* The only in-content links off this page. Descriptive anchors
-                  on purpose: this is the highest-authority page on the site, so
-                  what it says about /writing and /playbook is what those two
-                  routes get judged on. */}
-              <p className="mt-3 xs:mt-4 leading-relaxed text-[14px] xs:text-[15px] mono muted">
-                I also write about{" "}
-                <Link href="/writing" className="accent-link accent">
-                  building an AI engineering portfolio
-                </Link>
-                , and packaged the whole method as{" "}
-                <Link href="/playbook" className="accent-link accent">
-                  Zero to Hired
-                </Link>
-                .
               </p>
             </div>
             <div className="xs:pt-2 lg:pt-[10px]">
               <motion.ul
                 className="flex flex-col gap-2"
                 variants={rowListVariants}
-                initial="hidden"
+                initial={rowsInitial("contact")}
                 animate={openSection === "contact" ? "visible" : "hidden"}
               >
                 {LINKS.filter((l) => l.label !== "Email").map((l) => (
@@ -1165,6 +994,7 @@ export default function HomePage() {
                       target={l.href.startsWith("http") || l.href.endsWith(".pdf") ? "_blank" : undefined}
                       rel="noopener noreferrer"
                       className="footer-cta mono"
+                      data-lead={l.label === "Resume" ? "resume_pdf" : l.label.toLowerCase()}
                     >
                       <StackIcon icon={LINK_ICONS[l.label]} className="w-3 h-3 shrink-0" />
                       {l.label.toLowerCase()} <span aria-hidden>↗</span>
@@ -1188,129 +1018,18 @@ export default function HomePage() {
         <footer className="sticky bottom-0 z-50 mt-10 xs:mt-14">
           <div className="border-t rule" style={{ backgroundColor: "#f4f1ec" }}>
             <motion.div
-              className="max-w-[1100px] mx-auto px-6 lg:px-12 py-5 xs:py-6 mono text-[11px] flex items-center justify-between gap-4"
+              className="max-w-[1100px] mx-auto px-6 lg:px-12 py-5 xs:py-6 mono text-[11px]"
               initial={{ opacity: 0, transform: "translateY(12px)" }}
               animate={{ opacity: 1, transform: "translateY(0px)" }}
               transition={{ ...springs.reveal, delay: 0.42 }}
             >
-              <p className="muted whitespace-nowrap">
-                <span className="faint">© 2026 </span>Rushir Bhavsar
-              </p>
-              {/* Storefront link. Still separate from the hire-me story, but no
-                  longer whispered: this footer is sticky, so it is the one
-                  offer that is on screen the entire visit. */}
-              <Link href="/playbook" className="footer-cta mono">
-                The Playbook <span aria-hidden>↗</span>
-              </Link>
-              {/* The row only fits two items on the narrowest phones. It used
-                  to be the playbook that got dropped there; the location is the
-                  least useful of the three, so it is the one that goes now. */}
-              <p className="small-caps faint whitespace-nowrap hidden xs:block">
-                <span className="accent">+</span> Ahmedabad, India
-              </p>
+              {/* Shared with the article pages' footer (SiteChrome). */}
+              <SiteFooterBar />
             </motion.div>
           </div>
         </footer>
       </div>
     </main>
     </MotionConfig>
-  )
-}
-
-function Section({
-  id,
-  title,
-  count,
-  open,
-  soft = false,
-  onToggle,
-  children,
-}: {
-  id: string
-  title: string
-  count?: number
-  open: boolean
-  soft?: boolean
-  onToggle: () => void
-  children: ReactNode
-}) {
-  return (
-    <section
-      id={id}
-      data-soft={open && soft ? "" : undefined}
-      // Asymmetric on purpose: min-height SNAPS on open (the smooth scroll to
-      // the section head needs that scroll room to already exist, or the
-      // browser clamps it and lands short) but ANIMATES on close so the page
-      // glides back up instead of jumping when the height vanishes. The inline
-      // transition-none applies only in the open state, i.e. to the opening
-      // edge; the closing edge reads the class transition.
-      className={`scroll-mt-14 max-w-[1100px] mx-auto px-6 lg:px-12 motion-safe:transition-[min-height] motion-safe:duration-[350ms] motion-safe:ease-[cubic-bezier(0.22,1,0.36,1)] ${
-        open ? "min-h-[calc(100vh-3.5rem)]" : "min-h-0"
-      }`}
-      style={open && !soft ? { transitionProperty: "none" } : undefined}
-    >
-      <SectionHead id={id} title={title} count={count} open={open} onToggle={onToggle} />
-      <div
-        id={`${id}-content`}
-        data-open={open}
-        aria-hidden={!open}
-        className="section-collapsible"
-      >
-        <div className="section-content">
-          <div className="pt-4 xs:pt-6 pb-14 xs:pb-20 min-h-[calc(100vh-9rem)] flex flex-col justify-center">
-            {children}
-          </div>
-        </div>
-      </div>
-    </section>
-  )
-}
-
-function SectionHead({
-  id,
-  title,
-  count,
-  open,
-  onToggle,
-}: {
-  id: string
-  title: string
-  count?: number
-  open: boolean
-  onToggle: () => void
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onToggle}
-      aria-expanded={open}
-      aria-controls={`${id}-content`}
-      // Tailwind v4 scale utilities set the standalone `scale` property, so
-      // the transition list must name `scale` (not `transform`) or the
-      // active-press feedback snaps.
-      className="sticky top-14 z-30 -mx-6 lg:-mx-12 px-6 lg:px-12 py-3 border-b rule w-[calc(100%+3rem)] lg:w-[calc(100%+6rem)] text-left transition-[background-color,scale] duration-200 ease-out hover:bg-[rgba(31,58,95,0.05)] active:scale-[0.997] active:duration-100 cursor-pointer"
-      style={{ backgroundColor: "#f4f1ec" }}
-    >
-      <motion.div
-        className="grid grid-cols-[auto_1fr_auto] xs:grid-cols-[clamp(80px,14vw,140px)_1fr_clamp(140px,22vw,240px)] lg:grid-cols-[140px_1fr_240px] gap-3 xs:gap-6 lg:gap-12 items-baseline"
-        variants={sectionHeadVariants}
-        custom={Math.max(0, SECTION_ORDER.indexOf(id))}
-        initial="hidden"
-        animate="visible"
-      >
-        <span className="display accent text-[22px] xs:text-[clamp(20px,4.5vw,26px)] lg:text-3xl font-light leading-none">+</span>
-        <h2 className="display text-[22px] xs:text-[clamp(20px,4.5vw,26px)] lg:text-3xl font-light tracking-tight leading-none">
-          {title}
-          <span className="accent">.</span>
-        </h2>
-        {count != null ? (
-          <span className="mono text-[12px] xs:text-[13px] faint text-right tracking-[0.18em]">
-            {String(count).padStart(2, "0")}
-          </span>
-        ) : (
-          <span aria-hidden />
-        )}
-      </motion.div>
-    </button>
   )
 }

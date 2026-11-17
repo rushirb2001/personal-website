@@ -15,7 +15,7 @@ import { GA_MEASUREMENT_ID } from "./site"
 // the font preloads this page's LCP text waits on. afterInteractive does emit
 // that preload, at High priority.
 //
-// What was actually measured (local prod build, /playbook):
+// What was actually measured (local prod build, a static route):
 //   - TBT rises from ~25ms to ~90ms once gtag is on the page, on either
 //     strategy. That is real and mechanistic (gtag.js is ~90KB to parse and
 //     run) and still well inside Google's "good" band of <200ms.
@@ -49,11 +49,26 @@ export function GoogleAnalytics() {
           which listens for History API pushes; the App Router's soft
           navigations (notably the /projects/[slug] modal) go through exactly
           that, so no manual page_view call is needed. */}
+      {/* lead_click: the one conversion this site has. Pageviews say someone
+          arrived; they do not say whether anyone emailed, opened the resume
+          or went to LinkedIn. Any element carrying data-lead="<type>" reports
+          a lead_click event with that type and the page it happened on, from
+          one delegated listener, so no component needs client JS to be
+          measured. Mark lead_click as a key event in GA4 to see it in
+          reports. */}
       <Script id="ga4-init" strategy="lazyOnload">
         {`window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
-gtag('config', '${GA_MEASUREMENT_ID}');`}
+gtag('config', '${GA_MEASUREMENT_ID}');
+document.addEventListener('click', function (e) {
+  var el = e.target && e.target.closest ? e.target.closest('[data-lead]') : null;
+  if (!el) return;
+  gtag('event', 'lead_click', {
+    lead_type: el.getAttribute('data-lead'),
+    page_path: location.pathname
+  });
+}, { capture: true, passive: true });`}
       </Script>
     </>
   )

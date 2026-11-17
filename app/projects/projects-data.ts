@@ -650,3 +650,40 @@ export const PROJECT_DETAIL_SLUGS = Object.keys(PROJECT_DETAILS)
 export function hasProjectDetail(slug: string): boolean {
   return slug in PROJECT_DETAILS
 }
+
+// Listing order for /projects and the "more case studies" links, mirroring the
+// landing page's Selected Projects: shipped client, the AI engine behind it,
+// the production spine, then research depth. A slug missing from this list is
+// appended rather than dropped, so a new case study can never fall off the
+// index by omission.
+const LISTING_ORDER = [
+  "sushrutalgs-web",
+  "hybridflow",
+  "sushrutalgs-bff",
+  "sushrutalgs-ios",
+  "samhita",
+  "mace-pinn",
+  "yelp-ml-platform",
+]
+
+export const PROJECT_LIST: ProjectDetail[] = [
+  ...LISTING_ORDER.filter((slug) => slug in PROJECT_DETAILS).map((slug) => PROJECT_DETAILS[slug]),
+  ...Object.values(PROJECT_DETAILS).filter((d) => !LISTING_ORDER.includes(d.slug)),
+]
+
+/** A link to a case study, as plain data a client component can receive. */
+export type ProjectRef = { slug: string; label: string }
+
+// The descriptive label, not `name`: "backend-for-frontend" as anchor text
+// tells a reader and a crawler nothing about the page behind it.
+export function projectLabel(detail: ProjectDetail): string {
+  return detail.seoTitle ?? detail.title ?? detail.name
+}
+
+/** Every other case study, in listing order, for cross-links out of one. */
+export function relatedProjects(slug: string): ProjectRef[] {
+  return PROJECT_LIST.filter((d) => d.slug !== slug).map((d) => ({
+    slug: d.slug,
+    label: projectLabel(d),
+  }))
+}

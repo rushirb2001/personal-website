@@ -1,35 +1,18 @@
 import type { ReactNode } from "react"
+import { SectionHead } from "../SiteChrome"
 
-// The article's structural vocabulary, deliberately identical to the playbook's
-// Head + Row pair (see app/playbook/PlaybookPage.tsx). Same grid template, same
-// sticky head, same "+" marker and trailing accent period, same left-margin
-// label column. A post laid out with these reads as the same document family as
-// every other page on the site.
+// The article's structural vocabulary: a Head + Row pair on the landing page's
+// grid template, with the same sticky head, "+" marker and trailing accent
+// period, and a left-margin label column. A post laid out with these reads as
+// the same document family as every other page on the site.
 
-// Sticky section head: anchors at the top of its own section while the content
-// scrolls, and the next section's head pushes it out natively. Sections carry
-// their spacing as padding-BOTTOM (the <Spacer/> below) so each head sits at
-// its section's very top edge and the handoff has no gap.
+// Sticky section head: the site's one head (SiteChrome's SectionHead), which
+// anchors under the top bar while its section scrolls and is pushed out by the
+// next section's head natively. Sections carry their spacing as in-content
+// space (the <Spacer/> below) so each head sits at its section's very top edge
+// and the handoff has no gap.
 export function Head({ title }: { title: string }) {
-  return (
-    <div
-      className="sticky top-0 z-30 -mx-6 lg:-mx-12 px-6 lg:px-12 py-3 border-b rule"
-      style={{ backgroundColor: "#f4f1ec" }}
-    >
-      <div className="grid grid-cols-[auto_1fr] xs:grid-cols-[clamp(80px,14vw,140px)_1fr] lg:grid-cols-[140px_1fr] gap-3 xs:gap-6 lg:gap-12 items-baseline">
-        <span
-          aria-hidden
-          className="display accent text-[22px] xs:text-[clamp(20px,4.5vw,26px)] lg:text-3xl font-light leading-none"
-        >
-          +
-        </span>
-        <h2 className="display text-[22px] xs:text-[clamp(20px,4.5vw,26px)] lg:text-3xl font-light tracking-tight leading-none">
-          {title}
-          <span className="accent">.</span>
-        </h2>
-      </div>
-    </div>
-  )
+  return <SectionHead title={title} />
 }
 
 // Keyword in the left margin, everything else in the right column.
@@ -59,7 +42,7 @@ export function Section({
 }: {
   /** Short, for the sticky head. Long phrasing belongs in the body. */
   title: string
-  /** Left-margin keyword, the playbook's Row label. */
+  /** Left-margin keyword, the Row label. */
   label: string
   children: ReactNode
 }) {

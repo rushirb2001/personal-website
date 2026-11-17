@@ -52,13 +52,18 @@ export default function NotFound() {
             </Link>
           </li>
           <li>
+            <Link href="/projects" className="nf-link">
+              projects
+            </Link>
+          </li>
+          <li>
             <Link href="/writing" className="nf-link">
               writing
             </Link>
           </li>
           <li>
-            <Link href="/playbook" className="nf-link">
-              the playbook
+            <Link href="/contact" className="nf-link">
+              contact
             </Link>
           </li>
         </ul>

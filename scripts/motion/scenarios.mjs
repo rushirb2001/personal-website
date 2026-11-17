@@ -66,7 +66,7 @@ export const SCENARIOS = [
       await p.goto("/")
       await openSection(p, "experience")
     },
-    act: (p) => p.click(`${NAV} a[href="#projects"]`),
+    act: (p) => p.click(`${NAV} a[href="/projects"]`),
     windowMs: 1800,
     verify: (p) => sectionOpen(p, "projects"),
     track: ["#projects > button", "#experience-content", "#projects-content"],
@@ -78,7 +78,7 @@ export const SCENARIOS = [
       await p.goto("/")
       await openSection(p, "projects")
     },
-    act: (p) => p.click(`${NAV} a[href="#experience"]`),
+    act: (p) => p.click(`${NAV} a[href="/experience"]`),
     windowMs: 2400,
     verify: (p) => sectionOpen(p, "experience"),
     track: ["#experience > button", "#experience-content", "#projects-content"],
@@ -111,6 +111,58 @@ export const SCENARIOS = [
     track: ["#projects > button"],
   },
 
+  // ── Section paths ───────────────────────────────────────────────────────
+  // Every section has a real path that serves the home page with it open
+  // (/projects). Arriving on one glides from the hero down to the section's
+  // head; switching sections moves the address without a navigation.
+  {
+    name: "home.arrive",
+    description: "Land on /projects: Projects open in the HTML, glide to its head",
+    load: true,
+    route: "/projects",
+    windowMs: 2200,
+    verify: (p) =>
+      p.waitFor(
+        () =>
+          document.getElementById("projects-content")?.dataset.open === "true" &&
+          Math.abs(document.getElementById("projects").getBoundingClientRect().top - 56) < 4,
+        { label: "projects open and parked under the top bar", timeout: 4000 },
+      ),
+    track: ["main h1", "#projects > button", "main footer"],
+  },
+  {
+    name: "home.address",
+    description: "Open Writing from /: the address becomes /writing, no navigation",
+    setup: (p) => p.goto("/"),
+    act: (p) => p.click("#writing > button"),
+    windowMs: 1600,
+    verify: (p) =>
+      p.waitFor(() => location.pathname === "/writing" && document.getElementById("writing-content")?.dataset.open === "true", {
+        label: "writing open at /writing",
+        timeout: 3000,
+      }),
+    track: ["#writing > button", "#writing-content"],
+  },
+  {
+    name: "home.back",
+    description: "Writing open at /writing, browser Back: closes, address returns to /",
+    setup: async (p) => {
+      await p.goto("/")
+      await openSection(p, "writing")
+    },
+    act: (p) => p.evaluate(() => history.back()),
+    windowMs: 2400,
+    verify: (p) =>
+      p.waitFor(
+        () =>
+          location.pathname === "/" &&
+          ![...document.querySelectorAll("[data-open]")].some((el) => el.dataset.open === "true") &&
+          scrollY < 5,
+        { label: "closed at / after Back", timeout: 3000 },
+      ),
+    track: ["main h1", "#writing-content", "main footer"],
+  },
+
   // ── Case study ──────────────────────────────────────────────────────────
   {
     name: "case.open",
@@ -135,7 +187,11 @@ export const SCENARIOS = [
     act: (p) => p.key("Escape"),
     windowMs: 1000,
     verify: (p) =>
-      p.waitFor(() => location.pathname === "/" && !document.querySelector(".modal-card"), { label: "back on home" }),
+      // Back to /projects, not /: the case study was opened from the Projects
+      // section, and an open section is its own address.
+      p.waitFor(() => location.pathname === "/projects" && !document.querySelector(".modal-card"), {
+        label: "back on the home page at /projects",
+      }),
     track: [".modal-backdrop", ".modal-card"],
   },
   {
@@ -191,24 +247,6 @@ export const SCENARIOS = [
         { label: "carousel on slide 2" },
       ),
     track: ['[aria-roledescription="carousel"] figure > div', '[aria-roledescription="carousel"] figcaption'],
-  },
-
-  // ── Playbook ────────────────────────────────────────────────────────────
-  {
-    name: "playbook.load",
-    description: "Playbook entrance and hero shimmer",
-    load: true,
-    route: "/playbook",
-    windowMs: 1600,
-    track: ["main h1"],
-  },
-  {
-    name: "playbook.scroll",
-    description: "Scroll the playbook sales page",
-    setup: (p) => p.goto("/playbook"),
-    act: (p) => p.scrollGesture({ distance: 3000 }),
-    windowMs: 400,
-    track: [".pb-bar"],
   },
 ]
 

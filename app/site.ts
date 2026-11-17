@@ -35,7 +35,14 @@ export const AUTHOR = {
   name: "Rushir Bhavsar",
   email: "bhavsarrushir@gmail.com",
   location: "Ahmedabad, India",
-  jobTitle: "Machine Learning Engineer",
+  // The title actually held at the current employer (worksFor in app/page.tsx),
+  // not a generic discipline label: a jobTitle that matches LinkedIn and the
+  // resume is one more thing an indexer can corroborate.
+  jobTitle: "Founding Engineer",
+  employer: { name: "sushrutalgs.ai", url: "https://sushrutalgs.ai" },
+  linkedin: "https://www.linkedin.com/in/rushir-bhavsar/",
+  github: "https://github.com/rushirb2001",
+  scholar: "https://scholar.google.com/citations?user=bAlVSk8AAAAJ",
   sameAs: [
     "https://www.linkedin.com/in/rushir-bhavsar/",
     "https://github.com/rushirb2001",
@@ -46,6 +53,38 @@ export const AUTHOR = {
     "https://sushrutalgs.ai",
   ],
 } as const
+
+// The resume PDF, served from this origin (public/). It used to live on a
+// Vercel Blob hostname, which sent the one document a recruiter is most likely
+// to forward to a domain with no name on it, and gave the link equity away.
+// Replace the file in place to update it; the URL is the stable part.
+export const RESUME_PDF = "/rushir-bhavsar-resume.pdf"
+
+// The home page's sections, in order. This is the whole of the site's
+// navigation, and each section has a real path: /projects is the home page
+// with Projects open, served as its own static route (app/projects/page.tsx)
+// with its own title. The top bar's tabs are links to those paths, on the
+// home page and on an article alike.
+//
+// There is one page of content and five ways into it, on purpose. /resume and
+// /hire existed briefly as separate pages and each restated a section, so the
+// same roles, projects and contact details lived in two or three places. A
+// new kind of information gets a section here, or a row in one, not a page.
+// `short` is the tab's label on phones.
+export const HOME_SECTIONS = [
+  { id: "experience", label: "Experience", short: "Exp" },
+  { id: "projects", label: "Projects", short: "Proj" },
+  { id: "writing", label: "Writing", short: "Notes" },
+  { id: "education", label: "Education", short: "Edu" },
+  { id: "contact", label: "Contact", short: "Hi" },
+] as const
+
+export type HomeSectionId = (typeof HOME_SECTIONS)[number]["id"]
+
+/** The section a path addresses: "/projects" is "projects", "/" is null. */
+export function sectionFromPath(pathname: string | null): HomeSectionId | null {
+  return HOME_SECTIONS.find((s) => `/${s.id}` === pathname)?.id ?? null
+}
 
 export function absoluteUrl(path: string): string {
   return new URL(path, SITE_URL).toString()

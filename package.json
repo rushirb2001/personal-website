@@ -5,7 +5,9 @@
     "build": "next build",
     "start": "next start",
     "motion": "node scripts/motion/probe.mjs",
-    "motion:inspect": "node scripts/motion/inspect.mjs"
+    "motion:inspect": "node scripts/motion/inspect.mjs",
+    "shot": "node scripts/shot.mjs",
+    "payload": "node scripts/payload.mjs"
   },
   "dependencies": {
     "@vercel/analytics": "^2.0.1",

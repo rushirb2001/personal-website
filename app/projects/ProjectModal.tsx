@@ -4,7 +4,7 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react"
 import { css, waapi } from "../motion"
-import type { ProjectDetail, ProjectLink } from "./projects-data"
+import type { ProjectDetail, ProjectLink, ProjectRef } from "./projects-data"
 import { ArchitectureDiagram } from "./ArchitectureDiagram"
 import { Carousel, type Slide } from "./Carousel"
 
@@ -23,9 +23,14 @@ const sectionId = (label: string) =>
 export function ProjectModal({
   detail,
   mode = "standalone",
+  related = [],
 }: {
   detail: ProjectDetail
   mode?: "overlay" | "standalone"
+  /** The other case studies, passed in by the server route as plain data so
+      this client component never has to import the whole projects-data
+      module just to name its siblings. */
+  related?: ProjectRef[]
 }) {
   const router = useRouter()
   const cardRef = useRef<HTMLDivElement>(null)
@@ -334,7 +339,7 @@ export function ProjectModal({
                 onClick={close}
                 className="accent-link mono text-[13px] inline-flex items-center gap-1.5 bg-transparent border-0 p-0 cursor-pointer flex-none whitespace-nowrap"
               >
-                <span aria-hidden>←</span> Back to home
+                <span aria-hidden>←</span> Back
               </button>
             ) : (
               <Link
@@ -412,6 +417,13 @@ export function ProjectModal({
                             href={l.href}
                             {...(ext ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                             className="cs-link-btn mono"
+                            data-lead={
+                              l.href.startsWith("mailto:")
+                                ? "email_case_study"
+                                : l.href.includes("github.com")
+                                  ? "github"
+                                  : undefined
+                            }
                           >
                             {l.label}
                             <span aria-hidden>{ext ? "↗" : "→"}</span>
@@ -519,6 +531,54 @@ export function ProjectModal({
               {/* The article's last beat: what the numbers and decisions
                   above actually prove, not another status update. */}
               {detail.closing && <p className="cs-closing display">{detail.closing}</p>}
+
+              {/* Ways out that are not "close". A case study used to be a dead
+                  end: the only link off it went back to the landing page, so
+                  no case study linked to another and none pointed at a way to
+                  get in touch. Descriptive labels, since these are the anchor
+                  text the other case studies are known by. */}
+              {related.length > 0 && (
+                <nav aria-label="More case studies" className="cs-more">
+                  <p className="cs-key">More case studies</p>
+                  <ul className="cs-more-list display">
+                    {related.map((r) => (
+                      <li key={r.slug}>
+                        <Link href={`/projects/${r.slug}`} className="accent-link">
+                          {r.label}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                  {/* In the overlay these are plain anchors, not <Link>. The
+                      overlay lives in the @modal parallel-route slot, and a
+                      slot keeps rendering its last match across a soft
+                      navigation: a <Link> to /contact would swap the page
+                      underneath and leave this modal open on top of it. The
+                      documented cure is a catch-all page in the slot, but
+                      that turns every unknown URL into a server-rendered
+                      route (the build table grows a "ƒ /[...catchAll]") and
+                      the static 404 into a function call. A full navigation
+                      closes the overlay for free. */}
+                  <ul className="cs-fact-links cs-more-actions">
+                    {[
+                      { href: "/projects", label: "All projects" },
+                      { href: "/contact", label: "Contact" },
+                    ].map((l) => (
+                      <li key={l.href}>
+                        {mode === "overlay" ? (
+                          <a href={l.href} className="cs-link-btn mono">
+                            {l.label} <span aria-hidden>→</span>
+                          </a>
+                        ) : (
+                          <Link href={l.href} className="cs-link-btn mono">
+                            {l.label} <span aria-hidden>→</span>
+                          </Link>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                </nav>
+              )}
             </div>
           </div>
         </div>
@@ -908,8 +968,7 @@ const TOKENS = `
   .cs-stack-icon { flex: none; color: rgba(26,26,26,0.5); }
 
   /* Links as controls, matching the home page's footer CTA recipe: a tinted
-     outline, never a filled pill (the site keeps exactly one filled control,
-     .cta-buy on /playbook). */
+     outline, never a filled pill. */
   .cs-fact-links { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 7px; }
   .cs-link-btn {
     display: inline-flex; align-items: center; gap: 6px;
@@ -1003,6 +1062,21 @@ const TOKENS = `
     font-weight: 300; line-height: 1.65; letter-spacing: -0.006em;
     font-size: clamp(17px, 1.5vw, 19.5px); color: #1a1a1a;
   }
+
+  /* After the close: the other case studies and the ways to get in touch.
+     Set off by a hairline and generous air so it reads as an appendix to the
+     article, not as its last section. */
+  .cs-more {
+    margin-top: 72px; padding-top: 28px; max-width: 60ch;
+    border-top: 1px solid rgba(26,26,26,0.12);
+  }
+  .cs-more-list {
+    list-style: none; padding: 0; margin: 14px 0 0;
+    display: grid; gap: 10px;
+    font-weight: 300; line-height: 1.4; letter-spacing: -0.006em;
+    font-size: clamp(15.5px, 1.35vw, 17.5px);
+  }
+  .cs-more-actions { margin-top: 26px; }
 
   /* Prose. One measure, one weight, one colour: the gutter carries all the
      structure, so the body has nothing to do but read well. */

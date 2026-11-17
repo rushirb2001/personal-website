@@ -157,6 +157,22 @@ you think it is — a background texture instead of the hero, a cookie banner, a
 headline — you'll optimize the wrong asset. On this site it should be the hero heading (desktop)
 or hero photo (mobile).
 
+**Screenshots at a real viewport: `pnpm shot`.** `pnpm shot / /writing` writes full-page PNGs
+at an emulated 390px phone and a 1280px desktop into `.shots/` and prints any horizontal overflow.
+Do not use `chrome --headless --window-size=390,...` for a phone layout: Chrome clamps a window to
+about 500px wide, so the page lays out at 500 and the PNG is a 390px crop of it. That looks
+exactly like an overflow bug and is not one.
+
+A full-page capture lays sticky bars out as if the page were never scrolled (the footer lands 800px
+down, the grain covers only the first screen), so it cannot show what a visitor sees mid-page. Use
+`--fold` for the first viewport, `--scroll 900` for a scrolled one, and
+`--click '#projects > button' /` to open a home section first; each captures one viewport as it
+stands. `--media print` renders with the print stylesheet, and `-v 360x640,1366x768` takes any
+viewport size. The closed home page has to fit one screen with no scroll, so after touching the
+hero, the section heads or the footer run
+`pnpm shot --fold -v 360x640,375x667,390x844,1280x720,1366x768,1280x800 /` and check each line
+reports exactly the viewport height.
+
 ## 3. In-page inspection (DevTools console or browser eval)
 
 **Why:** Lighthouse is a simulation; the Performance API is the browser's *own accounting* of the
@@ -259,7 +275,7 @@ it before pasting samplers into a console: a console measurement dies with the s
 baseline does not.
 
 ```bash
-pnpm motion --list                                   # the named flows (home.*, case.*, playbook.*)
+pnpm motion --list                                   # the named flows (home.*, case.*)
 pnpm motion --build --save-baseline before           # 1. baseline BEFORE touching code
 pnpm motion --build --compare before                 # 2. after the change: same flows, diffed
 pnpm motion -s home.open,home.close -v phone         # iterate on one flow while fixing it
@@ -335,9 +351,21 @@ table and why the worst payload regressions are JS regressions:
 
 ```bash
 curl -so /dev/null -w "doc:%{size_download}b\n" https://rushirbhavsar.vercel.app/   # home ≈ 54KB
-pnpm build 2>&1 | grep -A30 "Route (app)"                                          # First Load JS per route
-du -sh .next/static/chunks 2>/dev/null
+pnpm build 2>&1 | grep -A30 "Route (app)"                                          # route types (○ / ● / ƒ)
+pnpm payload                                                                       # first-load JS + HTML per route
+pnpm payload --json > /tmp/payload-before.json                                     # keep a baseline to diff
 ```
+
+`pnpm payload` (`scripts/payload.mjs`) exists because Next 16's build table no longer prints a
+"First Load JS" column, which was the number that caught client-bundle regressions. It reads the
+prerendered HTML in `.next/server/app`, collects the script chunks each page references, and sums
+them raw and gzipped. The `nomodule` polyfill chunk (~38KB gzip) is reported separately and left
+out of the totals: modern browsers never fetch it.
+
+The classic way to bloat a route here is importing a data module into a client component. The
+landing page imported `projects-data.ts` to answer "does this slug have a case study" and shipped
+every case study's full text for it (13.4KB gzip). Client components take what they need as props
+from the server route instead.
 
 Local asset weights — source images can be huge in the repo because `next/image` resizes,
 re-encodes (AVIF/WebP), and caches per-device variants at request time; what matters is the
@@ -393,28 +421,68 @@ Plus §2 Lighthouse if the change touched layout, media, fonts, or anything rend
 make the next regression invisible, so updating this table is part of shipping a perf-relevant
 change.
 
-Measured 2026-07-04 (post Notion-mobile-hero deploy), warm edge cache, home US connection;
-`/playbook` column added 2026-07-12 (first production deploy of the route):
+First-load JS per route, `pnpm payload` on a local production build, 2026-11-12 (gzip, modern
+browsers):
 
-| Metric                        | `/`            | `/projects/mace-pinn` | `/playbook`    |
-| ----------------------------- | -------------- | --------------------- | -------------- |
-| TTFB (curl, runs 2–3)         | 107–216ms      | 121ms                 | 125–129ms      |
-| Document size (raw / brotli)  | 55.8KB / 12.3KB | 39.1KB               | 99.5KB / 15.4KB |
-| `x-vercel-cache`              | HIT            | HIT                   | HIT            |
-| Route type                    | ○ Static       | ● SSG                 | ○ Static       |
-| Redirects                     | 0              | 0                     | 0              |
-| Lighthouse mobile (perf/FCP/LCP) | 98 / 0.9s / 2.3s | —                | 98 / 1.0s / 2.4s |
+| Route                    | Before  | After   | Why                                              |
+| ------------------------ | ------- | ------- | ------------------------------------------------ |
+| `/` and the five section paths | 220.6KB | 206.1KB | `projects-data.ts` no longer in the client bundle |
+| `/projects/[slug]`       | 157.8KB | 158.0KB | related-links markup                             |
+| `/writing/[slug]`        | 135.2KB | 178.4KB | Motion, for the header entrance and footer rise  |
 
-`/playbook` notes: ~58% of the raw document is the Next.js flight/RSC hydration payload
-(framework tax on a text-heavy page; brotli absorbs most of it). The page is the only route
-with italic display text above the fold, so it preloads `google-sans-italic-latin.woff2`
-itself (page-scoped `ReactDOM.preload`) — without it the italic face started ~90ms after the
-preloaded fonts and delayed the LCP repaint of the hero sub-paragraph, which is the LCP
-element (pre-preload the route measured 95 / 1.4s / 2.8s). Gumroad's overlay stylesheets
-load post-paint via `lazyOnload` and are not in the critical path. Measurement trap seen
-here: on a loaded host (dev server + several headless Chromes), Lighthouse produced bimodal
-scores (98 vs 75-76) with observed FCP landing seconds *after* observed load — a starved
-renderer, not the page. Quiet the machine before believing a bad run.
+The section paths (`/experience`, `/projects`, `/writing`, `/education`, `/contact`) are the home
+page served with one section open, so they cost exactly what `/` costs: 206.1KB of JS and about
+29.7KB of HTML (gzip) each. The articles pay 43KB for Motion; it is the same chunk the home page
+loads, so a visitor who has seen either already has it.
+
+Same date, same change set:
+
+- **Hero portrait request priority: Low to High.** Next 16 renamed `priority` to `preload` and the
+  preload it emits no longer carries `fetchpriority`; Chrome fetches an image preload at Low. The
+  portrait is the phone layout's LCP element, so it queued behind every script. `preload` +
+  `fetchPriority="high"` on the `<Image>` restores it. Verified by reading
+  `Network.requestWillBeSent.initialPriority` over CDP on a 390px emulated viewport: `Low` on the
+  deployed site, `High` on the new build. Lighthouse could not confirm the LCP effect locally: on
+  a machine at load average 6.5 three consecutive runs gave LCP 6.4s / 3.3s / 6.5s for the same
+  build. Re-measure on the deployed site (§2) once it ships.
+- **Fonts: `max-age=0, must-revalidate` to `max-age=31536000, immutable`** (`next.config.mjs`
+  `headers()`). A returning visitor no longer revalidates four font files per page view.
+- **Portrait source: 2.7MB PNG to 326KB JPEG** (`public/images/rushir-bhavsar.jpg`, 1600px). The
+  served AVIF variants are the same size within 2% (15.8KB vs 16.1KB at w=640 through the local
+  optimizer), so this is repo, optimizer and JSON-LD weight, not a paint win.
+- **Motion probe, phone, 3 runs each, pre-change commit vs this one** (load average 8 to 14, so
+  absolute grades are pessimistic): `home.load` FAIL / FAIL (14% vs 15% frames dropped),
+  `home.open` warn / warn, `case.open` warn / warn. No verdict changed. `home.load` failing on
+  both is the machine, or a pre-existing cost worth a quiet-machine run.
+- **Motion probe after the consolidation, phone and desktop, 3 runs, against a baseline taken the
+  same hour** (load average about 10): every `home.*` flow kept its verdict (`home.open`,
+  `switch-down`, `switch-up`, `close` warn for layout-animating, by design, with 0 to 2% frames
+  dropped; `home.load` FAIL on phone for a 121 to 166ms hydration frame, before and after). The
+  three new flows pass their end-state checks: `home.arrive` (land on `/projects`, glide to the
+  head), `home.address` (open Writing, the address becomes `/writing` with no navigation) and
+  `home.back` (browser Back closes the section and returns to `/`).
+- **Lighthouse mobile, same loaded machine, one run each**: an article 100 performance and 100
+  accessibility, FCP = LCP = 0.9s; `/` and `/contact` 91 performance with LCP 3.4s and 96
+  accessibility. The home LCP is the pre-existing number (3.3s measured before any of this): the
+  hero is rendered at opacity 0 and revealed by Motion after hydration, so its paint waits for the
+  JavaScript. The one accessibility failure left on the home page is `color-contrast` on `.muted`
+  (0.55) and `.faint` (0.38); `aria-hidden-focus` is gone (collapsed sections and the hidden top
+  bar are `inert` now).
+
+Measured 2026-07-04 (post Notion-mobile-hero deploy), warm edge cache, home US connection:
+
+| Metric                        | `/`            | `/projects/mace-pinn` |
+| ----------------------------- | -------------- | --------------------- |
+| TTFB (curl, runs 2–3)         | 107–216ms      | 121ms                 |
+| Document size (raw / brotli)  | 55.8KB / 12.3KB | 39.1KB               |
+| `x-vercel-cache`              | HIT            | HIT                   |
+| Route type                    | ○ Static       | ● SSG                 |
+| Redirects                     | 0              | 0                     |
+| Lighthouse mobile (perf/FCP/LCP) | 98 / 0.9s / 2.3s | —                |
+
+Measurement trap: on a loaded host (dev server + several headless Chromes), Lighthouse
+produced bimodal scores (98 vs 75-76) with observed FCP landing seconds *after* observed
+load — a starved renderer, not the page. Quiet the machine before believing a bad run.
 
 A regression is a change against **these** numbers measured the same way — not against a field
 panel percentile.

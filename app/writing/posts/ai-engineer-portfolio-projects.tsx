@@ -1,8 +1,8 @@
 import Link from "next/link"
 import type { PostMeta } from "../posts-data"
+import { FromTheWork } from "../FromTheWork"
 import { Lede, Section } from "../Prose"
 import { DepthVsBreadth, Figure, RoleMap } from "../Figure"
-import { NextStep } from "../NextStep"
 
 export const meta: PostMeta = {
   slug: "ai-engineer-portfolio-projects",
@@ -217,7 +217,10 @@ export default function Post() {
         </p>
       </Section>
 
-      <NextStep line="Sixteen project specs, chosen by target role, each with a week-by-week build plan, the interview questions it prepares you to answer, and the resume bullets it produces when it ships." />
+      <FromTheWork
+        line="I hold my own work to this standard. Each case study on this site is one project I can defend for ten minutes: the problem, why it is hard, the design, what it cost and where it stands."
+        caseStudy={{ label: "Read the case studies", href: "/projects" }}
+      />
     </>
   )
 }

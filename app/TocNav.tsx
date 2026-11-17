@@ -2,13 +2,13 @@
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react"
 import { css, cssEase } from "./motion"
+import { HOME_SECTIONS } from "./site"
 
-const SECTIONS = [
-  { id: "experience", label: "Experience", short: "Exp" },
-  { id: "projects", label: "Projects", short: "Proj" },
-  { id: "education", label: "Education", short: "Edu" },
-  { id: "contact", label: "Contact", short: "Hi" },
-]
+// The home page's sections (site.ts). Each tab is a link to its section's
+// real path (/projects), so it works without JavaScript and a crawler can
+// follow it; with JavaScript the click is taken over and the accordion opens
+// the section in place while the address moves to that path (see HomePage).
+const SECTIONS = HOME_SECTIONS
 
 type Props = {
   active: string | null
@@ -47,7 +47,7 @@ export function TocNav({ active, onSelect, onHome }: Props) {
     const ul = listRef.current
     if (!ul) return
     const measure = () => {
-      const a = active ? ul.querySelector<HTMLAnchorElement>(`a[href="#${active}"]`) : null
+      const a = active ? ul.querySelector<HTMLAnchorElement>(`a[href="/${active}"]`) : null
       if (!a) {
         // Keep the last geometry so the fade-out happens in place.
         hadPillRef.current = false
@@ -82,7 +82,9 @@ export function TocNav({ active, onSelect, onHome }: Props) {
   return (
     <nav
       aria-label="Page sections"
-      aria-hidden={!visible}
+      // inert, not aria-hidden: while the bar is slid away its links would
+      // otherwise stay in the tab order, focusable and invisible.
+      inert={!visible}
       // Tailwind v4 translate utilities set the standalone `translate`
       // property (not `transform`), so it must be named in the transition
       // list or the show/hide snaps instead of sliding.
@@ -109,7 +111,7 @@ export function TocNav({ active, onSelect, onHome }: Props) {
         <a
           href="/"
           onClick={handleHome}
-          className="mono uppercase tracking-[0.15em] muted hover:text-[#1a1a1a] transition-colors flex items-center gap-2 sm:gap-2.5 shrink-0 text-[13px] sm:text-[16px]"
+          className="nav-link mono uppercase tracking-[0.15em] flex items-center gap-2 sm:gap-2.5 shrink-0 text-[13px] sm:text-[16px]"
         >
           <span
             aria-hidden
@@ -141,26 +143,37 @@ export function TocNav({ active, onSelect, onHome }: Props) {
             return (
               <li key={s.id} className="shrink-0">
                 <a
-                  href={`#${s.id}`}
+                  href={`/${s.id}`}
                   onClick={(e) => handleSelect(e, s.id)}
                   aria-current={isActive ? "true" : undefined}
-                  aria-label={s.label}
-                  className={`group relative flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1.5 rounded-sm transition-colors duration-200 ${
-                    isActive ? "ink" : "muted hover:text-[#1a1a1a]"
-                  }`}
+                  // .nav-link (CHROME_CSS), not `muted hover:text-*`: the
+                  // unlayered .muted beat the layered hover utility, so the
+                  // tabs never changed colour under the pointer.
+                  className="nav-link group relative flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1.5 rounded-sm"
                 >
                   {/* Always in the layout so activating a tab never shifts its
                       neighbors — only the opacity animates. */}
+                  {/* sm+ only: five tabs leave a phone no room for five "+"
+                      slots, and the pill already marks the tab there. */}
                   <span
                     aria-hidden
-                    className={`accent font-medium leading-none transition-opacity duration-200 ${
+                    className={`hidden sm:inline accent font-medium leading-none transition-opacity duration-200 ${
                       isActive ? "opacity-100" : "opacity-0"
                     }`}
                   >
                     +
                   </span>
+                  {/* Phones show the short label, but the tab is still NAMED by
+                      the full one: the short text is hidden from assistive
+                      tech and the full label rides along visually hidden. An
+                      aria-label would do the same job and fail the rule that
+                      a control's name must contain its visible text ("Hi" is
+                      not in "Contact"). */}
                   <span className="hidden sm:inline">{s.label}</span>
-                  <span className="sm:hidden">{s.short}</span>
+                  <span className="sm:hidden" aria-hidden>
+                    {s.short}
+                  </span>
+                  <span className="sr-only sm:hidden">{s.label}</span>
                 </a>
               </li>
             )

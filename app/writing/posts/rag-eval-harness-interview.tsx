@@ -1,8 +1,8 @@
 import Link from "next/link"
 import type { PostMeta } from "../posts-data"
+import { FromTheWork } from "../FromTheWork"
 import { Lede, Section } from "../Prose"
 import { EvalHarness, Figure } from "../Figure"
-import { NextStep } from "../NextStep"
 
 export const meta: PostMeta = {
   slug: "rag-eval-harness-interview",
@@ -198,7 +198,10 @@ PASS  no regression beyond -0.02 threshold`}</pre>
         </p>
       </Section>
 
-      <NextStep line="This is one of sixteen project specs in the playbook. Each one is scoped to six weeks, on a free stack, and comes with the interview questions it prepares you for." />
+      <FromTheWork
+        line="I run this kind of harness in production: an 8-gate regression suite, covering citation integrity and hallucination, over a graph and vector retrieval backend that holds 30 concurrent queries with zero errors."
+        caseStudy={{ label: "HybridFlow: hybrid RAG over surgical textbooks", href: "/projects/hybridflow" }}
+      />
     </>
   )
 }

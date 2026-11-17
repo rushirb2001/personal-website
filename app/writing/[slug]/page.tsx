@@ -2,9 +2,11 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { JsonLd, breadcrumbList } from "../../JsonLd"
-import { AUTHOR, SITE_URL, absoluteUrl } from "../../site"
+import { PageShell } from "../../PageShell"
+import { ChipList, ENTRY_BODY, ENTRY_TITLE, EntryRow, PageSection } from "../../SiteChrome"
+import { HeroItem, HeroStagger } from "../../accordion"
+import { SITE_URL, absoluteUrl } from "../../site"
 import { getPost, POSTS, POST_SLUGS } from "../posts-data"
-import { WritingStyle } from "../WritingStyle"
 
 // Every post is known at build time, so all of /writing prerenders.
 export function generateStaticParams() {
@@ -92,117 +94,70 @@ export default async function PostPage({
   ]
 
   return (
-    <main className="paper grain min-h-[100svh]">
-      <WritingStyle />
+    <PageShell current="writing">
       <JsonLd data={graph} />
 
-      <div className="max-w-[1100px] mx-auto px-6 lg:px-12">
-        {/* Top bar doubles as the visible breadcrumb the BreadcrumbList above
-            describes. Same row as the playbook's and the index's. */}
-        <nav aria-label="Breadcrumb" className="flex items-center justify-between py-5 xs:py-6">
-          <ol className="mono small-caps accent flex flex-wrap items-center gap-x-2.5 gap-y-1">
-            <li>
-              <Link href="/writing" className="accent-link">
-                Writing
-              </Link>
-            </li>
-          </ol>
-          <Link href="/" className="accent-link mono text-[13px] inline-flex items-center gap-1.5">
-            <span aria-hidden>&larr;</span> Rushir Bhavsar
-          </Link>
-        </nav>
-
-        <article>
-          {/* Header on the page grid: publication meta in the left margin,
-              headline and deck in the content column, so the h1's left edge
-              matches every section head below it. */}
-          <header className="grid grid-cols-1 xs:grid-cols-[clamp(80px,14vw,140px)_1fr] lg:grid-cols-[140px_1fr] gap-2 xs:gap-6 lg:gap-12 pt-4 xs:pt-8 lg:pt-10 pb-12 xs:pb-16">
-            <div className="mono text-[12px] xs:text-[13px] leading-none ink xs:pt-3 flex xs:flex-col items-baseline gap-3 xs:gap-2">
-              <time dateTime={post.published}>
-                {new Date(post.published).toLocaleDateString("en-US", {
-                  year: "numeric",
-                  month: "short",
-                  timeZone: "UTC",
-                })}
-              </time>
-              <span className="muted">{post.readingTime}</span>
-            </div>
-
-            <div>
-              <h1 className="display font-light tracking-tight leading-[1.08] text-[30px] xs:text-[clamp(34px,5vw,52px)] lg:text-[clamp(30px,3.6vw,44px)] max-w-[30ch]">
-                {post.title}
-                <span className="accent">.</span>
-              </h1>
-              <p className="display font-light text-[16px] xs:text-[18px] leading-[1.55] muted max-w-[64ch] mt-5">
-                {post.standfirst}
-              </p>
-            </div>
-          </header>
-
-          {/* The body owns its own section heads and rows (see ../Prose). */}
-          <Body />
-        </article>
-
-        {/* Internal links out, in the index's row vocabulary. Keeps the cluster
-            crawlable from any entry point rather than only via the index. */}
-        <section>
-          <div
-            className="sticky top-0 z-30 -mx-6 lg:-mx-12 px-6 lg:px-12 py-3 border-b rule"
-            style={{ backgroundColor: "#f4f1ec" }}
-          >
-            <div className="grid grid-cols-[auto_1fr] xs:grid-cols-[clamp(80px,14vw,140px)_1fr] lg:grid-cols-[140px_1fr] gap-3 xs:gap-6 lg:gap-12 items-baseline">
-              <span
-                aria-hidden
-                className="display accent text-[22px] xs:text-[clamp(20px,4.5vw,26px)] lg:text-3xl font-light leading-none"
-              >
-                +
-              </span>
-              <h2 className="display text-[22px] xs:text-[clamp(20px,4.5vw,26px)] lg:text-3xl font-light tracking-tight leading-none">
-                Also here
-                <span className="accent">.</span>
-              </h2>
-            </div>
+      <article>
+        {/* Header on the page grid: publication meta in the left margin,
+            headline and deck in the content column, so the h1's left edge
+            matches every section head below it. An article keeps this
+            narrower headline rather than the index pages' hero: its title is
+            a sentence, and it is the first line of a column of reading. */}
+        <HeroStagger className="grid grid-cols-1 xs:grid-cols-[clamp(80px,14vw,140px)_1fr] lg:grid-cols-[140px_1fr] gap-2 xs:gap-6 lg:gap-12 pt-8 xs:pt-10 lg:pt-14 pb-12 xs:pb-16">
+          <div className="mono text-[12px] xs:text-[13px] leading-none ink xs:pt-3 flex xs:flex-col items-baseline gap-3 xs:gap-2">
+            <time dateTime={post.published}>
+              {new Date(post.published).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "short",
+                timeZone: "UTC",
+              })}
+            </time>
+            <span className="muted">{post.readingTime}</span>
           </div>
 
-          <ol className="mt-2 lg:mt-3">
-            {more.map((p, i) => (
-              <li
-                key={p.slug}
-                className={`grid grid-cols-1 xs:grid-cols-[clamp(80px,14vw,140px)_1fr] lg:grid-cols-[140px_1fr] gap-3 xs:gap-6 lg:gap-12 py-4 xs:py-6 first:pt-2 xs:first:pt-3 ${
-                  i !== more.length - 1 ? "border-b rule" : ""
-                }`}
-              >
-                <p className="mono text-[12px] xs:text-[13px] leading-none muted xs:pt-2">
-                  {p.readingTime}
-                </p>
-                <div>
-                  <h3 className="display text-[19px] xs:text-[22px] font-light tracking-tight leading-tight">
-                    <Link href={`/writing/${p.slug}`} className="accent-link">
-                      {p.title}
-                    </Link>
-                  </h3>
-                  <p className="mt-2 leading-relaxed text-[13px] xs:text-[14px] max-w-[58ch] mono muted">
-                    {p.standfirst}
-                  </p>
-                </div>
-              </li>
-            ))}
-          </ol>
-        </section>
+          <div>
+            {/* The h1 leads the cascade with no delay: it is the LCP element. */}
+            <HeroItem
+              as="h1"
+              className="display font-light tracking-tight leading-[1.08] text-[30px] xs:text-[clamp(34px,5vw,52px)] lg:text-[clamp(30px,3.6vw,44px)] max-w-[30ch]"
+            >
+              {post.title}
+              <span className="accent">.</span>
+            </HeroItem>
+            <HeroItem
+              as="p"
+              className="display font-light text-[16px] xs:text-[18px] leading-[1.55] muted max-w-[64ch] mt-5"
+            >
+              {post.standfirst}
+            </HeroItem>
+          </div>
+        </HeroStagger>
 
-        <footer className="border-t rule mt-12 xs:mt-16 py-6 xs:py-8 mono text-[11px] flex items-center justify-between gap-4">
-          <Link href="/" className="accent-link muted">
-            <span className="faint">&copy; 2026 </span>
-            {AUTHOR.name}
-          </Link>
-          <Link href="/playbook" className="footer-cta mono">
-            The Playbook <span aria-hidden>↗</span>
-          </Link>
-          {/* Dropped on the narrowest phones: three items do not fit, and the
-              location is the least useful of them. */}
-          <span className="small-caps faint hidden xs:inline">{AUTHOR.location}</span>
-        </footer>
-      </div>
-    </main>
+        {/* The body owns its own section heads and rows (see ../Prose). */}
+        <Body />
+      </article>
+
+      {/* Internal links out, in the index's row vocabulary. Keeps the cluster
+          crawlable from any entry point rather than only via the index. */}
+      <PageSection title="Also here" count={more.length}>
+        <ol className="mt-2 lg:mt-3">
+          {more.map((p) => (
+            <EntryRow
+              key={p.slug}
+              spacing="dense"
+              meta={<span className="muted">{p.readingTime}</span>}
+              rail={<ChipList links={[{ label: "read", href: `/writing/${p.slug}` }]} />}
+            >
+              <h3 className={ENTRY_TITLE}>
+                <Link href={`/writing/${p.slug}`} className="accent-link">
+                  {p.title}
+                </Link>
+              </h3>
+              <p className={`${ENTRY_BODY} mt-2 xs:mt-5`}>{p.standfirst}</p>
+            </EntryRow>
+          ))}
+        </ol>
+      </PageSection>
+    </PageShell>
   )
 }

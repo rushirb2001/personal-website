@@ -16,11 +16,11 @@
 //
 // 3. CSS and JS share the same curves. `css.*` compiles each spring to a CSS
 //    `linear()` easing at module load, so hand-rolled transitions and
-//    keyframes (the accordion, the modal, the playbook) move on exactly the
+//    keyframes (the accordion, the modal) move on exactly the
 //    springs Motion uses, with zero runtime cost.
 
 // `spring` comes from the framework-free entry so this module stays importable
-// from server components (the playbook's <style> is server-rendered);
+// from server components;
 // "motion/react" creates React contexts at module load and would crash there.
 import { spring } from "motion"
 import type { Transition, Variants } from "motion/react"
